@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>SpecBind</id>
+    <version>1.0.0</version>
+    <title>SpecBind</title>
+    <authors>dpiessens</authors>
+    <owners>dpiessens</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <projectUrl>https://github.com/dpiessens/specbind</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>SpecBind is a bridge library for SpecFlow that allows for users to use as standard step vocabulary to drive their interaction with various web driver platforms, only requiring a light page model to complete interaction with the web site.</description>
+    <summary>SpecBind is a bridge library for SpecFlow that allows for users to use as standard step vocabulary to drive their interaction with various web driver platforms, only requiring a light page model to complete interaction with the web site.</summary>
+    <tags>specflow acceptance testing specbind bdd cucumber</tags>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="SpecFlow" version="1.9.0" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\SpecBind.dll" target="lib\net45" />
+    <file src="bin\Release\SpecBind.xml" target="lib\net45" />
+    <file src="Deployment\App.config.transform" target="content" />
+  </files>
+</package>

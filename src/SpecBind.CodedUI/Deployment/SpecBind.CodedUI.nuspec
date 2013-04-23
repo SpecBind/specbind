@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>SpecBind.CodedUI</id>
+    <version>1.0.0</version>
+    <title>SpecBind CodedUI Module</title>
+    <authors>dpiessens</authors>
+    <owners>dpiessens</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <projectUrl>https://github.com/dpiessens/specbind</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>An extension to SpecBind that allows it to integrate with Microsoft Coded UI.</description>
+    <summary>An extension to SpecBind that allows it to integrate with Microsoft Coded UI.</summary>
+    <tags>specbind codedui</tags>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="SpecBind" version="1.0.0" />
+        <dependency id="SpecFlow.CodedUI" version="1.0.0" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\SpecBind.CodedUI.dll" target="lib\net45" />
+    <file src="bin\Release\SpecBind.CodedUI.xml" target="lib\net45" />
+    <file src="Deployment\App.config.transform" target="content" />
+  </files>
+</package>

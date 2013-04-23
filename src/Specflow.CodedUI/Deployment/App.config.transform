@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <specFlow>
+    <unitTestProvider name="MsTest" generatorProvider="Specflow.CodedUI.MsTestCodedUiGeneratorProvider, Specflow.CodedUI" runtimeProvider="TechTalk.SpecFlow.UnitTestProvider.MsTest2010RuntimeProvider, TechTalk.SpecFlow" />
+  </specFlow>
+</configuration>

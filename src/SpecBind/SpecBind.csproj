@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E27BD8D5-242F-496E-BE3A-1C73A27E5275}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SpecBind</RootNamespace>
+    <AssemblyName>SpecBind</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\SpecBind.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\SpecBind.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="TechTalk.SpecFlow">
+      <HintPath>..\packages\SpecFlow.1.9.0\lib\net35\TechTalk.SpecFlow.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BrowserSupport\BrowserFactory.cs" />
+    <Compile Include="BrowserSupport\BrowserType.cs" />
+    <Compile Include="BrowserSupport\IBrowser.cs" />
+    <Compile Include="Configuration\ApplicationConfigurationElement.cs" />
+    <Compile Include="Configuration\BrowserFactoryConfigurationElement.cs" />
+    <Compile Include="Configuration\ConfigurationSectionHandler.cs" />
+    <Compile Include="Helpers\AttributeExtensions.cs" />
+    <Compile Include="Helpers\ITokenManager.cs" />
+    <Compile Include="Helpers\ResourceLocator.cs" />
+    <Compile Include="Helpers\TokenManager.cs" />
+    <Compile Include="Pages\ElementLocatorAttribute.cs" />
+    <Compile Include="Pages\IActiveCheck.cs" />
+    <Compile Include="Pages\IElementList.cs" />
+    <Compile Include="Pages\IPageElementHandler.cs" />
+    <Compile Include="Pages\IPropertyData.cs" />
+    <Compile Include="Pages\ItemValidation.cs" />
+    <Compile Include="Pages\ListElementWrapper.cs" />
+    <Compile Include="Pages\PageBase.cs" />
+    <Compile Include="CommonPageSteps.cs" />
+    <Compile Include="Helpers\IScenarioContextHelper.cs" />
+    <Compile Include="Helpers\ScenarioContextHelper.cs" />
+    <Compile Include="Helpers\SettingHelper.cs" />
+    <Compile Include="Helpers\StringLookupExtensions.cs" />
+    <Compile Include="Helpers\UriHelper.cs" />
+    <Compile Include="BrowserSupport\WebDriverSupport.cs" />
+    <Compile Include="Pages\ComparisonType.cs" />
+    <Compile Include="Pages\ElementExecuteException.cs" />
+    <Compile Include="Pages\IPage.cs" />
+    <Compile Include="Pages\IPageDataFiller.cs" />
+    <Compile Include="Pages\IPageMapper.cs" />
+    <Compile Include="Pages\PageAliasAttribute.cs" />
+    <Compile Include="Pages\PageDataFiller.cs" />
+    <Compile Include="Pages\BrowserExtensions.cs" />
+    <Compile Include="Pages\PageMapper.cs" />
+    <Compile Include="Pages\PageNavigationAttribute.cs" />
+    <Compile Include="Pages\PageNavigationException.cs" />
+    <Compile Include="Pages\PropertyData.cs" />
+    <Compile Include="Pages\TagConstants.cs" />
+    <Compile Include="Pages\TypeExtensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Deployment\App.config.transform" />
+    <None Include="Deployment\SpecBind.nuspec" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(TargetPath)" "$(SolutionDir)\Libs"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
