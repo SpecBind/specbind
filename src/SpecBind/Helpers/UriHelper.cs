@@ -23,9 +23,13 @@ namespace SpecBind.Helpers
 		/// </summary>
 		static UriHelper()
 		{
-			var setting = SettingHelper.GetAppSetting("baseUrl");
+			var configSection = SettingHelper.GetConfigurationSection();
+			
 			Uri parsedUri;
-			BaseUri = Uri.TryCreate(setting, UriKind.Absolute, out parsedUri) ? parsedUri : new Uri("http://localhost");
+			BaseUri = configSection != null && configSection.Application != null
+			          && Uri.TryCreate(configSection.Application.StartUrl, UriKind.Absolute, out parsedUri)
+				          ? parsedUri
+				          : new Uri("http://localhost");
 		}
 
 		/// <summary>

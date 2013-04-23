@@ -8,17 +8,20 @@ namespace SpecBind.Helpers
 	using System.IO;
 	using System.Resources;
 
+	using SpecBind.Configuration;
+
 	/// <summary>A helper class to get settings from the configuration file.</summary>
 	public static class SettingHelper
 	{
 		#region Methods
 
-		/// <summary>Gets the app setting from the app config file.</summary>
-		/// <param name="key">The key.</param>
-		/// <returns>The application setting.</returns>
-		public static string GetAppSetting(string key)
+		/// <summary>
+		/// Gets the configuration section.
+		/// </summary>
+		/// <returns>The configuration section or <c>null</c>.</returns>
+		public static ConfigurationSectionHandler GetConfigurationSection()
 		{
-			return ConfigurationManager.AppSettings[key];
+			return ConfigurationManager.GetSection("specBind") as ConfigurationSectionHandler;
 		}
 
 		/// <summary>

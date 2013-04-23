@@ -32,13 +32,13 @@ namespace SpecBind.BrowserSupport
 		/// <returns>A created browser factory.</returns>
 		internal static BrowserFactory GetBrowserFactory()
 		{
-			var factoryType = SettingHelper.GetAppSetting("BrowserFactory");
-			if (string.IsNullOrWhiteSpace(factoryType))
+			var configSection = SettingHelper.GetConfigurationSection();
+			if (configSection == null || configSection.BrowserFactory == null || string.IsNullOrWhiteSpace(configSection.BrowserFactory.Provider))
 			{
-				throw new InvalidOperationException("An application setting named 'BrowserFactory' must be specified with the target driver type.");
+				throw new InvalidOperationException("The specBind config section must have a browser factor with a provider configured.");
 			}
 
-			var type = Type.GetType(factoryType, OnAssemblyCheck, OnGetType);
+			var type = Type.GetType(configSection.BrowserFactory.Provider, OnAssemblyCheck, OnGetType);
 			if (type == null || !typeof(BrowserFactory).IsAssignableFrom(type))
 			{
 				throw new InvalidOperationException("Could not load factory type: {0}. Make sure this is fully qualified and the assembly exists. Also ensure the base type is BrowserFactory");
@@ -60,11 +60,15 @@ namespace SpecBind.BrowserSupport
 		/// <returns>The browser type.</returns>
 		protected virtual BrowserType GetBrowserType()
 		{
-			BrowserType browserType;
-			var settingName = SettingHelper.GetAppSetting("BrowserType");
-			if (!string.IsNullOrWhiteSpace(settingName) && Enum.TryParse(settingName, true, out browserType))
+			var configSection = SettingHelper.GetConfigurationSection();
+			if (configSection != null && configSection.BrowserFactory != null)
 			{
-				return browserType;
+				var settingName = configSection.BrowserFactory.BrowserType;
+				BrowserType browserType;
+				if (!string.IsNullOrWhiteSpace(settingName) && Enum.TryParse(settingName, true, out browserType))
+				{
+					return browserType;
+				}
 			}
 
 			return BrowserType.IE;
