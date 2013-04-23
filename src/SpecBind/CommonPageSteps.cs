@@ -5,6 +5,8 @@
 namespace SpecBind
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Globalization;
 	using System.Linq;
 
 	using SpecBind.BrowserSupport;
@@ -12,9 +14,6 @@ namespace SpecBind
 	using SpecBind.Pages;
 
 	using TechTalk.SpecFlow;
-
-	using System.Collections.Generic;
-	using System.Globalization;
 
 	/// <summary>
 	/// A set of common step bindings that drive the underlying fixtures.

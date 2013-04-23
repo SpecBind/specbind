@@ -85,7 +85,7 @@ namespace SpecBind.Watin
 		/// Gets the page from element.
 		/// </summary>
 		/// <param name="element">The element.</param>
-		/// <returns></returns>
+		/// <returns>The page interface.</returns>
 		/// <exception cref="System.NotSupportedException">Watin doesn't support list checking currently</exception>
 		public override IPage GetPageFromElement(Element element)
 		{

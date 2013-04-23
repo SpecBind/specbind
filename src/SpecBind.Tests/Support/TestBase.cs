@@ -76,7 +76,7 @@ namespace SpecBind.Tests.Support
 		/// Gets the page from element.
 		/// </summary>
 		/// <param name="element">The element.</param>
-		/// <returns></returns>
+		/// <returns>The page interface.</returns>
 		public override IPage GetPageFromElement(BaseElement element)
 		{
 			return null;

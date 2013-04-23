@@ -1,11 +1,7 @@
-﻿// 
-// <copyright file="PageDataFillerFixture.cs" company="">
-//   
+﻿// <copyright file="PageDataFillerFixture.cs">
+//    Copyright © 2013 Dan Piessens  All rights reserved.
 // </copyright>
-// <summary>
-//   
-// </summary>
-// 
+
 namespace SpecBind.Tests
 {
 	using System;
@@ -596,8 +592,11 @@ namespace SpecBind.Tests
 					page.Object, 
 					"doesnotexist", 
 					ComparisonType.Contains, 
-					new[] { new ItemValidation("doesnotexist", "My Data", ComparisonType.Equals) }), 
-				e => page.VerifyAll());
+					new[]
+						{
+							new ItemValidation("doesnotexist", "My Data", ComparisonType.Equals)
+						}), 
+					e => page.VerifyAll());
 		}
 
 		/// <summary>
@@ -624,7 +623,10 @@ namespace SpecBind.Tests
 					page.Object, 
 					"doesnotexist", 
 					ComparisonType.Contains, 
-					new[] { new ItemValidation("doesnotexist", "My Data", ComparisonType.Equals) }), 
+					new[]
+						{
+							new ItemValidation("doesnotexist", "My Data", ComparisonType.Equals)
+						}), 
 				e => page.VerifyAll());
 		}
 

@@ -51,7 +51,7 @@ namespace SpecBind.BrowserSupport
 		/// Navigates to the specified URL defined by the page.
 		/// </summary>
 		/// <param name="pageType">Type of the page.</param>
-		/// <param name="parameters"></param>
+		/// <param name="parameters">The parameters to fill it in.</param>
 		/// <returns>The page object when navigated to.</returns>
 		IPage GoToPage(Type pageType, IDictionary<string, string> parameters);
 
