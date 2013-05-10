@@ -15,7 +15,7 @@ namespace SpecBind.CodedUI.Tests
 	/// <summary>
 	/// A test fixture for the PageBuilder class.
 	/// </summary>
-	[TestClass]
+	[CodedUITest]
 	public class PageBuilderFixture
 	{
 		/// <summary>
@@ -118,6 +118,50 @@ namespace SpecBind.CodedUI.Tests
 			Assert.IsTrue(typeof(IElementList<,>).IsAssignableFrom(baseType.GetGenericTypeDefinition()));
 			Assert.AreEqual(typeof(CodedUIListElementWrapper<HtmlDiv, HtmlCustom>), concreteType);
 		}
+
+		/// <summary>
+		/// Tests the frame document creation.
+		/// </summary>
+		[TestMethod]
+		public void TestFrameDocument()
+		{
+			var docType = typeof(MasterDocument);
+			var property = docType.GetProperty("FrameNavigation");
+
+			var window = new BrowserWindow();
+			var pageFunc = PageBuilder.CreateFrameLocator<BrowserWindow, HtmlFrame>(docType, property);
+			var page = pageFunc(window);
+
+			Assert.IsNotNull(page);
+			Assert.IsInstanceOfType(page, typeof(HtmlFrame));
+			Assert.AreEqual("1234", page.SearchProperties[HtmlControl.PropertyNames.Id]);
+		}
+
+		#region Class - FrameDocument
+
+		/// <summary>
+		/// A test class for seeing if frames will resolve.
+		/// </summary>
+		public class MasterDocument : HtmlCustom
+		{
+			/// <summary>
+			/// Initializes a new instance of the <see cref="T:Microsoft.VisualStudio.TestTools.UITesting.HtmlControls.HtmlDocument" /> class by using the provided parent control.
+			/// </summary>
+			/// <param name="parent">The <see cref="T:Microsoft.VisualStudio.TestTools.UITesting.UITestControl" /> that contains this control.</param>
+			public MasterDocument(UITestControl parent)
+				: base(parent)
+			{
+			}
+
+			/// <summary>
+			/// Gets or sets the frameNavigation.
+			/// </summary>
+			/// <value>The frame1.</value>
+			[ElementLocator(Id = "1234")]
+			public HtmlFrame FrameNavigation { get; set; }
+		}
+
+		#endregion
 
 		#region Class - BuildPage
 

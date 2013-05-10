@@ -56,6 +56,7 @@
     <Compile Include="CodedUIBrowserFactory.cs" />
     <Compile Include="CodedUIListElementWrapper.cs" />
     <Compile Include="CodedUIPage.cs" />
+    <Compile Include="FrameMapAttribute.cs" />
     <Compile Include="PageBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -66,7 +67,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="Deployment\App.config.transform" />
     <None Include="Deployment\SpecBind.CodedUI.nuspec" />
   </ItemGroup>

@@ -41,7 +41,7 @@ namespace SpecBind.BrowserSupport
 			var type = Type.GetType(configSection.BrowserFactory.Provider, OnAssemblyCheck, OnGetType);
 			if (type == null || !typeof(BrowserFactory).IsAssignableFrom(type))
 			{
-				throw new InvalidOperationException("Could not load factory type: {0}. Make sure this is fully qualified and the assembly exists. Also ensure the base type is BrowserFactory");
+				throw new InvalidOperationException(string.Format("Could not load factory type: {0}. Make sure this is fully qualified and the assembly exists. Also ensure the base type is BrowserFactory", configSection.BrowserFactory.Provider));
 			}
 
 			return (BrowserFactory)Activator.CreateInstance(type);

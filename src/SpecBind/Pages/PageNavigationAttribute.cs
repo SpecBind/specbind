@@ -22,6 +22,12 @@ namespace SpecBind.Pages
 		}
 
 		/// <summary>
+		/// Gets or sets the name of the frame to use within a browser element.
+		/// </summary>
+		/// <value>The name of the frame.</value>
+		public string FrameName { get; set; }
+
+		/// <summary>
 		/// Gets the URL to navigate to.
 		/// </summary>
 		/// <value>

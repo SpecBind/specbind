@@ -39,7 +39,7 @@ namespace SpecBind.Watin.Tests
 		/// A test class for page attribute configurations.
 		/// </summary>
 		[Page(UrlRegex = "/testpage")]
-		private class PageAttributePage : TestPage
+		private class PageAttributePage : Page
 			// ReSharper restore ClassNeverInstantiated.Local
 		{
 		}

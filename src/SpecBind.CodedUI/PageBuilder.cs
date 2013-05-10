@@ -37,43 +37,36 @@ namespace SpecBind.CodedUI
 			where TParent : UITestControl
 			where TOutput : HtmlControl
 		{
-			var constructor = GetConstructor(elementType);
-			if (constructor == null)
-			{
-				throw new InvalidOperationException(string.Format("Constructor on type '{0}' must have a sigle argument of type UITestControl.", elementType.Name));
-			}
-
-			var parentArgument = Expression.Parameter(typeof(TParent), "parent");
-			var actionArgument = Expression.Parameter(typeof(Action<TOutput>), "action");
-			var docVariable = Expression.Variable(elementType);
-
-			//Spin though properties and make an initializer for anything we can set that has an attribute
-			var pageMethodInfo = new Action<TOutput, Action<TOutput>>(AssignPageAttributes).GetMethodInfo();
-			var expressions = new List<Expression>
-				                  {
-					                  Expression.Assign(docVariable, Expression.New(constructor, parentArgument)),
-									  Expression.Call(pageMethodInfo, Expression.Convert(docVariable, typeof(TOutput)), actionArgument)
-				                  };
-
-			MapObjectProperties(expressions, elementType, docVariable);
-
-			expressions.Add(docVariable);
-
-			var methodCall = Expression.Block(new[] { docVariable }, expressions);
-			var expression = Expression.Lambda<Func<TParent, Action<TOutput>, TOutput>>(methodCall, parentArgument, actionArgument);
-
+			var expression = CreateNewItemExpression<TParent, TOutput>(elementType);
 			return expression.Compile();
 		}
 
 		/// <summary>
-		/// Gets the constructor.
+		/// Creates the frame locator method to help load that from a property.
 		/// </summary>
-		/// <param name="itemType">Type of the item.</param>
-		/// <returns>The constructor information that matches.</returns>
-		private static ConstructorInfo GetConstructor(Type itemType)
+		/// <typeparam name="TParent">The type of the parent.</typeparam>
+		/// <typeparam name="TOutput">The type of the output.</typeparam>
+		/// <param name="frameType">Type of the class that will provide the frame.</param>
+		/// <param name="property">The property on the class that should be accessed to provide the frame.</param>
+		/// <returns>The function used to create the document.</returns>
+		public static Func<TParent, TOutput> CreateFrameLocator<TParent, TOutput>(Type frameType, PropertyInfo property)
+			where TParent : UITestControl
+			where TOutput : HtmlControl
 		{
-			return itemType.GetConstructors()
-				.FirstOrDefault(c => c.GetParameters().Length == 1 && typeof(UITestControl).IsAssignableFrom(c.GetParameters().First().ParameterType));
+			var createExpression = CreateNewItemExpression<TParent, HtmlControl>(frameType);
+
+			var parentArgument = Expression.Parameter(typeof(TParent), "parent");
+			var docVariable = Expression.Variable(frameType);
+
+			var expressions = new List<Expression>
+				                  {
+					                  Expression.Assign(docVariable, Expression.Convert(Expression.Invoke(createExpression, parentArgument, Expression.Constant(null, typeof(Action<HtmlControl>))), frameType)),
+									  Expression.Convert(Expression.Property(docVariable, property), typeof(TOutput))
+				                  };
+
+			var methodCall = Expression.Block(new[] { docVariable }, expressions);
+
+			return Expression.Lambda<Func<TParent, TOutput>>(methodCall, parentArgument).Compile();
 		}
 
 		/// <summary>
@@ -139,6 +132,58 @@ namespace SpecBind.CodedUI
 			{
 				AssignElementAttributes(control, locatorAttribute);
 			}
+		}
+
+		/// <summary>
+		/// Creates the new item expression that creates the object and initial mapping.
+		/// </summary>
+		/// <typeparam name="TParent">The type of the parent.</typeparam>
+		/// <typeparam name="TOutput">The type of the output.</typeparam>
+		/// <param name="elementType">Type of the element.</param>
+		/// <returns>The initial creation lambda expression.</returns>
+		/// <exception cref="System.InvalidOperationException">Thrown if the constructor is invalid.</exception>
+		private static Expression<Func<TParent, Action<TOutput>, TOutput>> CreateNewItemExpression<TParent, TOutput>(Type elementType)
+			where TParent : UITestControl
+			where TOutput : HtmlControl
+		{
+			var constructor = GetConstructor(elementType);
+			if (constructor == null)
+			{
+				throw new InvalidOperationException(
+					string.Format("Constructor on type '{0}' must have a sigle argument of type UITestControl.", elementType.Name));
+			}
+
+			var parentArgument = Expression.Parameter(typeof(TParent), "parent");
+			var actionArgument = Expression.Parameter(typeof(Action<TOutput>), "action");
+			var docVariable = Expression.Variable(elementType);
+
+			//Spin though properties and make an initializer for anything we can set that has an attribute
+			var pageMethodInfo = new Action<TOutput, Action<TOutput>>(AssignPageAttributes).GetMethodInfo();
+			var expressions = new List<Expression>
+				                  {
+					                  Expression.Assign(docVariable, Expression.New(constructor, parentArgument)),
+					                  Expression.Call(
+						                  pageMethodInfo,
+						                  Expression.Convert(docVariable, typeof(TOutput)),
+						                  actionArgument)
+				                  };
+
+			MapObjectProperties(expressions, elementType, docVariable);
+			expressions.Add(docVariable);
+
+			var methodCall = Expression.Block(new[] { docVariable }, expressions);
+			return Expression.Lambda<Func<TParent, Action<TOutput>, TOutput>>(methodCall, parentArgument, actionArgument);
+		}
+
+		/// <summary>
+		/// Gets the constructor.
+		/// </summary>
+		/// <param name="itemType">Type of the item.</param>
+		/// <returns>The constructor information that matches.</returns>
+		private static ConstructorInfo GetConstructor(Type itemType)
+		{
+			return itemType.GetConstructors()
+				.FirstOrDefault(c => c.GetParameters().Length == 1 && typeof(UITestControl).IsAssignableFrom(c.GetParameters().First().ParameterType));
 		}
 
 		/// <summary>
