@@ -55,6 +55,7 @@
     <Compile Include="Helpers\TokenManager.cs" />
     <Compile Include="Pages\ElementLocatorAttribute.cs" />
     <Compile Include="Pages\IActiveCheck.cs" />
+    <Compile Include="Pages\IDataControl.cs" />
     <Compile Include="Pages\IElementList.cs" />
     <Compile Include="Pages\IPageElementHandler.cs" />
     <Compile Include="Pages\IPropertyData.cs" />

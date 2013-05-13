@@ -6,6 +6,7 @@ namespace SpecBind.CodedUI
 	using System;
 	using System.Drawing;
 	using System.IO;
+	using System.Linq;
 	using System.Windows.Input;
 
 	using Microsoft.VisualStudio.TestTools.UITesting;
@@ -196,6 +197,14 @@ namespace SpecBind.CodedUI
 			if (propertyType == typeof(HtmlFileInput))
 			{
 				return EnterFileInput;
+			}
+
+			// Fallback to get any other controls
+			if (propertyType.GetInterfaces().Any(i => i == typeof(IDataControl)))
+			{
+				// ReSharper disable SuspiciousTypeConversion.Global
+				return (control, s) => ((IDataControl)control).SetValue(s);
+				// ReSharper restore SuspiciousTypeConversion.Global
 			}
 
 			return null;
