@@ -125,7 +125,7 @@ namespace SpecBind.Pages
 					validation.FieldName,
 					validation.ComparisonType,
 					validation.ComparisonValue,
-					string.Empty);
+					actualValue);
 			}
 		}
 
