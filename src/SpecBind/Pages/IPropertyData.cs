@@ -14,36 +14,36 @@ namespace SpecBind.Pages
 		#region Public Properties
 
 		/// <summary>
-		///     Gets or sets a value indicating whether this instance represents a page element.
+		///     Gets a value indicating whether this instance represents a page element.
 		/// </summary>
 		/// <value>
 		///     <c>true</c> if this instance is a page element; otherwise, <c>false</c>.
 		/// </value>
-		bool IsElement { get; set; }
+		bool IsElement { get; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether this instance is a list.
+		/// Gets a value indicating whether this instance is a list.
 		/// </summary>
 		/// <value>
 		///   <c>true</c> if this instance is a list; otherwise, <c>false</c>.
 		/// </value>
-		bool IsList { get; set; }
+		bool IsList { get; }
 
 		/// <summary>
-		/// Gets or sets the name.
+		/// Gets the name if the property.
 		/// </summary>
 		/// <value>
 		/// The name.
 		/// </value>
-		string Name { get; set; }
+		string Name { get; }
 
 		/// <summary>
-		///     Gets or sets the type of the property.
+		///     Gets the type of the property.
 		/// </summary>
 		/// <value>
 		///     The type of the property.
 		/// </value>
-		Type PropertyType { get; set; }
+		Type PropertyType { get; }
 
 		#endregion
 

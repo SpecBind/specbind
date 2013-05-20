@@ -32,7 +32,7 @@ namespace SpecBind.Pages
 		/// <value>
 		///     <c>true</c> if this instance is a page element; otherwise, <c>false</c>.
 		/// </value>
-		public bool IsElement { get; set; }
+		public bool IsElement { get; internal set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this instance is a list.
@@ -40,7 +40,7 @@ namespace SpecBind.Pages
 		/// <value>
 		///   <c>true</c> if this instance is a list; otherwise, <c>false</c>.
 		/// </value>
-		public bool IsList { get; set; }
+		public bool IsList { get; internal set; }
 
 		/// <summary>
 		/// Gets or sets the name.
@@ -48,7 +48,7 @@ namespace SpecBind.Pages
 		/// <value>
 		/// The name.
 		/// </value>
-		public string Name { get; set; }
+		public string Name { get; internal set; }
 
 		/// <summary>
 		///     Gets or sets the propertyValue of the property.
@@ -56,7 +56,7 @@ namespace SpecBind.Pages
 		/// <value>
 		///     The propertyValue of the property.
 		/// </value>
-		public Type PropertyType { get; set; }
+		public Type PropertyType { get; internal set; }
 
 		#endregion
 
@@ -68,7 +68,7 @@ namespace SpecBind.Pages
 		/// <value>
 		///     The call action.
 		/// </value>
-		internal Func<IPage, Func<object, bool>, bool> Action { get; set; }
+		internal Func<IPage, Func<object, bool>, bool> Action { private get; set; }
 
 		/// <summary>
 		///     Gets or sets the element action.
@@ -76,7 +76,7 @@ namespace SpecBind.Pages
 		/// <value>
 		///     The call action.
 		/// </value>
-		internal Func<IPage, Func<TElement, bool>, bool> ElementAction { get; set; }
+		internal Func<IPage, Func<TElement, bool>, bool> ElementAction { private get; set; }
 
 		#endregion
 
