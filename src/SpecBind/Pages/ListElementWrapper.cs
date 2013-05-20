@@ -71,8 +71,9 @@ namespace SpecBind.Pages
 		/// Checks to see if the element actually exists according to the DOM.
 		/// </summary>
 		/// <param name="element">The element.</param>
+		/// <param name="expectedIndex">The expected index of the element.</param>
 		/// <returns><c>true</c> if the element exists; otherwise <c>false</c>.</returns>
-		protected abstract bool ElementExists(TChildElement element);
+		protected abstract bool ElementExists(TChildElement element, int expectedIndex);
 
 		/// <summary>
 		/// Tries the get child element.
@@ -84,7 +85,7 @@ namespace SpecBind.Pages
 		{
 			childElement = default(TChildElement);
 			var element = this.CreateElement(this.Parent, index);
-			if (!Equals(element, default(TChildElement)) && this.ElementExists(element))
+			if (!Equals(element, default(TChildElement)) && this.ElementExists(element, index))
 			{
 				childElement = element;
 				return true;

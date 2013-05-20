@@ -49,18 +49,47 @@ namespace SpecBind.CodedUI
 		/// <returns>The newly created element.</returns>
 		protected override TChildElement CreateElement(TElement parentElement, int index)
 		{
-			return this.builderFunc(this.Parent,
-				e => e.FilterProperties[HtmlControl.PropertyNames.TagInstance] = index.ToString(CultureInfo.InvariantCulture));
+			return this.builderFunc(this.Parent, e => this.AssignFilterProperties(e, index));
 		}
 
 		/// <summary>
 		/// Elements the exists.
 		/// </summary>
 		/// <param name="element">The element.</param>
+		/// <param name="expectedIndex">The expected index.</param>
 		/// <returns><c>true</c> if the element exists.</returns>
-		protected override bool ElementExists(TChildElement element)
+		protected override bool ElementExists(TChildElement element, int expectedIndex)
 		{
-			return !this.ValidateElementExists || element.Exists;
+			if (!this.ValidateElementExists)
+			{
+				return true;
+			}
+
+			var rowElement = element as HtmlRow;
+			if (rowElement != null && rowElement.RowIndex != expectedIndex)
+			{
+				return false;
+			}
+
+			return element.Exists;
+		}
+
+		/// <summary>
+		/// Assigns the filter properties.
+		/// </summary>
+		/// <param name="element">The element.</param>
+		/// <param name="index">The index.</param>
+		private void AssignFilterProperties(TChildElement element, int index)
+		{
+			var indexString = index.ToString(CultureInfo.InvariantCulture);
+
+			if (typeof(HtmlRow).IsAssignableFrom(typeof(TChildElement)))
+			{
+				element.FilterProperties[HtmlRow.PropertyNames.RowIndex] = indexString;
+				return;
+			}
+
+			element.FilterProperties[HtmlControl.PropertyNames.TagInstance] = indexString;
 		}
 	}
 }
