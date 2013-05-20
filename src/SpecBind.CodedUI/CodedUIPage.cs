@@ -9,6 +9,7 @@ namespace SpecBind.CodedUI
 	using System.Linq;
 	using System.Windows.Input;
 
+	using Microsoft.VisualStudio.TestTools.UITest.Extension;
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
 
@@ -163,7 +164,22 @@ namespace SpecBind.CodedUI
 							editControl.Text = string.Empty;
 						}
 
-						Keyboard.SendKeys(control, s, ModifierKeys.None);
+						try
+						{
+							Keyboard.SendKeys(control, s, ModifierKeys.None);
+						}
+						catch (PlaybackFailureException ex)
+						{
+							if (ex.Message.Contains("SendKeys"))
+							{
+								// Fallback strategy of setting the text directly if sendkeys doesn't work
+								editControl.Text = s;
+							}
+							else
+							{
+								throw;
+							}
+						}
 					};
 			}
 
