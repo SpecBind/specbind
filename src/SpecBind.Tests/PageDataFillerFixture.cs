@@ -20,8 +20,6 @@ namespace SpecBind.Tests
 	[TestClass]
 	public class PageDataFillerFixture
 	{
-		#region Public Methods and Operators
-
 		/// <summary>
 		///     Tests the fill field with a field on the page that doesn't exist.
 		/// </summary>
@@ -680,6 +678,54 @@ namespace SpecBind.Tests
 			propData.VerifyAll();
 		}
 
-		#endregion
+		/// <summary>
+		///     Tests the GetItemValue method with a field that cannot be found.
+		/// </summary>
+		[TestMethod]
+		[ExpectedException(typeof(ElementExecuteException))]
+		public void TestGetItemValueItemNotFound()
+		{
+			var filler = new PageDataFiller();
+			var page = new Mock<IPage>(MockBehavior.Strict);
+
+			var propData = new Mock<IPropertyData>(MockBehavior.Strict);
+			
+			var propertyData = propData.Object;
+			
+			page.Setup(p => p.TryGetProperty("name", out propertyData)).Returns(false);
+			page.SetupGet(p => p.PageType).Returns(typeof(TestBase));
+			page.Setup(p => p.GetPropertyNames(It.IsAny<Func<IPropertyData, bool>>())).Returns(new[] { "MyProperty" });
+
+			ExceptionHelper.SetupForException<ElementExecuteException>(
+				() => filler.GetItemValue(page.Object, "name"),
+				e =>
+				{
+					page.VerifyAll();
+					propData.VerifyAll();
+				});
+		}
+
+		/// <summary>
+		///     Tests the GetItemValue method with a field that can be found.
+		/// </summary>
+		[TestMethod]
+		public void TestGetItemValuePropertyFound()
+		{
+			var filler = new PageDataFiller();
+			var page = new Mock<IPage>(MockBehavior.Strict);
+
+			var propData = new Mock<IPropertyData>(MockBehavior.Strict);
+			propData.Setup(p => p.GetCurrentValue()).Returns("My Value");
+			
+			var propertyData = propData.Object;
+			page.Setup(p => p.TryGetProperty("name", out propertyData)).Returns(true);
+
+			var result = filler.GetItemValue(page.Object, "name");
+
+			Assert.AreEqual("My Value", result);
+
+			page.VerifyAll();
+			propData.VerifyAll();
+		}
 	}
 }

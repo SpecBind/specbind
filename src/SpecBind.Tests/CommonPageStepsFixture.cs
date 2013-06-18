@@ -946,6 +946,36 @@ namespace SpecBind.Tests
 		}
 
 		/// <summary>
+		/// Tests the SetTokenFromFieldStep method pulls the value from the field and sets the value.
+		/// </summary>
+		[TestMethod]
+		public void TestSetTokenFromFieldStepSetsCurrentValue()
+		{
+			var page = new Mock<IPage>();
+
+			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
+			tokenManager.Setup(t => t.SetToken("MyToken", "The Field Value"));
+
+			var browser = new Mock<IBrowser>(MockBehavior.Strict);
+			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
+			pageDataFiller.Setup(p => p.GetItemValue(It.IsAny<IPage>(), "SomeField")).Returns("The Field Value");
+
+			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
+			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(page.Object);
+
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+
+			steps.SetTokenFromFieldStep("MyToken", "SomeField");
+
+			browser.VerifyAll();
+			pageDataFiller.VerifyAll();
+			pageMapper.VerifyAll();
+			scenarioContext.VerifyAll();
+			tokenManager.VerifyAll();
+		}
+
+		/// <summary>
 		/// Runs the see step scenario for different validation types.
 		/// </summary>
 		/// <param name="rule">The rule.</param>

@@ -46,6 +46,23 @@ namespace SpecBind.Pages
 		}
 
 		/// <summary>
+		/// Gets the value of the currently asked for property.
+		/// </summary>
+		/// <param name="page">The page.</param>
+		/// <param name="fieldName">Name of the field.</param>
+		/// <returns>The current value of the selected property.</returns>
+		public string GetItemValue(IPage page, string fieldName)
+		{
+			IPropertyData propertyData;
+			if (!page.TryGetProperty(fieldName, out propertyData))
+			{
+				throw GetElementNotFoundException(page, fieldName, v => true);
+			}
+
+			return propertyData.GetCurrentValue();
+		}
+
+		/// <summary>
 		/// Validates that the given element exists on the page and is enabled.
 		/// </summary>
 		/// <param name="page">The page.</param>

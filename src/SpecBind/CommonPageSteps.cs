@@ -34,9 +34,20 @@ namespace SpecBind
 		private const string ObserveDataStepRegex = @"I see";
 		private const string ObserveListDataStepRegex = @"I see (.+) list ([A-Za-z ]+)";
 		private const string ChooseALinkStepRegex = @"I choose (.+)";
-		private const string NavigateToPageStepRegex = @"I navigate to the (.+) page";
-		private const string NavigateToPageWithParamsStepRegex = @"I navigate to the (.+) page with parameters";
 		private const string WaitForActiveViewRegex = @"I wait for the view to become active";
+		private const string SetTokenFromFieldRegex = @"I set token (.+) with the value of (.+)";
+
+		// The following Regex items are for the given "past tense" form
+		private const string GivenEnsureOnPageStepRegex = @"I was on the (.+) page";
+		private const string GivenEnsureOnDialogStepRegex = @"I was on the (.+) dialog";
+		private const string GivenEnsureOnListItemRegex = @"I was on list (.+) item ([0-9]+)";
+		private const string GivenEnterDataInFieldsStepRegex = @"I entered data";
+		private const string GivenObserveDataStepRegex = @"I saw";
+		private const string GivenObserveListDataStepRegex = @"I saw (.+) list ([A-Za-z ]+)";
+		private const string GivenChooseALinkStepRegex = @"I chose (.+)";
+		private const string GivenNavigateToPageStepRegex = @"I navigated to the (.+) page";
+		private const string GivenNavigateToPageWithParamsStepRegex = @"I navigated to the (.+) page with parameters";
+		private const string GivenWaitForActiveViewRegex = @"I waited for the view to become active";
 
 		private readonly IBrowser browser;
 		private readonly IPageDataFiller pageDataFiller;
@@ -66,7 +77,7 @@ namespace SpecBind
 		/// A Given step for ensuring the browser is on the page with the specified name.
 		/// </summary>
 		/// <param name="pageName">The page name.</param>
-		[Given(EnsureOnPageStepRegex)]
+		[Given(GivenEnsureOnPageStepRegex)]
 		[Then(EnsureOnPageStepRegex)]
 		public void GivenEnsureOnPageStep(string pageName)
 		{
@@ -82,7 +93,7 @@ namespace SpecBind
 		/// A Given step for ensuring the browser is on the dialog which is a sub-element of the page.
 		/// </summary>
 		/// <param name="propertyName">Name of the property that represents the dialog.</param>
-		[Given(EnsureOnDialogStepRegex)]
+		[Given(GivenEnsureOnDialogStepRegex)]
 		[When(EnsureOnDialogStepRegex)]
 		[Then(EnsureOnDialogStepRegex)]
 		public void GivenEnsureOnDialogStep(string propertyName)
@@ -98,7 +109,7 @@ namespace SpecBind
 		/// </summary>
 		/// <param name="listName">Name of the list.</param>
 		/// <param name="itemNumber">The item number.</param>
-		[Given(EnsureOnListItemRegex)]
+		[Given(GivenEnsureOnListItemRegex)]
 		[Then(EnsureOnListItemRegex)]
 		public void GivenEnsureOnListItemStep(string listName, int itemNumber)
 		{
@@ -116,7 +127,7 @@ namespace SpecBind
 		/// <summary>
 		/// I wait for the view to be active.
 		/// </summary>
-		[Given(WaitForActiveViewRegex)]
+		[Given(GivenWaitForActiveViewRegex)]
 		[When(WaitForActiveViewRegex)]
 		public void GivenIWaitForTheViewToBeActive()
 		{
@@ -128,7 +139,7 @@ namespace SpecBind
 		/// A Given step for navigating to a page with the specified name.
 		/// </summary>
 		/// <param name="pageName">The page name.</param>
-		[Given(NavigateToPageStepRegex)]
+		[Given(GivenNavigateToPageStepRegex)]
 		public void GivenNavigateToPageStep(string pageName)
 		{
 			this.GivenNavigateToPageWithArgumentsStep(pageName, null);
@@ -139,7 +150,7 @@ namespace SpecBind
 		/// </summary>
 		/// <param name="pageName">The page name.</param>
 		/// <param name="pageArguments">The page arguments.</param>
-		[Given(NavigateToPageWithParamsStepRegex)]
+		[Given(GivenNavigateToPageWithParamsStepRegex)]
 		public void GivenNavigateToPageWithArgumentsStep(string pageName, Table pageArguments)
 		{
 			var type = this.GetPageType(pageName);
@@ -163,7 +174,7 @@ namespace SpecBind
 		/// A When step indicating a link click should occur.
 		/// </summary>
 		/// <param name="linkName">Name of the link.</param>
-		[Given(ChooseALinkStepRegex)]
+		[Given(GivenChooseALinkStepRegex)]
 		[When(ChooseALinkStepRegex)]
 		public void WhenIChooseALinkStep(string linkName)
 		{
@@ -175,7 +186,7 @@ namespace SpecBind
 		/// A When step for entering data into fields.
 		/// </summary>
 		/// <param name="data">The field data.</param>
-		[Given(EnterDataInFieldsStepRegex)]
+		[Given(GivenEnterDataInFieldsStepRegex)]
 		[When(EnterDataInFieldsStepRegex)]
 		[Then(EnterDataInFieldsStepRegex)]
 		public void WhenIEnterDataInFieldsStep(Table data)
@@ -210,7 +221,7 @@ namespace SpecBind
 		/// A Then step
 		/// </summary>
 		/// <param name="data">The field data.</param>
-		[Given(ObserveDataStepRegex)]
+		[Given(GivenObserveDataStepRegex)]
 		[Then(ObserveDataStepRegex)]
 		public void ThenISeeStep(Table data)
 		{
@@ -230,7 +241,7 @@ namespace SpecBind
 		/// <param name="rule">The rule.</param>
 		/// <param name="data">The field data.</param>
 		/// <exception cref="ElementExecuteException">A table must be specified for this step with the columns 'Field', 'Rule' and 'Value'</exception>
-		[Given(ObserveListDataStepRegex)]
+		[Given(GivenObserveListDataStepRegex)]
 		[Then(ObserveListDataStepRegex)]
 		public void ThenISeeListStep(string fieldName, string rule, Table data)
 		{
@@ -240,7 +251,7 @@ namespace SpecBind
 			}
 
 			ComparisonType comparisonType;
-			switch (rule.ToLookupKey())
+			switch (rule.ToLookupKey())	
 			{
 				case "exists":
 				case "contains":
@@ -268,6 +279,23 @@ namespace SpecBind
 			var validations = this.GetItemValidations(data);
 
 			this.pageDataFiller.ValidateList(page, fieldName.ToLookupKey(), comparisonType, validations);
+		}
+
+		/// <summary>
+		/// Sets the token specified from the given property value.
+		/// </summary>
+		/// <param name="tokenName">Name of the token.</param>
+		/// <param name="propertyName">Name of the property.</param>
+		[Given(SetTokenFromFieldRegex)]
+		[When(SetTokenFromFieldRegex)]
+		[Then(SetTokenFromFieldRegex)]
+		public void SetTokenFromFieldStep(string tokenName, string propertyName)
+		{
+			var page = this.GetPageFromContext();
+
+			var fieldValue = this.pageDataFiller.GetItemValue(page, propertyName);
+
+			this.tokenManager.SetToken(tokenName, fieldValue);
 		}
 
 		/// <summary>

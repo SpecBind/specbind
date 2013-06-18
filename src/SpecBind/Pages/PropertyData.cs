@@ -142,6 +142,40 @@ namespace SpecBind.Pages
 		}
 
 		/// <summary>
+		/// Gets the current value of the property.
+		/// </summary>
+		/// <returns>The current value as a string.</returns>
+		public string GetCurrentValue()
+		{
+			string fieldValue = null;
+			if (this.IsElement)
+			{
+				this.ThrowIfElementDoesNotExist();
+				this.ElementAction(this.elementHandler,
+					prop =>
+					{
+						fieldValue = this.elementHandler.GetElementText(prop);
+						return true;
+					});
+			}
+			else if (this.IsList)
+			{
+				throw new NotSupportedException("Cannot get the current value of a list property.");
+			}
+			else
+			{
+				this.Action(this.elementHandler,
+					o =>
+					{
+						fieldValue = o.ToString();
+						return true;
+					});
+			}
+
+			return fieldValue;
+		}
+
+		/// <summary>
 		/// Gets the index of the item at.
 		/// </summary>
 		/// <param name="index">The index.</param>

@@ -589,6 +589,83 @@ namespace SpecBind.Tests
 		}
 
 		/// <summary>
+		/// Tests that GetCurrentValue from an element property.
+		/// </summary>
+		[TestMethod]
+		public void TestGetCurrentValueFromElementProperty()
+		{
+			var element = new BaseElement();
+			var propData = new Mock<IPropertyData>();
+			var page = new Mock<IPage>(MockBehavior.Strict);
+
+			var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
+			pageBase.Setup(p => p.ElementExistsCheck(element)).Returns(true);
+			pageBase.Setup(p => p.GetElementText(element)).Returns("My Value");
+
+			var propertyData = CreatePropertyData(pageBase, element);
+			propertyData.IsElement = true;
+
+			var result = propertyData.GetCurrentValue();
+
+			Assert.AreEqual("My Value", result);
+			
+			pageBase.VerifyAll();
+			page.VerifyAll();
+			propData.VerifyAll();
+		}
+
+		/// <summary>
+		/// Tests that GetCurrentValue from a non-element property.
+		/// </summary>
+		[TestMethod]
+		public void TestGetCurrentValueFromNonElementProperty()
+		{
+			var element = new BaseElement();
+			var propData = new Mock<IPropertyData>();
+			var page = new Mock<IPage>(MockBehavior.Strict);
+
+			var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
+			
+			var propertyData = CreatePropertyData(pageBase, element);
+			propertyData.IsElement = false;
+
+			var result = propertyData.GetCurrentValue();
+
+			Assert.IsNotNull(result);
+
+			pageBase.VerifyAll();
+			page.VerifyAll();
+			propData.VerifyAll();
+		}
+
+
+		/// <summary>
+		/// Tests that GetCurrentValue throws an exception if getting a value from the property.
+		/// </summary>
+		[TestMethod]
+		[ExpectedException(typeof(NotSupportedException))]
+		public void TestGetCurrentValueFromListProperty()
+		{
+			var element = new BaseElement();
+			var propData = new Mock<IPropertyData>();
+			var page = new Mock<IPage>(MockBehavior.Strict);
+
+			var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
+			
+			var propertyData = CreatePropertyData(pageBase, element);
+			propertyData.IsList = true;
+
+			ExceptionHelper.SetupForException<NotSupportedException>(
+				() => propertyData.GetCurrentValue(),
+				v =>
+					{
+						pageBase.VerifyAll();
+						page.VerifyAll();
+						propData.VerifyAll();
+					});
+		}
+
+		/// <summary>
 		/// Creates the property data.
 		/// </summary>
 		/// <typeparam name="TElement">The type of the element.</typeparam>

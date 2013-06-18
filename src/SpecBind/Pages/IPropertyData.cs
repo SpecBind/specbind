@@ -71,6 +71,12 @@ namespace SpecBind.Pages
 		void FillData(string data);
 
 		/// <summary>
+		/// Gets the current value of the property.
+		/// </summary>
+		/// <returns>The current value as a string.</returns>
+		string GetCurrentValue();
+
+		/// <summary>
 		/// Gets the index of the item at.
 		/// </summary>
 		/// <param name="index">The index.</param>

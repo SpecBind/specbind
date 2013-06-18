@@ -27,6 +27,15 @@ namespace SpecBind.Pages
 		void FillField(IPage page, string fieldName, string data);
 
 		/// <summary>
+		/// Gets the value of the currently asked for property.
+		/// </summary>
+		/// <param name="page">The page.</param>
+		/// <param name="fieldName">Name of the field.</param>
+		/// <returns>The current value of the selected property.</returns>
+		/// <exception cref="ElementExecuteException">The item could not be found.</exception>
+		string GetItemValue(IPage page, string fieldName);
+
+		/// <summary>
 		/// Gets the list item as a child page.
 		/// </summary>
 		/// <param name="page">The page.</param>
