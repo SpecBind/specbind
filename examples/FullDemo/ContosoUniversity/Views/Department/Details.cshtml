@@ -1,0 +1,35 @@
+﻿@model ContosoUniversity.Models.Department
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Department</legend>
+
+    <div class="display-label">Name</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+
+    <div class="display-label">Budget</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Budget)
+    </div>
+
+    <div class="display-label">Start Date</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StartDate)
+    </div>
+
+    <div class="display-label">Administrator</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Administrator.LastName)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.DepartmentID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

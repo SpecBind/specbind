@@ -1,0 +1,40 @@
+﻿@model ContosoUniversity.Models.Course
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>Course</legend>
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.CourseID)
+    </div>
+    <div class="editor-field">
+        @Html.DisplayFor(model => model.CourseID)
+    </div>
+
+    <div class="display-label">Title</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Title)
+    </div>
+
+    <div class="display-label">Credits</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Credits)
+    </div>
+
+    <div class="display-label">Department</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Department.Name)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

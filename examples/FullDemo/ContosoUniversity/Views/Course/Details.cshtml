@@ -1,0 +1,37 @@
+﻿@model ContosoUniversity.Models.Course
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Course</legend>
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.CourseID)
+    </div>
+    <div class="editor-field">
+        @Html.DisplayFor(model => model.CourseID)
+    </div>
+
+    <div class="display-label">Title</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Title)
+    </div>
+
+    <div class="display-label">Credits</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Credits)
+    </div>
+
+    <div class="display-label">Department</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Department.Name)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.CourseID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
