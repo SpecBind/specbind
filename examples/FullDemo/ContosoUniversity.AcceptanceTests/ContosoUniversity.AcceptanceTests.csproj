@@ -73,7 +73,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SearchForAStudent.feature</DependentUpon>
     </Compile>
-    <Compile Include="Steps\DummySteps.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
