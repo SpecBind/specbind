@@ -17,6 +17,7 @@ namespace Specflow.CodedUI
 	{
 		private const string TestClassAttribute = @"Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute";
 		private const string CodedUiTestClassAttribute = @"Microsoft.VisualStudio.TestTools.UITesting.CodedUITestAttribute";
+		private const string DeploymentItemAttribute = "Microsoft.VisualStudio.TestTools.UnitTesting.DeploymentItemAttribute";
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MsTestCodedUiGeneratorProvider" /> class.
@@ -47,6 +48,9 @@ namespace Specflow.CodedUI
 
 			generationContext.TestClass.CustomAttributes.Add(
 				new CodeAttributeDeclaration(new CodeTypeReference(CodedUiTestClassAttribute)));
+
+			generationContext.TestClass.CustomAttributes.Add(
+				new CodeAttributeDeclaration(new CodeTypeReference(DeploymentItemAttribute), new CodeAttributeArgument(new CodePrimitiveExpression("SpecBind.CodedUI.dll"))));
 		}
 	}
 }
