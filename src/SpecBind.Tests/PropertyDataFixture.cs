@@ -354,6 +354,41 @@ namespace SpecBind.Tests
 		}
 
 		/// <summary>
+		/// Tests the ValidateList method using the equals operator.
+		/// </summary>
+		[TestMethod]
+		public void TestValidateListEquals()
+		{
+			var element = new BaseElement();
+			var listElement = new BaseElement();
+			var validation = new ItemValidation("MyProperty", "My Data", ComparisonType.Equals);
+			var validations = new List<ItemValidation> { validation };
+
+			var propData = new Mock<IPropertyData>();
+			string actualValue;
+			propData.Setup(p => p.ValidateItem(validation, out actualValue)).Returns(true);
+
+			var page = new Mock<IPage>(MockBehavior.Strict);
+
+			var property = propData.Object;
+			page.Setup(p => p.TryGetProperty("MyProperty", out property)).Returns(true);
+
+			var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
+			pageBase.Setup(p => p.GetPageFromElement(listElement)).Returns(page.Object);
+
+			var propertyData = CreatePropertyData(pageBase, element);
+			propertyData.Action = (p, f) => f(new List<BaseElement> { listElement });
+
+			var result = propertyData.ValidateList(ComparisonType.Equals, validations);
+
+			Assert.IsTrue(result);
+
+			pageBase.VerifyAll();
+			page.VerifyAll();
+			propData.VerifyAll();
+		}
+
+		/// <summary>
 		/// Tests the ValidateList method.
 		/// </summary>
 		[TestMethod]
@@ -415,6 +450,41 @@ namespace SpecBind.Tests
 			propertyData.Action = (p, f) => f(new List<BaseElement> { listElement });
 
 			var result = propertyData.ValidateList(ComparisonType.DoesNotContain, validations);
+
+			Assert.IsTrue(result);
+
+			pageBase.VerifyAll();
+			page.VerifyAll();
+			propData.VerifyAll();
+		}
+
+		/// <summary>
+		/// Tests the ValidateList method with NotEquals comparison.
+		/// </summary>
+		[TestMethod]
+		public void TestValidateListNotEquals()
+		{
+			var element = new BaseElement();
+			var listElement = new BaseElement();
+			var validation = new ItemValidation("MyProperty", "My Data", ComparisonType.Equals);
+			var validations = new List<ItemValidation> { validation };
+
+			var propData = new Mock<IPropertyData>();
+			string actualValue;
+			propData.Setup(p => p.ValidateItem(validation, out actualValue)).Returns(false);
+
+			var page = new Mock<IPage>(MockBehavior.Strict);
+
+			var property = propData.Object;
+			page.Setup(p => p.TryGetProperty("MyProperty", out property)).Returns(true);
+
+			var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
+			pageBase.Setup(p => p.GetPageFromElement(listElement)).Returns(page.Object);
+
+			var propertyData = CreatePropertyData(pageBase, element);
+			propertyData.Action = (p, f) => f(new List<BaseElement> { listElement });
+
+			var result = propertyData.ValidateList(ComparisonType.DoesNotEqual, validations);
 
 			Assert.IsTrue(result);
 

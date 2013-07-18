@@ -332,6 +332,9 @@ namespace SpecBind.Pages
 			var list = (IEnumerable<TElement>)propertyValue;
 			switch (compareType)
 			{
+				case ComparisonType.Equals:
+					return list.All(element => this.CheckItem(element, validations));
+
 				case ComparisonType.Contains:
 					return list.Any(element => this.CheckItem(element, validations));
 
@@ -344,6 +347,7 @@ namespace SpecBind.Pages
 					return (!Equals(lastItem, default(TElement))) && this.CheckItem(lastItem, validations);
 
 				case ComparisonType.DoesNotContain:
+				case ComparisonType.DoesNotEqual:
 					return list.All(element => !this.CheckItem(element, validations));
 
 				default:
