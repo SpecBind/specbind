@@ -225,13 +225,15 @@ namespace SpecBind
 		[Then(ObserveDataStepRegex)]
 		public void ThenISeeStep(Table data)
 		{
-			var item = this.GetItemValidations(data).FirstOrDefault();
+			var validations = this.GetItemValidations(data);
 
-			if (item != null)
+			if (validations == null || validations.Count <= 0)
 			{
-				var page = this.GetPageFromContext();
-				this.pageDataFiller.ValidateItem(page, item);
+				return;
 			}
+
+			var page = this.GetPageFromContext();
+			this.pageDataFiller.ValidateItem(page, validations);
 		}
 
 		/// <summary>

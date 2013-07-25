@@ -6,6 +6,7 @@ namespace SpecBind.Tests
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Text;
 
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -511,11 +512,9 @@ namespace SpecBind.Tests
 
 			IPropertyData propertyData;
 			page.Setup(p => p.TryGetProperty("doesnotexist", out propertyData)).Returns(false);
-			page.SetupGet(p => p.PageType).Returns(typeof(TestBase));
-			page.Setup(p => p.GetPropertyNames(It.IsAny<Func<IPropertyData, bool>>())).Returns(new[] { "MyProperty" });
 
 			ExceptionHelper.SetupForException<ElementExecuteException>(
-				() => filler.ValidateItem(page.Object, new ItemValidation("doesnotexist", "My Data", ComparisonType.Equals)), 
+				() => filler.ValidateItem(page.Object, new [] { new ItemValidation("doesnotexist", "My Data", ComparisonType.Equals) }), 
 				e => page.VerifyAll());
 		}
 
@@ -536,7 +535,7 @@ namespace SpecBind.Tests
 			var propertyData = propData.Object;
 			page.Setup(p => p.TryGetProperty("name", out propertyData)).Returns(true);
 
-			filler.ValidateItem(page.Object, validation);
+			filler.ValidateItem(page.Object, new [] {validation });
 
 			page.VerifyAll();
 			propData.VerifyAll();
@@ -561,7 +560,7 @@ namespace SpecBind.Tests
 			page.Setup(p => p.TryGetProperty("name", out propertyData)).Returns(true);
 
 			ExceptionHelper.SetupForException<ElementExecuteException>(
-				() => filler.ValidateItem(page.Object, validation), 
+				() => filler.ValidateItem(page.Object, new [] { validation }), 
 				e =>
 					{
 						page.VerifyAll();
@@ -639,20 +638,34 @@ namespace SpecBind.Tests
 			var filler = new PageDataFiller();
 			var page = new Mock<IPage>(MockBehavior.Strict);
 
+			var itemResult = new ValidationItemResult();
+			itemResult.NoteValidationResult(validations[0], false, "World");
+
+			var validationResult = new ValidationResult(validations) { IsValid = false, ItemCount = 1 };
+			validationResult.CheckedItems.Add(itemResult);
+
 			var propData = new Mock<IPropertyData>(MockBehavior.Strict);
-			propData.Setup(p => p.ValidateList(ComparisonType.Contains, validations)).Returns(false);
+			propData.Setup(p => p.ValidateList(ComparisonType.Contains, validations)).Returns(validationResult);
 			propData.SetupGet(p => p.IsList).Returns(true);
 
 			var propertyData = propData.Object;
 			page.Setup(p => p.TryGetProperty("name", out propertyData)).Returns(true);
 
 			ExceptionHelper.SetupForException<ElementExecuteException>(
-				() => filler.ValidateList(page.Object, "name", ComparisonType.Contains, validations), 
+				() => filler.ValidateList(page.Object, "name", ComparisonType.Contains, validations),
 				e =>
-					{
-						page.VerifyAll();
-						propData.VerifyAll();
-					});
+				{
+					var resultTable = new StringBuilder()
+												.AppendLine("| name Equals Hello |")
+												    .Append("| World             |");
+
+					StringAssert.Contains(e.Message, "'name'");
+					StringAssert.Contains(e.Message, "List Item Count: 1");
+					StringAssert.Contains(e.Message, resultTable.ToString());
+
+					page.VerifyAll();
+					propData.VerifyAll();
+				});
 		}
 
 		/// <summary>
@@ -665,8 +678,10 @@ namespace SpecBind.Tests
 			var filler = new PageDataFiller();
 			var page = new Mock<IPage>(MockBehavior.Strict);
 
+			var validationResult = new ValidationResult(validations) { IsValid = true };
+
 			var propData = new Mock<IPropertyData>(MockBehavior.Strict);
-			propData.Setup(p => p.ValidateList(ComparisonType.Contains, validations)).Returns(true);
+			propData.Setup(p => p.ValidateList(ComparisonType.Contains, validations)).Returns(validationResult);
 			propData.SetupGet(p => p.IsList).Returns(true);
 
 			var propertyData = propData.Object;

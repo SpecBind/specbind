@@ -104,7 +104,7 @@ namespace SpecBind.Pages
 		/// </summary>
 		/// <param name="compareType">Type of the compare.</param>
 		/// <param name="validations">The validations.</param>
-		/// <returns>The list of validations.</returns>
-		bool ValidateList(ComparisonType compareType, ICollection<ItemValidation> validations);
+		/// <returns>The validation result including checks performed.</returns>
+		ValidationResult ValidateList(ComparisonType compareType, ICollection<ItemValidation> validations);
 	}
 }

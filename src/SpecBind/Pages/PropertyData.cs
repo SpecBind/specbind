@@ -261,17 +261,21 @@ namespace SpecBind.Pages
 			return result;
 		}
 
+
 		/// <summary>
 		/// Validates the list.
 		/// </summary>
 		/// <param name="compareType">Type of the compare.</param>
 		/// <param name="validations">The validations.</param>
-		/// <returns>
-		/// The list of validations.
-		/// </returns>
-		public bool ValidateList(ComparisonType compareType, ICollection<ItemValidation> validations)
+		/// <returns>The validation result including checks performed.</returns>
+		public ValidationResult ValidateList(ComparisonType compareType, ICollection<ItemValidation> validations)
 		{
-			return this.Action(this.elementHandler, o => this.ValidateListInternal(o, compareType, validations));
+			var validationResult = new ValidationResult(validations);
+			var isValid = this.Action(this.elementHandler, o => this.ValidateListInternal(o, compareType, validations, validationResult));
+
+			validationResult.IsValid = isValid;
+
+			return validationResult;
 		}
 
 		#endregion
@@ -324,31 +328,33 @@ namespace SpecBind.Pages
 		/// <param name="propertyValue">The property value.</param>
 		/// <param name="compareType">Type of the compare.</param>
 		/// <param name="validations">The validations.</param>
-		/// <returns>
-		/// The list of validations.
-		/// </returns>
-		private bool ValidateListInternal(object propertyValue, ComparisonType compareType, IEnumerable<ItemValidation> validations)
+		/// <param name="validationResult">The validation tracker.</param>
+		/// <returns>The list of validations.</returns>
+		private bool ValidateListInternal(object propertyValue, ComparisonType compareType, IEnumerable<ItemValidation> validations, ValidationResult validationResult)
 		{
-			var list = (IEnumerable<TElement>)propertyValue;
+			var list = ((IEnumerable<TElement>)propertyValue).ToList();
+
+			validationResult.ItemCount = list.Count;
+
 			switch (compareType)
 			{
 				case ComparisonType.Equals:
-					return list.All(element => this.CheckItem(element, validations));
+					return list.All(element => this.CheckItem(element, validations, validationResult));
 
 				case ComparisonType.Contains:
-					return list.Any(element => this.CheckItem(element, validations));
+					return list.Any(element => this.CheckItem(element, validations, validationResult));
 
 				case ComparisonType.StartsWith:
 					var firstItem = list.FirstOrDefault();
-					return (!Equals(firstItem, default(TElement))) && this.CheckItem(firstItem, validations);
+					return (!Equals(firstItem, default(TElement))) && this.CheckItem(firstItem, validations, validationResult);
 
 				case ComparisonType.EndsWith:
 					var lastItem = list.LastOrDefault();
-					return (!Equals(lastItem, default(TElement))) && this.CheckItem(lastItem, validations);
+					return (!Equals(lastItem, default(TElement))) && this.CheckItem(lastItem, validations, validationResult);
 
 				case ComparisonType.DoesNotContain:
 				case ComparisonType.DoesNotEqual:
-					return list.All(element => !this.CheckItem(element, validations));
+					return list.All(element => !this.CheckItem(element, validations, validationResult));
 
 				default:
 					return false;
@@ -360,23 +366,38 @@ namespace SpecBind.Pages
 		/// </summary>
 		/// <param name="element">The element.</param>
 		/// <param name="validations">The validations.</param>
+		/// <param name="validationResult">The validation tracker.</param>
 		/// <returns><c>true</c> if the item is valid; otherwise <c>false</c>.</returns>
-		private bool CheckItem(TElement element, IEnumerable<ItemValidation> validations)
+		private bool CheckItem(TElement element, IEnumerable<ItemValidation> validations, ValidationResult validationResult)
 		{
 			var page = this.elementHandler.GetPageFromElement(element);
+			
+			var validationItemResult = new ValidationItemResult();
+			validationResult.CheckedItems.Add(validationItemResult);
 
+			var result = true;
 			foreach (var itemValidation in validations)
 			{
 				IPropertyData property;
-				string actualValue;
-				if (!page.TryGetProperty(itemValidation.FieldName, out property) ||
-					!property.ValidateItem(itemValidation, out actualValue))
+				if (!page.TryGetProperty(itemValidation.FieldName, out property))
 				{
-					return false;
+					validationItemResult.NoteMissingProperty(itemValidation);
+					result = false;
+					continue;
 				}
+
+				string actualValue;
+				var successful = true;
+				if (!property.ValidateItem(itemValidation, out actualValue))
+				{
+					successful = false;
+					result = false;
+				}
+
+				validationItemResult.NoteValidationResult(itemValidation, successful, actualValue);
 			}
 
-			return true;
+			return result;
 		}
 	}
 }

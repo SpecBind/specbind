@@ -545,6 +545,31 @@ namespace SpecBind.Tests
 		}
 
 		/// <summary>
+		/// Tests the ThenISeeStep method with headers but no rows just exists.
+		/// </summary>
+		[TestMethod]
+		public void TestThenISeeStepEmptyTableRunsCorrectly()
+		{
+			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
+			var browser = new Mock<IBrowser>(MockBehavior.Strict);
+			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
+			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
+			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+
+			var table = new Table("Field", "Rule", "Value");
+
+			steps.ThenISeeStep(table);
+
+			browser.VerifyAll();
+			pageDataFiller.VerifyAll();
+			pageMapper.VerifyAll();
+			scenarioContext.VerifyAll();
+			tokenManager.VerifyAll();
+		}
+
+		/// <summary>
 		/// Tests the ThenISeeStep method with a successful result.
 		/// </summary>
 		[TestMethod]
@@ -558,7 +583,7 @@ namespace SpecBind.Tests
 
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
 			pageDataFiller.Setup(p => p.ValidateItem(
-				testPage.Object, It.Is<ItemValidation>(v => v.FieldName == "myfield" && v.ComparisonValue == "myvalue" && v.ComparisonType == ComparisonType.Equals)));
+				testPage.Object, It.Is<ICollection<ItemValidation>>(l => l.All(v => v.FieldName == "myfield" && v.ComparisonValue == "myvalue" && v.ComparisonType == ComparisonType.Equals))));
 
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
@@ -573,6 +598,56 @@ namespace SpecBind.Tests
 					             { "Field", "myfield" },
 								 { "Rule", "equals" },
 								 { "Value", "myvalue" }
+				             });
+
+			steps.ThenISeeStep(table);
+
+			browser.VerifyAll();
+			pageDataFiller.VerifyAll();
+			pageMapper.VerifyAll();
+			scenarioContext.VerifyAll();
+			tokenManager.VerifyAll();
+		}
+
+		/// <summary>
+		/// Tests the ThenISeeStep method multiple comparisons in the table.
+		/// </summary>
+		[TestMethod]
+		public void TestThenISeeStepMultipleComparisons()
+		{
+			var testPage = new Mock<IPage>();
+			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
+			tokenManager.Setup(t => t.GetToken("myvalue")).Returns(new Func<string, string>(s => s));
+			tokenManager.Setup(t => t.GetToken("somevalue")).Returns(new Func<string, string>(s => s));
+
+			var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
+			pageDataFiller.Setup(p => p.ValidateItem(
+				testPage.Object, It.Is<ICollection<ItemValidation>>(
+						list => list.Any(v => v.FieldName == "myfield" && v.ComparisonValue == "myvalue" && v.ComparisonType == ComparisonType.Equals) &&
+						        list.Any(v => v.FieldName == "myotherfield" && v.ComparisonValue == "somevalue" && v.ComparisonType == ComparisonType.Equals))));
+			
+			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
+
+			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
+
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+
+			var table = new Table("Field", "Rule", "Value");
+			table.AddRow(new Dictionary<string, string>
+				             {
+					             { "Field", "myfield" },
+								 { "Rule", "equals" },
+								 { "Value", "myvalue" }
+				             });
+
+			table.AddRow(new Dictionary<string, string>
+				             {
+					             { "Field", "myotherfield" },
+								 { "Rule", "equals" },
+								 { "Value", "somevalue" }
 				             });
 
 			steps.ThenISeeStep(table);
@@ -632,7 +707,7 @@ namespace SpecBind.Tests
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
-			pageDataFiller.Setup(p => p.ValidateItem(testPage.Object, It.Is<ItemValidation>(v => v.ComparisonType == ComparisonType.Exists && v.ComparisonValue == "True")));
+			pageDataFiller.Setup(p => p.ValidateItem(testPage.Object, It.Is<ICollection<ItemValidation>>(l => l.All(v => v.ComparisonType == ComparisonType.Exists && v.ComparisonValue == "True"))));
 
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
@@ -670,7 +745,7 @@ namespace SpecBind.Tests
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
-			pageDataFiller.Setup(p => p.ValidateItem(testPage.Object, It.Is<ItemValidation>(v => v.ComparisonType == ComparisonType.Exists && v.ComparisonValue == "False")));
+			pageDataFiller.Setup(p => p.ValidateItem(testPage.Object, It.Is<ICollection<ItemValidation>>(l => l.All(v => v.ComparisonType == ComparisonType.Exists && v.ComparisonValue == "False"))));
 
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
@@ -708,7 +783,7 @@ namespace SpecBind.Tests
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
-			pageDataFiller.Setup(p => p.ValidateItem(testPage.Object, It.Is<ItemValidation>(v => v.ComparisonType == ComparisonType.Enabled && v.ComparisonValue == "True")));
+			pageDataFiller.Setup(p => p.ValidateItem(testPage.Object, It.Is<ICollection<ItemValidation>>(l => l.All(v => v.ComparisonType == ComparisonType.Enabled && v.ComparisonValue == "True"))));
 
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
@@ -746,7 +821,7 @@ namespace SpecBind.Tests
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
-			pageDataFiller.Setup(p => p.ValidateItem(testPage.Object, It.Is<ItemValidation>(v => v.ComparisonType == ComparisonType.Enabled && v.ComparisonValue == "False")));
+			pageDataFiller.Setup(p => p.ValidateItem(testPage.Object, It.Is<ICollection<ItemValidation>>(l => l.All(v => v.ComparisonType == ComparisonType.Enabled && v.ComparisonValue == "False"))));
 
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
@@ -989,7 +1064,7 @@ namespace SpecBind.Tests
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
-			pageDataFiller.Setup(p => p.ValidateItem(testPage.Object, It.Is<ItemValidation>(v => v.FieldName == "myfield" && v.ComparisonValue == "myvalue" && v.ComparisonType == comparisonType)));
+			pageDataFiller.Setup(p => p.ValidateItem(testPage.Object, It.Is<ICollection<ItemValidation>>(l => l.All(v => v.FieldName == "myfield" && v.ComparisonValue == "myvalue" && v.ComparisonType == comparisonType))));
 
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 

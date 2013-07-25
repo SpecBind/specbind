@@ -300,6 +300,7 @@ namespace SpecBind.Tests
 
 			var page = new Mock<IPage>(MockBehavior.Strict);
 
+			// ReSharper disable once RedundantAssignment
 			var property = propData.Object;
 			page.Setup(p => p.TryGetProperty("MyProperty", out property)).Returns(true);
 
@@ -311,7 +312,8 @@ namespace SpecBind.Tests
 
 			var result = propertyData.ValidateList(ComparisonType.Contains, validations);
 
-			Assert.IsTrue(result);
+			Assert.IsTrue(result.IsValid);
+			Assert.AreEqual(1, result.ItemCount);
 
 			pageBase.VerifyAll();
 			page.VerifyAll();
@@ -335,6 +337,7 @@ namespace SpecBind.Tests
 
 			var page = new Mock<IPage>(MockBehavior.Strict);
 
+			// ReSharper disable once RedundantAssignment
 			var property = propData.Object;
 			page.Setup(p => p.TryGetProperty("MyProperty", out property)).Returns(true);
 
@@ -346,7 +349,7 @@ namespace SpecBind.Tests
 
 			var result = propertyData.ValidateList(ComparisonType.StartsWith, validations);
 
-			Assert.IsTrue(result);
+			Assert.IsTrue(result.IsValid);
 
 			pageBase.VerifyAll();
 			page.VerifyAll();
@@ -370,6 +373,7 @@ namespace SpecBind.Tests
 
 			var page = new Mock<IPage>(MockBehavior.Strict);
 
+			// ReSharper disable once RedundantAssignment
 			var property = propData.Object;
 			page.Setup(p => p.TryGetProperty("MyProperty", out property)).Returns(true);
 
@@ -381,7 +385,7 @@ namespace SpecBind.Tests
 
 			var result = propertyData.ValidateList(ComparisonType.Equals, validations);
 
-			Assert.IsTrue(result);
+			Assert.IsTrue(result.IsValid);
 
 			pageBase.VerifyAll();
 			page.VerifyAll();
@@ -405,6 +409,7 @@ namespace SpecBind.Tests
 
 			var page = new Mock<IPage>(MockBehavior.Strict);
 
+			// ReSharper disable once RedundantAssignment
 			var property = propData.Object;
 			page.Setup(p => p.TryGetProperty("MyProperty", out property)).Returns(true);
 
@@ -416,7 +421,7 @@ namespace SpecBind.Tests
 
 			var result = propertyData.ValidateList(ComparisonType.StartsWith, validations);
 
-			Assert.IsTrue(result);
+			Assert.IsTrue(result.IsValid);
 
 			pageBase.VerifyAll();
 			page.VerifyAll();
@@ -440,6 +445,7 @@ namespace SpecBind.Tests
 
 			var page = new Mock<IPage>(MockBehavior.Strict);
 
+			// ReSharper disable once RedundantAssignment
 			var property = propData.Object;
 			page.Setup(p => p.TryGetProperty("MyProperty", out property)).Returns(true);
 
@@ -451,7 +457,7 @@ namespace SpecBind.Tests
 
 			var result = propertyData.ValidateList(ComparisonType.DoesNotContain, validations);
 
-			Assert.IsTrue(result);
+			Assert.IsTrue(result.IsValid);
 
 			pageBase.VerifyAll();
 			page.VerifyAll();
@@ -475,6 +481,7 @@ namespace SpecBind.Tests
 
 			var page = new Mock<IPage>(MockBehavior.Strict);
 
+			// ReSharper disable once RedundantAssignment
 			var property = propData.Object;
 			page.Setup(p => p.TryGetProperty("MyProperty", out property)).Returns(true);
 
@@ -486,7 +493,7 @@ namespace SpecBind.Tests
 
 			var result = propertyData.ValidateList(ComparisonType.DoesNotEqual, validations);
 
-			Assert.IsTrue(result);
+			Assert.IsTrue(result.IsValid);
 
 			pageBase.VerifyAll();
 			page.VerifyAll();
@@ -510,7 +517,7 @@ namespace SpecBind.Tests
 
 			var result = propertyData.ValidateList(ComparisonType.Enabled, validations);
 
-			Assert.IsFalse(result);
+			Assert.IsFalse(result.IsValid);
 
 			pageBase.VerifyAll();
 		}
@@ -529,6 +536,7 @@ namespace SpecBind.Tests
 			var propData = new Mock<IPropertyData>();
 			var page = new Mock<IPage>(MockBehavior.Strict);
 
+			// ReSharper disable once RedundantAssignment
 			var property = propData.Object;
 			page.Setup(p => p.TryGetProperty("MyProperty", out property)).Returns(false);
 
@@ -540,7 +548,7 @@ namespace SpecBind.Tests
 
 			var result = propertyData.ValidateList(ComparisonType.Contains, validations);
 
-			Assert.IsFalse(result);
+			Assert.IsFalse(result.IsValid);
 
 			pageBase.VerifyAll();
 			page.VerifyAll();
@@ -564,6 +572,7 @@ namespace SpecBind.Tests
 
 			var page = new Mock<IPage>(MockBehavior.Strict);
 
+			// ReSharper disable once RedundantAssignment
 			var property = propData.Object;
 			page.Setup(p => p.TryGetProperty("MyProperty", out property)).Returns(true);
 
@@ -575,7 +584,7 @@ namespace SpecBind.Tests
 
 			var result = propertyData.ValidateList(ComparisonType.Contains, validations);
 
-			Assert.IsFalse(result);
+			Assert.IsFalse(result.IsValid);
 
 			pageBase.VerifyAll();
 			page.VerifyAll();

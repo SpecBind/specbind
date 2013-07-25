@@ -124,25 +124,39 @@ namespace SpecBind.Pages
 		/// Validates the item.
 		/// </summary>
 		/// <param name="page">The page.</param>
-		/// <param name="validation">The validation.</param>
+		/// <param name="validations">The validations.</param>
 		/// <exception cref="ElementExecuteException">Value comparison of '{0}' failed</exception>
-		public void ValidateItem(IPage page, ItemValidation validation)
+		public void ValidateItem(IPage page, ICollection<ItemValidation> validations)
 		{
-			IPropertyData propertyData;
-			if (!page.TryGetProperty(validation.FieldName, out propertyData))
+			var itemResult = new ValidationItemResult();
+			var result = new ValidationResult(validations) { IsValid = true };
+			result.CheckedItems.Add(itemResult);
+
+			foreach (var validation in validations)
 			{
-				throw GetElementNotFoundException(page, validation.FieldName, v => true);
+				IPropertyData propertyData;
+				if (!page.TryGetProperty(validation.FieldName, out propertyData))
+				{
+					itemResult.NoteMissingProperty(validation);
+					result.IsValid = false;
+					continue;
+				}
+
+				string actualValue;
+				var successful = propertyData.ValidateItem(validation, out actualValue);
+				itemResult.NoteValidationResult(validation, successful, actualValue);
+				if (!successful)
+				{
+					result.IsValid = false;
+				}
 			}
 
-			string actualValue;
-			if (!propertyData.ValidateItem(validation, out actualValue))
+			if (!result.IsValid)
 			{
 				throw new ElementExecuteException(
-					"Value comparison of  field '{0}' failed. Rule: {1} Comparison Value: {2}, Actual Value: {3}",
-					validation.FieldName,
-					validation.ComparisonType,
-					validation.ComparisonValue,
-					actualValue);
+					"Value comparison(s) failed. See details for validation results.{0}{1}",
+					Environment.NewLine,
+					result.GetCompairsonTableByRule());
 			}
 		}
 
@@ -150,7 +164,7 @@ namespace SpecBind.Pages
 		/// Validates the list of item follows the specified values.
 		/// </summary>
 		/// <param name="page">The page.</param>
-		/// <param name="fieldName">Name of the item.</param>
+		/// <param name="fieldName">Name of the item.</param> 
 		/// <param name="compareType">Type of the compare.</param>
 		/// <param name="validations">The validations.</param>
 		/// <exception cref="ElementExecuteException">One or more comparisons failed.</exception>
@@ -162,10 +176,18 @@ namespace SpecBind.Pages
 				throw GetElementNotFoundException(page, fieldName, v => v.IsList);
 			}
 
-			if (!propertyData.ValidateList(compareType, validations))
+			var validationResult = propertyData.ValidateList(compareType, validations);
+			if (validationResult.IsValid)
 			{
-				throw new ElementExecuteException("Value comparison of failed, no items satisfied the checks.", fieldName);
+				return;
 			}
+
+			throw new ElementExecuteException(
+				"List validation of field '{0}' failed, no items satisfied the rule checks.{1}List Item Count: {2}{1}Validation Details:{1}{3}", 
+				fieldName,
+				Environment.NewLine,
+				validationResult.ItemCount,
+				validationResult.GetCompairsonTable());
 		}
 
 		/// <summary>
@@ -233,7 +255,7 @@ namespace SpecBind.Pages
 		/// <param name="elementFunc">The element function to check.</param>
 		/// <param name="trueError">The true error message.</param>
 		/// <param name="falseError">The false error message.</param>
-		/// <exception cref="ElementExecuteException">Element '{0}' should exist on page {1} and does not.</exception>
+		/// <exception cref="ElementExecuteException">Element should exist on page and does not.</exception>
 		private static void ValidateElementItem(IPage page, string fieldName, bool shouldExist, Func<IPropertyData, bool> elementFunc, string trueError, string falseError)
 		{
 			IPropertyData propertyData;

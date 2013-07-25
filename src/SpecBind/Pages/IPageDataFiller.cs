@@ -60,8 +60,8 @@ namespace SpecBind.Pages
 		/// Validates the item.
 		/// </summary>
 		/// <param name="page">The page.</param>
-		/// <param name="validation">The validation.</param>
-		void ValidateItem(IPage page, ItemValidation validation);
+		/// <param name="validations">The validations.</param>
+		void ValidateItem(IPage page, ICollection<ItemValidation> validations);
 
 		/// <summary>
 		/// Validates that the given element exists on the page and is enabled.

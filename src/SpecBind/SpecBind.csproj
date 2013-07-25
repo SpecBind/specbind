@@ -52,6 +52,8 @@
     <Compile Include="Helpers\AttributeExtensions.cs" />
     <Compile Include="Helpers\ITokenManager.cs" />
     <Compile Include="Helpers\ResourceLocator.cs" />
+    <Compile Include="Helpers\TableFormater.cs" />
+    <Compile Include="Helpers\TableItemType.cs" />
     <Compile Include="Helpers\TokenManager.cs" />
     <Compile Include="Pages\ElementLocatorAttribute.cs" />
     <Compile Include="Pages\IActiveCheck.cs" />
@@ -83,6 +85,8 @@
     <Compile Include="Pages\PropertyData.cs" />
     <Compile Include="Pages\TagConstants.cs" />
     <Compile Include="Pages\TypeExtensions.cs" />
+    <Compile Include="Pages\ValidationItemResult.cs" />
+    <Compile Include="Pages\ValidationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
