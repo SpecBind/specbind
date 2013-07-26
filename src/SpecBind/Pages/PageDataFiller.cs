@@ -156,7 +156,7 @@ namespace SpecBind.Pages
 				throw new ElementExecuteException(
 					"Value comparison(s) failed. See details for validation results.{0}{1}",
 					Environment.NewLine,
-					result.GetCompairsonTableByRule());
+					result.GetComparisonTableByRule());
 			}
 		}
 
@@ -187,7 +187,7 @@ namespace SpecBind.Pages
 				fieldName,
 				Environment.NewLine,
 				validationResult.ItemCount,
-				validationResult.GetCompairsonTable());
+				validationResult.GetComparisonTable());
 		}
 
 		/// <summary>

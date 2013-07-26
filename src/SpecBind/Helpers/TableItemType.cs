@@ -13,22 +13,27 @@ namespace SpecBind.Helpers
 		/// The table start
 		/// </summary>
 		TableStart = 0,
+
 		/// <summary>
 		/// The table end
 		/// </summary>
 		TableEnd = 1,
+
 		/// <summary>
 		/// The row start
 		/// </summary>
 		RowStart = 2,
+
 		/// <summary>
 		/// The row end
 		/// </summary>
 		RowEnd = 3,
+
 		/// <summary>
 		/// The cell start
 		/// </summary>
 		CellStart = 4,
+
 		/// <summary>
 		/// The cell end
 		/// </summary>

@@ -514,7 +514,7 @@ namespace SpecBind.Tests
 			page.Setup(p => p.TryGetProperty("doesnotexist", out propertyData)).Returns(false);
 
 			ExceptionHelper.SetupForException<ElementExecuteException>(
-				() => filler.ValidateItem(page.Object, new [] { new ItemValidation("doesnotexist", "My Data", ComparisonType.Equals) }), 
+				() => filler.ValidateItem(page.Object, new[] { new ItemValidation("doesnotexist", "My Data", ComparisonType.Equals) }), 
 				e => page.VerifyAll());
 		}
 
@@ -535,7 +535,7 @@ namespace SpecBind.Tests
 			var propertyData = propData.Object;
 			page.Setup(p => p.TryGetProperty("name", out propertyData)).Returns(true);
 
-			filler.ValidateItem(page.Object, new [] {validation });
+			filler.ValidateItem(page.Object, new[] { validation });
 
 			page.VerifyAll();
 			propData.VerifyAll();
@@ -560,7 +560,7 @@ namespace SpecBind.Tests
 			page.Setup(p => p.TryGetProperty("name", out propertyData)).Returns(true);
 
 			ExceptionHelper.SetupForException<ElementExecuteException>(
-				() => filler.ValidateItem(page.Object, new [] { validation }), 
+				() => filler.ValidateItem(page.Object, new[] { validation }), 
 				e =>
 					{
 						page.VerifyAll();

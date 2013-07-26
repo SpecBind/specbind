@@ -7,7 +7,7 @@ namespace SpecBind.Pages
 	using System.Collections.Generic;
 
 	/// <summary>
-	/// Represents an inividual item's validation results.
+	/// Represents an individual item's validation results.
 	/// </summary>
 	public class ValidationItemResult
 	{
@@ -16,7 +16,7 @@ namespace SpecBind.Pages
 		/// </summary>
 		public ValidationItemResult()
 		{
-			PropertyResults = new List<PropertyResult>();
+			this.PropertyResults = new List<PropertyResult>();
 		}
 
 		/// <summary>
@@ -31,7 +31,7 @@ namespace SpecBind.Pages
 		/// <param name="itemValidation">The item validation.</param>
 		internal void NoteMissingProperty(ItemValidation itemValidation)
 		{
-			PropertyResults.Add(new PropertyResult(itemValidation));
+			this.PropertyResults.Add(new PropertyResult(itemValidation));
 		}
 
 		/// <summary>
@@ -42,7 +42,7 @@ namespace SpecBind.Pages
 		/// <param name="actualValue">The actual value.</param>
 		internal void NoteValidationResult(ItemValidation itemValidation, bool successful, string actualValue)
 		{
-			PropertyResults.Add(new PropertyResult(itemValidation, successful, actualValue));
+			this.PropertyResults.Add(new PropertyResult(itemValidation, successful, actualValue));
 		}
 
 		/// <summary>
@@ -88,7 +88,7 @@ namespace SpecBind.Pages
 			public bool FieldExists { get; private set; }
 
 			/// <summary>
-			/// Gets or sets the validation.
+			/// Gets the validation.
 			/// </summary>
 			/// <value>The validation.</value>
 			public ItemValidation Validation { get; private set; }

@@ -27,6 +27,48 @@ namespace SpecBind.Helpers
 			this.columns = new List<IColumnInformation>(3);
 		}
 
+		#region IColumnInformation interface
+
+		/// <summary>
+		/// Represents the column information so the concrete type can hold cell types.
+		/// </summary>
+		private interface IColumnInformation
+		{
+			/// <summary>
+			/// Gets the header.
+			/// </summary>
+			/// <value>The header.</value>
+			string Header { get; }
+
+			/// <summary>
+			/// Gets the index.
+			/// </summary>
+			/// <value>The index.</value>
+			int Index { get; }
+
+			/// <summary>
+			/// Gets the length of the max.
+			/// </summary>
+			/// <value>The length of the max.</value>
+			int MaxLength { get; }
+
+			/// <summary>
+			/// Adds a cell for column.
+			/// </summary>
+			/// <param name="item">The item.</param>
+			/// <param name="formatter">The function used to format the cell value.</param>
+			void AddCellForItem(TItem item, Func<string, bool, string, string> formatter);
+
+			/// <summary>
+			/// Gets the cell value.
+			/// </summary>
+			/// <param name="rowIndex">Index of the row.</param>
+			/// <returns>The value of the cell.</returns>
+			string GetCellValue(int rowIndex);
+		}
+
+		#endregion
+
 		/// <summary>
 		/// Gets the column count.
 		/// </summary>
@@ -56,7 +98,7 @@ namespace SpecBind.Helpers
 		/// <param name="header">The header.</param>
 		/// <param name="cellSelector">The cell selector.</param>
 		/// <param name="valueSelector">The value selector.</param>
-		/// <param name="validationSelector">The validation selector to indicate if the cell is valid and it's acutal value otherwise.</param>
+		/// <param name="validationSelector">The validation selector to indicate if the cell is valid and it's actual value otherwise.</param>
 		/// <param name="index">The index.</param>
 		/// <returns>The table formatter class for additional configuration.</returns>
 		/// <exception cref="System.ArgumentNullException">cellSelector
@@ -99,7 +141,7 @@ namespace SpecBind.Helpers
 		{
 			var rowCount = this.LoadCellData(items);
 
-			if (excludeIfNoRows && rowCount == 0)
+			if (this.excludeIfNoRows && rowCount == 0)
 			{
 				return null;
 			}
@@ -163,7 +205,7 @@ namespace SpecBind.Helpers
 		protected virtual string PrintCell(int maxLength, string value, bool isHeader)
 		{
 			var paddingTotal = maxLength - ((value != null) ? value.Length : 0);
-			var padding = (paddingTotal > 0) ? new string(' ', paddingTotal) : String.Empty;
+			var padding = (paddingTotal > 0) ? new string(' ', paddingTotal) : string.Empty;
 
 			return string.Format("{0}{1}", value, padding);
 		}
@@ -202,52 +244,14 @@ namespace SpecBind.Helpers
 			foreach (var listItem in itemList)
 			{
 				var item = listItem;
-				columns.AsParallel().ForAll(c => c.AddCellForItem(item, this.GetFormattedCell));
+				this.columns.AsParallel().ForAll(c => c.AddCellForItem(item, this.GetFormattedCell));
 				rowCount++;
 			}
 
 			return rowCount;
 		}
 
-		#region ColumnInformation class and interface
-
-		/// <summary>
-		/// Represents the column information so the concrete type can hold cell types.
-		/// </summary>
-		private interface IColumnInformation
-		{
-			/// <summary>
-			/// Gets or sets the header.
-			/// </summary>
-			/// <value>The header.</value>
-			string Header { get; }
-
-			/// <summary>
-			/// Gets or sets the index.
-			/// </summary>
-			/// <value>The index.</value>
-			int Index { get; }
-
-			/// <summary>
-			/// Gets or sets the length of the max.
-			/// </summary>
-			/// <value>The length of the max.</value>
-			int MaxLength { get; }
-
-			/// <summary>
-			/// Adds a cell for column.
-			/// </summary>
-			/// <param name="item">The item.</param>
-			/// <param name="formatter">The function used to format the cell value.</param>
-			void AddCellForItem(TItem item, Func<string, bool, string, string> formatter);
-
-			/// <summary>
-			/// Gets the cell value.
-			/// </summary>
-			/// <param name="rowIndex">Index of the row.</param>
-			/// <returns>The value of the cell.</returns>
-			string GetCellValue(int rowIndex);
-		}
+		#region ColumnInformation class
 
 		/// <summary>
 		/// Holds the processing column information for the cell.
@@ -264,7 +268,7 @@ namespace SpecBind.Helpers
 			public ColumnInformation()
 			{
 				this.cells = new List<string>();
-				this.maxLength = new Lazy<int>(GetMaxLength);
+				this.maxLength = new Lazy<int>(this.GetMaxLength);
 			}
 
 			/// <summary>
@@ -286,9 +290,9 @@ namespace SpecBind.Helpers
 			public int Index { get; set; }
 
 			/// <summary>
-			/// Gets or sets the length of the max.
+			/// Gets the maximum length of the column content.
 			/// </summary>
-			/// <value>The length of the max.</value>
+			/// <value>The maximum length of the column content.</value>
 			public int MaxLength
 			{
 				get
@@ -316,15 +320,15 @@ namespace SpecBind.Helpers
 			/// <param name="formatter">The function used to format the cell value.</param>
 			public void AddCellForItem(TItem item, Func<string, bool, string, string> formatter)
 			{
-				var cellValue = CellSelector(item);
+				var cellValue = this.CellSelector(item);
 
-				var cellData = ValueSelector(cellValue);
+				var cellData = this.ValueSelector(cellValue);
 				var isValid = true;
 				string actualValue = null;
 
-				if (ValidationSelector != null)
+				if (this.ValidationSelector != null)
 				{
-					var validationResult = ValidationSelector(cellValue);
+					var validationResult = this.ValidationSelector(cellValue);
 					if (validationResult != null)
 					{
 						isValid = validationResult.Item1;
@@ -333,7 +337,7 @@ namespace SpecBind.Helpers
 				}
 
 				var formattedValue = formatter(cellData, isValid, actualValue);
-				cells.Add(formattedValue);
+				this.cells.Add(formattedValue);
 			}
 
 			/// <summary>
@@ -345,7 +349,7 @@ namespace SpecBind.Helpers
 			{
 				if (rowIndex < 0)
 				{
-					return Header;
+					return this.Header;
 				}
 				
 				return rowIndex < this.cells.Count ? this.cells[rowIndex] : null;
@@ -357,8 +361,8 @@ namespace SpecBind.Helpers
 			/// <returns>The maximum length of the cells.</returns>
 			private int GetMaxLength()
 			{
-				var headerLength = (Header != null) ? Header.Length : 0;
-				return Math.Max(headerLength, cells.Count > 0 ? cells.Max(cell => cell != null ? cell.Length : 0) : 0);
+				var headerLength = (this.Header != null) ? this.Header.Length : 0;
+				return Math.Max(headerLength, this.cells.Count > 0 ? this.cells.Max(cell => cell != null ? cell.Length : 0) : 0);
 			}
 		}
 		

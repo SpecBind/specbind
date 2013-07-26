@@ -624,7 +624,8 @@ namespace SpecBind.Tests
 
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
 			pageDataFiller.Setup(p => p.ValidateItem(
-				testPage.Object, It.Is<ICollection<ItemValidation>>(
+				testPage.Object, 
+				It.Is<ICollection<ItemValidation>>(
 						list => list.Any(v => v.FieldName == "myfield" && v.ComparisonValue == "myvalue" && v.ComparisonType == ComparisonType.Equals) &&
 						        list.Any(v => v.FieldName == "myotherfield" && v.ComparisonValue == "somevalue" && v.ComparisonType == ComparisonType.Equals))));
 			

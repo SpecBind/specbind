@@ -18,12 +18,13 @@ namespace SpecBind.Pages
 		private readonly IEnumerable<ItemValidation> validations;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ValidationResult"/> class.
+		/// Initializes a new instance of the <see cref="ValidationResult" /> class.
 		/// </summary>
+		/// <param name="validations">The validations being used.</param>
 		internal ValidationResult(IEnumerable<ItemValidation> validations)
 		{
 			this.validations = validations;
-			CheckedItems = new List<ValidationItemResult>();
+			this.CheckedItems = new List<ValidationItemResult>();
 		}
 
 		/// <summary>
@@ -33,23 +34,22 @@ namespace SpecBind.Pages
 		public bool IsValid { get; internal set; }
 
 		/// <summary>
+		/// Gets the item count.
+		/// </summary>
+		/// <value>The item count.</value>
+		public int ItemCount { get; internal set; }
+
+		/// <summary>
 		/// Gets the checked items.
 		/// </summary>
 		/// <value>The checked items.</value>
 		internal List<ValidationItemResult> CheckedItems { get; private set; }
 
 		/// <summary>
-		/// Gets or sets the item count.
-		/// </summary>
-		/// <value>The item count.</value>
-		internal int ItemCount { get; set; }
-		
-
-		/// <summary>
-		/// Gets the compairson table.
+		/// Gets the comparison table.
 		/// </summary>
 		/// <returns>The formatted comparison table.</returns>
-		internal string GetCompairsonTable()
+		internal string GetComparisonTable()
 		{
 			var tableFormatter = new TableFormater<ValidationItemResult>();
 
@@ -58,25 +58,25 @@ namespace SpecBind.Pages
 				tableFormatter.AddColumn(
 					itemValidation.ToString(),
 					i => i.PropertyResults.First(p => p.Validation == itemValidation),
-					f => f.ActualValue);
+					f => f.FieldExists ? f.ActualValue : "<NOT FOUND>");
 			}
 
-			return tableFormatter.CreateTable(CheckedItems);
+			return tableFormatter.CreateTable(this.CheckedItems);
 		}
 
 		/// <summary>
-		/// Gets the compairson table displayed by rule.
+		/// Gets the comparison table displayed by rule.
 		/// </summary>
 		/// <returns>The formatted table.</returns>
-		internal string GetCompairsonTableByRule()
+		internal string GetComparisonTableByRule()
 		{
-			if (CheckedItems.Count != 1)
+			if (this.CheckedItems.Count != 1)
 			{
 				throw new InvalidOperationException("Only one checked item can exist to process items by rule.");
 			}
 
 
-			var properties = CheckedItems.First().PropertyResults;
+			var properties = this.CheckedItems.First().PropertyResults;
 			var tableFormatter = new TableFormater<ValidationItemResult.PropertyResult>()
 										.AddColumn("Field", p => p, p => p.Validation.FieldName, CheckFieldExists)
 										.AddColumn("Rule", p => p.Validation.ComparisonType, p => p.ToString())
@@ -89,8 +89,7 @@ namespace SpecBind.Pages
 		/// Checks the field exists.
 		/// </summary>
 		/// <param name="propertyResult">The property result.</param>
-		/// <returns>Tuple{System.BooleanSystem.String}.</returns>
-		/// <exception cref="System.NotImplementedException"></exception>
+		/// <returns>The validation result.</returns>
 		private static Tuple<bool, string> CheckFieldExists(ValidationItemResult.PropertyResult propertyResult)
 		{
 			return propertyResult.FieldExists ? null : new Tuple<bool, string>(false, "Not Found");
