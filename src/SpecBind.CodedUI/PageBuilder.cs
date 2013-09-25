@@ -83,6 +83,7 @@ namespace SpecBind.CodedUI
 
 			SetProperty(control.FilterProperties, HtmlControl.PropertyNames.Title, attribute.Title);
 			SetProperty(control.FilterProperties, UITestControl.PropertyNames.ClassName, attribute.Class);
+			SetProperty(control.FilterProperties, HtmlControl.PropertyNames.ValueAttribute, attribute.Value);
 
 			SetProperty(() => attribute.Index > -1, control.FilterProperties, HtmlControl.PropertyNames.TagInstance, attribute.Index.ToString(CultureInfo.InvariantCulture));
 

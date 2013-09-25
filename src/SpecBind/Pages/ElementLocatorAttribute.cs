@@ -105,6 +105,12 @@ namespace SpecBind.Pages
 		/// </value>
 		public string Url { get; set; }
 
+		/// <summary>
+		/// Gets or sets the value attribute to filter by.
+		/// </summary>
+		/// <value>The value attribute.</value>
+		public string Value { get; set; }
+
 		#endregion
 	}
 }
