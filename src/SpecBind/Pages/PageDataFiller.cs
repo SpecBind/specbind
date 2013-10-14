@@ -13,22 +13,6 @@ namespace SpecBind.Pages
 	public class PageDataFiller : IPageDataFiller
 	{
 		/// <summary>
-		/// Clicks the link or button field.
-		/// </summary>
-		/// <param name="page">The page.</param>
-		/// <param name="fieldName">Name of the field.</param>
-		public void ClickItem(IPage page, string fieldName)
-		{
-			IPropertyData propertyData;
-			if (!page.TryGetElement(fieldName, out propertyData))
-			{
-				throw GetElementNotFoundException(page, fieldName, v => v.IsElement);
-			}
-
-			propertyData.ClickElement();
-		}
-
-		/// <summary>
 		/// Fills the field.
 		/// </summary>
 		/// <param name="page">The page.</param>

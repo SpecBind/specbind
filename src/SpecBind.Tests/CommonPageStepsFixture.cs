@@ -13,6 +13,8 @@ namespace SpecBind.Tests
 
 	using System.Linq;
 
+	using SpecBind.ActionPipeline;
+	using SpecBind.Actions;
 	using SpecBind.BrowserSupport;
 	using SpecBind.Helpers;
 	using SpecBind.Pages;
@@ -32,6 +34,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGivenNavigateToPageStep()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+			
 			var testPage = new Mock<IPage>();
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
@@ -46,7 +50,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), CommonPageSteps.CurrentPageKey));
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			steps.GivenNavigateToPageStep("mypage");
 
@@ -55,6 +59,7 @@ namespace SpecBind.Tests
 			pageMapper.VerifyAll();
 			scenarioContext.VerifyAll();
 			tokenManager.VerifyAll();
+			pipelineService.VerifyAll();
 		}
 
 		/// <summary>
@@ -63,6 +68,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGivenNavigateToPageStepWithArguments()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var testPage = new Mock<IPage>();
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
@@ -77,7 +84,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), CommonPageSteps.CurrentPageKey));
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Id", "Part");
 			table.AddRow("1", "A");
@@ -98,6 +105,8 @@ namespace SpecBind.Tests
 		[ExpectedException(typeof(PageNavigationException))]
 		public void TestGivenNavigateToPageStepTypeNotFound()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
@@ -107,7 +116,7 @@ namespace SpecBind.Tests
 
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			try
 			{
@@ -133,6 +142,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGivenEnsureOnPageStep()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var testPage = new Mock<IPage>();
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
@@ -148,7 +159,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), CommonPageSteps.CurrentPageKey));
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			steps.GivenEnsureOnPageStep("mypage");
 
@@ -166,6 +177,8 @@ namespace SpecBind.Tests
 		[ExpectedException(typeof(PageNavigationException))]
 		public void TestGivenEnsureOnPageStepTypeNotFound()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
@@ -175,7 +188,7 @@ namespace SpecBind.Tests
 
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			try
 			{
@@ -202,6 +215,8 @@ namespace SpecBind.Tests
 		[ExpectedException(typeof(PageNavigationException))]
 		public void TestGivenEnsureOnPageStepPageNotFound()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var testPage = new Mock<IPage>();
 
@@ -216,7 +231,7 @@ namespace SpecBind.Tests
 
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			try
 			{
@@ -243,17 +258,20 @@ namespace SpecBind.Tests
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var testPage = new Mock<IPage>();
 
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+			pipelineService.Setup(p => p.PerformAction(testPage.Object, It.IsAny<ButtonClickAction>()))
+						   .Returns(ActionResult.Successful());
+
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
-			pageDataFiller.Setup(p => p.ClickItem(testPage.Object, "mylink"));
 
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			steps.WhenIChooseALinkStep("my link");
 
@@ -271,6 +289,8 @@ namespace SpecBind.Tests
 		[ExpectedException(typeof(PageNavigationException))]
 		public void TestWhenIChooseALinkStepContextNotSet()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
@@ -279,7 +299,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns((IPage)null);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			ExceptionHelper.SetupForException<PageNavigationException>(
 				() => steps.WhenIChooseALinkStep("my link"),
@@ -300,13 +320,15 @@ namespace SpecBind.Tests
 		[ExpectedException(typeof(ElementExecuteException))]
 		public void TestWhenIEnterDataInFieldsStepNullTable()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			ExceptionHelper.SetupForException<ElementExecuteException>(
 				() => steps.WhenIEnterDataInFieldsStep(null),
@@ -329,13 +351,15 @@ namespace SpecBind.Tests
 		[ExpectedException(typeof(ElementExecuteException))]
 		public void TestWhenIEnterDataInFieldsStepMissingFieldColumn()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Value");
 
@@ -360,13 +384,15 @@ namespace SpecBind.Tests
 		[ExpectedException(typeof(ElementExecuteException))]
 		public void TestWhenIEnterDataInFieldsStepMissingValueColumn()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field");
 
@@ -390,6 +416,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestWhenIEnterDataInFieldsStep()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var testPage = new Mock<IPage>();
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			tokenManager.Setup(t => t.SetToken("myvalue")).Returns(new Func<string, string>(s => s));
@@ -404,7 +432,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field", "Value");
 			table.AddRow(new Dictionary<string, string>
@@ -429,13 +457,15 @@ namespace SpecBind.Tests
 		[ExpectedException(typeof(ElementExecuteException))]
 		public void TestThenISeeStepNullTable()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			ExceptionHelper.SetupForException<ElementExecuteException>(
 				() => steps.ThenISeeStep(null),
@@ -458,13 +488,15 @@ namespace SpecBind.Tests
 		[ExpectedException(typeof(ElementExecuteException))]
 		public void TestThenISeeStepMissingFieldColumn()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Value");
 
@@ -489,13 +521,15 @@ namespace SpecBind.Tests
 		[ExpectedException(typeof(ElementExecuteException))]
 		public void TestThenISeeStepMissingValueColumn()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field");
 
@@ -520,13 +554,15 @@ namespace SpecBind.Tests
 		[ExpectedException(typeof(ElementExecuteException))]
 		public void TestThenISeeStepMissingRuleColumn()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field", "Value");
 
@@ -550,13 +586,15 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestThenISeeStepEmptyTableRunsCorrectly()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field", "Rule", "Value");
 
@@ -575,6 +613,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestThenISeeStepEqualsComparison()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var testPage = new Mock<IPage>();
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			tokenManager.Setup(t => t.GetToken("myvalue")).Returns(new Func<string, string>(s => s));
@@ -590,7 +630,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field", "Rule", "Value");
 			table.AddRow(new Dictionary<string, string>
@@ -615,6 +655,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestThenISeeStepMultipleComparisons()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var testPage = new Mock<IPage>();
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			tokenManager.Setup(t => t.GetToken("myvalue")).Returns(new Func<string, string>(s => s));
@@ -634,7 +676,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field", "Rule", "Value");
 			table.AddRow(new Dictionary<string, string>
@@ -702,6 +744,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestThenISeeStepExistsComparison()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var testPage = new Mock<IPage>();
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
@@ -715,7 +759,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field", "Rule", "Value");
 			table.AddRow(new Dictionary<string, string>
@@ -740,6 +784,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestThenISeeStepDoesNotExistComparison()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var testPage = new Mock<IPage>();
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
@@ -753,7 +799,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field", "Rule", "Value");
 			table.AddRow(new Dictionary<string, string>
@@ -778,6 +824,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestThenISeeStepEnabledComparison()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var testPage = new Mock<IPage>();
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
@@ -791,7 +839,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field", "Rule", "Value");
 			table.AddRow(new Dictionary<string, string>
@@ -816,6 +864,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestThenISeeStepNotEnabledComparison()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var testPage = new Mock<IPage>();
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
@@ -829,7 +879,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field", "Rule", "Value");
 			table.AddRow(new Dictionary<string, string>
@@ -867,6 +917,8 @@ namespace SpecBind.Tests
 		[ExpectedException(typeof(InvalidOperationException))]
 		public void TestThenISeeStepListInvalidRuleType()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
@@ -874,7 +926,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field", "Rule", "Value");
 			table.AddRow(new Dictionary<string, string>
@@ -902,13 +954,15 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestThenISeeStepListNoRows()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field", "Rule", "Value");
 
@@ -927,6 +981,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGivenEnsureOnListItemStep()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var page = new Mock<IPage>();
 			
 			var listItem = new Mock<IPage>();
@@ -944,7 +1000,7 @@ namespace SpecBind.Tests
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(page.Object);
 			scenarioContext.Setup(s => s.SetValue(listItem.Object, CommonPageSteps.CurrentPageKey));
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			steps.GivenEnsureOnListItemStep("my property", 2);
 
@@ -962,6 +1018,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGivenEnsureOnListItemStepNoItemHighlight()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var page = new Mock<IPage>();
 
 			var listItem = new Mock<IPage>();
@@ -978,7 +1036,7 @@ namespace SpecBind.Tests
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(page.Object);
 			scenarioContext.Setup(s => s.SetValue(listItem.Object, CommonPageSteps.CurrentPageKey));
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			steps.GivenEnsureOnListItemStep("my property", 2);
 
@@ -996,6 +1054,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGivenEnsureOnDialogStep()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var page = new Mock<IPage>();
 			var listItem = new Mock<IPage>();
 
@@ -1010,7 +1070,7 @@ namespace SpecBind.Tests
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(page.Object);
 			scenarioContext.Setup(s => s.SetValue(listItem.Object, CommonPageSteps.CurrentPageKey));
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			steps.GivenEnsureOnDialogStep("my property");
 
@@ -1027,6 +1087,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestSetTokenFromFieldStepSetsCurrentValue()
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var page = new Mock<IPage>();
 
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
@@ -1040,7 +1102,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(page.Object);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			steps.SetTokenFromFieldStep("MyToken", "SomeField");
 
@@ -1058,6 +1120,8 @@ namespace SpecBind.Tests
 		/// <param name="comparisonType">Type of the comparison.</param>
 		private static void RunSeeStepScenario(string rule, ComparisonType comparisonType)
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var testPage = new Mock<IPage>();
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			tokenManager.Setup(t => t.GetToken("myvalue")).Returns(new Func<string, string>(s => s));
@@ -1072,7 +1136,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field", "Rule", "Value");
 			table.AddRow(new Dictionary<string, string>
@@ -1098,6 +1162,8 @@ namespace SpecBind.Tests
 		/// <param name="comparisonType">Type of the comparison.</param>
 		private static void RunStepListScenario(string rule, ComparisonType comparisonType)
 		{
+			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
 			var testPage = new Mock<IPage>();
 
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
@@ -1119,7 +1185,7 @@ namespace SpecBind.Tests
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
 
-			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object);
+			var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
 			var table = new Table("Field", "Rule", "Value");
 			table.AddRow(new Dictionary<string, string>

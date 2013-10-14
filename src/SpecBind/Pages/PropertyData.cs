@@ -217,7 +217,21 @@ namespace SpecBind.Pages
 			return this.elementHandler.GetPageFromElement(item);
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Highlights this instance.
+        /// </summary>
+	    public void Highlight()
+        {
+            this.ElementAction(
+                this.elementHandler,
+                e =>
+                    {
+                        this.elementHandler.Highlight(e);
+                        return true;
+                    });
+        }
+
+	    /// <summary>
 		/// Validates the item or property matches the expected expression.
 		/// </summary>
 		/// <param name="validation">The validation item.</param>

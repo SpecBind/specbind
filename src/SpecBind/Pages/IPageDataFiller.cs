@@ -12,13 +12,6 @@ namespace SpecBind.Pages
 	public interface IPageDataFiller
 	{
 		/// <summary>
-		/// Clicks the link or button field.
-		/// </summary>
-		/// <param name="page">The page.</param>
-		/// <param name="fieldName">Name of the field.</param>
-		void ClickItem(IPage page, string fieldName);
-
-		/// <summary>
 		/// Fills the field.
 		/// </summary>
 		/// <param name="page">The page.</param>

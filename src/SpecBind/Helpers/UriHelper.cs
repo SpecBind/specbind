@@ -30,6 +30,8 @@ namespace SpecBind.Helpers
 			          && Uri.TryCreate(configSection.Application.StartUrl, UriKind.Absolute, out parsedUri)
 				          ? parsedUri
 				          : new Uri("http://localhost");
+
+			System.Diagnostics.Debug.WriteLine("Application Base URI: {0}", BaseUri);
 		}
 
 		/// <summary>
@@ -118,7 +120,10 @@ namespace SpecBind.Helpers
 		/// <param name="subPath">The sub path under the base URL.</param>
 		public static void NavigateTo(this IBrowser browser, string subPath)
 		{
-			browser.GoTo(GetQualifiedPageUri(subPath));
+			var uri = GetQualifiedPageUri(subPath);
+			System.Diagnostics.Debug.WriteLine("Uri Helper Navigating to URL: {0}", uri);
+
+			browser.GoTo(uri);
 		}
 
 		/// <summary>
@@ -143,6 +148,7 @@ namespace SpecBind.Helpers
 			var subPath = GetPageUri(browser, pageType);
 			var path = GetQualifiedPageUri(subPath);
 
+			System.Diagnostics.Debug.WriteLine("Uri Helper Navigating to URL: {0}", path);
 			browser.GoTo(path);
 
 			return path.ToString();

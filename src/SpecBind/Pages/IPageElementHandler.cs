@@ -58,5 +58,11 @@ namespace SpecBind.Pages
 		/// The function used to fill the data.
 		/// </returns>
 		Action<TElement, string> GetPageFillMethod(Type propertyType);
+
+        /// <summary>
+        /// Highlights the specified element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+	    void Highlight(TElement element);
 	}
 }

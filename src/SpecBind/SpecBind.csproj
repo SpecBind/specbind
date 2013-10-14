@@ -43,18 +43,34 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionPipeline\ActionRepository.cs" />
+    <Compile Include="ActionPipeline\ActionResult.cs" />
+    <Compile Include="ActionPipeline\ElementLocator.cs" />
+    <Compile Include="ActionPipeline\IAction.cs" />
+    <Compile Include="ActionPipeline\IActionPipelineService.cs" />
+    <Compile Include="ActionPipeline\IActionRepository.cs" />
+    <Compile Include="ActionPipeline\IElementLocator.cs" />
+    <Compile Include="ActionPipeline\ILocatorAction.cs" />
+    <Compile Include="ActionPipeline\IPostAction.cs" />
+    <Compile Include="ActionPipeline\IPreAction.cs" />
+    <Compile Include="Actions\ActionBase.cs" />
+    <Compile Include="Actions\ButtonClickAction.cs" />
+    <Compile Include="Actions\HighlightPreAction.cs" />
     <Compile Include="BrowserSupport\BrowserFactory.cs" />
     <Compile Include="BrowserSupport\BrowserType.cs" />
     <Compile Include="BrowserSupport\IBrowser.cs" />
     <Compile Include="Configuration\ApplicationConfigurationElement.cs" />
     <Compile Include="Configuration\BrowserFactoryConfigurationElement.cs" />
     <Compile Include="Configuration\ConfigurationSectionHandler.cs" />
+    <Compile Include="ActionPipeline\ActionPipelineService.cs" />
     <Compile Include="Helpers\AttributeExtensions.cs" />
+    <Compile Include="Helpers\ISettingHelper.cs" />
     <Compile Include="Helpers\ITokenManager.cs" />
     <Compile Include="Helpers\ResourceLocator.cs" />
     <Compile Include="Helpers\TableFormater.cs" />
     <Compile Include="Helpers\TableItemType.cs" />
     <Compile Include="Helpers\TokenManager.cs" />
+    <Compile Include="Helpers\WrappedSettingHelper.cs" />
     <Compile Include="Pages\ElementLocatorAttribute.cs" />
     <Compile Include="Pages\IActiveCheck.cs" />
     <Compile Include="Pages\IDataControl.cs" />
@@ -94,6 +110,7 @@
     <None Include="Deployment\SpecBind.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>

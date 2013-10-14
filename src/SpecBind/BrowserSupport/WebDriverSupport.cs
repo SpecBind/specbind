@@ -8,6 +8,7 @@ namespace SpecBind.BrowserSupport
 
 	using BoDi;
 
+	using SpecBind.ActionPipeline;
 	using SpecBind.Helpers;
 	using SpecBind.Pages;
 
@@ -41,6 +42,8 @@ namespace SpecBind.BrowserSupport
 			var browser = factory.GetBrowser();
 			this.objectContainer.RegisterInstanceAs(browser);
 
+            this.objectContainer.RegisterInstanceAs<ISettingHelper>(new WrappedSettingHelper());
+
 			var mapper = new PageMapper();
 			mapper.Initialize(browser.BasePageType);
 			this.objectContainer.RegisterInstanceAs<IPageMapper>(mapper);
@@ -48,6 +51,13 @@ namespace SpecBind.BrowserSupport
 			this.objectContainer.RegisterInstanceAs<IPageDataFiller>(new PageDataFiller());
 			this.objectContainer.RegisterInstanceAs<IScenarioContextHelper>(new ScenarioContextHelper());
 			this.objectContainer.RegisterInstanceAs(TokenManager.Current);
+
+		    var repository = new ActionRepository(this.objectContainer);
+			this.objectContainer.RegisterInstanceAs(repository);
+			this.objectContainer.RegisterTypeAs<ActionPipelineService, IActionPipelineService>();
+
+            // Initialize the repository
+            repository.Initialize();
 		}
 
 		/// <summary>

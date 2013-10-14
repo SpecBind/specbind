@@ -25,9 +25,19 @@ namespace SpecBind.Helpers
 		/// </returns>
 		public bool ContainsTag(string tag)
 		{
-			return
-				ScenarioContext.Current.ScenarioInfo.Tags.Any(
-					t => string.Equals(t, tag, StringComparison.InvariantCultureIgnoreCase));
+			return ScenarioContext.Current != null && FindTag(ScenarioContext.Current.ScenarioInfo.Tags, tag);
+		}
+
+		/// <summary>
+		/// Determines whether the current scenario's feature contains the specified tag.
+		/// </summary>
+		/// <param name="tag">The tag.</param>
+		/// <returns>
+		///   <c>true</c> the current feature contains the specified tag; otherwise, <c>false</c>.
+		/// </returns>
+		public bool FeatureContainsTag(string tag)
+		{
+			return FeatureContext.Current != null && FindTag(FeatureContext.Current.FeatureInfo.Tags, tag);
 		}
 
 		/// <summary>
@@ -58,6 +68,17 @@ namespace SpecBind.Helpers
 		public void SetValue<T>(T value, string key)
 		{
 			ScenarioContext.Current.Set(value, key);
+		}
+
+		/// <summary>
+		/// Determines whether the specified tags contains the given tag.
+		/// </summary>
+		/// <param name="tags">The tags collection.</param>
+		/// <param name="searchTag">The search tag.</param>
+		/// <returns><c>true</c> if the specified tags contains the given tag; otherwise, <c>false</c>.</returns>
+		private static bool FindTag(IEnumerable<string> tags, string searchTag)
+		{
+			return tags != null && tags.Any(t => string.Equals(t, searchTag, StringComparison.InvariantCultureIgnoreCase));
 		}
 	}
 }

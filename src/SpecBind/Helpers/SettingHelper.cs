@@ -4,6 +4,7 @@
 
 namespace SpecBind.Helpers
 {
+	using System;
 	using System.Configuration;
 	using System.IO;
 	using System.Resources;
@@ -22,6 +23,22 @@ namespace SpecBind.Helpers
 		public static ConfigurationSectionHandler GetConfigurationSection()
 		{
 			return ConfigurationManager.GetSection("specBind") as ConfigurationSectionHandler;
+		}
+
+		/// <summary>
+		/// Gets a value indicating wither highlight mode is enabled in configuration or app settings.
+		/// </summary>
+		/// <returns><c>true</c> if highlight mode is enabled, <c>false</c> otherwise</returns>
+		[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+		public static bool HighlightModeEnabled()
+		{
+			if (System.Diagnostics.Debugger.IsAttached)
+			{
+				return true;
+			}
+
+			var configSetting = ConfigurationManager.AppSettings["HighlightMode"];
+			return string.Equals(configSetting, "true", StringComparison.InvariantCultureIgnoreCase);
 		}
 
 		/// <summary>

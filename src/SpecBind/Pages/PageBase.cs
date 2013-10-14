@@ -197,7 +197,15 @@ namespace SpecBind.Pages
 		/// </returns>
 		public abstract Action<TElement, string> GetPageFillMethod(Type propertyType);
 
-		/// <summary>
+        /// <summary>
+        /// Highlights the specified element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+	    public virtual void Highlight(TElement element)
+	    {
+	    }
+
+	    /// <summary>
 		/// Checks to see if the current type matches the base type of the system to not reflect base properties.
 		/// </summary>
 		/// <param name="propertyInfo">Type of the page.</param>

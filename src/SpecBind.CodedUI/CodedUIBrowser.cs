@@ -127,6 +127,8 @@ namespace SpecBind.CodedUI
 				try
 				{
 					var qualifiedUri = UriHelper.GetQualifiedPageUri(filledUri);
+					System.Diagnostics.Debug.WriteLine("Navigating to URL: {0}", qualifiedUri);
+					
 					localWindow.NavigateToUrl(qualifiedUri);
 				}
 				catch (Exception ex)

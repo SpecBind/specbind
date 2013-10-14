@@ -63,7 +63,16 @@ namespace SpecBind.CodedUI
 			this.GetNativePage<HtmlControl>().DrawHighlight();
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Highlights the specified element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+	    public override void Highlight(HtmlControl element)
+	    {
+	        element.DrawHighlight();
+	    }
+
+	    /// <summary>
 		/// Elements the enabled check.
 		/// </summary>
 		/// <param name="element">The element.</param>

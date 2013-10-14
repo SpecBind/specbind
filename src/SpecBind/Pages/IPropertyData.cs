@@ -89,6 +89,11 @@ namespace SpecBind.Pages
 		/// <returns>The item as a page.</returns>
 		IPage GetItemAsPage();
 
+        /// <summary>
+        /// Highlights this instance.
+        /// </summary>
+        void Highlight();
+
 		/// <summary>
 		/// Validates the item or property matches the expected expression.
 		/// </summary>

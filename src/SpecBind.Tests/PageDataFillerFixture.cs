@@ -22,46 +22,6 @@ namespace SpecBind.Tests
 	public class PageDataFillerFixture
 	{
 		/// <summary>
-		///     Tests the fill field with a field on the page that doesn't exist.
-		/// </summary>
-		[TestMethod]
-		[ExpectedException(typeof(ElementExecuteException))]
-		public void TestClickItemFieldDoesNotExist()
-		{
-			var filler = new PageDataFiller();
-			var page = new Mock<IPage>(MockBehavior.Strict);
-
-			IPropertyData propertyData;
-			page.Setup(p => p.TryGetElement("doesnotexist", out propertyData)).Returns(false);
-			page.SetupGet(p => p.PageType).Returns(typeof(TestBase));
-			page.Setup(p => p.GetPropertyNames(It.IsAny<Func<IPropertyData, bool>>())).Returns(new[] { "MyProperty" });
-
-			ExceptionHelper.SetupForException<ElementExecuteException>(
-				() => filler.ClickItem(page.Object, "doesnotexist"), e => page.VerifyAll());
-		}
-
-		/// <summary>
-		///     Tests the fill field with an element that exists and can be clicked.
-		/// </summary>
-		[TestMethod]
-		public void TestClickItemSuccess()
-		{
-			var filler = new PageDataFiller();
-			var page = new Mock<IPage>(MockBehavior.Strict);
-
-			var propData = new Mock<IPropertyData>(MockBehavior.Strict);
-			propData.Setup(p => p.ClickElement());
-
-			var propertyData = propData.Object;
-			page.Setup(p => p.TryGetElement("DisplayArea", out propertyData)).Returns(true);
-
-			filler.ClickItem(page.Object, "DisplayArea");
-
-			page.VerifyAll();
-			propData.VerifyAll();
-		}
-
-		/// <summary>
 		///     Tests the fill field with an element that doesn't exist.
 		/// </summary>
 		[TestMethod]

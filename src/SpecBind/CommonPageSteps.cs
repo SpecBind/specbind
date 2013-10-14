@@ -9,6 +9,8 @@ namespace SpecBind
 	using System.Globalization;
 	using System.Linq;
 
+	using SpecBind.ActionPipeline;
+	using SpecBind.Actions;
 	using SpecBind.BrowserSupport;
 	using SpecBind.Helpers;
 	using SpecBind.Pages;
@@ -53,8 +55,8 @@ namespace SpecBind
 		private readonly IPageDataFiller pageDataFiller;
 		private readonly IPageMapper pageMapper;
 		private readonly IScenarioContextHelper scenarioContext;
-
 		private readonly ITokenManager tokenManager;
+		private readonly IActionPipelineService actionPipelineService;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CommonPageSteps" /> class.
@@ -64,13 +66,15 @@ namespace SpecBind
 		/// <param name="pageMapper">The page mapper.</param>
 		/// <param name="scenarioContext">The scenario context.</param>
 		/// <param name="tokenManager">The token manager.</param>
-		public CommonPageSteps(IBrowser browser, IPageDataFiller pageDataFiller, IPageMapper pageMapper, IScenarioContextHelper scenarioContext, ITokenManager tokenManager)
+		/// <param name="actionPipelineService">The action pipeline service.</param>
+		public CommonPageSteps(IBrowser browser, IPageDataFiller pageDataFiller, IPageMapper pageMapper, IScenarioContextHelper scenarioContext, ITokenManager tokenManager, IActionPipelineService actionPipelineService)
 		{
 			this.browser = browser;
 			this.pageDataFiller = pageDataFiller;
 			this.pageMapper = pageMapper;
 			this.scenarioContext = scenarioContext;
 			this.tokenManager = tokenManager;
+			this.actionPipelineService = actionPipelineService;
 		}
 
 		/// <summary>
@@ -179,7 +183,9 @@ namespace SpecBind
 		public void WhenIChooseALinkStep(string linkName)
 		{
 			var page = this.GetPageFromContext();
-			this.pageDataFiller.ClickItem(page, linkName.ToLookupKey());
+
+			var action = new ButtonClickAction(linkName.ToLookupKey());
+			this.actionPipelineService.PerformAction(page, action);
 		}
 
 		/// <summary>
