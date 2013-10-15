@@ -185,7 +185,7 @@ namespace SpecBind
 			var page = this.GetPageFromContext();
 
 			var action = new ButtonClickAction(linkName.ToLookupKey());
-			this.actionPipelineService.PerformAction(page, action);
+		    this.RunAction(page, action);
 		}
 
 		/// <summary>
@@ -430,5 +430,23 @@ namespace SpecBind
 
 			return validations;
 		}
+
+        /// <summary>
+        /// Runs the action.
+        /// </summary>
+        /// <param name="page">The page.</param>
+        /// <param name="action">The action.</param>
+        /// <returns>The result of the action.</returns>
+	    private ActionResult RunAction(IPage page, IAction action)
+        {
+            var result = this.actionPipelineService.PerformAction(page, action);
+
+            if (!result.Success && result.Exception != null)
+            {
+                throw result.Exception;
+            }
+
+            return result;
+        }
 	}
 }

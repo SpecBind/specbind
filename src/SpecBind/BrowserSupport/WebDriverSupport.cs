@@ -53,7 +53,7 @@ namespace SpecBind.BrowserSupport
 			this.objectContainer.RegisterInstanceAs(TokenManager.Current);
 
 		    var repository = new ActionRepository(this.objectContainer);
-			this.objectContainer.RegisterInstanceAs(repository);
+			this.objectContainer.RegisterInstanceAs<IActionRepository>(repository);
 			this.objectContainer.RegisterTypeAs<ActionPipelineService, IActionPipelineService>();
 
             // Initialize the repository

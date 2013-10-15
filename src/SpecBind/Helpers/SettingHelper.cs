@@ -32,11 +32,6 @@ namespace SpecBind.Helpers
 		[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 		public static bool HighlightModeEnabled()
 		{
-			if (System.Diagnostics.Debugger.IsAttached)
-			{
-				return true;
-			}
-
 			var configSetting = ConfigurationManager.AppSettings["HighlightMode"];
 			return string.Equals(configSetting, "true", StringComparison.InvariantCultureIgnoreCase);
 		}
