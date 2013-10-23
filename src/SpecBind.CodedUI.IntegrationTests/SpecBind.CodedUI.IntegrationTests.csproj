@@ -57,6 +57,11 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Features\InputTests.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InputTests.feature</DependentUpon>
+    </Compile>
     <Compile Include="Features\NavigationTests.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -67,10 +72,19 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SelectionTests.feature</DependentUpon>
     </Compile>
+    <Compile Include="Features\ValidationFeatures.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ValidationFeatures.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CoursesSearchPage.cs" />
+    <Compile Include="Pages\CreateCoursePage.cs" />
     <Compile Include="Pages\HomePage.cs" />
+    <Compile Include="Pages\LogOnPage.cs" />
     <Compile Include="Pages\StudentDetailPage.cs" />
     <Compile Include="Pages\StudentsSearchPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Steps\ErrorCheckSteps.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SpecBind.CodedUI\SpecBind.CodedUI.csproj">
@@ -84,6 +98,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Features\InputTests.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>InputTests.feature.cs</LastGenOutput>
+    </None>
     <None Include="Features\NavigationTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>NavigationTests.feature.cs</LastGenOutput>
@@ -91,6 +109,10 @@
     <None Include="Features\SelectionTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>SelectionTests.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\ValidationFeatures.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ValidationFeatures.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

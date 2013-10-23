@@ -30,6 +30,16 @@
     <div class="display-field">
         @Html.DisplayFor(model => model.Department.Name)
     </div>
+    
+    <div class="display-label">Popular</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsPopular)
+    </div>
+    
+    <div class="display-label">Description</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Description)
+    </div>
 </fieldset>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id=Model.CourseID }) |

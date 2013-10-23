@@ -7,7 +7,7 @@
 <h2>Courses</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create", null, new { id="createNewCourse" })
 </p>
 
 @using (Html.BeginForm())
@@ -23,6 +23,7 @@
         <th>Title</th>
         <th>Credits</th>
         <th>Department</th>
+        <th>Popular</th>
     </tr>
 
 @foreach (var item in Model) {
@@ -43,6 +44,9 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Department.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsPopular)
         </td>
     </tr>
 }

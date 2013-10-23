@@ -46,6 +46,20 @@
             @Html.DropDownList("DepartmentID", String.Empty)
             @Html.ValidationMessageFor(model => model.DepartmentID)
         </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IsPopular, "Popular")
+        </div>
+        <div class="editor-field">
+            @Html.CheckBoxFor(model => model.IsPopular)
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Description)
+        </div>
+        <div class="editor-field">
+            @Html.TextAreaFor(model => model.Description)
+        </div>
 
         <p>
             <input type="submit" value="Save" />

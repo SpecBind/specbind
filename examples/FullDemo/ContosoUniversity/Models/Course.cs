@@ -21,8 +21,14 @@ namespace ContosoUniversity.Models
         [Display(Name = "Department")]
         public int DepartmentID { get; set; }
 
+        public bool IsPopular { get; set; }
+
+        [MaxLength(500)]
+        public string Description { get; set; }
+
         public virtual Department Department { get; set; }
         public virtual ICollection<Enrollment> Enrollments { get; set; }
         public virtual ICollection<Instructor> Instructors { get; set; }
+        
     }
 }

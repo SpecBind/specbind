@@ -106,6 +106,24 @@ namespace SpecBind.CodedUI
 		/// <returns>The element text.</returns>
 		public override string GetElementText(HtmlControl element)
 		{
+		    var comboBoxElement = element as HtmlComboBox;
+		    if (comboBoxElement != null)
+		    {
+		        return comboBoxElement.SelectedItem;
+		    }
+
+		    var checkBoxElement = element as HtmlCheckBox;
+            if (checkBoxElement != null)
+            {
+                return checkBoxElement.Checked ? "true" : "false";
+            }
+
+		    var inputElement = element as HtmlEdit;
+            if (inputElement != null)
+            {
+                return inputElement.Text;
+            }
+            
 			return element.InnerText;
 		}
 
@@ -197,6 +215,7 @@ namespace SpecBind.CodedUI
 				return (control, s) =>
 					{
 						var combo = (HtmlComboBox)control;
+                        combo.SetFocus();
 						combo.SelectedItem = s;
 					};
 			}
