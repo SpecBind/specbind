@@ -278,7 +278,9 @@ namespace SpecBind
 				case "endswith":
 					comparisonType = ComparisonType.EndsWith;
 					break;
-
+                case "equals":
+                    comparisonType = ComparisonType.Equals;
+			        break;
 				default:
 					throw new InvalidOperationException(string.Format("Rule type '{0}' is not supported.", rule));
 			}

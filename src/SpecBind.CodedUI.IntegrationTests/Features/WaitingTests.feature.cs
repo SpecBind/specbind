@@ -20,19 +20,19 @@ namespace SpecBind.CodedUI.IntegrationTests.Features
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [Microsoft.VisualStudio.TestTools.UITesting.CodedUITestAttribute()]
     [Microsoft.VisualStudio.TestTools.UnitTesting.DeploymentItemAttribute("SpecBind.CodedUI.dll")]
-    public partial class ClickingItemsOnTheScreenFeature
+    public partial class WaitingFeatureTestsFeature
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "SelectionTests.feature"
+#line 1 "WaitingTests.feature"
 #line hidden
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.ClassInitializeAttribute()]
         public static void FeatureSetup(Microsoft.VisualStudio.TestTools.UnitTesting.TestContext testContext)
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Clicking items on the screen", "", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Waiting Feature Tests", "", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -47,9 +47,9 @@ namespace SpecBind.CodedUI.IntegrationTests.Features
         public virtual void TestInitialize()
         {
             if (((TechTalk.SpecFlow.FeatureContext.Current != null) 
-                        && (TechTalk.SpecFlow.FeatureContext.Current.FeatureInfo.Title != "Clicking items on the screen")))
+                        && (TechTalk.SpecFlow.FeatureContext.Current.FeatureInfo.Title != "Waiting Feature Tests")))
             {
-                SpecBind.CodedUI.IntegrationTests.Features.ClickingItemsOnTheScreenFeature.FeatureSetup(null);
+                SpecBind.CodedUI.IntegrationTests.Features.WaitingFeatureTestsFeature.FeatureSetup(null);
             }
         }
         
@@ -70,58 +70,36 @@ namespace SpecBind.CodedUI.IntegrationTests.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Select a Menu Hyperlink")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Clicking items on the screen")]
-        public virtual void SelectAMenuHyperlink()
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Wait for the screen to be enabled")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Waiting Feature Tests")]
+        public virtual void WaitForTheScreenToBeEnabled()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Select a Menu Hyperlink", ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Wait for the screen to be enabled", ((string[])(null)));
 #line 3
 this.ScenarioSetup(scenarioInfo);
 #line 4
  testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 5
-  testRunner.When("I choose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+   testRunner.And("I chose About", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 6
-  testRunner.Then("I am on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Select an item in the list by index and click the link")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Clicking items on the screen")]
-        public virtual void SelectAnItemInTheListByIndexAndClickTheLink()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Select an item in the list by index and click the link", ((string[])(null)));
-#line 8
-this.ScenarioSetup(scenarioInfo);
-#line 9
- testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 10
-   testRunner.And("I chose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 11
-   testRunner.And("I was on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 12
-   testRunner.And("I was on list results grid item 1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 13
-  testRunner.When("I choose Details", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 14
-  testRunner.Then("I am on the Student Detail page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+   testRunner.And("I was on the About page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 7
+  testRunner.When("I wait for the view to become active", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "Field",
                         "Rule",
                         "Value"});
             table1.AddRow(new string[] {
-                        "Last Name",
-                        "Equals",
-                        "Alexander"});
+                        "Enrollment Table",
+                        "exists",
+                        "true"});
             table1.AddRow(new string[] {
-                        "First Name",
-                        "Equals",
-                        "Carson"});
-#line 15
-   testRunner.And("I see", ((string)(null)), table1, "And ");
+                        "Enrollment Table",
+                        "is enabled",
+                        "true"});
+#line 8
+  testRunner.Then("I see", ((string)(null)), table1, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

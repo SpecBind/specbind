@@ -24,6 +24,13 @@ namespace SpecBind.CodedUI.IntegrationTests.Pages
 		}
 
         /// <summary>
+        /// Gets or sets the about link button.
+        /// </summary>
+        /// <value>The about link button.</value>
+        [ElementLocator(Id = "aboutLink")]
+        public HtmlHyperlink About { get; set; }
+
+        /// <summary>
         /// Gets or sets the courses link button.
         /// </summary>
         /// <value>The courses link button.</value>

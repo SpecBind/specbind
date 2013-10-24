@@ -58,5 +58,12 @@ namespace SpecBind.CodedUI.IntegrationTests.Pages
         /// <value>The title.</value>
         [ElementLocator(Id = "Title")]
         public HtmlEdit CourseTitle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the fake property used for testing.
+        /// </summary>
+        /// <value>The fake property used for testing.</value>
+        [ElementLocator(Id = "foo")]
+        public HtmlEdit Foo { get; set; }
     }
 }

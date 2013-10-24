@@ -72,11 +72,22 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SelectionTests.feature</DependentUpon>
     </Compile>
+    <Compile Include="Features\TokenTests.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TokenTests.feature</DependentUpon>
+    </Compile>
     <Compile Include="Features\ValidationFeatures.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ValidationFeatures.feature</DependentUpon>
     </Compile>
+    <Compile Include="Features\WaitingTests.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WaitingTests.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AboutPage.cs" />
     <Compile Include="Pages\CoursesSearchPage.cs" />
     <Compile Include="Pages\CreateCoursePage.cs" />
     <Compile Include="Pages\HomePage.cs" />
@@ -110,9 +121,17 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>SelectionTests.feature.cs</LastGenOutput>
     </None>
+    <None Include="Features\TokenTests.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>TokenTests.feature.cs</LastGenOutput>
+    </None>
     <None Include="Features\ValidationFeatures.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ValidationFeatures.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\WaitingTests.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>WaitingTests.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

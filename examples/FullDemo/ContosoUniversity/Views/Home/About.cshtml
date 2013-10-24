@@ -1,29 +1,37 @@
 ﻿@model IEnumerable<ContosoUniversity.ViewModels.EnrollmentDateGroup>
-           
 @{
     ViewBag.Title = "Student Body Statistics";
 }
 
 <h2>Student Body Statistics</h2>
 
-<table>
+<table id="studentTable" style="display: none">
     <tr>
-        <th>
-            Enrollment Date
+        <th>Enrollment Date
         </th>
-        <th>
-            Students
+        <th>Students
         </th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @String.Format("{0:d}", item.EnrollmentDate)
-        </td>
-        <td>
-            @item.StudentCount
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @String.Format("{0:d}", item.EnrollmentDate)
+            </td>
+            <td>
+                @item.StudentCount
+            </td>
+        </tr>
+    }
 </table>
+
+<script>
+    $(document).ready(function () {
+
+        // run the effect
+        $("#studentTable").show("slow", function () {
+            // Animation complete.
+        });
+    });
+</script>
