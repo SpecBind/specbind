@@ -937,7 +937,7 @@ namespace SpecBind.Tests
 				             });
 
 			ExceptionHelper.SetupForException<InvalidOperationException>(
-				() => steps.ThenISeeListStep("myfield", "equals", table),
+				() => steps.ThenISeeListStep("myfield", "invalid", table),
 				ex =>
 					{
 						browser.VerifyAll();
