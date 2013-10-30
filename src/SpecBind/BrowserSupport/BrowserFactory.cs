@@ -8,6 +8,7 @@ namespace SpecBind.BrowserSupport
 	using System.Linq;
 	using System.Reflection;
 
+	using SpecBind.Configuration;
 	using SpecBind.Helpers;
 
 	/// <summary>
@@ -22,8 +23,23 @@ namespace SpecBind.BrowserSupport
 		/// <returns>A new browser object.</returns>
 		public IBrowser GetBrowser()
 		{
-			var browserType = this.GetBrowserType();
-			return this.CreateBrowser(browserType);
+            var configSection = SettingHelper.GetConfigurationSection();
+		    
+            // Default configuration settings
+            var browserFactoryConfiguration = new BrowserFactoryConfigurationElement
+                                                  {
+                                                      BrowserType = Enum.GetName(typeof(BrowserType), BrowserType.IE),
+                                                      ElementLocateTimeout = TimeSpan.FromSeconds(30.0),
+                                                      PageLoadTimeout = TimeSpan.FromSeconds(30.0)
+                                                  };
+
+		    if (configSection != null && configSection.BrowserFactory != null)
+		    {
+		        browserFactoryConfiguration = configSection.BrowserFactory;
+		    }
+		    
+            var browserType = this.GetBrowserType(browserFactoryConfiguration);
+            return this.CreateBrowser(browserType, browserFactoryConfiguration);
 		}
 
 		/// <summary>
@@ -47,28 +63,26 @@ namespace SpecBind.BrowserSupport
 			return (BrowserFactory)Activator.CreateInstance(type);
 		}
 
-		/// <summary>
-		/// Creates the browser.
-		/// </summary>
-		/// <param name="browserType">Type of the browser.</param>
-		/// <returns>A browser object.</returns>
-		protected abstract IBrowser CreateBrowser(BrowserType browserType);
+	    /// <summary>
+	    /// Creates the browser.
+	    /// </summary>
+	    /// <param name="browserType">Type of the browser.</param>
+	    /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
+	    /// <returns>A browser object.</returns>
+	    protected abstract IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration);
 
-		/// <summary>
-		/// Gets the type of the browser to leverage.
-		/// </summary>
-		/// <returns>The browser type.</returns>
-		protected virtual BrowserType GetBrowserType()
+	    /// <summary>
+	    /// Gets the type of the browser to leverage.
+	    /// </summary>
+	    /// <param name="section">The configuration section.</param>
+	    /// <returns>The browser type.</returns>
+	    protected virtual BrowserType GetBrowserType(BrowserFactoryConfigurationElement section)
 		{
-			var configSection = SettingHelper.GetConfigurationSection();
-			if (configSection != null && configSection.BrowserFactory != null)
+            BrowserType browserType;
+            if (!string.IsNullOrWhiteSpace(section.BrowserType) &&
+                Enum.TryParse(section.BrowserType, true, out browserType))
 			{
-				var settingName = configSection.BrowserFactory.BrowserType;
-				BrowserType browserType;
-				if (!string.IsNullOrWhiteSpace(settingName) && Enum.TryParse(settingName, true, out browserType))
-				{
-					return browserType;
-				}
+                return browserType;
 			}
 
 			return BrowserType.IE;

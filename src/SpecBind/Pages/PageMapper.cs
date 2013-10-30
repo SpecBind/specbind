@@ -90,7 +90,7 @@ namespace SpecBind.Pages
 		internal void MapAssemblyTypes(IEnumerable<Type> types, Type pageBaseType)
 		{
 			foreach (var pageType in types.Where(t => t.IsClass &&  !t.IsAbstract
-				&& t.BaseType != null && pageBaseType.IsAssignableFrom(t.BaseType)))
+				&& (pageBaseType == null || (t.BaseType != null && pageBaseType.IsAssignableFrom(t.BaseType)))))
 			{
 				var initialName = pageType.Name;
 				if (initialName.EndsWith("Page", StringComparison.InvariantCultureIgnoreCase))

@@ -1,27 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <id>SpecFlow.CodedUI</id>
+    <id>SpecFlow.SpecBindGeneratorPlugin</id>
     <version>1.0.0</version>
-    <title>SpecFlow CodedUI Attribute Generator</title>
+    <title>SpecFlow SpecBind Attribute Generator Plugin</title>
     <authors>dpiessens</authors>
     <owners>dpiessens</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <projectUrl>https://github.com/dpiessens/specbind</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>An extension to generate the correct test class attributes for Coded UI.</description>
-    <summary>An extension to generate the correct test class attributes for Coded UI.</summary>
-    <tags>specflow specbind codedui</tags>
+    <description>A SpecFlow plugin used to generate the correct test class attributes for Coded UI and the SpecBind web drivers.</description>
+    <summary>A SpecFlow plugin used to generate the correct test class attributes for Coded UI and the SpecBind web drivers.</summary>
+    <tags>specflow specbind</tags>
     <language>en-US</language>
     <dependencies>
       <dependency id="SpecFlow" version="[1.9.0]" />
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Specflow.CodedUI.dll" target="tools" />
+    <file src="bin\Release\SpecBindCodedUIPlugin.Generator.SpecflowPlugin.dll" target="tools" />
     <file src="Deployment\Install.ps1" target="tools" />
-    <file src="Deployment\Uninstall.ps1" target="tools" />
-    <file src="Deployment\App.config.transform" target="content" />
-    <file src="Deployment\App.config.transform" target="content" />
+    <file src="Deployment\App.config.install.xdt" target="content" />
+    <file src="Deployment\App.config.uninstall.xdt" target="content" />
   </files>
 </package>

@@ -50,12 +50,27 @@ namespace SpecBind.Helpers
 		/// <param name="browser">The browser.</param>
 		/// <param name="pageType">Type of the page.</param>
 		/// <returns>
-		/// The fully qualifies URI.
+		/// The fully qualified URI.
 		/// </returns>
 		public static Uri GetQualifiedPageUri(IBrowser browser, Type pageType)
 		{
 			return new Uri(BaseUri, GetPageUri(browser, pageType));
 		}
+
+        /// <summary>
+        /// Gets the qualified page URI regex.
+        /// </summary>
+        /// <param name="browser">The browser.</param>
+        /// <param name="pageType">Type of the page.</param>
+        /// <returns>The fully qualified URI.</returns>
+	    public static Regex GetQualifiedPageUriRegex(IBrowser browser, Type pageType)
+	    {
+	        // Get base path and trim any triling
+            var basePath = Regex.Escape(BaseUri.ToString().TrimEnd('/', ' '));
+            var detailPath = GetPageUri(browser, pageType);
+            var seperator = detailPath.StartsWith("/") ? string.Empty : "/";
+            return new Regex(string.Concat(basePath, seperator, detailPath));
+	    }
 
 		/// <summary>
 		/// Gets the page URL.

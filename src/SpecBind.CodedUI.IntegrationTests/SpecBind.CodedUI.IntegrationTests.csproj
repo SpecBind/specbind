@@ -112,9 +112,15 @@
       <Project>{e27bd8d5-242f-496e-be3a-1c73a27e5275}</Project>
       <Name>SpecBind</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Specflow.CodedUI\Specflow.CodedUI.csproj">
+      <Project>{0bcfc808-1647-448e-a9dc-99b3d9d336b5}</Project>
+      <Name>Specflow.CodedUI</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Features\ControlPlaygroundFeature.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ControlPlaygroundFeature.feature.cs</LastGenOutput>
@@ -168,7 +174,8 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <PropertyGroup>
-    <PreBuildEvent>copy /y "$(SolutionDir)Specflow.CodedUI\bin\$(ConfigurationName)\Specflow.CodedUI.dll" "$(SolutionDir)packages\SpecFlow.1.9.0\tools"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -49,7 +49,69 @@ namespace SpecBind.Tests
 			browser.VerifyAll();
 		}
 
-		/// <summary>
+        /// <summary>
+        ///     Tests the get page URI method with a page type with no slash.
+        /// </summary>
+        [TestMethod]
+        public void TestGetQualifiedPageUriFromPageTypeWithNoSlash()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+            var url = UriHelper.GetQualifiedPageUri(browser.Object, typeof(NavigationWithNoSlashAttributePage));
+
+            Assert.AreEqual(url, new Uri("http://localhost:2222/root"));
+
+            browser.VerifyAll();
+        }
+
+        /// <summary>
+        ///     Tests the get page URI method.
+        /// </summary>
+        [TestMethod]
+        public void TestGetQualifiedPageUriRegex()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+            var regex = UriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(NavigationAttributePage));
+
+            Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root"));
+            Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root/something123"));
+            
+            browser.VerifyAll();
+        }
+
+        /// <summary>
+        ///     Tests the get page URI method.
+        /// </summary>
+        [TestMethod]
+        public void TestGetQualifiedPageUriRegexAttributeDoesNotContainASlash()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+            var regex = UriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(NavigationWithNoSlashAttributePage));
+
+            Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root"));
+            Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root/something123"));
+            
+            browser.VerifyAll();
+        }
+
+        /// <summary>
+        ///     Tests the get page URI method.
+        /// </summary>
+        [TestMethod]
+        public void TestGetQualifiedPageUriRegexWithRegexInNavigation()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+            var regex = UriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(NavigationWithRegexAttributePage));
+
+            Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root/223"));
+            
+            browser.VerifyAll();
+        }
+
+        /// <summary>
 		///     Tests the get Navigate To method.
 		/// </summary>
 		[TestMethod]
@@ -183,13 +245,14 @@ namespace SpecBind.Tests
 		}
 
 
-// ReSharper disable ClassNeverInstantiated.Local
+
+
+        // ReSharper disable ClassNeverInstantiated.Local
 
 		/// <summary>
 		/// A test class for invalid configurations.
 		/// </summary>
 		private class InvalidPage : TestBase
-// ReSharper restore ClassNeverInstantiated.Local
 		{
 		}
 
@@ -198,9 +261,24 @@ namespace SpecBind.Tests
 		/// </summary>
 		[PageNavigation("/root", UrlTemplate = "/root/{id}")]
 		private class NavigationAttributePage : TestBase
-		// ReSharper restore ClassNeverInstantiated.Local
 		{
 		}
 
+        /// <summary>
+        /// A test class for navigation page attribute with regex in it configurations.
+        /// </summary>
+        [PageNavigation("/root/[0-9]+")]
+        private class NavigationWithRegexAttributePage : TestBase
+        {
+        }
+
+        /// <summary>
+        /// A test class for navigation page attribute configurations.
+        /// </summary>
+        [PageNavigation("root")]
+        private class NavigationWithNoSlashAttributePage : TestBase
+        {
+        }
+        // ReSharper restore ClassNeverInstantiated.Local
 	}
 }

@@ -3,10 +3,10 @@
 // </copyright>
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Specflow.CodedUI;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
+using TechTalk.SpecFlow.Infrastructure;
+
 [assembly: AssemblyTitle("Specflow.CodedUI")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
@@ -23,6 +23,8 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("66d879a4-3262-4d76-b944-3b2ce78ba014")]
+[assembly: GeneratorPlugin(typeof(SpecBindGeneratorPlugin))]
+ 
 
 // Version information for an assembly consists of the following four values:
 //

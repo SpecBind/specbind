@@ -2,6 +2,7 @@
 	
 Scenario: Transition to a search page date picker to another control.
 	Given I navigated to the Echo Search page
+	  And I was on the Echo Search page
 	 When I enter data
 			| Field      | Value                    |
 			| Start Date | 10/25/2013               |

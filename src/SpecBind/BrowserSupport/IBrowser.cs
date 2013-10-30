@@ -58,13 +58,6 @@ namespace SpecBind.BrowserSupport
 		/// <summary>
 		/// Gets the page instance from the browser.
 		/// </summary>
-		/// <typeparam name="TPage">The type of the page.</typeparam>
-		/// <returns>The page object.</returns>
-		IPage Page<TPage>() where TPage : class;
-
-		/// <summary>
-		/// Gets the page instance from the browser.
-		/// </summary>
 		/// <param name="pageType">Type of the page.</param>
 		/// <returns>
 		/// The page object.

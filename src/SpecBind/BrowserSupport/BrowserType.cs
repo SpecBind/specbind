@@ -3,9 +3,9 @@
 // </copyright>
 namespace SpecBind.BrowserSupport
 {
-	/// <summary>
-	/// Enumerates the various supported browsers.
-	/// </summary>
+    /// <summary>
+    /// Enumerates the various supported browsers.
+    /// </summary>
 	public enum BrowserType
 	{
 		/// <summary>
@@ -21,6 +21,33 @@ namespace SpecBind.BrowserSupport
 		/// <summary>
 		/// Chrome Browser
 		/// </summary>
-		Chrome = 3
+		Chrome = 3,
+
+        /// <summary>
+        /// Safari Browser
+        /// </summary>
+        Safari = 4,
+
+        /// <summary>
+        /// Opera Browser
+        /// </summary>
+        Opera = 5,
+
+        /// <summary>
+        /// Android Emulator
+        /// </summary>
+        Android = 6,
+
+        /// <summary>
+        /// iOS iPhone Emulator
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        iPhone = 7,
+
+        /// <summary>
+        /// iOS iPad Emulator
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        iPad = 8,
 	}
 }

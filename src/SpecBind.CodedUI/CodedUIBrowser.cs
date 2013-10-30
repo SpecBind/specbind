@@ -6,8 +6,7 @@ namespace SpecBind.CodedUI
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using System.Text.RegularExpressions;
-
+	
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
 
@@ -18,7 +17,8 @@ namespace SpecBind.CodedUI
 	/// <summary>
 	/// An IBrowser implementation for Coded UI.
 	/// </summary>
-	public class CodedUIBrowser : IBrowser, IDisposable
+	// ReSharper disable once InconsistentNaming
+    public class CodedUIBrowser : BrowserBase, IDisposable
 	{
 		private readonly Dictionary<Type, Func<UITestControl, Action<HtmlDocument>, HtmlDocument>> pageCache;
 		private readonly Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>> frameCache;
@@ -51,7 +51,7 @@ namespace SpecBind.CodedUI
 		/// <value>
 		/// The type of the base page.
 		/// </value>
-		public Type BasePageType
+		public override Type BasePageType
 		{
 			get
 			{
@@ -62,7 +62,7 @@ namespace SpecBind.CodedUI
 		/// <summary>
 		/// Closes this instance.
 		/// </summary>
-		public void Close()
+        public override void Close()
 		{
 			if (this.window.IsValueCreated)
 			{
@@ -71,98 +71,12 @@ namespace SpecBind.CodedUI
 		}
 
 		/// <summary>
-		/// Ensures the page is current in the browser window.
-		/// </summary>
-		/// <param name="page">The page.</param>
-		public void EnsureOnPage(IPage page)
-		{
-			var localWindow = this.window.Value;
-
-			string actualPath;
-			string expectedPath;
-			if (!this.CheckIsOnPage(localWindow, page.PageType, page, out actualPath, out expectedPath))
-			{
-				throw new PageNavigationException(page.PageType, expectedPath, actualPath);
-			}
-		}
-
-		/// <summary>
-		/// Gets the URI for the page if supported by the browser.
-		/// </summary>
-		/// <param name="pageType">Type of the page.</param>
-		/// <returns>
-		/// The URI partial string if found.
-		/// </returns>
-		public string GetUriForPageType(Type pageType)
-		{
-			return null;
-		}
-
-		/// <summary>
 		/// Navigates the browser to the given <paramref name="url" />.
 		/// </summary>
 		/// <param name="url">The URL specified as a well formed Uri.</param>
-		public void GoTo(Uri url)
+        public override void GoTo(Uri url)
 		{
 			this.window.Value.NavigateToUrl(url);
-		}
-
-		/// <summary>
-		/// Navigates to the specified URL defined by the page.
-		/// </summary>
-		/// <param name="pageType">Type of the page.</param>
-		/// <param name="parameters">The parameters to fill in any blanks.</param>
-		/// <returns>
-		/// The page object when navigated to.
-		/// </returns>
-		public IPage GoToPage(Type pageType, IDictionary<string, string> parameters)
-		{
-			var localWindow = this.window.Value;
-
-			string actualPath;
-			string expectedPath;
-			if (!this.CheckIsOnPage(localWindow, pageType, null, out actualPath, out expectedPath))
-			{
-				var filledUri = UriHelper.FillPageUri(this, pageType, parameters);
-				try
-				{
-					var qualifiedUri = UriHelper.GetQualifiedPageUri(filledUri);
-					System.Diagnostics.Debug.WriteLine("Navigating to URL: {0}", qualifiedUri);
-					
-					localWindow.NavigateToUrl(qualifiedUri);
-				}
-				catch (Exception ex)
-				{
-					throw new PageNavigationException("Could not navigate to URI: {0}. Details: {1}", filledUri, ex.Message);
-				}
-			}
-
-			var nativePage = this.CreateNativePage(pageType);
-			nativePage.Find();
-
-			return new CodedUIPage<HtmlDocument>(nativePage);
-		}
-
-		/// <summary>
-		/// Pages this instance.
-		/// </summary>
-		/// <typeparam name="TPage">The type of the page.</typeparam>
-		/// <returns>A new page object.</returns>
-		public IPage Page<TPage>() where TPage : class
-		{
-			return this.Page(typeof(TPage));
-		}
-
-		/// <summary>
-		/// Gets the page instance from the browser.
-		/// </summary>
-		/// <param name="pageType">Type of the page.</param>
-		/// <returns>
-		/// The page object.
-		/// </returns>
-		public IPage Page(Type pageType)
-		{
-			return new CodedUIPage<HtmlDocument>(this.CreateNativePage(pageType));
 		}
 
 		/// <summary>
@@ -192,7 +106,51 @@ namespace SpecBind.CodedUI
 			this.disposed = true;
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Gets the native page location.
+        /// </summary>
+        /// <param name="page">The page interface.</param>
+        /// <returns>A collection of URIs to validate.</returns>
+	    protected override IList<string> GetNativePageLocation(IPage page)
+        {
+            var localWindow = this.window.Value;
+
+	        var pageList = new List<string>
+	                           {
+	                               localWindow.Uri.PathAndQuery + localWindow.Uri.Fragment
+	                           };
+
+            if (page != null)
+            {
+                var nativePage = page.GetNativePage<HtmlDocument>();
+                if (nativePage != null && nativePage.FrameDocument && nativePage.AbsolutePath != null)
+                {
+                    pageList.Add(nativePage.AbsolutePath);
+                }
+            }
+
+            return pageList;
+	    }
+
+        /// <summary>
+        /// Creates the native page.
+        /// </summary>
+        /// <param name="pageType">Type of the page.</param>
+        /// <param name="verifyPageValidity">if set to <c>true</c> verify the page validity.</param>
+        /// <returns>The created page object.</returns>
+	    protected override IPage CreateNativePage(Type pageType, bool verifyPageValidity)
+	    {
+            var nativePage = this.CreateNativePage(pageType);
+
+            if (verifyPageValidity)
+            {
+                nativePage.Find();
+            }
+
+            return new CodedUIPage<HtmlDocument>(nativePage);
+	    }
+
+	    /// <summary>
 		/// Creates the native page.
 		/// </summary>
 		/// <param name="pageType">Type of the page.</param>
@@ -243,41 +201,6 @@ namespace SpecBind.CodedUI
 			}
 
 			return documentElement;
-		}
-
-		/// <summary>
-		/// Checks wither the page matches the current browser URL.
-		/// </summary>
-		/// <param name="localWindow">The local window.</param>
-		/// <param name="pageType">Type of the page.</param>
-		/// <param name="page">The page to do further testing if it exists.</param>
-		/// <param name="actualPath">The actual path.</param>
-		/// <param name="expectedPath">The expected path.</param>
-		/// <returns><c>true</c> if it is a match.</returns>
-		private bool CheckIsOnPage(BrowserWindow localWindow, Type pageType, IPage page, out string actualPath, out string expectedPath)
-		{
-			var uri = UriHelper.GetPageUri(this, pageType);
-			var validateRegex = new Regex(uri);
-			
-			actualPath = localWindow.Uri.PathAndQuery + localWindow.Uri.Fragment;
-			expectedPath = uri;
-			if (validateRegex.IsMatch(actualPath))
-			{
-				return true;
-			}
-
-			if (page != null)
-			{
-				var nativePage = page.GetNativePage<HtmlDocument>();
-				if (nativePage != null && nativePage.FrameDocument && nativePage.AbsolutePath != null)
-				{
-					var path = nativePage.AbsolutePath;
-					expectedPath = string.Format("{0} or {1}", expectedPath, path);
-					return validateRegex.IsMatch(path);
-				}
-			}
-
-			return false;
 		}
 
 		/// <summary>

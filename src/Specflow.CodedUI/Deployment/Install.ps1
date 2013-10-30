@@ -1,12 +1,28 @@
 ﻿param($installPath, $toolsPath, $package, $project)
 
-# Get the deployment dll
-$assemblyDllPath = (Join-Path $toolsPath "Specflow.CodedUI.dll")
+# Log the current path to try to figure everything out
+$currentLocation = Get-Location
 
-# Get the Specflow package tools path
-$parentDir = (Split-Path -Parent $installPath)
-$specFlowDir = (Join-Path $parentDir "SpecFlow.1.9.0")
-$specFlowToolsDir = (Join-Path $specFlowDir "tools")
+# Update current location to project path
+$projectPath = (Split-Path ($project.FullName))
+if ($projectPath)
+{
+	Set-Location $projectPath
+}
 
-# Copy the assembly into the SpecFlow tools directory
-Copy-Item -Path $assemblyDllPath -Destination $specFlowToolsDir -Force
+# Get the plugin dll path
+$relativeToolsPath = (Resolve-Path -Path $toolsPath -Relative)
+
+# Revert location back
+Set-Location $currentLocation
+
+# Open the App.config file and replace the plugin token
+$configFile = $project.ProjectItems.Item("App.config")
+if ($configFile)
+{
+    Write-Host "Replacing plugin path token in web.config with value:" $relativeToolsPath
+	$configFile.Open()
+     
+    $filePath = $configFile.Document.FullName
+	(Get-Content $filePath) | Foreach-Object {$_ -replace "\@specBindDllPathChangeMe\@", $relativeToolsPath} | Set-Content $filePath
+}

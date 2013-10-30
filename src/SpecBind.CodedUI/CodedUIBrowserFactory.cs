@@ -4,25 +4,28 @@
 namespace SpecBind.CodedUI
 {
 	using System;
+	using System.Configuration;
 	using System.Threading;
 
 	using Microsoft.VisualStudio.TestTools.UITesting;
 
 	using SpecBind.BrowserSupport;
+	using SpecBind.Configuration;
 
-	/// <summary>
+    /// <summary>
 	/// A browser factory class for Coded UI tests.
 	/// </summary>
+	// ReSharper disable once InconsistentNaming
 	public class CodedUIBrowserFactory : BrowserFactory
     {
-		/// <summary>
-		/// Creates the browser.
-		/// </summary>
-		/// <param name="browserType">Type of the browser.</param>
-		/// <returns>
-		/// A browser object.
-		/// </returns>
-		protected override IBrowser CreateBrowser(BrowserType browserType)
+        /// <summary>
+        /// Creates the browser.
+        /// </summary>
+        /// <param name="browserType">Type of the browser.</param>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
+        /// <returns>A browser object.</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown if the browser type is not supported.</exception>
+        protected override IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration)
 		{
 			string browserKey = null;
 			switch (browserType)
@@ -33,7 +36,14 @@ namespace SpecBind.CodedUI
 				case BrowserType.Chrome:
 					browserKey = "chrome";
 					break;
+                case BrowserType.IE:
+                    break;
+                default:
+                    throw new InvalidOperationException(string.Format("Browser type '{0}' is not supported in Coded UI.", browserType));
 			}
+
+            Playback.PlaybackSettings.SearchTimeout = (int)browserFactoryConfiguration.ElementLocateTimeout.TotalSeconds;
+            Playback.PlaybackSettings.WaitForReadyTimeout = (int)browserFactoryConfiguration.PageLoadTimeout.TotalSeconds;
 
 			var launchAction = new Func<BrowserWindow>(() =>
 				{
@@ -43,7 +53,7 @@ namespace SpecBind.CodedUI
 						BrowserWindow.CurrentBrowser = browserKey;
 					}
 
-					return BrowserWindow.Launch();
+                    return BrowserWindow.Launch();
 				});
 
 			var browser = new Lazy<BrowserWindow>(launchAction, LazyThreadSafetyMode.None);

@@ -3,15 +3,19 @@
 // </copyright>
 namespace SpecBind.Configuration
 {
-	using System.Configuration;
+    using System;
+    using System.Configuration;
 
 	/// <summary>
 	/// A configuration element for the browser factory.
 	/// </summary>
 	public class BrowserFactoryConfigurationElement : ConfigurationElement
 	{
+	    private const string ElementLocateTimeoutElementName = "elementLocateTimeout";
+	    private const string PageLoadTimeoutElementName = "pageLoadTimeout";
 		private const string ProviderElementName = "provider";
 		private const string BrowserTypeElementName = "browserType";
+        private const string SettingsElementName = "settings";
 
 
 		/// <summary>
@@ -32,6 +36,24 @@ namespace SpecBind.Configuration
 			}
 		}
 
+        /// <summary>
+        /// Gets or sets the timeout for waiting to locate an element.
+        /// </summary>
+        /// <value>The timeout for waiting for waiting to locate an element.</value>
+        [ConfigurationProperty(ElementLocateTimeoutElementName, DefaultValue = "00:00:30", IsRequired = false)]
+        public TimeSpan ElementLocateTimeout
+        {
+            get
+            {
+                return (TimeSpan)this[ElementLocateTimeoutElementName];
+            }
+
+            set
+            {
+                this[ElementLocateTimeoutElementName] = value;
+            }
+        }
+
 		/// <summary>
 		/// Gets or sets the provider for the element.
 		/// </summary>
@@ -49,5 +71,36 @@ namespace SpecBind.Configuration
 				this[ProviderElementName] = value;
 			}
 		}
+
+        /// <summary>
+        /// Gets or sets the timeout for waiting for a page to load.
+        /// </summary>
+        /// <value>The timeout for waiting for a page to load.</value>
+        [ConfigurationProperty(PageLoadTimeoutElementName, DefaultValue = "00:00:30", IsRequired = false)]
+        public TimeSpan PageLoadTimeout
+        {
+            get
+            {
+                return (TimeSpan)this[PageLoadTimeoutElementName];
+            }
+
+            set
+            {
+                this[PageLoadTimeoutElementName] = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the settings.
+        /// </summary>
+        /// <value>The settings.</value>
+        [ConfigurationProperty(SettingsElementName, IsRequired = false)]
+        public NameValueConfigurationCollection Settings
+        {
+            get
+            {
+                return this[SettingsElementName] as NameValueConfigurationCollection ?? new NameValueConfigurationCollection();
+            }
+        }
 	}
 }

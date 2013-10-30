@@ -79,6 +79,8 @@ namespace SpecBind.CodedUI.IntegrationTests.Features
 this.ScenarioSetup(scenarioInfo);
 #line 4
  testRunner.Given("I navigated to the Echo Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 5
+   testRunner.And("I was on the Echo Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "Field",
@@ -92,7 +94,7 @@ this.ScenarioSetup(scenarioInfo);
             table1.AddRow(new string[] {
                         "Country",
                         "United States of America"});
-#line 5
+#line 6
   testRunner.When("I enter data", ((string)(null)), table1, "When ");
 #line hidden
             this.ScenarioCleanup();

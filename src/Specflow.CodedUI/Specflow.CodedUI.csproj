@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Specflow.CodedUI</RootNamespace>
-    <AssemblyName>Specflow.CodedUI</AssemblyName>
+    <AssemblyName>SpecBindCodedUIPlugin.Generator.SpecflowPlugin</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="TechTalk.SpecFlow">
       <HintPath>..\packages\SpecFlow.1.9.0\lib\net35\TechTalk.SpecFlow.dll</HintPath>
@@ -46,20 +47,34 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MsTestCodedUiGeneratorProvider.cs" />
+    <Compile Include="..\SpecBind\Configuration\ApplicationConfigurationElement.cs">
+      <Link>Configuration\ApplicationConfigurationElement.cs</Link>
+    </Compile>
+    <Compile Include="..\SpecBind\Configuration\BrowserFactoryConfigurationElement.cs">
+      <Link>Configuration\BrowserFactoryConfigurationElement.cs</Link>
+    </Compile>
+    <Compile Include="..\SpecBind\Configuration\ConfigurationSectionHandler.cs">
+      <Link>Configuration\ConfigurationSectionHandler.cs</Link>
+    </Compile>
+    <Compile Include="Constants.cs" />
+    <Compile Include="ISpecBindConfigurationProvider.cs" />
+    <Compile Include="SpecBindTestGeneratorProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpecBindGeneratorPlugin.cs" />
+    <Compile Include="SpecBindConfigurationProvider.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Deployment\App.config.transform" />
-    <None Include="Deployment\Uninstall.ps1" />
+    <None Include="Deployment\App.config.install.xdt" />
+    <None Include="Deployment\App.config.uninstall.xdt" />
     <None Include="Deployment\Install.ps1" />
     <None Include="Deployment\SpecFlow.CodedUI.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>mkdir "$(SolutionDir)\lib"
+copy /y "$(TargetPath)" "$(SolutionDir)\lib"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -216,6 +216,16 @@ namespace SpecBind.Pages
 			return typeof(TPageBase) != type && typeof(TPageBase).IsAssignableFrom(type);
 		}
 
+        /// <summary>
+        /// Checks to see if the property type is supported.
+        /// </summary>
+        /// <param name="type">The type being checked.</param>
+        /// <returns><c>true</c> if the type is supported, <c>false</c> otherwise.</returns>
+	    protected virtual bool SupportedPropertyType(Type type)
+        {
+            return type.IsClass;
+        }
+
 		/// <summary>
 		/// Adds the element property.
 		/// </summary>
@@ -300,7 +310,7 @@ namespace SpecBind.Pages
 			this.properties.Add(element.Name, element);
 
 			foreach (var propertyInfo in pageType.GetProperties(Flags).Where(
-												p => p.CanRead && (p.PropertyType.IsClass || p.PropertyType.IsElementListType()) && this.TypeIsNotBaseClass(p)))
+                                                p => p.CanRead && (this.SupportedPropertyType(p.PropertyType) || p.PropertyType.IsElementListType()) && this.TypeIsNotBaseClass(p)))
 			{
 				var propertyData = new PropertyData<TElement>(this) { Name = propertyInfo.Name, PropertyType = propertyInfo.PropertyType };
 
