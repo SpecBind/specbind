@@ -109,3 +109,4 @@ UpgradeLog*.XML
 *.DotSettings
 /examples/FullDemo/ContosoUniversity.sln.GhostDoc.xml
 /src/SpecBind.sln.GhostDoc.xml
+/src/lib
