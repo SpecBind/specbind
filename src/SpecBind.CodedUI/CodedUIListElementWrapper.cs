@@ -16,11 +16,12 @@ namespace SpecBind.CodedUI
 	/// </summary>
 	/// <typeparam name="TElement">The type of the element.</typeparam>
 	/// <typeparam name="TChildElement">The type of the child element.</typeparam>
+	// ReSharper disable once InconsistentNaming
 	public class CodedUIListElementWrapper<TElement, TChildElement> : ListElementWrapper<TElement, TChildElement>
 		where TElement : UITestControl
 		where TChildElement : HtmlControl
 	{
-		private readonly Func<TElement, Action<TChildElement>, TChildElement> builderFunc;
+		private readonly Func<TElement, Action<HtmlControl>, TChildElement> builderFunc;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CodedUIListElementWrapper{TElement, TChildElement}" /> class.
@@ -29,7 +30,7 @@ namespace SpecBind.CodedUI
 		public CodedUIListElementWrapper(TElement parentElement)
 			: base(parentElement)
 		{
-			this.builderFunc = PageBuilder.CreateElement<TElement, TChildElement>(typeof(TChildElement));
+            this.builderFunc = PageBuilder<TElement, TChildElement>.CreateElement(typeof(TChildElement));
 			this.ValidateElementExists = true;
 		}
 
@@ -49,7 +50,7 @@ namespace SpecBind.CodedUI
 		/// <returns>The newly created element.</returns>
 		protected override TChildElement CreateElement(TElement parentElement, int index)
 		{
-			return this.builderFunc(this.Parent, e => this.AssignFilterProperties(e, index));
+			return this.builderFunc(this.Parent, e => AssignFilterProperties(e, index));
 		}
 
 		/// <summary>
@@ -79,7 +80,7 @@ namespace SpecBind.CodedUI
 		/// </summary>
 		/// <param name="element">The element.</param>
 		/// <param name="index">The index.</param>
-		private void AssignFilterProperties(TChildElement element, int index)
+		private static void AssignFilterProperties(HtmlControl element, int index)
 		{
 			var indexString = index.ToString(CultureInfo.InvariantCulture);
 

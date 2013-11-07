@@ -1,6 +1,7 @@
 ﻿// <copyright file="PageBuilderFixture.cs">
 //    Copyright © 2013 Dan Piessens  All rights reserved.
 // </copyright>
+
 namespace SpecBind.CodedUI.Tests
 {
 	using System;
@@ -25,8 +26,10 @@ namespace SpecBind.CodedUI.Tests
 		public void TestCreatePage()
 		{
 			var window = new BrowserWindow();
-			var pageFunc = PageBuilder.CreateElement<BrowserWindow, HtmlDocument>(typeof(BuildPage));
-			var page = pageFunc(window, null) as BuildPage;
+            var pageFunc = PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(BuildPage));
+
+		    var pageObject = pageFunc(window, null);
+            var page = pageObject as BuildPage;
 
 			Assert.IsNotNull(page);
 			Assert.AreEqual("/builds", page.FilterProperties[HtmlDocument.PropertyNames.AbsolutePath]);
@@ -94,7 +97,7 @@ namespace SpecBind.CodedUI.Tests
 			try
 			{
 
-				PageBuilder.CreateElement<BrowserWindow, HtmlDocument>(typeof(NoConstructorElement));
+                PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(NoConstructorElement));
 			}
 			catch (InvalidOperationException ex)
 			{
@@ -129,7 +132,7 @@ namespace SpecBind.CodedUI.Tests
 			var property = docType.GetProperty("FrameNavigation");
 
 			var window = new BrowserWindow();
-			var pageFunc = PageBuilder.CreateFrameLocator<BrowserWindow, HtmlFrame>(docType, property);
+            var pageFunc = PageBuilder<BrowserWindow, HtmlControl>.CreateFrameLocator(docType, property);
 			var page = pageFunc(window);
 
 			Assert.IsNotNull(page);

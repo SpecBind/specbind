@@ -20,7 +20,7 @@ namespace SpecBind.CodedUI
 	// ReSharper disable once InconsistentNaming
     public class CodedUIBrowser : BrowserBase, IDisposable
 	{
-		private readonly Dictionary<Type, Func<UITestControl, Action<HtmlDocument>, HtmlDocument>> pageCache;
+		private readonly Dictionary<Type, Func<UITestControl, Action<HtmlControl>, HtmlDocument>> pageCache;
 		private readonly Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>> frameCache;
 		private readonly Lazy<BrowserWindow> window;
 		
@@ -34,7 +34,7 @@ namespace SpecBind.CodedUI
 		{
 			this.frameCache = new Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>>(GetFrameCache);
 			this.window = browserWindow;
-			this.pageCache = new Dictionary<Type, Func<UITestControl, Action<HtmlDocument>, HtmlDocument>>();
+			this.pageCache = new Dictionary<Type, Func<UITestControl, Action<HtmlControl>, HtmlDocument>>();
 		}
 
 		/// <summary>
@@ -157,10 +157,10 @@ namespace SpecBind.CodedUI
 		/// <returns>The internal document.</returns>
 		private HtmlDocument CreateNativePage(Type pageType)
 		{
-			Func<UITestControl, Action<HtmlDocument>, HtmlDocument> function;
+			Func<UITestControl, Action<HtmlControl>, HtmlDocument> function;
 			if (!this.pageCache.TryGetValue(pageType, out function))
 			{
-				function = PageBuilder.CreateElement<UITestControl, HtmlDocument>(pageType);
+                function = PageBuilder<UITestControl, HtmlDocument>.CreateElement(pageType);
 				this.pageCache.Add(pageType, function);
 			}
 
@@ -217,7 +217,7 @@ namespace SpecBind.CodedUI
 				foreach (var property in frameType.GetProperties()
 												  .Where(p => typeof(HtmlFrame).IsAssignableFrom(p.PropertyType) && p.CanRead && !frames.ContainsKey(p.Name)))
 				{
-					frames.Add(property.Name, PageBuilder.CreateFrameLocator<UITestControl, HtmlFrame>(frameType, property));
+                    frames.Add(property.Name, PageBuilder<UITestControl, HtmlFrame>.CreateFrameLocator(frameType, property));
 				}
 			}
 

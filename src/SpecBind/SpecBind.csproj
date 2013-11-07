@@ -94,6 +94,7 @@
     <Compile Include="Pages\IPageDataFiller.cs" />
     <Compile Include="Pages\IPageMapper.cs" />
     <Compile Include="Pages\PageAliasAttribute.cs" />
+    <Compile Include="Pages\PageBuilderBase.cs" />
     <Compile Include="Pages\PageDataFiller.cs" />
     <Compile Include="Pages\BrowserExtensions.cs" />
     <Compile Include="Pages\PageMapper.cs" />

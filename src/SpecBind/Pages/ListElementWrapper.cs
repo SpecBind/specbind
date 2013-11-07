@@ -12,7 +12,6 @@ namespace SpecBind.Pages
 	/// <typeparam name="TElement">The type of the parent element.</typeparam>
 	/// <typeparam name="TChildElement">The type of the child element.</typeparam>
 	public abstract class ListElementWrapper<TElement, TChildElement> : IElementList<TElement, TChildElement>
-		where TElement : class where TChildElement : class
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ListElementWrapper{T, TChildElement}" /> class.

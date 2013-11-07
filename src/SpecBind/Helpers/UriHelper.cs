@@ -16,8 +16,6 @@ namespace SpecBind.Helpers
 	/// </summary>
 	public static class UriHelper
 	{
-		private static readonly Uri BaseUri;
-
 		/// <summary>
 		/// Initializes the <see cref="UriHelper" /> class.
 		/// </summary>
@@ -34,6 +32,12 @@ namespace SpecBind.Helpers
 			System.Diagnostics.Debug.WriteLine("Application Base URI: {0}", BaseUri);
 		}
 
+        /// <summary>
+        /// Gets or sets the base URI.
+        /// </summary>
+        /// <value>The base URI.</value>
+        internal static Uri BaseUri { get; set; }
+
 		/// <summary>
 		/// Gets the fully qualified page URI.
 		/// </summary>
@@ -41,7 +45,7 @@ namespace SpecBind.Helpers
 		/// <returns>The fully qualifies URI.</returns>
 		public static Uri GetQualifiedPageUri(string subPath)
 		{
-			return new Uri(BaseUri, subPath);
+		    return new Uri(CreateCompleteUri(subPath, false));
 		}
 
 		/// <summary>
@@ -54,7 +58,7 @@ namespace SpecBind.Helpers
 		/// </returns>
 		public static Uri GetQualifiedPageUri(IBrowser browser, Type pageType)
 		{
-			return new Uri(BaseUri, GetPageUri(browser, pageType));
+            return new Uri(CreateCompleteUri(GetPageUri(browser, pageType), false));
 		}
 
         /// <summary>
@@ -65,11 +69,8 @@ namespace SpecBind.Helpers
         /// <returns>The fully qualified URI.</returns>
 	    public static Regex GetQualifiedPageUriRegex(IBrowser browser, Type pageType)
 	    {
-	        // Get base path and trim any triling
-            var basePath = Regex.Escape(BaseUri.ToString().TrimEnd('/', ' '));
-            var detailPath = GetPageUri(browser, pageType);
-            var seperator = detailPath.StartsWith("/") ? string.Empty : "/";
-            return new Regex(string.Concat(basePath, seperator, detailPath));
+	        var detailPath = GetPageUri(browser, pageType);
+            return new Regex(CreateCompleteUri(detailPath, true));
 	    }
 
 		/// <summary>
@@ -168,5 +169,27 @@ namespace SpecBind.Helpers
 
 			return path.ToString();
 		}
+
+        /// <summary>
+        /// Creates the complete URI.
+        /// </summary>
+        /// <param name="subPath">The sub path.</param>
+        /// <param name="isRegex">if set to <c>true</c> the result should be is regex escaped.</param>
+        /// <returns>The formatted URI.</returns>
+	    private static string CreateCompleteUri(string subPath, bool isRegex)
+        {
+            subPath = subPath ?? string.Empty;
+
+	        var basePath = Regex.Escape(BaseUri.ToString().TrimEnd('/', ' '));
+
+            if (isRegex)
+            {
+                basePath = Regex.Escape(basePath);
+            }
+            
+            var seperator = subPath.StartsWith("/") ? string.Empty : "/";
+
+            return string.Concat(basePath, seperator, subPath);
+        }
 	}
 }
