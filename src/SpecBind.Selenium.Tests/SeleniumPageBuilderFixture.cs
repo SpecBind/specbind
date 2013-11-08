@@ -4,7 +4,6 @@
 
 namespace SpecBind.Selenium.Tests
 {
-    using System;
     using System.Linq;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -72,7 +71,6 @@ namespace SpecBind.Selenium.Tests
             AssertLocatorValue(propertyList.Parent, By.Id("ListDiv"));
             
             //Disable validation for test
-            propertyList.ValidateElementExists = false;
 
             // Test First Element
             var element = propertyList.FirstOrDefault();

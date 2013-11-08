@@ -132,16 +132,15 @@ namespace SpecBind.Pages
         /// </summary>
         /// <param name="itemType">Type of the item.</param>
         /// <param name="parentArgument">The parent argument.</param>
-        /// <param name="parentArgumentType">Type of the parent argument.</param>
         /// <param name="rootLocator">The root locator argument if different from the parent.</param>
         /// <returns>The constructor information that matches.</returns>
-        protected virtual Tuple<ConstructorInfo, IEnumerable<Expression>> GetConstructor(Type itemType, Expression parentArgument, Type parentArgumentType, Expression rootLocator)
+        protected virtual Tuple<ConstructorInfo, IEnumerable<Expression>> GetConstructor(Type itemType, ExpressionData parentArgument, ExpressionData rootLocator)
         {
             var constructor = itemType.GetConstructors()
                 .FirstOrDefault(c => c.GetParameters().Length == 1 && typeof(TParent).IsAssignableFrom(c.GetParameters().First().ParameterType));
 
             return constructor != null 
-                ? new Tuple<ConstructorInfo, IEnumerable<Expression>>(constructor, new[] { Expression.Convert(parentArgument, typeof(TParent)) }) 
+                ? new Tuple<ConstructorInfo, IEnumerable<Expression>>(constructor, new[] { Expression.Convert(parentArgument.Expression, typeof(TParent)) }) 
                 : null;
         }
 
@@ -200,9 +199,10 @@ namespace SpecBind.Pages
         /// <exception cref="System.InvalidOperationException">Thrown if the constructor is invalid.</exception>
         private Expression<Func<TParent, Action<TOutput>, TOutput>> CreateNewItemExpression(Type elementType)
         {
-            var parentArgument = Expression.Parameter(typeof(TParent), "parent");
+            var parentParameter = Expression.Parameter(typeof(TParent), "parent");
+            var parentArgument = new ExpressionData(parentParameter, typeof(TParent));
 
-            var constructor = this.GetConstructor(elementType, parentArgument, typeof(TParent), null);
+            var constructor = this.GetConstructor(elementType, parentArgument, null);
             if (constructor == null)
             {
                 throw this.CreateConstructorException(null, elementType);
@@ -223,11 +223,12 @@ namespace SpecBind.Pages
 						                  actionArgument)
 				                  };
 
-            this.MapObjectProperties(expressions, elementType, docVariable, parentArgument);
+            var documentData = new ExpressionData(docVariable, elementType);
+            this.MapObjectProperties(expressions, elementType, documentData, parentArgument);
             expressions.Add(docVariable);
 
             var methodCall = Expression.Block(new[] { docVariable }, expressions);
-            return Expression.Lambda<Func<TParent, Action<TOutput>, TOutput>>(methodCall, parentArgument, actionArgument);
+            return Expression.Lambda<Func<TParent, Action<TOutput>, TOutput>>(methodCall, parentParameter, actionArgument);
         }
 
         /// <summary>
@@ -237,7 +238,7 @@ namespace SpecBind.Pages
         /// <param name="objectType">Type of the object.</param>
         /// <param name="parentVariable">The parent variable.</param>
         /// <param name="rootLocator">The root locator item.</param>
-        private void MapObjectProperties(ICollection<Expression> expressions, Type objectType, Expression parentVariable, Expression rootLocator)
+        private void MapObjectProperties(ICollection<Expression> expressions, Type objectType, ExpressionData parentVariable, ExpressionData rootLocator)
         {
             // ReSharper disable LoopCanBeConvertedToQuery
             foreach (var propertyInfo in objectType.GetProperties().Where(p =>
@@ -266,19 +267,20 @@ namespace SpecBind.Pages
                     var parentListVariable = Expression.Variable(parentListType, "collectionParent");
                     variableList.Add(parentListVariable);
 
-                    propertyExpressions.AddRange(this.CreateHtmlObject(rootLocator, parentVariable, objectType, parentListVariable, parentListType, propertyInfo.Name, attribute));
+                    propertyExpressions.AddRange(this.CreateHtmlObject(rootLocator, parentVariable, parentListVariable, parentListType, propertyInfo.Name, attribute));
                     propertyExpressions.Add(Expression.Assign(itemVariable, Expression.New(concreteTypeConstructor, parentListVariable)));
                 }
                 else
                 {
                     //Normal path starts here
                     //New up property and then check if for inner properties.
-                    propertyExpressions.AddRange(this.CreateHtmlObject(rootLocator, parentVariable, objectType, itemVariable, propertyType, propertyInfo.Name, attribute));
+                    propertyExpressions.AddRange(this.CreateHtmlObject(rootLocator, parentVariable, itemVariable, propertyType, propertyInfo.Name, attribute));
 
-                    this.MapObjectProperties(propertyExpressions, propertyType, itemVariable, rootLocator);
+                    var itemData = new ExpressionData(itemVariable, propertyType);
+                    this.MapObjectProperties(propertyExpressions, propertyType, itemData, rootLocator);
                 }
 
-                propertyExpressions.Add(Expression.Assign(Expression.Property(parentVariable, propertyInfo), itemVariable));
+                propertyExpressions.Add(Expression.Assign(Expression.Property(parentVariable.Expression, propertyInfo), itemVariable));
                 expressions.Add(Expression.Block(variableList, propertyExpressions));
             }
         }
@@ -288,17 +290,16 @@ namespace SpecBind.Pages
         /// </summary>
         /// <param name="rootLocator">The root locator variable expression.</param>
         /// <param name="parentVariable">The parent variable.</param>
-        /// <param name="parentType">Type of the parent.</param>
         /// <param name="itemVariable">The item variable.</param>
         /// <param name="propertyType">Type of the property.</param>
         /// <param name="propertyName">Name of the property.</param>
         /// <param name="attribute">The attribute.</param>
         /// <returns>The expressions needed to create the list</returns>
-        private IEnumerable<Expression> CreateHtmlObject(Expression rootLocator, Expression parentVariable, Type parentType, Expression itemVariable, Type propertyType, string propertyName, object attribute)
+        private IEnumerable<Expression> CreateHtmlObject(ExpressionData rootLocator, ExpressionData parentVariable, Expression itemVariable, Type propertyType, string propertyName, object attribute)
         {
             var objectType = this.GetPropertyProxyType(propertyType);
 
-            var propConstructor = this.GetConstructor(objectType, parentVariable, parentType, rootLocator);
+            var propConstructor = this.GetConstructor(objectType, parentVariable, rootLocator);
             if (propConstructor == null)
             {
                 throw this.CreateConstructorException(propertyName, objectType);
@@ -309,6 +310,35 @@ namespace SpecBind.Pages
 					       (Expression)Expression.Assign(itemVariable, Expression.New(propConstructor.Item1, propConstructor.Item2)),
 						   Expression.Call(Expression.Constant(this), this.assignMethodInfo, Expression.Convert(itemVariable, typeof(TElement)), Expression.Constant(attribute))
 				       };
+        }
+
+        /// <summary>
+        /// An smart structure for managing expressions and matching types.
+        /// </summary>
+        protected class ExpressionData
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ExpressionData"/> class.
+            /// </summary>
+            /// <param name="expression">The expression.</param>
+            /// <param name="type">The type.</param>
+            public ExpressionData(Expression expression, Type type)
+            {
+                this.Expression = expression;
+                this.Type = type;
+            }
+
+            /// <summary>
+            /// Gets the expression.
+            /// </summary>
+            /// <value>The expression.</value>
+            public Expression Expression { get; private set; }
+
+            /// <summary>
+            /// Gets the type.
+            /// </summary>
+            /// <value>The type.</value>
+            public Type Type { get; private set; }
         }
     }
 }

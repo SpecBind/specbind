@@ -4,9 +4,12 @@
 namespace SpecBind.Selenium
 {
     using System;
+    using System.Collections.ObjectModel;
+    using System.Linq;
 
     using OpenQA.Selenium;
 
+    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -18,7 +21,10 @@ namespace SpecBind.Selenium
         where TElement : IWebElement 
         where TChildElement : class
     {
-        private Func<IWebDriver, Action<object>, object> builderFunc;
+        private readonly Func<ISearchContext, Action<object>, object> builderFunc;
+        private readonly By locator;
+
+        private ReadOnlyCollection<IWebElement> itemCollection;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SeleniumListElementWrapper{TElement, TChildElement}"/> class.
@@ -29,17 +35,8 @@ namespace SpecBind.Selenium
         {
             var builder = new SeleniumPageBuilder();
             this.builderFunc = builder.CreatePage(typeof(TChildElement));
-
-            this.ValidateElementExists = true;
+            this.locator = GetElementLocator();
         }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to validate the element exists.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if the class should validate element exists; otherwise, <c>false</c>.
-        /// </value>
-        public bool ValidateElementExists { get; set; }
 
         /// <summary>
         /// Creates the element.
@@ -49,6 +46,20 @@ namespace SpecBind.Selenium
         /// <returns>The created child element.</returns>
         protected override TChildElement CreateElement(TElement parentElement, int index)
         {
+            if (this.locator != null)
+            {
+                if (this.itemCollection == null)
+                {
+                    this.itemCollection = parentElement.FindElements(this.locator);
+                }
+
+                var element = this.itemCollection.ElementAt(index);
+                if (element != null)
+                {
+                    return (TChildElement)this.builderFunc(element, null);
+                }
+            }
+
             return null;
         }
 
@@ -60,7 +71,20 @@ namespace SpecBind.Selenium
         /// <returns><c>true</c> if the element exists, <c>false</c> otherwise.</returns>
         protected override bool ElementExists(TChildElement element, int expectedIndex)
         {
-            return !ValidateElementExists;
+            return true;
+        }
+
+        /// <summary>
+        /// Gets the element locator.
+        /// </summary>
+        /// <returns>The most important locator attribute.</returns>
+        private static By GetElementLocator()
+        {
+            ElementLocatorAttribute attribute;
+
+            return typeof(TChildElement).TryGetAttribute(out attribute)
+                       ? SeleniumPageBuilder.GetElementLocators(attribute).FirstOrDefault()
+                       : null;
         }
      }
 }

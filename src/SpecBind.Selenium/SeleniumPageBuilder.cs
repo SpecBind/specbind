@@ -17,16 +17,32 @@ namespace SpecBind.Selenium
     /// <summary>
     /// A page builder class that follows Selenium rules for page building.
     /// </summary>
-    public class SeleniumPageBuilder : PageBuilderBase<IWebDriver, object, IWebElement>
+    public class SeleniumPageBuilder : PageBuilderBase<ISearchContext, object, IWebElement>
     {
         /// <summary>
         /// Creates the page.
         /// </summary>
         /// <param name="pageType">Type of the page.</param>
         /// <returns>The created page class.</returns>
-        public Func<IWebDriver, Action<object>, object> CreatePage(Type pageType)
+        public Func<ISearchContext, Action<object>, object> CreatePage(Type pageType)
         {
             return this.CreateElementInternal(pageType);
+        }
+
+        /// <summary>
+        /// Gets the element locators.
+        /// </summary>
+        /// <param name="attribute">The attribute.</param>
+        /// <returns>The list of locators to use.</returns>
+        internal static List<By> GetElementLocators(ElementLocatorAttribute attribute)
+        {
+            var locators = new List<By>(3);
+            SetProperty(locators, attribute, a => By.Id(a.Id), a => a.Id != null);
+            SetProperty(locators, attribute, a => By.Name(a.Name), a => a.Name != null);
+            SetProperty(locators, attribute, a => By.TagName(a.TagName), a => a.TagName != null);
+            SetProperty(locators, attribute, a => By.ClassName(a.Class), a => a.Class != null);
+            SetProperty(locators, attribute, a => By.LinkText(a.Text), a => a.Text != null);
+            return locators;
         }
 
         /// <summary>
@@ -43,12 +59,7 @@ namespace SpecBind.Selenium
             }
 
             // Convert any locator property to "find by" classes
-            var locators = new List<By>(3);
-            SetProperty(locators, attribute, a => By.Id(a.Id), a => a.Id != null);
-            SetProperty(locators, attribute, a => By.Name(a.Name), a => a.Name != null);
-            SetProperty(locators, attribute, a => By.TagName(a.TagName), a => a.TagName != null);
-            SetProperty(locators, attribute, a => By.ClassName(a.Class), a => a.Class != null);
-            SetProperty(locators, attribute, a => By.LinkText(a.Text), a => a.Text != null);
+            var locators = GetElementLocators(attribute);
 
             // Also try to parse the native attributes
             var nativeAttributes = control.GetType().GetCustomAttributes(typeof(FindsByAttribute), true)
@@ -89,10 +100,9 @@ namespace SpecBind.Selenium
         /// </summary>
         /// <param name="itemType">Type of the item.</param>
         /// <param name="parentArgument">The parent argument.</param>
-        /// <param name="parentArgumentType">Type of the parent argument.</param>
         /// <param name="rootLocator">The root locator if different from the parent.</param>
         /// <returns>The constructor information that matches.</returns>
-        protected override Tuple<ConstructorInfo, IEnumerable<Expression>> GetConstructor(Type itemType, Expression parentArgument, Type parentArgumentType, Expression rootLocator)
+        protected override Tuple<ConstructorInfo, IEnumerable<Expression>> GetConstructor(Type itemType, ExpressionData parentArgument, ExpressionData rootLocator)
         {
             foreach (var constructorInfo in itemType.GetConstructors(BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
@@ -107,9 +117,9 @@ namespace SpecBind.Selenium
                     typeof(ISearchContext).IsAssignableFrom(firstParameter.ParameterType))
                 {
                     // Need a build page or context here see if the parent matches
-                    var parentArg = (rootLocator != null && !typeof(ISearchContext).IsAssignableFrom(parentArgumentType))
-                                        ? rootLocator
-                                        : parentArgument;
+                    var parentArg = (rootLocator != null && !typeof(ISearchContext).IsAssignableFrom(parentArgument.Type))
+                                        ? rootLocator.Expression
+                                        : parentArgument.Expression;
 
                     return new Tuple<ConstructorInfo, IEnumerable<Expression>>(constructorInfo, new[] { Expression.Convert(parentArg, firstParameter.ParameterType) });
                 }
