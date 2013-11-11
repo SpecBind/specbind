@@ -72,19 +72,6 @@ namespace SpecBind.CodedUI.Tests
 			var propertyList = (CodedUIListElementWrapper<HtmlDiv, ListItem>)page.MyCollection;
 			Assert.IsNotNull(propertyList.Parent);
 			Assert.AreEqual("ListDiv", propertyList.Parent.SearchProperties[HtmlControl.PropertyNames.Id]);
-
-			//Disable validation for test
-			propertyList.ValidateElementExists = false;
-
-			// Test First Element
-			var element = propertyList.FirstOrDefault();
-			
-			Assert.IsNotNull(element);
-			Assert.AreEqual("LI", element.SearchProperties[HtmlControl.PropertyNames.TagName]);
-			Assert.AreEqual("1", element.FilterProperties[HtmlControl.PropertyNames.TagInstance]);
-
-			Assert.IsNotNull(element.MyTitle);
-			Assert.AreEqual("itemTitle", element.MyTitle.SearchProperties[HtmlControl.PropertyNames.Id]);
 		}
 
 		/// <summary>
