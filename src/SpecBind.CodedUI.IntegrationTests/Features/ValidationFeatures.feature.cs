@@ -20,7 +20,7 @@ namespace SpecBind.CodedUI.IntegrationTests.Features
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [Microsoft.VisualStudio.TestTools.UITesting.CodedUITestAttribute()]
     [Microsoft.VisualStudio.TestTools.UnitTesting.DeploymentItemAttribute("SpecBind.CodedUI.dll")]
-    public partial class ValidationFeaturesFeature
+    public partial class FieldValidationFeaturesFeature
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
@@ -32,7 +32,7 @@ namespace SpecBind.CodedUI.IntegrationTests.Features
         public static void FeatureSetup(Microsoft.VisualStudio.TestTools.UnitTesting.TestContext testContext)
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Validation Features", "", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Field Validation Features", "", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -47,9 +47,9 @@ namespace SpecBind.CodedUI.IntegrationTests.Features
         public virtual void TestInitialize()
         {
             if (((TechTalk.SpecFlow.FeatureContext.Current != null) 
-                        && (TechTalk.SpecFlow.FeatureContext.Current.FeatureInfo.Title != "Validation Features")))
+                        && (TechTalk.SpecFlow.FeatureContext.Current.FeatureInfo.Title != "Field Validation Features")))
             {
-                SpecBind.CodedUI.IntegrationTests.Features.ValidationFeaturesFeature.FeatureSetup(null);
+                SpecBind.CodedUI.IntegrationTests.Features.FieldValidationFeaturesFeature.FeatureSetup(null);
             }
         }
         
@@ -71,7 +71,7 @@ namespace SpecBind.CodedUI.IntegrationTests.Features
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Validate Field Equality For a Text Field")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Validation Features")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Field Validation Features")]
         public virtual void ValidateFieldEqualityForATextField()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Validate Field Equality For a Text Field", ((string[])(null)));
@@ -141,7 +141,7 @@ this.ScenarioSetup(scenarioInfo);
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Validate Field Existence and Enabled")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Validation Features")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Field Validation Features")]
         public virtual void ValidateFieldExistenceAndEnabled()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Validate Field Existence and Enabled", ((string[])(null)));
@@ -172,190 +172,6 @@ this.ScenarioSetup(scenarioInfo);
                         ""});
 #line 29
    testRunner.Then("I see", ((string)(null)), table3, "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Validate List \"Start With\" Validator")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Validation Features")]
-        public virtual void ValidateListStartWithValidator()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Validate List \"Start With\" Validator", ((string[])(null)));
-#line 35
-this.ScenarioSetup(scenarioInfo);
-#line 36
-  testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 37
-       testRunner.And("I chose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 38
-    testRunner.And("I was on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 39
-   testRunner.When("I choose Search", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Field",
-                        "Rule",
-                        "Value"});
-            table4.AddRow(new string[] {
-                        "First Name",
-                        "Equals",
-                        "Carson"});
-            table4.AddRow(new string[] {
-                        "Last Name",
-                        "Equals",
-                        "Alexander"});
-#line 40
-   testRunner.Then("I see results grid list starts with", ((string)(null)), table4, "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Validate List \"Ends With\" Validator")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Validation Features")]
-        public virtual void ValidateListEndsWithValidator()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Validate List \"Ends With\" Validator", ((string[])(null)));
-#line 45
-this.ScenarioSetup(scenarioInfo);
-#line 46
-  testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 47
-       testRunner.And("I chose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 48
-    testRunner.And("I was on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 49
-   testRunner.When("I choose Search", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Field",
-                        "Rule",
-                        "Value"});
-            table5.AddRow(new string[] {
-                        "First Name",
-                        "Equals",
-                        "Arturo"});
-            table5.AddRow(new string[] {
-                        "Last Name",
-                        "Equals",
-                        "Anand"});
-#line 50
-   testRunner.Then("I see results grid list ends with", ((string)(null)), table5, "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Validate List \"Contains\" Validator")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Validation Features")]
-        public virtual void ValidateListContainsValidator()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Validate List \"Contains\" Validator", ((string[])(null)));
-#line 55
-this.ScenarioSetup(scenarioInfo);
-#line 56
-  testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 57
-       testRunner.And("I chose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 58
-    testRunner.And("I was on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 59
-   testRunner.When("I choose Search", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Field",
-                        "Rule",
-                        "Value"});
-            table6.AddRow(new string[] {
-                        "First Name",
-                        "Equals",
-                        "Meredith"});
-            table6.AddRow(new string[] {
-                        "Last Name",
-                        "Equals",
-                        "Alonso"});
-#line 60
-   testRunner.Then("I see results grid list contains", ((string)(null)), table6, "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Validate List \"Equals\" Validator")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Validation Features")]
-        public virtual void ValidateListEqualsValidator()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Validate List \"Equals\" Validator", ((string[])(null)));
-#line 65
-this.ScenarioSetup(scenarioInfo);
-#line 66
-  testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 67
-       testRunner.And("I chose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 68
-    testRunner.And("I was on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Field",
-                        "Value"});
-            table7.AddRow(new string[] {
-                        "Find by name",
-                        "Alonso"});
-#line 69
-   testRunner.When("I enter data", ((string)(null)), table7, "When ");
-#line 72
-    testRunner.And("I choose Search", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Field",
-                        "Rule",
-                        "Value"});
-            table8.AddRow(new string[] {
-                        "First Name",
-                        "Equals",
-                        "Meredith"});
-            table8.AddRow(new string[] {
-                        "Last Name",
-                        "Equals",
-                        "Alonso"});
-#line 73
-   testRunner.Then("I see results grid list equals", ((string)(null)), table8, "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Validate List \"Does Not Contain\" Validator")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Validation Features")]
-        public virtual void ValidateListDoesNotContainValidator()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Validate List \"Does Not Contain\" Validator", ((string[])(null)));
-#line 78
-this.ScenarioSetup(scenarioInfo);
-#line 79
-  testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 80
-       testRunner.And("I chose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 81
-    testRunner.And("I was on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 82
-   testRunner.When("I choose Search", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-            TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Field",
-                        "Rule",
-                        "Value"});
-            table9.AddRow(new string[] {
-                        "First Name",
-                        "Equals",
-                        "Bob"});
-            table9.AddRow(new string[] {
-                        "Last Name",
-                        "Equals",
-                        "Smitty"});
-#line 83
-   testRunner.Then("I see results grid list does not contain", ((string)(null)), table9, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

@@ -21,7 +21,7 @@ namespace ContosoUniversity.Controllers
         public ViewResult Index()
         {
             var departments = db.Departments.Include(d => d.Administrator);
-            return View(departments.ToList());
+            return View(departments.OrderBy(d => d.Name).ToList());
         }
 
         //

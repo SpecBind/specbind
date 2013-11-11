@@ -117,7 +117,7 @@ namespace SpecBind.CodedUI
 
 	        var pageList = new List<string>
 	                           {
-	                               localWindow.Uri.PathAndQuery + localWindow.Uri.Fragment
+	                               localWindow.Uri.ToString()
 	                           };
 
             if (page != null)

@@ -185,7 +185,7 @@ namespace SpecBind.Pages
             }
 
             ElementLocatorAttribute locatorAttribute;
-            if (controlType.TryGetAttribute(out locatorAttribute) && control is TElement)
+            if (controlType.TryGetAttribute(out locatorAttribute))
             {
                 this.AssignPageElementAttributes(control, locatorAttribute);
             }

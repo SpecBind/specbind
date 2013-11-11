@@ -38,6 +38,13 @@ namespace SpecBind.CodedUI.IntegrationTests.Pages
         public HtmlHyperlink Courses { get; set; }
 
         /// <summary>
+        /// Gets or sets the departments link button.
+        /// </summary>
+        /// <value>The departments link button.</value>
+        [ElementLocator(Id = "departmentsLink")]
+        public HtmlHyperlink Departments { get; set; }
+
+        /// <summary>
         /// Gets or sets the login link button.
         /// </summary>
         /// <value>The login link button.</value>

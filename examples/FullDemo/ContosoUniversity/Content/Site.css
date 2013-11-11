@@ -331,3 +331,30 @@ div#title {
 .tri-state {
     width: 6em;
 }
+
+/* Special Layout */
+.actionSet {
+    margin: 16px 0 0 0;
+}
+
+.itemGroup {
+    display: block;
+    border: 1px solid #444444;
+    padding: 0 1.4em 1.4em 1.4em;
+    margin: 3em;
+    max-width: 300px
+}
+
+.itemSet {
+    clear: both;
+}
+
+.itemSet .display-label {
+    float: left;
+    margin: 0 8px 0 0;
+}
+
+.itemSet .display-field {
+    margin: 16px 0 0 0;
+    color: #000000;
+}

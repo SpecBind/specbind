@@ -4,7 +4,8 @@
 namespace SpecBind.CodedUI
 {
 	using System;
-	using System.Globalization;
+	using System.Collections.Generic;
+	using System.Linq;
 
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
@@ -22,7 +23,10 @@ namespace SpecBind.CodedUI
 		where TChildElement : HtmlControl
 	{
 		private readonly Func<TElement, Action<HtmlControl>, TChildElement> builderFunc;
+        private readonly object lockObject;
 
+        private List<TChildElement> items;
+        
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CodedUIListElementWrapper{TElement, TChildElement}" /> class.
 		/// </summary>
@@ -31,6 +35,8 @@ namespace SpecBind.CodedUI
 			: base(parentElement)
 		{
             this.builderFunc = PageBuilder<TElement, TChildElement>.CreateElement(typeof(TChildElement));
+            this.lockObject = new object();
+
 			this.ValidateElementExists = true;
 		}
 
@@ -50,7 +56,9 @@ namespace SpecBind.CodedUI
 		/// <returns>The newly created element.</returns>
 		protected override TChildElement CreateElement(TElement parentElement, int index)
 		{
-			return this.builderFunc(this.Parent, e => AssignFilterProperties(e, index));
+		    var elementList = this.CreateElementList(parentElement);
+
+		    return (index > 0 && index <= elementList.Count) ? elementList[index - 1] : default(TChildElement);
 		}
 
 		/// <summary>
@@ -61,13 +69,13 @@ namespace SpecBind.CodedUI
 		/// <returns><c>true</c> if the element exists.</returns>
 		protected override bool ElementExists(TChildElement element, int expectedIndex)
 		{
-			if (!this.ValidateElementExists)
+            if (!this.ValidateElementExists)
 			{
 				return true;
 			}
-
-			var rowElement = element as HtmlRow;
-			if (rowElement != null && rowElement.RowIndex != expectedIndex)
+            
+		    var rowElement = element as HtmlRow;
+			if (rowElement != null && (!rowElement.Exists || rowElement.RowIndex != expectedIndex))
 			{
 				return false;
 			}
@@ -75,22 +83,71 @@ namespace SpecBind.CodedUI
 			return element.Exists;
 		}
 
-		/// <summary>
-		/// Assigns the filter properties.
-		/// </summary>
-		/// <param name="element">The element.</param>
-		/// <param name="index">The index.</param>
-		private static void AssignFilterProperties(HtmlControl element, int index)
+	    /// <summary>
+	    /// Assigns the filter properties.
+	    /// </summary>
+	    /// <param name="element">The element.</param>
+	    private static void ClearSearchProperties(UITestControl element)
 		{
-			var indexString = index.ToString(CultureInfo.InvariantCulture);
-
-			if (typeof(HtmlRow).IsAssignableFrom(typeof(TChildElement)))
-			{
-				element.FilterProperties[HtmlRow.PropertyNames.RowIndex] = indexString;
-				return;
-			}
-
-			element.FilterProperties[HtmlControl.PropertyNames.TagInstance] = indexString;
+            // Clear any search and filter properties for the wrapper element.
+            element.SearchProperties.Clear();
+            element.FilterProperties.Clear();
 		}
+
+	    /// <summary>
+	    /// Creates the child proxy element.
+	    /// </summary>
+	    /// <param name="parentElement">The parent element.</param>
+	    /// <param name="control">The control.</param>
+	    /// <returns>The created child element.</returns>
+	    private TChildElement CreateChildProxyElement(TElement parentElement, UITestControl control)
+        {
+            var childElement =  this.builderFunc(parentElement, ClearSearchProperties);
+
+            childElement.CopyFrom(control);
+
+            return childElement;
+        }
+
+        /// <summary>
+        /// Creates the element list.
+        /// </summary>
+        /// <param name="parentElement">The parent element.</param>
+        /// <returns>The list of child elements.</returns>
+        private List<TChildElement> CreateElementList(TElement parentElement)
+	    {
+	        lock (this.lockObject)
+	        {
+	            if (this.items == null)
+	            {
+                    try
+	                {
+	                    var templateItem = this.builderFunc(parentElement, null);
+	                    var childList = templateItem.FindMatchingControls();
+
+                        var itemCollection = childList.Select((control, index) => this.CreateChildProxyElement(parentElement, control));
+                                              
+
+	                    if (typeof(HtmlRow).IsAssignableFrom(typeof(TChildElement)))
+	                    {
+	                        this.items = itemCollection.OfType<HtmlRow>()
+                                                       .OrderBy(r => r.RowIndex)
+                                                       .Cast<TChildElement>()
+                                                       .ToList();
+	                    }
+	                    else
+	                    {
+	                        this.items = itemCollection.ToList();
+	                    }
+	                }
+	                catch (Exception)
+	                {
+                        this.items = new List<TChildElement>(0);
+	                }
+	            }
+
+	            return this.items;
+	        }
+	    }
 	}
 }

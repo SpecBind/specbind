@@ -1,4 +1,4 @@
-﻿Feature: Validation Features
+﻿Feature: Field Validation Features
 
 Scenario: Validate Field Equality For a Text Field
 	 Given I navigated to the Home page
@@ -31,57 +31,4 @@ Scenario: Validate Field Existence and Enabled
 		   | Course Title | Exists         |       |
 		   | Course Title | Enabled        |       |
 		   #| Foo          | Does Not Exist |       | --> this may still need some work.
-
-Scenario: Validate List "Start With" Validator
-	 Given I navigated to the Home page
-       And I chose Students
-	   And I was on the Students Search page
-	  When I choose Search
-	  Then I see results grid list starts with
-		   | Field      | Rule   | Value     |
-		   | First Name | Equals | Carson    |
-		   | Last Name  | Equals | Alexander |
-
-Scenario: Validate List "Ends With" Validator
-	 Given I navigated to the Home page
-       And I chose Students
-	   And I was on the Students Search page
-	  When I choose Search
-	  Then I see results grid list ends with
-		   | Field      | Rule   | Value  |
-		   | First Name | Equals | Arturo |
-		   | Last Name  | Equals | Anand  |
-
-Scenario: Validate List "Contains" Validator
-	 Given I navigated to the Home page
-       And I chose Students
-	   And I was on the Students Search page
-	  When I choose Search
-	  Then I see results grid list contains
-		   | Field      | Rule   | Value    |
-		   | First Name | Equals | Meredith |
-		   | Last Name  | Equals | Alonso   |
-
-Scenario: Validate List "Equals" Validator
-	 Given I navigated to the Home page
-       And I chose Students
-	   And I was on the Students Search page
-	  When I enter data
-		   | Field        | Value  |
-		   | Find by name | Alonso |
-	   And I choose Search
-	  Then I see results grid list equals
-		   | Field      | Rule   | Value    |
-		   | First Name | Equals | Meredith |
-		   | Last Name  | Equals | Alonso   |
-
-Scenario: Validate List "Does Not Contain" Validator
-	 Given I navigated to the Home page
-       And I chose Students
-	   And I was on the Students Search page
-	  When I choose Search
-	  Then I see results grid list does not contain
-		   | Field      | Rule   | Value  |
-		   | First Name | Equals | Bob    |
-		   | Last Name  | Equals | Smitty |
 		  

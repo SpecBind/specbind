@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<ContosoUniversity.Models.Department>
-
 @{
     ViewBag.Title = "Departments";
 }
@@ -9,35 +8,32 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table>
-    <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Budget</th>
-        <th>Start Date</th>
-        <th>Administrator</th>
-    </tr>
+<div id="departmentList">
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.DepartmentID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.DepartmentID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.DepartmentID })
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Budget)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StartDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Administrator.FullName)
-        </td>
-    </tr>
-}
-
-</table>
+    @foreach (var item in Model)
+    {
+        <div id="departmentItem" class="itemGroup">
+            <div class="itemSet">
+                <div class="display-label">Name</div>
+                <div id="name" class="display-field">@Html.DisplayFor(modelItem => item.Name)</div>
+            </div>
+            <div class="itemSet">
+                <div class="display-label">Budget</div>
+                <div id="budget" class="display-field">@Html.DisplayFor(modelItem => item.Budget)</div>
+            </div>
+            <div class="itemSet">
+                <div class="display-label">Start Date</div>
+                <div id="startDate" class="display-field">@Html.DisplayFor(modelItem => item.StartDate)</div>
+            </div>
+            <div class="itemSet">
+                <div class="display-label">Administrator</div>
+                <div id="administrator" class="display-field">@Html.DisplayFor(modelItem => item.Administrator.FullName)</div>
+            </div>
+            <div id="actionSet">
+                @Html.ActionLink("Edit", "Edit", new { id = item.DepartmentID }) |
+            @Html.ActionLink("Details", "Details", new { id = item.DepartmentID }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.DepartmentID })
+            </div>
+        </div>
+    }
+</div>

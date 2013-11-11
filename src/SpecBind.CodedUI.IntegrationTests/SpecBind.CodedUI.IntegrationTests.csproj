@@ -62,10 +62,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ControlPlaygroundFeature.feature</DependentUpon>
     </Compile>
+    <Compile Include="Features\DivListValidationTests.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DivListValidationTests.feature</DependentUpon>
+    </Compile>
     <Compile Include="Features\InputTests.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>InputTests.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Features\TableListValidationTests.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TableListValidationTests.feature</DependentUpon>
     </Compile>
     <Compile Include="Features\NavigationTests.feature.cs">
       <AutoGen>True</AutoGen>
@@ -95,6 +105,7 @@
     <Compile Include="Pages\AboutPage.cs" />
     <Compile Include="Pages\CoursesSearchPage.cs" />
     <Compile Include="Pages\CreateCoursePage.cs" />
+    <Compile Include="Pages\DepartmentSearchPage.cs" />
     <Compile Include="Pages\HomePage.cs" />
     <Compile Include="Pages\LogOnPage.cs" />
     <Compile Include="Pages\PlaygroundPage.cs" />
@@ -125,9 +136,17 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ControlPlaygroundFeature.feature.cs</LastGenOutput>
     </None>
+    <None Include="Features\DivListValidationTests.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>DivListValidationTests.feature.cs</LastGenOutput>
+    </None>
     <None Include="Features\InputTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>InputTests.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\TableListValidationTests.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>TableListValidationTests.feature.cs</LastGenOutput>
     </None>
     <None Include="Features\NavigationTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
