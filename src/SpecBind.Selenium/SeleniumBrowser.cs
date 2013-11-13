@@ -6,6 +6,8 @@ namespace SpecBind.Selenium
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing.Imaging;
+    using System.IO;
 
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.PageObjects;
@@ -75,6 +77,37 @@ namespace SpecBind.Selenium
         public override void GoTo(Uri url)
         {
             this.driver.Value.Navigate().GoToUrl(url);
+        }
+
+        /// <summary>
+        /// Takes the screenshot from the native browser.
+        /// </summary>
+        /// <param name="imageFolder">The image folder.</param>
+        /// <param name="fileNameBase">The file name base.</param>
+        /// <returns>The complete file path if created; otherwise <c>null</c>.</returns>
+        public override string TakeScreenshot(string imageFolder, string fileNameBase)
+        {
+            var localDriver = this.driver.Value;
+            var takesScreenshot = localDriver as ITakesScreenshot;
+
+            if (takesScreenshot == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                var fullPath = Path.Combine(imageFolder, string.Format("{0}.jpg", fileNameBase));
+                
+                var screenshot = takesScreenshot.GetScreenshot();
+                screenshot.SaveAsFile(fullPath, ImageFormat.Jpeg);
+
+                return fullPath;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>

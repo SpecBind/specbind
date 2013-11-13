@@ -5,6 +5,7 @@
 namespace SpecBind.BrowserSupport
 {
 	using System;
+	using System.IO;
 
 	using BoDi;
 
@@ -13,8 +14,9 @@ namespace SpecBind.BrowserSupport
 	using SpecBind.Pages;
 
 	using TechTalk.SpecFlow;
+	using TechTalk.SpecFlow.Tracing;
 
-	/// <summary>
+    /// <summary>
 	/// A hooks support class for the web driver.
 	/// </summary>
 	[Binding]
@@ -66,7 +68,11 @@ namespace SpecBind.BrowserSupport
 		[AfterScenario]
 		public void TearDownWebDriver()
 		{
-			var browser = this.objectContainer.Resolve<IBrowser>();
+            var browser = this.objectContainer.Resolve<IBrowser>();
+
+            // Check for an error and capture a screenshot
+            this.CheckForScreenshot(browser);
+
 			browser.Close();
 
 // ReSharper disable SuspiciousTypeConversion.Global
@@ -77,5 +83,28 @@ namespace SpecBind.BrowserSupport
 				dispoable.Dispose();
 			}
 		}
+
+        /// <summary>
+        /// Checks for screenshot.
+        /// </summary>
+        /// <param name="browser">The browser.</param>
+        private void CheckForScreenshot(IBrowser browser)
+        {
+            var scenarioHelper = this.objectContainer.Resolve<IScenarioContextHelper>();
+            if (scenarioHelper.GetError() == null)
+            {
+                return;
+            }
+            
+            var fileName = scenarioHelper.GetStepFileName();
+            var basePath = Directory.GetCurrentDirectory();
+            var fullPath = browser.TakeScreenshot(basePath, fileName);
+
+            var traceListener = this.objectContainer.Resolve<ITraceListener>();
+            if (fullPath != null && traceListener != null)
+            {
+                traceListener.WriteTestOutput("Created Error Screenshot: {0}", fullPath);       
+            }
+        }
 	}
 }

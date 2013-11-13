@@ -5,6 +5,8 @@ namespace SpecBind.CodedUI
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Drawing.Imaging;
+	using System.IO;
 	using System.Linq;
 	
 	using Microsoft.VisualStudio.TestTools.UITesting;
@@ -87,6 +89,31 @@ namespace SpecBind.CodedUI
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+
+        /// <summary>
+        /// Takes the screenshot from the native browser.
+        /// </summary>
+        /// <param name="imageFolder">The image folder.</param>
+        /// <param name="fileNameBase">The file name base.</param>
+        /// <returns>The complete file path if created; otherwise <c>null</c>.</returns>
+	    public override string TakeScreenshot(string imageFolder, string fileNameBase)
+        {
+            var localBrowser = this.window.Value;
+
+            try
+            {
+                var fullPath = Path.Combine(imageFolder, string.Format("{0}.jpg", fileNameBase));
+
+                var screenshot = localBrowser.CaptureImage();
+                screenshot.Save(fullPath, ImageFormat.Jpeg);
+
+                return fullPath;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
 
 		/// <summary>
 		/// Releases unmanaged and - optionally - managed resources.

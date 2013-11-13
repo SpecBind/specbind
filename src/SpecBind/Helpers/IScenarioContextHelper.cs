@@ -3,7 +3,9 @@
 // </copyright>
 namespace SpecBind.Helpers
 {
-	/// <summary>
+    using System;
+
+    /// <summary>
 	/// An interface that provides the target class with the scenario context.
 	/// </summary>
 	public interface IScenarioContextHelper
@@ -16,6 +18,18 @@ namespace SpecBind.Helpers
 		///   <c>true</c> the current scenario contains the specified tag; otherwise, <c>false</c>.
 		/// </returns>
 		bool ContainsTag(string tag);
+
+        /// <summary>
+        /// Gets the error.
+        /// </summary>
+        /// <returns>The exception if it exists; otherwise <c>null</c>.</returns>
+        Exception GetError();
+
+        /// <summary>
+        /// Gets the name of the step file.
+        /// </summary>
+        /// <returns>A unique file name for the scenario.</returns>
+        string GetStepFileName();
 
         /// <summary>
         /// Determines whether the current scenario's feature contains the specified tag.

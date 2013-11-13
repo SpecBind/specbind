@@ -151,7 +151,18 @@ namespace SpecBind.Watin
 			return new WatinPage(WatiN.Core.Page.CreatePage(pageType, this.browser.Value));
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Takes the screenshot from the native browser.
+        /// </summary>
+        /// <param name="imageFolder">The image folder.</param>
+        /// <param name="fileNameBase">The file name base.</param>
+        /// <returns>The full path of the image file.</returns>
+	    public string TakeScreenshot(string imageFolder, string fileNameBase)
+        {
+            return null;
+        }
+
+	    /// <summary>
 		/// Releases unmanaged and - optionally - managed resources.
 		/// </summary>
 		/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>

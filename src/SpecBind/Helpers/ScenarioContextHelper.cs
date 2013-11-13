@@ -10,7 +10,9 @@ namespace SpecBind.Helpers
 	using System.Collections.Generic;
 	using System.Linq;
 
-	/// <summary>
+	using TechTalk.SpecFlow.Tracing;
+
+    /// <summary>
 	/// A helper class to abstract the scenario context.
 	/// </summary>
 	[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
@@ -28,7 +30,24 @@ namespace SpecBind.Helpers
 			return ScenarioContext.Current != null && FindTag(ScenarioContext.Current.ScenarioInfo.Tags, tag);
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Gets the name of the step file.
+        /// </summary>
+        /// <returns>A unique file name for the scenario.</returns>
+	    public string GetStepFileName()
+        {
+            return string.Format(
+                "error_{0}_{1}_{2}",
+                FeatureContext.Current != null
+                    ? FeatureContext.Current.FeatureInfo.Title.ToIdentifier()
+                    : Guid.NewGuid().ToString(),
+                FeatureContext.Current != null
+                    ? ScenarioContext.Current.ScenarioInfo.Title.ToIdentifier()
+                    : Guid.NewGuid().ToString(),
+                DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+        }
+
+	    /// <summary>
 		/// Determines whether the current scenario's feature contains the specified tag.
 		/// </summary>
 		/// <param name="tag">The tag.</param>
@@ -39,6 +58,15 @@ namespace SpecBind.Helpers
 		{
 			return FeatureContext.Current != null && FindTag(FeatureContext.Current.FeatureInfo.Tags, tag);
 		}
+
+        /// <summary>
+        /// Gets the error.
+        /// </summary>
+        /// <returns>The exception if it exists; otherwise <c>null</c>.</returns>
+        public Exception GetError()
+        {
+            return ScenarioContext.Current != null ? ScenarioContext.Current.TestError : null;
+        }
 
 		/// <summary>
 		/// Sets the value.

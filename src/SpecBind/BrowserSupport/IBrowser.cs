@@ -63,5 +63,13 @@ namespace SpecBind.BrowserSupport
 		/// The page object.
 		/// </returns>
 		IPage Page(Type pageType);
+
+        /// <summary>
+        /// Takes the screenshot from the native browser.
+        /// </summary>
+        /// <param name="imageFolder">The image folder.</param>
+        /// <param name="fileNameBase">The file name base.</param>
+        /// <returns>The full path of the image file.</returns>
+	    string TakeScreenshot(string imageFolder, string fileNameBase);
 	}
 }
