@@ -58,7 +58,8 @@ namespace SpecBind.Helpers
 		/// </returns>
 		public static Uri GetQualifiedPageUri(IBrowser browser, Type pageType)
 		{
-            return new Uri(CreateCompleteUri(GetPageUri(browser, pageType), false));
+		    var compiledUri = CreateCompleteUri(GetPageUri(browser, pageType), false);
+            return new Uri(compiledUri);
 		}
 
         /// <summary>
@@ -180,7 +181,7 @@ namespace SpecBind.Helpers
         {
             subPath = subPath ?? string.Empty;
 
-	        var basePath = Regex.Escape(BaseUri.ToString().TrimEnd('/', ' '));
+	        var basePath = BaseUri.ToString().TrimEnd('/', ' ');
 
             if (isRegex)
             {

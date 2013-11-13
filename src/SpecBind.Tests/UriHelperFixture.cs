@@ -52,6 +52,22 @@ namespace SpecBind.Tests
 		}
 
         /// <summary>
+        ///     Tests the get page URI method with a page type and a longer hostname.
+        /// </summary>
+        [TestMethod]
+        public void TestGetDottedHostnameQualifiedPageUriFromPageType()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+            UriHelper.BaseUri = new Uri("http://myapp.qa8.somedomain.com/");
+            var url = UriHelper.GetQualifiedPageUri(browser.Object, typeof(NavigationAttributePage));
+
+            Assert.AreEqual(url, new Uri("http://myapp.qa8.somedomain.com/root"));
+
+            browser.VerifyAll();
+        }
+
+        /// <summary>
         ///     Tests the get page URI method.
         /// </summary>
         [TestMethod]
