@@ -75,6 +75,7 @@
     <Compile Include="SeleniumPageBuilderFixture.cs" />
     <Compile Include="NativeAttributeBuilderFixture.cs" />
     <Compile Include="SeleniumPageFixture.cs" />
+    <Compile Include="WebElementFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SpecBind.Selenium\SpecBind.Selenium.csproj">

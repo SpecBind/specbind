@@ -16,7 +16,6 @@ namespace SpecBind.Selenium
     /// <summary>
     /// Represents a proxy class for an element to be used with the PageFactory.
     /// </summary>
-    [ExcludeFromCodeCoverage]
     public class WebElement : IWebElement, ILocatable, IWrapsElement
     {
         private readonly List<By> bys;
@@ -234,6 +233,7 @@ namespace SpecBind.Selenium
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns><see langword="true" /> if the specified object is equal to the current object; otherwise, <see langword="false" />.</returns>
+        [ExcludeFromCodeCoverage]
         public override bool Equals(object obj)
         {
             return this.WrappedElement.Equals(obj);
