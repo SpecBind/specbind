@@ -89,7 +89,7 @@ namespace SpecBind.CodedUI.Tests
 			catch (InvalidOperationException ex)
 			{
 				Assert.AreEqual(
-					"Constructor on type 'NoConstructorElement' must have a sigle argument of type UITestControl.",
+					"Constructor on type 'NoConstructorElement' must have a single argument of type UITestControl.",
 					ex.Message);
 				throw;
 			}

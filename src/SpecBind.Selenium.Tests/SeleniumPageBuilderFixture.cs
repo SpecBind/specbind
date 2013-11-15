@@ -4,6 +4,8 @@
 
 namespace SpecBind.Selenium.Tests
 {
+    using System.Collections.ObjectModel;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,6 +13,7 @@ namespace SpecBind.Selenium.Tests
     using Moq;
 
     using OpenQA.Selenium;
+    using OpenQA.Selenium.Support.PageObjects;
 
     using SpecBind.Pages;
 
@@ -26,7 +29,21 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestCreatePage()
         {
-            var driver = new Mock<IWebDriver>();
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+
+            var listItem = new Mock<IWebElement>(MockBehavior.Loose);
+            listItem.Setup(l => l.Displayed).Returns(true);
+
+            var itemList = new ReadOnlyCollection<IWebElement>(new[] { listItem.Object });
+
+            // Setup list mock
+            var listElement = new Mock<IWebElement>(MockBehavior.Strict);
+            listElement.Setup(l => l.FindElements(By.TagName("LI"))).Returns(itemList);
+
+            // Setup mock for list
+            driver.Setup(d => d.FindElement(By.Id("ListDiv"))).Returns(listElement.Object);
+
+
             var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(BuildPage));
 
             var pageObject = pageFunc(driver.Object, null);
@@ -36,27 +53,15 @@ namespace SpecBind.Selenium.Tests
             
             Assert.IsNotNull(page.TestButton);
             AssertLocatorValue(page.TestButton, By.Id("MyControl"));
-            //Assert.AreEqual("The Button", page.TestButton.FilterProperties[HtmlButton.PropertyNames.DisplayText]);
+            
+            Assert.IsNotNull(page.CombinedControl);
+            AssertLocatorValue(page.CombinedControl, new ByChained(By.Id("Field1"), By.LinkText("The Button")));
 
             Assert.IsNotNull(page.UserName);
             AssertLocatorValue(page.UserName, By.Name("UserName"));
-            AssertLocatorValue(page.UserName, By.LinkText("Bob"));
             
-            Assert.IsNotNull(page.Image);
-            //Assert.AreEqual("The Image", page.Image.FilterProperties[HtmlImage.PropertyNames.Alt]);
-            //Assert.AreEqual("http://myimage", page.Image.FilterProperties[HtmlImage.PropertyNames.Src]);
-
-            Assert.IsNotNull(page.Hyperlink);
-            //Assert.AreEqual("The Hyperlink", page.Hyperlink.FilterProperties[HtmlHyperlink.PropertyNames.Alt]);
-            //Assert.AreEqual("http://myHyperlink", page.Hyperlink.FilterProperties[HtmlHyperlink.PropertyNames.Href]);
-
-            Assert.IsNotNull(page.HyperlinkArea);
-            //Assert.AreEqual("The Hyperlink Area", page.HyperlinkArea.FilterProperties[HtmlAreaHyperlink.PropertyNames.Alt]);
-            //Assert.AreEqual("http://myHyperlinkArea", page.HyperlinkArea.FilterProperties[HtmlAreaHyperlink.PropertyNames.Href]);
-
             // Nesting Test
             Assert.IsNotNull(page.MyDiv);
-            AssertLocatorValue(page.MyDiv, By.Id("MyDiv"));
             AssertLocatorValue(page.MyDiv, By.ClassName("btn"));
             
             Assert.IsNotNull(page.MyDiv.InternalButton);
@@ -70,17 +75,134 @@ namespace SpecBind.Selenium.Tests
             Assert.IsNotNull(propertyList.Parent);
             AssertLocatorValue(propertyList.Parent, By.Id("ListDiv"));
             
-            //Disable validation for test
-
             // Test First Element
             var element = propertyList.FirstOrDefault();
 			
-            //Assert.IsNotNull(element);
-            //Assert.AreEqual("LI", element.SearchProperties[HtmlControl.PropertyNames.TagName]);
-            //Assert.AreEqual("1", element.FilterProperties[HtmlControl.PropertyNames.TagInstance]);
+            Assert.IsNotNull(element);
+            Assert.IsNotNull(element.MyTitle);
+            AssertLocatorValue(element.MyTitle, By.Id("itemTitle"));
 
-            //Assert.IsNotNull(element.MyTitle);
-            //AssertLocatorValue(element.MyTitle, By.Id("itemTitle"));
+            listElement.VerifyAll();
+            listItem.VerifyAll();
+            driver.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the create page method with mixed attributes.
+        /// </summary>
+        [TestMethod]
+        public void TestCreatePageWithNativeAttributes()
+        {
+            var driver = new Mock<IWebDriver>();
+
+            var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NativeAttributePage));
+
+            var pageObject = pageFunc(driver.Object, null);
+            var page = pageObject as NativeAttributePage;
+
+            Assert.IsNotNull(page);
+            Assert.IsNotNull(page.NativeElement);
+            AssertLocatorValue(page.NativeElement, By.Id("nativeElement"));
+        }
+
+        /// <summary>
+        /// Tests the create page method with mixed attributes.
+        /// </summary>
+        [TestMethod]
+        public void TestCreatePageWithCombinedNativeAndLocatorAttributes()
+        {
+            var driver = new Mock<IWebDriver>();
+
+            var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NativeAttributePage));
+
+            var pageObject = pageFunc(driver.Object, null);
+            var page = pageObject as NativeAttributePage;
+
+            Assert.IsNotNull(page);
+            Assert.IsNotNull(page.CombinedElement);
+            AssertLocatorValue(page.CombinedElement, new ByChained(By.Id("combined"), By.TagName("DIV")));
+        }
+
+        /// <summary>
+        /// Tests the create page method with duplicate attributes.
+        /// </summary>
+        [TestMethod]
+        public void TestCreatePageWithDuplicateNativeAndLocatorAttributes()
+        {
+            var driver = new Mock<IWebDriver>();
+
+            var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NativeAttributePage));
+
+            var pageObject = pageFunc(driver.Object, null);
+            var page = pageObject as NativeAttributePage;
+
+            Assert.IsNotNull(page);
+            Assert.IsNotNull(page.DuplicateElement);
+            AssertLocatorValue(page.DuplicateElement, By.Id("1234"));
+        }
+
+        /// <summary>
+        /// Tests the create page method.
+        /// </summary>
+        [TestMethod]
+        public void TestCreatePageWithNativeProperties()
+        {
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+
+            var listItem = new Mock<IWebElement>(MockBehavior.Loose);
+            listItem.Setup(l => l.Displayed).Returns(true);
+
+            var itemList = new ReadOnlyCollection<IWebElement>(new[] { listItem.Object });
+
+            // Setup list mock
+            var listElement = new Mock<IWebElement>(MockBehavior.Strict);
+            listElement.Setup(l => l.FindElements(By.TagName("LI"))).Returns(itemList);
+
+            // Setup mock for list
+            driver.Setup(d => d.FindElement(By.Id("ListDiv"))).Returns(listElement.Object);
+
+
+            var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(BuildPage));
+
+            var pageObject = pageFunc(driver.Object, null);
+            var page = pageObject as BuildPage;
+
+            Assert.IsNotNull(page);
+
+            Assert.IsNotNull(page.TestButton);
+            AssertLocatorValue(page.TestButton, By.Id("MyControl"));
+
+            Assert.IsNotNull(page.CombinedControl);
+            AssertLocatorValue(page.CombinedControl, new ByChained(By.Id("Field1"), By.LinkText("The Button")));
+
+            Assert.IsNotNull(page.UserName);
+            AssertLocatorValue(page.UserName, By.Name("UserName"));
+
+            // Nesting Test
+            Assert.IsNotNull(page.MyDiv);
+            AssertLocatorValue(page.MyDiv, By.ClassName("btn"));
+
+            Assert.IsNotNull(page.MyDiv.InternalButton);
+            AssertLocatorValue(page.MyDiv.InternalButton, By.Id("InternalItem"));
+
+            //List Test
+            Assert.IsNotNull(page.MyCollection);
+            Assert.IsInstanceOfType(page.MyCollection, typeof(SeleniumListElementWrapper<IWebElement, ListItem>));
+
+            var propertyList = (SeleniumListElementWrapper<IWebElement, ListItem>)page.MyCollection;
+            Assert.IsNotNull(propertyList.Parent);
+            AssertLocatorValue(propertyList.Parent, By.Id("ListDiv"));
+
+            // Test First Element
+            var element = propertyList.FirstOrDefault();
+
+            Assert.IsNotNull(element);
+            Assert.IsNotNull(element.MyTitle);
+            AssertLocatorValue(element.MyTitle, By.Id("itemTitle"));
+
+            listElement.VerifyAll();
+            listItem.VerifyAll();
+            driver.VerifyAll();
         }
 
         /// <summary>
@@ -139,6 +261,7 @@ namespace SpecBind.Selenium.Tests
         /// </summary>
         /// <param name="element">The element.</param>
         /// <param name="findBy">The find by.</param>
+        [ExcludeFromCodeCoverage]
         private static void AssertLocatorValue(IWebElement element, By findBy)
         {
             var proxy = element as WebElement;
@@ -207,8 +330,17 @@ namespace SpecBind.Selenium.Tests
             /// <value>
             /// The test button.
             /// </value>
-            [ElementLocator(Id = "MyControl", Text = "The Button")]
+            [ElementLocator(Id = "MyControl")]
             public IWebElement TestButton { get; set; }
+
+            /// <summary>
+            /// Gets or sets the combined locator button.
+            /// </summary>
+            /// <value>
+            /// The test button.
+            /// </value>
+            [ElementLocator(Id = "Field1", Text = "The Button")]
+            public IWebElement CombinedControl { get; set; }
 
             /// <summary>
             /// Gets or sets my div.
@@ -216,7 +348,7 @@ namespace SpecBind.Selenium.Tests
             /// <value>
             /// My div.
             /// </value>
-            [ElementLocator(Id = "MyDiv", Class = "btn")]
+            [ElementLocator(Class = "btn")]
             public CustomDiv MyDiv { get; set; }
 
             /// <summary>
@@ -225,35 +357,8 @@ namespace SpecBind.Selenium.Tests
             /// <value>
             /// The name of the user.
             /// </value>
-            [ElementLocator(Name = "UserName", Text = "Bob")]
+            [ElementLocator(Name = "UserName")]
             public IWebElement UserName { get; set; }
-
-            /// <summary>
-            /// Gets or sets the image.
-            /// </summary>
-            /// <value>
-            /// The image.
-            /// </value>
-            [ElementLocator(Alt = "The Image", Url = "http://myimage")]
-            public IWebElement Image { get; set; }
-
-            /// <summary>
-            /// Gets or sets the hyperlink.
-            /// </summary>
-            /// <value>
-            /// The hyperlink.
-            /// </value>
-            [ElementLocator(Alt = "The Hyperlink", Url = "http://myHyperlink")]
-            public IWebElement Hyperlink { get; set; }
-
-            /// <summary>
-            /// Gets or sets the hyperlink.
-            /// </summary>
-            /// <value>
-            /// The hyperlink.
-            /// </value>
-            [ElementLocator(Alt = "The Hyperlink Area", Url = "http://myHyperlinkArea")]
-            public IWebElement HyperlinkArea { get; set; }
 
             /// <summary>
             /// Gets or sets my collection.
@@ -293,8 +398,17 @@ namespace SpecBind.Selenium.Tests
         /// An inner list item.
         /// </summary>
         [ElementLocator(TagName = "LI")]
-        public class ListItem
+        public class ListItem : WebElement
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="WebElement" /> class.
+            /// </summary>
+            /// <param name="searchContext">The driver used to search for elements.</param>
+            protected internal ListItem(ISearchContext searchContext)
+                : base(searchContext)
+            {
+            }
+
             /// <summary>
             /// Gets or sets my title.
             /// </summary>
@@ -303,6 +417,39 @@ namespace SpecBind.Selenium.Tests
             /// </value>
             [ElementLocator(Id = "itemTitle")]
             public IWebElement MyTitle { get; set; }
+        }
+
+        #endregion
+
+        #region Class - NativeAttributePage
+
+        /// <summary>
+        /// A test class with native combined and duplicated attributes.
+        /// </summary>
+        public class NativeAttributePage
+        {
+            /// <summary>
+            /// Gets or sets an element that has combined properties.
+            /// </summary>
+            /// <value>The element.</value>
+            [ElementLocator(Id = "combined")]
+            [FindsBy(How = How.TagName, Using = "DIV")]
+            public IWebElement CombinedElement { get; set; }
+
+            /// <summary>
+            /// Gets or sets an element that has duplicate properties.
+            /// </summary>
+            /// <value>The element.</value>
+            [ElementLocator(Id = "1234")]
+            [FindsBy(How = How.Id, Using = "1234")]
+            public IWebElement DuplicateElement { get; set; }
+
+            /// <summary>
+            /// Gets or sets an element that has only native properties.
+            /// </summary>
+            /// <value>The element.</value>
+            [FindsBy(How = How.Id, Using = "nativeElement")]
+            public IWebElement NativeElement { get; set; }
         }
 
         #endregion

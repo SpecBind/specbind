@@ -4,6 +4,7 @@
 namespace SpecBind.Pages
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
@@ -27,7 +28,7 @@ namespace SpecBind.Pages
         /// </summary>
         protected PageBuilderBase()
         {
-            this.assignMethodInfo = new Action<TElement, ElementLocatorAttribute>(this.AssignElementAttributes).GetMethodInfo();
+            this.assignMethodInfo = new Action<TElement, ElementLocatorAttribute, object[]>(this.AssignElementAttributes).GetMethodInfo();
         }
 
         /// <summary>
@@ -35,7 +36,8 @@ namespace SpecBind.Pages
         /// </summary>
         /// <param name="control">The control.</param>
         /// <param name="attribute">The attribute.</param>
-        protected abstract void AssignElementAttributes(TElement control, ElementLocatorAttribute attribute);
+        /// <param name="nativeAttributes">The native attributes.</param>
+        protected abstract void AssignElementAttributes(TElement control, ElementLocatorAttribute attribute, object[] nativeAttributes);
 
         /// <summary>
         /// Assigns the page element attributes.
@@ -52,6 +54,16 @@ namespace SpecBind.Pages
         /// </summary>
         /// <returns>A type that implements IElementList.</returns>
         protected abstract Type GetElementCollectionType();
+
+        /// <summary>
+        /// Gets the custom driver specific attributes for a given type.
+        /// </summary>
+        /// <param name="propertyInfo">Type of the item.</param>
+        /// <returns>The collection of custom attributes.</returns>
+        protected virtual object[] GetCustomAttributes(PropertyInfo propertyInfo)
+        {
+            return new object[0];
+        }
 
         /// <summary>
         /// Checks to see if the control is the same type as the base class and performs the appropriate actions.
@@ -119,7 +131,7 @@ namespace SpecBind.Pages
             else
             {
                 message = string.Format(
-                    "Constructor on type '{0}' must have a sigle argument of type {1}.",
+                    "Constructor on type '{0}' must have a single argument of type {1}.",
                     expectedControlType.Name,
                     typeof(TParent).Name);
             }
@@ -246,8 +258,9 @@ namespace SpecBind.Pages
             // ReSharper restore LoopCanBeConvertedToQuery
             {
                 var propertyType = propertyInfo.PropertyType;
-                var attribute = propertyInfo.GetCustomAttributes(typeof(ElementLocatorAttribute), false).FirstOrDefault();
-                if (attribute == null)
+                var attribute = propertyInfo.GetCustomAttributes(typeof(ElementLocatorAttribute), false).FirstOrDefault() as ElementLocatorAttribute;
+                var customAttributes = this.GetCustomAttributes(propertyInfo);
+                if (attribute == null && customAttributes.Length == 0)
                 {
                     continue;
                 }
@@ -267,14 +280,14 @@ namespace SpecBind.Pages
                     var parentListVariable = Expression.Variable(parentListType, "collectionParent");
                     variableList.Add(parentListVariable);
 
-                    propertyExpressions.AddRange(this.CreateHtmlObject(rootLocator, parentVariable, parentListVariable, parentListType, propertyInfo.Name, attribute));
+                    propertyExpressions.AddRange(this.CreateHtmlObject(rootLocator, parentVariable, parentListVariable, parentListType, propertyInfo.Name, attribute, customAttributes));
                     propertyExpressions.Add(Expression.Assign(itemVariable, Expression.New(concreteTypeConstructor, parentListVariable)));
                 }
                 else
                 {
                     //Normal path starts here
                     //New up property and then check if for inner properties.
-                    propertyExpressions.AddRange(this.CreateHtmlObject(rootLocator, parentVariable, itemVariable, propertyType, propertyInfo.Name, attribute));
+                    propertyExpressions.AddRange(this.CreateHtmlObject(rootLocator, parentVariable, itemVariable, propertyType, propertyInfo.Name, attribute, customAttributes));
 
                     var itemData = new ExpressionData(itemVariable, propertyType);
                     this.MapObjectProperties(propertyExpressions, propertyType, itemData, rootLocator);
@@ -294,8 +307,16 @@ namespace SpecBind.Pages
         /// <param name="propertyType">Type of the property.</param>
         /// <param name="propertyName">Name of the property.</param>
         /// <param name="attribute">The attribute.</param>
+        /// <param name="nativeAttributes">The native attributes.</param>
         /// <returns>The expressions needed to create the list</returns>
-        private IEnumerable<Expression> CreateHtmlObject(ExpressionData rootLocator, ExpressionData parentVariable, Expression itemVariable, Type propertyType, string propertyName, object attribute)
+        private IEnumerable<Expression> CreateHtmlObject(
+            ExpressionData rootLocator, 
+            ExpressionData parentVariable,
+            Expression itemVariable, 
+            Type propertyType, 
+            string propertyName, 
+            ElementLocatorAttribute attribute,
+            IEnumerable nativeAttributes)
         {
             var objectType = this.GetPropertyProxyType(propertyType);
 
@@ -308,7 +329,11 @@ namespace SpecBind.Pages
             return new[]
 				       {
 					       (Expression)Expression.Assign(itemVariable, Expression.New(propConstructor.Item1, propConstructor.Item2)),
-						   Expression.Call(Expression.Constant(this), this.assignMethodInfo, Expression.Convert(itemVariable, typeof(TElement)), Expression.Constant(attribute))
+						   Expression.Call(Expression.Constant(this), 
+                                           this.assignMethodInfo,
+                                           Expression.Convert(itemVariable, typeof(TElement)),
+                                           Expression.Constant(attribute, typeof(ElementLocatorAttribute)),
+                                           Expression.Constant(nativeAttributes, typeof(object[])))
 				       };
         }
 

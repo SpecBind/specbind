@@ -6,12 +6,12 @@ namespace SpecBind.Selenium
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Drawing.Imaging;
     using System.IO;
 
     using OpenQA.Selenium;
-    using OpenQA.Selenium.Support.PageObjects;
-
+    
     using SpecBind.BrowserSupport;
     using SpecBind.Pages;
 
@@ -21,6 +21,8 @@ namespace SpecBind.Selenium
     public class SeleniumBrowser : BrowserBase, IDisposable
     {
         private readonly Lazy<IWebDriver> driver;
+        private readonly SeleniumPageBuilder pageBuilder;
+        private readonly Dictionary<Type, Func<IWebDriver, Action<object>, object>> pageCache;
 
         private bool disposed;
 
@@ -31,11 +33,15 @@ namespace SpecBind.Selenium
         public SeleniumBrowser(Lazy<IWebDriver> driver)
         {
             this.driver = driver;
+
+            this.pageBuilder = new SeleniumPageBuilder();
+            this.pageCache = new Dictionary<Type, Func<IWebDriver, Action<object>, object>>();
         }
 
         /// <summary>
         /// Finalizes an instance of the <see cref="SeleniumBrowser" /> class.
 		/// </summary>
+        [ExcludeFromCodeCoverage]
         ~SeleniumBrowser()
 		{
 			this.Dispose(false);
@@ -129,11 +135,17 @@ namespace SpecBind.Selenium
         /// <returns>The created page object.</returns>
         protected override IPage CreateNativePage(Type pageType, bool verifyPageValidity)
         {
-            var item = Activator.CreateInstance(pageType);
             var webDriver = this.driver.Value;
-            
-            PageFactory.InitElements(webDriver, item);
-            return new SeleniumPage(item);
+
+            Func<IWebDriver, Action<object>, object> pageBuildMethod;
+            if (!this.pageCache.TryGetValue(pageType, out pageBuildMethod))
+            {
+                pageBuildMethod = pageBuilder.CreatePage(pageType);
+                this.pageCache.Add(pageType, pageBuildMethod);
+            }
+
+            var nativePage = pageBuildMethod(webDriver, null);
+            return new SeleniumPage(nativePage);
         }
 
         /// <summary>

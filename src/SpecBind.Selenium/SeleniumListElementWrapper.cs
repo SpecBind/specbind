@@ -53,10 +53,18 @@ namespace SpecBind.Selenium
                     this.itemCollection = parentElement.FindElements(this.locator);
                 }
 
-                var element = this.itemCollection.ElementAt(index);
+                var element = (index > 0 && index <= this.itemCollection.Count) ? this.itemCollection[index - 1] : null;
                 if (element != null)
                 {
-                    return (TChildElement)this.builderFunc(element, null);
+                    var childElement = (TChildElement)this.builderFunc(parentElement, null);
+
+                    var webElement = childElement as WebElement;
+                    if (webElement != null)
+                    {
+                        webElement.CloneNativeElement(element);
+                    }
+
+                    return childElement;
                 }
             }
 
@@ -71,7 +79,8 @@ namespace SpecBind.Selenium
         /// <returns><c>true</c> if the element exists, <c>false</c> otherwise.</returns>
         protected override bool ElementExists(TChildElement element, int expectedIndex)
         {
-            return true;
+            var webElement = element as IWebElement;
+            return webElement == null || webElement.Displayed;
         }
 
         /// <summary>

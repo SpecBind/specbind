@@ -51,7 +51,8 @@ namespace SpecBind.CodedUI
         /// </summary>
         /// <param name="control">The control.</param>
         /// <param name="attribute">The attribute.</param>
-        protected override void AssignElementAttributes(HtmlControl control, ElementLocatorAttribute attribute)
+        /// <param name="nativeAttributes">The native attributes.</param>
+        protected override void AssignElementAttributes(HtmlControl control, ElementLocatorAttribute attribute, object[] nativeAttributes)
 		{
 			SetProperty(control.SearchProperties, HtmlControl.PropertyNames.Id, attribute.Id);
 			SetProperty(control.SearchProperties, UITestControl.PropertyNames.Name, attribute.Name);
@@ -99,7 +100,7 @@ namespace SpecBind.CodedUI
         /// <param name="locatorAttribute">The locator attribute.</param>
         protected override void AssignPageElementAttributes(TOutput control, ElementLocatorAttribute locatorAttribute)
         {
-            this.AssignElementAttributes(control, locatorAttribute);
+            this.AssignElementAttributes(control, locatorAttribute, null);
         }
 
         /// <summary>

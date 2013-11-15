@@ -36,15 +36,23 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
         /// </summary>
         /// <value>The results grid.</value>
         [ElementLocator(Id = "resultsGrid")]
-        [FindsBy(How = How.Id, Using = "resultsGrid")]
         public IElementList<IWebElement, PersonTableRow> ResultsGrid { get; set; }
 
         /// <summary>
         /// A nested class to represent the result row
         /// </summary>
         [ElementLocator(Id = "resultRow")]
-        public class PersonTableRow
+        public class PersonTableRow : WebElement
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="PersonTableRow" /> class.
+            /// </summary>
+            /// <param name="searchContext">The driver used to search for elements.</param>
+            public PersonTableRow(ISearchContext searchContext)
+                : base(searchContext)
+            {
+            }
+
             /// <summary>
             /// Gets or sets the first name cell.
             /// </summary>
@@ -70,6 +78,13 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
             [ElementLocator(Id = "enrollmentDate")]
             [FindsBy(How = How.Id, Using = "enrollmentDate")]
             public IWebElement EnrollmentDate { get; set; }
+
+            /// <summary>
+            /// Gets or sets the details link.
+            /// </summary>
+            /// <value>The details link.</value>
+            [ElementLocator(Id = "detailsLink")]
+            public IWebElement Details { get; set; }
         }
     }
 }

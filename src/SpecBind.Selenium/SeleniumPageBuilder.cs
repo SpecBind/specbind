@@ -42,6 +42,7 @@ namespace SpecBind.Selenium
             SetProperty(locators, attribute, a => By.TagName(a.TagName), a => a.TagName != null);
             SetProperty(locators, attribute, a => By.ClassName(a.Class), a => a.Class != null);
             SetProperty(locators, attribute, a => By.LinkText(a.Text), a => a.Text != null);
+
             return locators;
         }
 
@@ -50,7 +51,8 @@ namespace SpecBind.Selenium
         /// </summary>
         /// <param name="control">The control.</param>
         /// <param name="attribute">The attribute.</param>
-        protected override void AssignElementAttributes(IWebElement control, ElementLocatorAttribute attribute)
+        /// <param name="nativeAttributes">The native attributes.</param>
+        protected override void AssignElementAttributes(IWebElement control, ElementLocatorAttribute attribute, object[] nativeAttributes)
         {
             var proxy = control as WebElement;
             if (proxy == null)
@@ -59,25 +61,32 @@ namespace SpecBind.Selenium
             }
 
             // Convert any locator property to "find by" classes
-            var locators = GetElementLocators(attribute);
+            var locators = attribute != null ? GetElementLocators(attribute) : new List<By>();
 
             // Also try to parse the native attributes
-            var nativeAttributes = control.GetType().GetCustomAttributes(typeof(FindsByAttribute), true)
-                                                    .OfType<FindsByAttribute>()
-                                                    .ToList();
-            if (nativeAttributes.Count > 0)
+            var nativeItems = nativeAttributes != null ?  nativeAttributes.OfType<FindsByAttribute>().ToList() : null;
+
+            if (nativeItems != null && nativeItems.Count > 0)
             {
-                foreach (var locator in nativeAttributes
-                                            .Where(a => a.Using != null)
-                                            .OrderBy(n => n.Priority)
-                                            .Select(CreateNativeLocator)
-                                            .Where(l => l != null && !locators.Any(c => Equals(c, l))))
-                {
-                    locators.Add(locator);
-                }
+                var localLocators = locators;
+                locators.AddRange(nativeItems.Where(a => a.Using != null)
+                                             .OrderBy(n => n.Priority)
+                                             .Select(NativeAttributeBuilder.GetLocator)
+                                             .Where(l => l != null && !localLocators.Any(c => Equals(c, l))));
             }
 
+            locators = locators.Count > 1 ? new List<By> { new ByChained(locators.ToArray()) } : locators;
             proxy.UpdateLocators(locators);
+        }
+
+        /// <summary>
+        /// Gets the custom attributes.
+        /// </summary>
+        /// <param name="propertyInfo">Type of the item.</param>
+        /// <returns>A collection of custom attributes.</returns>
+        protected override object[] GetCustomAttributes(PropertyInfo propertyInfo)
+        {
+            return propertyInfo.GetCustomAttributes(typeof(FindsByAttribute), true);
         }
 
         /// <summary>
@@ -138,47 +147,6 @@ namespace SpecBind.Selenium
         protected override Type GetElementCollectionType()
         {
             return typeof(SeleniumListElementWrapper<,>);
-        }
-
-        /// <summary>
-        /// Creates the native locator attribute.
-        /// </summary>
-        /// <param name="attribute">The attribute.</param>
-        /// <returns>The created locator.</returns>
-        private static By CreateNativeLocator(FindsByAttribute attribute)
-        {
-            var how = attribute.How;
-            var usingValue = attribute.Using;
-            switch (how)
-            {
-                case How.Id:
-                    return By.Id(usingValue);
-                case How.Name:
-                    return By.Name(usingValue);
-                case How.TagName:
-                    return By.TagName(usingValue);
-                case How.ClassName:
-                    return By.ClassName(usingValue);
-                case How.CssSelector:
-                    return By.CssSelector(usingValue);
-                case How.LinkText:
-                    return By.LinkText(usingValue);
-                case How.PartialLinkText:
-                    return By.PartialLinkText(usingValue);
-                case How.XPath:
-                    return By.XPath(usingValue);
-                case How.Custom:
-                    if (attribute.CustomFinderType == null ||
-                        !attribute.CustomFinderType.IsSubclassOf(typeof(By)))
-                    {
-                        return null;
-                    }
-
-                    var constructor = attribute.CustomFinderType.GetConstructor(new[] { typeof(string) });
-                    return constructor != null ? constructor.Invoke(new object[] { usingValue }) as By : null;
-                default:
-                    return null;
-            }
         }
 
         /// <summary>

@@ -18,6 +18,7 @@ namespace SpecBind.Selenium
     /// </summary>
     public class SeleniumPage : PageBase<object, IWebElement>
     {
+        private readonly SeleniumPageBuilder builder;
         private readonly object nativePage;
 
         /// <summary>
@@ -27,6 +28,8 @@ namespace SpecBind.Selenium
         public SeleniumPage(object nativePage) : base(nativePage.GetType())
         {
             this.nativePage = nativePage;
+
+            this.builder = new SeleniumPageBuilder();
         }
 
         /// <summary>
@@ -92,7 +95,6 @@ namespace SpecBind.Selenium
         /// <returns>The child page as a scope.</returns>
         public override IPage GetPageFromElement(IWebElement element)
         {
-            PageFactory.InitElements(element, element);
             return new SeleniumPage(element);
         }
 

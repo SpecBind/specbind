@@ -33,7 +33,7 @@
     <tr id="resultRow">
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.PersonID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.PersonID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.PersonID }, new { id="detailsLink" }) |
             @Html.ActionLink("Delete", "Delete", new { id=item.PersonID })
         </td>
         <td id="lastName">@Html.DisplayFor(modelItem => item.LastName)</td>

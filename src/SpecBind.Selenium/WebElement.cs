@@ -326,6 +326,16 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Clones the native element, setting <paramref name="nativeElement"/> as the core element.
+        /// </summary>
+        /// <param name="nativeElement">The native element.</param>
+        internal void CloneNativeElement(IWebElement nativeElement)
+        {
+            this.Cache = true;
+            this.cachedElement = nativeElement;
+        }
+
+        /// <summary>
         /// Updates the locators for the element.
         /// </summary>
         /// <param name="locators">The locators.</param>
