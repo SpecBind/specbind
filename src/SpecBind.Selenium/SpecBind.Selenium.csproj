@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="NativeAttributeBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RemoteScreenshotWebDriver.cs" />
     <Compile Include="SeleniumBrowser.cs" />
     <Compile Include="SeleniumBrowserFactory.cs" />
     <Compile Include="WebElement.cs" />

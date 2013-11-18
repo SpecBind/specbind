@@ -148,8 +148,7 @@ namespace SpecBind.Selenium
                 capability.SetCapability(setting.Name, setting.Value);
             }
 
-
-            remoteWebDriver = new RemoteWebDriver(remoteUri, capability);
+            remoteWebDriver = new RemoteScreenshotWebDriver(remoteUri, capability);
             return true;
         }
     }
