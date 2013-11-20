@@ -33,6 +33,8 @@ namespace SpecBind
 		private const string EnsureOnDialogStepRegex = @"I am on the (.+) dialog";
 		private const string EnsureOnListItemRegex = @"I am on list (.+) item ([0-9]+)";
 		private const string EnterDataInFieldsStepRegex = @"I enter data";
+        private const string NavigateToPageStepRegex = @"I navigate to the (.+) page";
+        private const string NavigateToPageWithParamsStepRegex = @"I navigate to the (.+) page with parameters";
 		private const string ObserveDataStepRegex = @"I see";
 		private const string ObserveListDataStepRegex = @"I see (.+) list ([A-Za-z ]+)";
 		private const string ChooseALinkStepRegex = @"I choose (.+)";
@@ -82,6 +84,7 @@ namespace SpecBind
 		/// </summary>
 		/// <param name="pageName">The page name.</param>
 		[Given(GivenEnsureOnPageStepRegex)]
+        [When(EnsureOnPageStepRegex)]
 		[Then(EnsureOnPageStepRegex)]
 		public void GivenEnsureOnPageStep(string pageName)
 		{
@@ -114,6 +117,7 @@ namespace SpecBind
 		/// <param name="listName">Name of the list.</param>
 		/// <param name="itemNumber">The item number.</param>
 		[Given(GivenEnsureOnListItemRegex)]
+        [When(EnsureOnListItemRegex)]
 		[Then(EnsureOnListItemRegex)]
 		public void GivenEnsureOnListItemStep(string listName, int itemNumber)
 		{
@@ -144,6 +148,8 @@ namespace SpecBind
 		/// </summary>
 		/// <param name="pageName">The page name.</param>
 		[Given(GivenNavigateToPageStepRegex)]
+        [When(NavigateToPageStepRegex)]
+        [Then(NavigateToPageStepRegex)]
 		public void GivenNavigateToPageStep(string pageName)
 		{
 			this.GivenNavigateToPageWithArgumentsStep(pageName, null);
@@ -155,6 +161,8 @@ namespace SpecBind
 		/// <param name="pageName">The page name.</param>
 		/// <param name="pageArguments">The page arguments.</param>
 		[Given(GivenNavigateToPageWithParamsStepRegex)]
+        [When(NavigateToPageWithParamsStepRegex)]
+        [Then(NavigateToPageWithParamsStepRegex)]
 		public void GivenNavigateToPageWithArgumentsStep(string pageName, Table pageArguments)
 		{
 			var type = this.GetPageType(pageName);
