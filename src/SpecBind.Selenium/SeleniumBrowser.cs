@@ -13,6 +13,7 @@ namespace SpecBind.Selenium
     using OpenQA.Selenium;
     
     using SpecBind.BrowserSupport;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -25,6 +26,7 @@ namespace SpecBind.Selenium
         private readonly Dictionary<Type, Func<IWebDriver, Action<object>, object>> pageCache;
 
         private bool disposed;
+        private bool switchedContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SeleniumBrowser"/> class.
@@ -137,6 +139,19 @@ namespace SpecBind.Selenium
         {
             var webDriver = this.driver.Value;
 
+            // Check to see if a frames reference exists, and switch if needed
+            PageNavigationAttribute navigationAttribute;
+            if (pageType.TryGetAttribute(out navigationAttribute) && !string.IsNullOrWhiteSpace(navigationAttribute.FrameName))
+            {
+                webDriver.SwitchTo().Frame(navigationAttribute.FrameName);
+                this.switchedContext = true;
+            }
+            else if (this.switchedContext)
+            {
+                webDriver.SwitchTo().DefaultContent();
+                this.switchedContext = false;
+            }
+
             Func<IWebDriver, Action<object>, object> pageBuildMethod;
             if (!this.pageCache.TryGetValue(pageType, out pageBuildMethod))
             {
@@ -145,6 +160,7 @@ namespace SpecBind.Selenium
             }
 
             var nativePage = pageBuildMethod(webDriver, null);
+
             return new SeleniumPage(nativePage);
         }
 
