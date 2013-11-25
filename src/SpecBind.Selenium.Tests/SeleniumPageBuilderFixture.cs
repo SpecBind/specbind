@@ -88,6 +88,49 @@ namespace SpecBind.Selenium.Tests
         }
 
         /// <summary>
+        /// Tests the multiple constructor arguments. when looking for a driver and parent context.
+        /// </summary>
+        [TestMethod]
+        public void TestMultipleConstructorArguments()
+        {
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+
+            var listItem = new Mock<IWebElement>(MockBehavior.Loose);
+            listItem.Setup(l => l.Displayed).Returns(true);
+
+            var itemList = new ReadOnlyCollection<IWebElement>(new[] { listItem.Object });
+
+            // Setup list mock
+            var listElement = new Mock<IWebElement>(MockBehavior.Strict);
+            listElement.Setup(l => l.FindElements(By.TagName("LI"))).Returns(itemList);
+
+            // Setup mock for list
+            driver.Setup(d => d.FindElement(By.Id("ListDiv"))).Returns(listElement.Object);
+
+
+            var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NestedElementPage));
+
+            var pageObject = pageFunc(driver.Object, null);
+            var page = pageObject as NestedElementPage;
+
+            Assert.IsNotNull(page);
+
+            Assert.IsNotNull(page.FirstChild);
+            AssertLocatorValue(page.FirstChild, By.Id("Test1"));
+
+            Assert.IsNotNull(page.FirstChild.SecondChild);
+            AssertLocatorValue(page.FirstChild.SecondChild, By.Id("Test2"));
+
+            var element = page.FirstChild.SecondChild;
+            Assert.IsNotNull(element.SearchContext);
+            Assert.IsNotNull(element.Driver);
+
+            Assert.AreNotSame(element.Driver, element.SearchContext);
+            Assert.AreSame(driver.Object, element.Driver);
+            Assert.AreSame(page.FirstChild, element.SearchContext);
+        }
+
+        /// <summary>
         /// Tests the create page method with mixed attributes.
         /// </summary>
         [TestMethod]
@@ -461,6 +504,75 @@ namespace SpecBind.Selenium.Tests
         /// </summary>
         public class NoConstructorElement
         {
+        }
+
+        #endregion
+
+        #region Class - RequestsDriverInterface
+
+        /// <summary>
+        /// A nested element build page.
+        /// </summary>
+        public class NestedElementPage
+        {
+            /// <summary>
+            /// Gets or sets the first child.
+            /// </summary>
+            /// <value>The first child.</value>
+            [ElementLocator(Id = "Test1")]
+            public NestedElementFirstChild FirstChild { get; set; }
+        }
+
+        /// <summary>
+        /// A nested element build page that requests the first locator child.
+        /// </summary>
+        public class NestedElementFirstChild : WebElement
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="WebElement" /> class.
+            /// </summary>
+            /// <param name="searchContext">The driver used to search for elements.</param>
+            public NestedElementFirstChild(ISearchContext searchContext)
+                : base(searchContext)
+            {
+            }
+
+            /// <summary>
+            /// Gets or sets the second child.
+            /// </summary>
+            /// <value>The second child.</value>
+            [ElementLocator(Id = "Test2")]
+            public RequestsDriverInterface SecondChild { get; set; }
+        }
+
+        /// <summary>
+        /// A test class that requests the parent web driver interface
+        /// </summary>
+        public class RequestsDriverInterface : WebElement
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="WebElement" /> class.
+            /// </summary>
+            /// <param name="driver">The driver.</param>
+            /// <param name="searchContext">The driver used to search for elements.</param>
+            public RequestsDriverInterface(IWebDriver driver, ISearchContext searchContext)
+                : base(searchContext)
+            {
+                this.Driver = driver;
+                this.SearchContext = searchContext;
+            }
+
+            /// <summary>
+            /// Gets the driver.
+            /// </summary>
+            /// <value>The driver.</value>
+            public IWebDriver Driver { get; private set; }
+
+            /// <summary>
+            /// Gets the search context.
+            /// </summary>
+            /// <value>The search context.</value>
+            public ISearchContext SearchContext { get; private set; }
         }
 
         #endregion

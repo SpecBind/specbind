@@ -113,24 +113,42 @@ namespace SpecBind.Selenium
         /// <returns>The constructor information that matches.</returns>
         protected override Tuple<ConstructorInfo, IEnumerable<Expression>> GetConstructor(Type itemType, ExpressionData parentArgument, ExpressionData rootLocator)
         {
-            foreach (var constructorInfo in itemType.GetConstructors(BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            foreach (var constructorInfo in itemType.GetConstructors(BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                                                    .OrderByDescending(c => c.GetParameters().Length))
             {
-                var paramters = constructorInfo.GetParameters();
-                if (paramters.Length != 1)
+                var parameters = constructorInfo.GetParameters();
+                if (parameters.Length < 1)
                 {
                     continue;
                 }
+                
+                var slots = new Expression[parameters.Length];
+                slots.Initialize();
 
-                var firstParameter = paramters.First();
-                if (typeof(IWebDriver).IsAssignableFrom(firstParameter.ParameterType) ||
-                    typeof(ISearchContext).IsAssignableFrom(firstParameter.ParameterType))
+                for (var i = 0; i < parameters.Length; i++)
                 {
-                    // Need a build page or context here see if the parent matches
+                    var parameter = parameters[i];
+                    var parameterType = parameter.ParameterType;
+
                     var parentArg = (rootLocator != null && !typeof(ISearchContext).IsAssignableFrom(parentArgument.Type))
                                         ? rootLocator.Expression
                                         : parentArgument.Expression;
 
-                    return new Tuple<ConstructorInfo, IEnumerable<Expression>>(constructorInfo, new[] { Expression.Convert(parentArg, firstParameter.ParameterType) });
+                    // If it's a web driver use that first.
+                    if (typeof(IWebDriver).IsAssignableFrom(parameterType) && rootLocator != null)
+                    {
+                        slots[i] = Expression.Convert(rootLocator.Expression, parameterType);
+                    }
+                    else if (typeof(ISearchContext).IsAssignableFrom(parameterType))
+                    {
+                        // Use a search context second
+                        slots[i] = Expression.Convert(parentArg, parameterType);
+                    }
+                }
+
+                if (slots.All(s => s != null))
+                {
+                    return new Tuple<ConstructorInfo, IEnumerable<Expression>>(constructorInfo, slots);
                 }
             }
 
