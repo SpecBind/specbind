@@ -52,6 +52,22 @@ namespace SpecBind.Tests
 		}
 
         /// <summary>
+		///     Tests the get page URI method with a page type.
+		/// </summary>
+		[TestMethod]
+		public void TestGetQualifiedPageUriFromPageTypeWithAbslouteUriAttribute()
+		{
+			var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+            UriHelper.BaseUri = new Uri("http://localhost:2222/");
+			var url = UriHelper.GetQualifiedPageUri(browser.Object, typeof(AbsoluteUriPage));
+
+            Assert.AreEqual(url, new Uri("http://www.atestsite.com/subpath"));
+
+			browser.VerifyAll();
+		}
+        
+        /// <summary>
         ///     Tests the get page URI method with a page type and a longer hostname.
         /// </summary>
         [TestMethod]
@@ -125,6 +141,22 @@ namespace SpecBind.Tests
 
             Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root"));
             Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root/something123"));
+            
+            browser.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the get page URI method.
+        /// </summary>
+        [TestMethod]
+        public void TestGetQualifiedPageUriWithAbsoluteNavigationPath()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+            UriHelper.BaseUri = new Uri("http://localhost:2222/");
+            var regex = UriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(AbsoluteUriPage));
+
+            Assert.AreEqual(true, regex.IsMatch("http://www.atestsite.com/subpath"));
             
             browser.VerifyAll();
         }
@@ -314,6 +346,14 @@ namespace SpecBind.Tests
         /// </summary>
         [PageNavigation("root")]
         private class NavigationWithNoSlashAttributePage : TestBase
+        {
+        }
+
+        /// <summary>
+        /// A test class for navigation page attribute configurations, an absolute path.
+        /// </summary>
+        [PageNavigation("http://www.atestsite.com/subpath", IsAbsoluteUrl = true)]
+        private class AbsoluteUriPage : TestBase
         {
         }
         // ReSharper restore ClassNeverInstantiated.Local

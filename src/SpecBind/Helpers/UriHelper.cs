@@ -45,7 +45,7 @@ namespace SpecBind.Helpers
 		/// <returns>The fully qualifies URI.</returns>
 		public static Uri GetQualifiedPageUri(string subPath)
 		{
-		    return new Uri(CreateCompleteUri(subPath, false));
+		    return new Uri(CreateCompleteUri(new UriStructure(subPath, false), false));
 		}
 
 		/// <summary>
@@ -58,7 +58,7 @@ namespace SpecBind.Helpers
 		/// </returns>
 		public static Uri GetQualifiedPageUri(IBrowser browser, Type pageType)
 		{
-		    var compiledUri = CreateCompleteUri(GetPageUri(browser, pageType), false);
+		    var compiledUri = CreateCompleteUri(GetPageUriInternal(browser, pageType), false);
             return new Uri(compiledUri);
 		}
 
@@ -70,7 +70,7 @@ namespace SpecBind.Helpers
         /// <returns>The fully qualified URI.</returns>
 	    public static Regex GetQualifiedPageUriRegex(IBrowser browser, Type pageType)
 	    {
-	        var detailPath = GetPageUri(browser, pageType);
+	        var detailPath = GetPageUriInternal(browser, pageType);
             return new Regex(CreateCompleteUri(detailPath, true));
 	    }
 
@@ -86,19 +86,7 @@ namespace SpecBind.Helpers
 		/// <exception cref="PageNavigationException">Thrown if the page is not able to navigate to.</exception>
 		public static string GetPageUri(IBrowser browser, Type pageType)
 		{
-			PageNavigationAttribute pageNavigationAttribute;
-			if (pageType.TryGetAttribute(out pageNavigationAttribute))
-			{
-				return pageNavigationAttribute.Url;
-			}
-
-			var browserUri = browser.GetUriForPageType(pageType);
-			if (!string.IsNullOrWhiteSpace(browserUri))
-			{
-				return browserUri;
-			}
-
-			throw new PageNavigationException("No PageNavigationAttribute exists on type: {0}", pageType.Name);
+		    return GetPageUriInternal(browser, pageType).Path;
 		}
 
 		/// <summary>
@@ -110,10 +98,11 @@ namespace SpecBind.Helpers
 		/// <returns>The completed string.</returns>
 		public static string FillPageUri(IBrowser browser, Type pageType, IDictionary<string, string> pageArguments)
 		{
-			PageNavigationAttribute pageAttribute;
-			if (!pageType.TryGetAttribute(out pageAttribute) || string.IsNullOrWhiteSpace(pageAttribute.UrlTemplate))
+		    var uriStructure = GetPageUriInternal(browser, pageType);
+
+            if (string.IsNullOrWhiteSpace(uriStructure.UrlTemplate))
 			{
-				return GetPageUri(browser, pageType);
+				return uriStructure.Path;
 			}
 
 			pageArguments = pageArguments ?? new Dictionary<string, string>(0);
@@ -122,7 +111,7 @@ namespace SpecBind.Helpers
 			var uriRegex = new Regex(@"\{([A-Za-z]+)\}");
 
 			return uriRegex.Replace(
-				pageAttribute.UrlTemplate,
+				uriStructure.UrlTemplate,
 				m =>
 					{
 						var groupName = m.Groups[1].Value;
@@ -162,8 +151,7 @@ namespace SpecBind.Helpers
 		/// <returns>The URL the browser navigated to.</returns>
 		public static string NavigateTo(this IBrowser browser, Type pageType)
 		{
-			var subPath = GetPageUri(browser, pageType);
-			var path = GetQualifiedPageUri(subPath);
+			var path = new Uri(CreateCompleteUri(GetPageUriInternal(browser, pageType), false));
 
 			System.Diagnostics.Debug.WriteLine("Uri Helper Navigating to URL: {0}", path);
 			browser.GoTo(path);
@@ -174,12 +162,17 @@ namespace SpecBind.Helpers
         /// <summary>
         /// Creates the complete URI.
         /// </summary>
-        /// <param name="subPath">The sub path.</param>
+        /// <param name="uriStructure">The URI structure.</param>
         /// <param name="isRegex">if set to <c>true</c> the result should be is regex escaped.</param>
         /// <returns>The formatted URI.</returns>
-	    private static string CreateCompleteUri(string subPath, bool isRegex)
+        private static string CreateCompleteUri(UriStructure uriStructure, bool isRegex)
         {
-            subPath = subPath ?? string.Empty;
+            if (uriStructure.IsAbsolute)
+            {
+                return uriStructure.Path;
+            }
+
+            var subPath = uriStructure.Path ?? string.Empty;
 
 	        var basePath = BaseUri.ToString().TrimEnd('/', ' ');
 
@@ -192,5 +185,75 @@ namespace SpecBind.Helpers
 
             return string.Concat(basePath, seperator, subPath);
         }
-	}
+
+        /// <summary>
+        /// Gets the page URL via the page attributes.
+        /// </summary>
+        /// <param name="browser">The browser.</param>
+        /// <param name="pageType">Type of the page.</param>
+        /// <returns>
+        /// The URL stricture from the page.
+        /// </returns>
+        /// <exception cref="PageNavigationException">No PageAttribute or PageNavigationAttribute exists on type: {0}</exception>
+        /// <exception cref="PageNavigationException">Thrown if the page is not able to navigate to.</exception>
+        private static UriStructure GetPageUriInternal(IBrowser browser, Type pageType)
+        {
+            PageNavigationAttribute pageNavigationAttribute;
+            if (pageType.TryGetAttribute(out pageNavigationAttribute))
+            {
+                return new UriStructure(pageNavigationAttribute.Url, 
+                                        pageNavigationAttribute.IsAbsoluteUrl,
+                                        pageNavigationAttribute.UrlTemplate);
+            }
+
+            var browserUri = browser.GetUriForPageType(pageType);
+            if (!string.IsNullOrWhiteSpace(browserUri))
+            {
+                return new UriStructure(browserUri, false);
+            }
+
+            throw new PageNavigationException("No PageNavigationAttribute exists on type: {0}", pageType.Name);
+        }
+
+        #region Private Class - UriStructure
+
+        /// <summary>
+        /// A support class to pass around parsed parameters of the URI.
+        /// </summary>
+	    private class UriStructure
+	    {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="UriStructure" /> class.
+            /// </summary>
+            /// <param name="path">The path.</param>
+            /// <param name="isAbsolute">if set to <c>true</c> the path is an absolute URI.</param>
+            /// <param name="urlTemplate">The fill pattern when publishing a URI.</param>
+            public UriStructure(string path, bool isAbsolute, string urlTemplate = null)
+            {
+                this.IsAbsolute = isAbsolute;
+                this.Path = path;
+                this.UrlTemplate = urlTemplate;
+            }
+
+            /// <summary>
+            /// Gets the fill pattern.
+            /// </summary>
+            /// <value>The fill pattern.</value>
+            public string UrlTemplate { get; private set; }
+
+            /// <summary>
+            /// Gets a value indicating whether this instance is absolute.
+            /// </summary>
+            /// <value><c>true</c> if this instance is absolute; otherwise, <c>false</c>.</value>
+	        public bool IsAbsolute { get; private set; }
+
+            /// <summary>
+            /// Gets the path.
+            /// </summary>
+            /// <value>The path.</value>
+	        public string Path { get; private set; }
+	    }
+
+        #endregion
+    }
 }

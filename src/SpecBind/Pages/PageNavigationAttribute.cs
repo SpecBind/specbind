@@ -27,6 +27,12 @@ namespace SpecBind.Pages
 		/// <value>The name of the frame.</value>
 		public string FrameName { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the <see cref="Url"/> property is a fully qualified URL or not.
+        /// </summary>
+        /// <value><c>true</c> if this instance is absolute URL; otherwise, <c>false</c>.</value>
+	    public bool IsAbsoluteUrl { get; set; }
+
 		/// <summary>
 		/// Gets the URL to navigate to.
 		/// </summary>
