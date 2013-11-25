@@ -251,6 +251,11 @@ namespace SpecBind.CodedUI
 				return EnterFileInput;
 			}
 
+            if (propertyType == typeof(HtmlCustom))
+            {
+                return (control, s) => Keyboard.SendKeys(control, s, ModifierKeys.None);
+            }
+
 			return null;
 		}
 
