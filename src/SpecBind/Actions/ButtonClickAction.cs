@@ -9,26 +9,23 @@ namespace SpecBind.Actions
 	/// <summary>
 	/// An action that performs a button click
 	/// </summary>
-	public class ButtonClickAction : ActionBase
+	internal class ButtonClickAction : ActionBase
 	{
-		private readonly string propertyName;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ButtonClickAction" /> class.
-		/// </summary>
-		/// <param name="propertyName">Name of the property.</param>
-		public ButtonClickAction(string propertyName) : base("Item Click")
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ButtonClickAction" /> class.
+        /// </summary>
+		public ButtonClickAction() : base("Item Click")
 		{
-			this.propertyName = propertyName;
 		}
 
-		/// <summary>
-		/// Executes this instance action.
-		/// </summary>
-		/// <returns>The result of the action.</returns>
-		public override ActionResult Execute()
+        /// <summary>
+        /// Executes this instance action.
+        /// </summary>
+        /// <param name="actionContext">The action context.</param>
+        /// <returns>The result of the action.</returns>
+	    public override ActionResult Execute(ActionContext actionContext)
 		{
-			var propertyData = this.ElementLocator.GetElement(this.propertyName);
+			var propertyData = this.ElementLocator.GetElement(actionContext.PropertyName);
 			propertyData.ClickElement();
 
 			return ActionResult.Successful();

@@ -22,121 +22,6 @@ namespace SpecBind.Tests
 	public class PageDataFillerFixture
 	{
 		/// <summary>
-		///     Tests the fill field with an element that doesn't exist.
-		/// </summary>
-		[TestMethod]
-		[ExpectedException(typeof(ElementExecuteException))]
-		public void TestFillFieldElementDoesNotExist()
-		{
-			var filler = new PageDataFiller();
-			var page = new Mock<IPage>(MockBehavior.Strict);
-
-			IPropertyData propertyData;
-			page.Setup(p => p.TryGetElement("doesnotexist", out propertyData)).Returns(false);
-			page.SetupGet(p => p.PageType).Returns(typeof(TestBase));
-			page.Setup(p => p.GetPropertyNames(It.IsAny<Func<IPropertyData, bool>>())).Returns(new[] { "MyProperty" });
-
-			ExceptionHelper.SetupForException<ElementExecuteException>(
-				() => filler.FillField(page.Object, "doesnotexist", "Hello World!"), e => page.VerifyAll());
-		}
-
-		/// <summary>
-		///     Tests the fill field.
-		/// </summary>
-		[TestMethod]
-		public void TestFillFieldSuccess()
-		{
-			var filler = new PageDataFiller();
-			var page = new Mock<IPage>(MockBehavior.Strict);
-
-			var propData = new Mock<IPropertyData>(MockBehavior.Strict);
-			propData.Setup(p => p.FillData("My Data"));
-
-			var propertyData = propData.Object;
-			page.Setup(p => p.TryGetElement("DisplayArea", out propertyData)).Returns(true);
-
-			filler.FillField(page.Object, "DisplayArea", "My Data");
-
-			page.VerifyAll();
-			propData.VerifyAll();
-		}
-
-		/// <summary>
-		///     Tests the GetElementAsPage with a fields that is a list property.
-		/// </summary>
-		[TestMethod]
-		[ExpectedException(typeof(ElementExecuteException))]
-		public void TestGetElementAsPageExistsButIsAList()
-		{
-			var filler = new PageDataFiller();
-			var page = new Mock<IPage>(MockBehavior.Strict);
-
-			var propData = new Mock<IPropertyData>(MockBehavior.Strict);
-			propData.SetupGet(p => p.IsList).Returns(true);
-
-			var propertyData = propData.Object;
-			page.Setup(p => p.TryGetElement("doesnotexist", out propertyData)).Returns(true);
-			page.SetupGet(p => p.PageType).Returns(typeof(TestBase));
-			page.Setup(p => p.GetPropertyNames(It.IsAny<Func<IPropertyData, bool>>())).Returns(new[] { "MyProperty" });
-
-			ExceptionHelper.SetupForException<ElementExecuteException>(
-				() => filler.GetElementAsPage(page.Object, "doesnotexist"), e => page.VerifyAll());
-		}
-
-		/// <summary>
-		///     Tests the GetElementAsPage method with an item that cannot be found in the property.
-		/// </summary>
-		[TestMethod]
-		[ExpectedException(typeof(ElementExecuteException))]
-		public void TestGetElementAsPageItemNotFound()
-		{
-			var filler = new PageDataFiller();
-			var page = new Mock<IPage>(MockBehavior.Strict);
-
-			var propData = new Mock<IPropertyData>(MockBehavior.Strict);
-			propData.Setup(p => p.GetItemAsPage()).Returns((IPage)null);
-			propData.SetupGet(p => p.IsList).Returns(false);
-			propData.SetupGet(p => p.Name).Returns("MyProperty");
-
-			var propertyData = propData.Object;
-			page.Setup(p => p.TryGetElement("name", out propertyData)).Returns(true);
-
-			ExceptionHelper.SetupForException<ElementExecuteException>(
-				() => filler.GetElementAsPage(page.Object, "name"), 
-				e =>
-					{
-						page.VerifyAll();
-						propData.VerifyAll();
-					});
-		}
-
-		/// <summary>
-		///     Tests the GetElementAsPage method with a valid element.
-		/// </summary>
-		[TestMethod]
-		public void TestGetElementAsPageSuccess()
-		{
-			var filler = new PageDataFiller();
-			var page = new Mock<IPage>(MockBehavior.Strict);
-			var listItem = new Mock<IPage>(MockBehavior.Strict);
-
-			var propData = new Mock<IPropertyData>(MockBehavior.Strict);
-			propData.Setup(p => p.GetItemAsPage()).Returns(listItem.Object);
-			propData.SetupGet(p => p.IsList).Returns(false);
-
-			var propertyData = propData.Object;
-			page.Setup(p => p.TryGetElement("name", out propertyData)).Returns(true);
-
-			var result = filler.GetElementAsPage(page.Object, "name");
-
-			Assert.AreSame(listItem.Object, result);
-
-			page.VerifyAll();
-			propData.VerifyAll();
-			listItem.VerifyAll();
-		}
-
-		/// <summary>
 		///     Tests the GetListItem method with a fields that does not exist.
 		/// </summary>
 		[TestMethod]
@@ -228,25 +113,6 @@ namespace SpecBind.Tests
 			page.VerifyAll();
 			propData.VerifyAll();
 			listItem.VerifyAll();
-		}
-
-		/// <summary>
-		///     Tests the GetElementAsPage method with an element field that does not exist.
-		/// </summary>
-		[TestMethod]
-		[ExpectedException(typeof(ElementExecuteException))]
-		public void TestGetPropertyAsPageDoesNotExist()
-		{
-			var filler = new PageDataFiller();
-			var page = new Mock<IPage>(MockBehavior.Strict);
-
-			IPropertyData propertyData;
-			page.Setup(p => p.TryGetElement("doesnotexist", out propertyData)).Returns(false);
-			page.SetupGet(p => p.PageType).Returns(typeof(TestBase));
-			page.Setup(p => p.GetPropertyNames(It.IsAny<Func<IPropertyData, bool>>())).Returns(new[] { "MyProperty" });
-
-			ExceptionHelper.SetupForException<ElementExecuteException>(
-				() => filler.GetElementAsPage(page.Object, "doesnotexist"), e => page.VerifyAll());
 		}
 
 		/// <summary>
@@ -648,56 +514,6 @@ namespace SpecBind.Tests
 			page.Setup(p => p.TryGetProperty("name", out propertyData)).Returns(true);
 
 			filler.ValidateList(page.Object, "name", ComparisonType.Contains, validations);
-
-			page.VerifyAll();
-			propData.VerifyAll();
-		}
-
-		/// <summary>
-		///     Tests the GetItemValue method with a field that cannot be found.
-		/// </summary>
-		[TestMethod]
-		[ExpectedException(typeof(ElementExecuteException))]
-		public void TestGetItemValueItemNotFound()
-		{
-			var filler = new PageDataFiller();
-			var page = new Mock<IPage>(MockBehavior.Strict);
-
-			var propData = new Mock<IPropertyData>(MockBehavior.Strict);
-			
-			var propertyData = propData.Object;
-			
-			page.Setup(p => p.TryGetProperty("name", out propertyData)).Returns(false);
-			page.SetupGet(p => p.PageType).Returns(typeof(TestBase));
-			page.Setup(p => p.GetPropertyNames(It.IsAny<Func<IPropertyData, bool>>())).Returns(new[] { "MyProperty" });
-
-			ExceptionHelper.SetupForException<ElementExecuteException>(
-				() => filler.GetItemValue(page.Object, "name"),
-				e =>
-				{
-					page.VerifyAll();
-					propData.VerifyAll();
-				});
-		}
-
-		/// <summary>
-		///     Tests the GetItemValue method with a field that can be found.
-		/// </summary>
-		[TestMethod]
-		public void TestGetItemValuePropertyFound()
-		{
-			var filler = new PageDataFiller();
-			var page = new Mock<IPage>(MockBehavior.Strict);
-
-			var propData = new Mock<IPropertyData>(MockBehavior.Strict);
-			propData.Setup(p => p.GetCurrentValue()).Returns("My Value");
-			
-			var propertyData = propData.Object;
-			page.Setup(p => p.TryGetProperty("name", out propertyData)).Returns(true);
-
-			var result = filler.GetItemValue(page.Object, "name");
-
-			Assert.AreEqual("My Value", result);
 
 			page.VerifyAll();
 			propData.VerifyAll();

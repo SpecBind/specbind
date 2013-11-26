@@ -34,6 +34,16 @@ namespace SpecBind.ActionPipeline
             this.locatorActions = new List<ILocatorAction>(5);
 	    }
 
+        /// <summary>
+        /// Creates the action.
+        /// </summary>
+        /// <typeparam name="TAction">The type of the action.</typeparam>
+        /// <returns>The created action object.</returns>
+        public TAction CreateAction<TAction>()
+        {
+            return this.CreateItem<TAction>(typeof(TAction));
+        }
+
 	    /// <summary>
 		/// Gets the post-execute actions.
 		/// </summary>

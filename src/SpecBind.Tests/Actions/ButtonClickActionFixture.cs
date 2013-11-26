@@ -24,7 +24,7 @@ namespace SpecBind.Tests.Actions
 		[TestMethod]
 		public void TestGetActionName()
 		{
-			var buttonClickAction = new ButtonClickAction("TestProperty");
+			var buttonClickAction = new ButtonClickAction();
 
 			Assert.AreEqual("Item Click", buttonClickAction.Name);
 		}
@@ -39,13 +39,15 @@ namespace SpecBind.Tests.Actions
 			var locator = new Mock<IElementLocator>(MockBehavior.Strict);
 			locator.Setup(p => p.GetElement("doesnotexist")).Throws(new ElementExecuteException("Cannot find item"));
 
-			var buttonClickAction = new ButtonClickAction("doesnotexist")
+			var buttonClickAction = new ButtonClickAction
 			                        {
 				                        ElementLocator = locator.Object
 			                        };
-			
+
+		    var context = new ActionContext("doesnotexist");
+
 			ExceptionHelper.SetupForException<ElementExecuteException>(
-				() => buttonClickAction.Execute(), e => locator.VerifyAll());
+				() => buttonClickAction.Execute(context), e => locator.VerifyAll());
 		}
 
 		/// <summary>
@@ -58,14 +60,15 @@ namespace SpecBind.Tests.Actions
 			propData.Setup(p => p.ClickElement());
 
 			var locator = new Mock<IElementLocator>(MockBehavior.Strict);
-			locator.Setup(p => p.GetElement("doesnotexist")).Returns(propData.Object);
+			locator.Setup(p => p.GetElement("myproperty")).Returns(propData.Object);
 
-			var buttonClickAction = new ButtonClickAction("doesnotexist")
+			var buttonClickAction = new ButtonClickAction
 			{
 				ElementLocator = locator.Object
 			};
-			
-			var result = buttonClickAction.Execute();
+
+            var context = new ActionContext("myproperty");
+            var result = buttonClickAction.Execute(context);
 
 			Assert.AreEqual(true, result.Success);
 

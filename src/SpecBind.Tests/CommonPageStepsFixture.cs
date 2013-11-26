@@ -259,7 +259,7 @@ namespace SpecBind.Tests
 			var testPage = new Mock<IPage>();
 
 			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
-			pipelineService.Setup(p => p.PerformAction(testPage.Object, It.IsAny<ButtonClickAction>()))
+            pipelineService.Setup(p => p.PerformAction<ButtonClickAction>(testPage.Object, It.Is<ActionContext>(c => c.PropertyName == "mylink")))
 						   .Returns(ActionResult.Successful());
 
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
@@ -416,18 +416,17 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestWhenIEnterDataInFieldsStep()
 		{
+            var testPage = new Mock<IPage>();
+
 			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+		    pipelineService.Setup(
+		        p => p.PerformAction<EnterDataAction>(testPage.Object, It.Is<EnterDataAction.EnterDataContext>(c => c.PropertyName == "myfield" && c.Data == "myvalue")))
+		                    .Returns(ActionResult.Successful());
 
-			var testPage = new Mock<IPage>();
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
-			tokenManager.Setup(t => t.SetToken("myvalue")).Returns(new Func<string, string>(s => s));
-
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
-
-			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
-			pageDataFiller.Setup(p => p.FillField(testPage.Object, "myfield", "myvalue"));
-
-			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
+            var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
+            var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
@@ -449,6 +448,64 @@ namespace SpecBind.Tests
 			scenarioContext.VerifyAll();
 			tokenManager.VerifyAll();
 		}
+
+        /// <summary>
+        /// Tests the WhenIEnterDataInFieldsStep method with a successful result.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ElementExecuteException))]
+        public void TestWhenIEnterDataInFieldsStepMultipleEntriesWithFailure()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(
+                p => p.PerformAction<EnterDataAction>(testPage.Object, It.Is<EnterDataAction.EnterDataContext>(c => c.PropertyName == "myfield" && c.Data == "myvalue")))
+                            .Returns(ActionResult.Successful());
+            pipelineService.Setup(
+                p => p.PerformAction<EnterDataAction>(testPage.Object, It.Is<EnterDataAction.EnterDataContext>(c => c.PropertyName == "mysecondfield" && c.Data == "something")))
+                            .Returns(ActionResult.Failure(new ElementExecuteException("Could Not Find Field: mysecondfield")));
+
+            var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
+            var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new CommonPageSteps(browser.Object, pageDataFiller.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
+
+            var table = new Table("Field", "Value");
+            table.AddRow(new Dictionary<string, string>
+				             {
+					             { "Field", "My Second Field" },
+								 { "Value", "something" }
+				             });
+
+            table.AddRow(new Dictionary<string, string>
+				             {
+					             { "Field", "My Field" },
+								 { "Value", "myvalue" }
+				             });
+
+            try
+            {
+                steps.WhenIEnterDataInFieldsStep(table);
+            }
+            catch (ElementExecuteException ex)
+            {
+                StringAssert.Contains(ex.Message, "Could Not Find Field: mysecondfield");
+
+                browser.VerifyAll();
+                pageDataFiller.VerifyAll();
+                pageMapper.VerifyAll();
+                scenarioContext.VerifyAll();
+                tokenManager.VerifyAll();
+                
+                throw;
+            }
+        }
 
 		/// <summary>
 		/// Tests the ThenISeeStep method with a null table.
@@ -1054,17 +1111,19 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGivenEnsureOnDialogStep()
 		{
-			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
-
 			var page = new Mock<IPage>();
 			var listItem = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+		    pipelineService.Setup(p => p.PerformAction<GetElementAsPageAction>(
+                page.Object, It.Is<ActionContext>(a => a.PropertyName == "myproperty")))
+                           .Returns(ActionResult.Successful(listItem.Object));
 
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
-			pageDataFiller.Setup(p => p.GetElementAsPage(page.Object, "myproperty")).Returns(listItem.Object);
-
+			
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(page.Object);
@@ -1087,18 +1146,22 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestSetTokenFromFieldStepSetsCurrentValue()
 		{
-			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
-
 			var page = new Mock<IPage>();
 
 			var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
-			tokenManager.Setup(t => t.SetToken("MyToken", "The Field Value"));
-
+			
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			var pageDataFiller = new Mock<IPageDataFiller>(MockBehavior.Strict);
-			pageDataFiller.Setup(p => p.GetItemValue(It.IsAny<IPage>(), "SomeField")).Returns("The Field Value");
+			
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+		    pipelineService.Setup(
+		        p => p.PerformAction<SetTokenFromValueAction>(
+                    page.Object, 
+                    It.Is<SetTokenFromValueAction.TokenFieldContext>(c => c.TokenName == "MyToken" && c.PropertyName == "somefield")))
+                    .Returns(ActionResult.Successful("The Field Value"));
 
 			var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
+
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 			scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(page.Object);
 

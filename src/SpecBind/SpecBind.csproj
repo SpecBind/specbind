@@ -43,6 +43,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionPipeline\ActionContext.cs" />
     <Compile Include="ActionPipeline\ActionRepository.cs" />
     <Compile Include="ActionPipeline\ActionResult.cs" />
     <Compile Include="ActionPipeline\ElementLocator.cs" />
@@ -53,8 +54,13 @@
     <Compile Include="ActionPipeline\ILocatorAction.cs" />
     <Compile Include="ActionPipeline\IPostAction.cs" />
     <Compile Include="ActionPipeline\IPreAction.cs" />
+    <Compile Include="ActionPipeline\ActionResultExtensions.cs" />
     <Compile Include="Actions\ActionBase.cs" />
     <Compile Include="Actions\ButtonClickAction.cs" />
+    <Compile Include="Actions\ContextActionBase.cs" />
+    <Compile Include="Actions\EnterDataAction.cs" />
+    <Compile Include="Actions\GetElementAsPageAction.cs" />
+    <Compile Include="Actions\SetTokenFromValueAction.cs" />
     <Compile Include="Actions\HighlightPreAction.cs" />
     <Compile Include="BrowserSupport\BrowserBase.cs" />
     <Compile Include="BrowserSupport\BrowserFactory.cs" />

@@ -1,6 +1,9 @@
 ﻿// <copyright file="IActionRepository.cs">
 //    Copyright © 2013 Dan Piessens  All rights reserved.
 // </copyright>
+// <copyright file="IActionRepository.cs">
+//    Copyright © 2013 Dan Piessens  All rights reserved.
+// </copyright>
 
 namespace SpecBind.ActionPipeline
 {
@@ -11,6 +14,13 @@ namespace SpecBind.ActionPipeline
 	/// </summary>
 	public interface IActionRepository
 	{
+        /// <summary>
+        /// Creates the action.
+        /// </summary>
+        /// <typeparam name="TAction">The type of the action.</typeparam>
+        /// <returns>The created action object.</returns>
+        TAction CreateAction<TAction>();
+
 		/// <summary>
 		/// Gets the post-execute actions.
 		/// </summary>

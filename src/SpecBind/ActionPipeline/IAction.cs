@@ -21,10 +21,11 @@ namespace SpecBind.ActionPipeline
 		/// <value>The element locator.</value>
 		IElementLocator ElementLocator { set; }
 
-		/// <summary>
-		/// Executes this instance action.
-		/// </summary>
-		/// <returns>The result of the action.</returns>
-		ActionResult Execute();
+        /// <summary>
+        /// Executes this instance action.
+        /// </summary>
+        /// <param name="actionContext">The action context.</param>
+        /// <returns>The result of the action.</returns>
+	    ActionResult Execute(ActionContext actionContext);
 	}
 }

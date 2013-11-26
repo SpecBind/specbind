@@ -5,8 +5,8 @@
 namespace SpecBind.ActionPipeline
 {
 	using System;
-
-	using SpecBind.Pages;
+    
+    using SpecBind.Pages;
 
 	/// <summary>
 	/// A class that manages actions that should be taken during parts of the process
@@ -19,7 +19,7 @@ namespace SpecBind.ActionPipeline
 	/// 4. Perform any post actions (current use is unknown but may be helpful)
 	/// 5. Return result
 	/// </remarks>
-	public class ActionPipelineService : IActionPipelineService
+	internal class ActionPipelineService : IActionPipelineService
 	{
 		private readonly IActionRepository actionRepository;
 
@@ -32,13 +32,28 @@ namespace SpecBind.ActionPipeline
 			this.actionRepository = actionRepository;
 		}
 
-		/// <summary>
-		/// Performs the action.
-		/// </summary>
-		/// <param name="page">The page.</param>
-		/// <param name="action">The action.</param>
-		/// <returns>The result of the action</returns>
-		public ActionResult PerformAction(IPage page, IAction action)
+        /// <summary>
+        /// Performs the action.
+        /// </summary>
+        /// <typeparam name="TAction">The type of the action.</typeparam>
+        /// <param name="page">The page.</param>
+        /// <param name="context">The context.</param>
+        /// <returns>The result of the action.</returns>
+	    public ActionResult PerformAction<TAction>(IPage page, ActionContext context) 
+            where TAction : IAction
+        {
+            var action = this.actionRepository.CreateAction<TAction>();
+            return this.PerformAction(page, action, context);
+        }
+
+        /// <summary>
+        /// Performs the action.
+        /// </summary>
+        /// <param name="page">The page.</param>
+        /// <param name="action">The action.</param>
+        /// <param name="context">The context.</param>
+        /// <returns>The result of the action</returns>
+	    public ActionResult PerformAction(IPage page, IAction action, ActionContext context)
 		{
 			var locator = this.CreateElementLocator(page);
 			action.ElementLocator = locator;
@@ -48,7 +63,7 @@ namespace SpecBind.ActionPipeline
 			ActionResult result;
 			try
 			{
-				result = action.Execute();
+				result = action.Execute(context);
 			}
 			catch (Exception ex)
 			{

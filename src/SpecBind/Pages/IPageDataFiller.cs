@@ -12,23 +12,6 @@ namespace SpecBind.Pages
 	public interface IPageDataFiller
 	{
 		/// <summary>
-		/// Fills the field.
-		/// </summary>
-		/// <param name="page">The page.</param>
-		/// <param name="fieldName">Name of the field.</param>
-		/// <param name="data">The data.</param>
-		void FillField(IPage page, string fieldName, string data);
-
-		/// <summary>
-		/// Gets the value of the currently asked for property.
-		/// </summary>
-		/// <param name="page">The page.</param>
-		/// <param name="fieldName">Name of the field.</param>
-		/// <returns>The current value of the selected property.</returns>
-		/// <exception cref="ElementExecuteException">The item could not be found.</exception>
-		string GetItemValue(IPage page, string fieldName);
-
-		/// <summary>
 		/// Gets the list item as a child page.
 		/// </summary>
 		/// <param name="page">The page.</param>
@@ -40,16 +23,7 @@ namespace SpecBind.Pages
 		/// <exception cref="ElementExecuteException">The item could not be found.</exception>
 		IPage GetListItem(IPage page, string fieldName, int itemNumber);
 
-		/// <summary>
-		/// Gets the property as a page interface.
-		/// </summary>
-		/// <param name="page">The page.</param>
-		/// <param name="fieldName">Name of the field.</param>
-		/// <returns>The property as a page object.</returns>
-		/// <exception cref="ElementExecuteException">The item could not be found.</exception>
-		IPage GetElementAsPage(IPage page, string fieldName);
-
-		/// <summary>
+	    /// <summary>
 		/// Validates the item.
 		/// </summary>
 		/// <param name="page">The page.</param>

@@ -38,8 +38,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
@@ -62,7 +60,11 @@
     <Compile Include="ActionPipeline\ActionPipelineServiceFixture.cs" />
     <Compile Include="ActionPipeline\ElementLocatorFixture.cs" />
     <Compile Include="ActionPipeline\ActionRepositoryFixture.cs" />
+    <Compile Include="ActionPipeline\ActionResultExtensionsFixture.cs" />
     <Compile Include="Actions\ButtonClickActionFixture.cs" />
+    <Compile Include="Actions\EnterDataActionFixture.cs" />
+    <Compile Include="Actions\GetElementAsPageActionFixture.cs" />
+    <Compile Include="Actions\SetTokenFromValueActionFixture.cs" />
     <Compile Include="Actions\HighlightPreActionFixture.cs" />
     <Compile Include="ExceptionHelper.cs" />
     <Compile Include="Helpers\TableFormatterFixture.cs" />
@@ -92,14 +94,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SpecBind.CodedUI\SpecBind.CodedUI.csproj">
-      <Project>{15643f21-75d0-451f-97cf-5121a11b0705}</Project>
-      <Name>SpecBind.CodedUI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SpecBind.Watin\SpecBind.Watin.csproj">
-      <Project>{5b82aad0-17b1-4011-a6bb-b4b193a68390}</Project>
-      <Name>SpecBind.Watin</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SpecBind\SpecBind.csproj">
       <Project>{e27bd8d5-242f-496e-be3a-1c73a27e5275}</Project>
       <Name>SpecBind</Name>

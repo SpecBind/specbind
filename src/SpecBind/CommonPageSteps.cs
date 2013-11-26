@@ -106,7 +106,10 @@ namespace SpecBind
 		public void GivenEnsureOnDialogStep(string propertyName)
 		{
 			var page = this.GetPageFromContext();
-			var item = this.pageDataFiller.GetElementAsPage(page, propertyName.ToLookupKey());
+
+            var context = new ActionContext(propertyName.ToLookupKey());
+            var item = this.actionPipelineService.PerformAction<GetElementAsPageAction>(page, context)
+                                                 .CheckResult<IPage>();
 
 			this.scenarioContext.SetValue(item, CurrentPageKey);
 		}
@@ -192,8 +195,11 @@ namespace SpecBind
 		{
 			var page = this.GetPageFromContext();
 
-			var action = new ButtonClickAction(linkName.ToLookupKey());
-		    this.RunAction(page, action);
+            var context = new ActionContext(linkName.ToLookupKey());
+			
+            this.actionPipelineService
+                    .PerformAction<ButtonClickAction>(page, context)
+                    .CheckResult();
 		}
 
 		/// <summary>
@@ -220,15 +226,19 @@ namespace SpecBind
 			}
 
 			var page = this.GetPageFromContext();
-			
-			foreach (var tableRow in data.Rows)
-			{
-				var fieldName = tableRow[fieldHeader];
-				var fieldValue = tableRow[valueHeader];
 
-				fieldValue = this.tokenManager.SetToken(fieldValue);
-				this.pageDataFiller.FillField(page, fieldName.ToLookupKey(), fieldValue);
-			}
+		    var results = new List<ActionResult>(data.RowCount);
+		    results.AddRange(from tableRow in data.Rows 
+                                           let fieldName = tableRow[fieldHeader]
+                                           let fieldValue = tableRow[valueHeader] 
+                                           select new EnterDataAction.EnterDataContext(fieldName.ToLookupKey(), fieldValue) into context 
+                                           select this.actionPipelineService.PerformAction<EnterDataAction>(page, context));
+
+		    if (results.Any(r => !r.Success))
+		    {
+		        var errors = string.Join("; ", results.Where(r => r.Exception != null).Select(r => r.Exception.Message));
+		        throw new ElementExecuteException("Errors occured while entering data. Details: {0}", errors);   
+		    }
 		}
 
 		/// <summary>
@@ -311,9 +321,11 @@ namespace SpecBind
 		{
 			var page = this.GetPageFromContext();
 
-			var fieldValue = this.pageDataFiller.GetItemValue(page, propertyName);
+            var context = new SetTokenFromValueAction.TokenFieldContext(propertyName.ToLookupKey(), tokenName);
 
-			this.tokenManager.SetToken(tokenName, fieldValue);
+            this.actionPipelineService
+                .PerformAction<SetTokenFromValueAction>(page, context)
+                .CheckResult();
 		}
 
 		/// <summary>
@@ -440,23 +452,5 @@ namespace SpecBind
 
 			return validations;
 		}
-
-        /// <summary>
-        /// Runs the action.
-        /// </summary>
-        /// <param name="page">The page.</param>
-        /// <param name="action">The action.</param>
-        /// <returns>The result of the action.</returns>
-	    private ActionResult RunAction(IPage page, IAction action)
-        {
-            var result = this.actionPipelineService.PerformAction(page, action);
-
-            if (!result.Success && result.Exception != null)
-            {
-                throw result.Exception;
-            }
-
-            return result;
-        }
 	}
 }

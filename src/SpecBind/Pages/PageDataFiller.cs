@@ -13,40 +13,6 @@ namespace SpecBind.Pages
 	public class PageDataFiller : IPageDataFiller
 	{
 		/// <summary>
-		/// Fills the field.
-		/// </summary>
-		/// <param name="page">The page.</param>
-		/// <param name="fieldName">Name of the field.</param>
-		/// <param name="data">The data.</param>
-		public void FillField(IPage page, string fieldName, string data)
-		{
-			IPropertyData propertyData;
-			if (!page.TryGetElement(fieldName, out propertyData))
-			{
-				throw GetElementNotFoundException(page, fieldName, v => v.IsElement);
-			}
-
-			propertyData.FillData(data);
-		}
-
-		/// <summary>
-		/// Gets the value of the currently asked for property.
-		/// </summary>
-		/// <param name="page">The page.</param>
-		/// <param name="fieldName">Name of the field.</param>
-		/// <returns>The current value of the selected property.</returns>
-		public string GetItemValue(IPage page, string fieldName)
-		{
-			IPropertyData propertyData;
-			if (!page.TryGetProperty(fieldName, out propertyData))
-			{
-				throw GetElementNotFoundException(page, fieldName, v => true);
-			}
-
-			return propertyData.GetCurrentValue();
-		}
-
-		/// <summary>
 		/// Validates that the given element exists on the page and is enabled.
 		/// </summary>
 		/// <param name="page">The page.</param>
@@ -78,33 +44,7 @@ namespace SpecBind.Pages
 			                         "Element '{0}' exists on page {1} and should not.");
 		}
 
-		/// <summary>
-		/// Gets the element property as a page interface.
-		/// </summary>
-		/// <param name="page">The page.</param>
-		/// <param name="fieldName">Name of the field.</param>
-		/// <returns>
-		/// The property as a page object.
-		/// </returns>
-		public IPage GetElementAsPage(IPage page, string fieldName)
-		{
-			IPropertyData propertyData;
-			if (!page.TryGetElement(fieldName, out propertyData) || propertyData.IsList)
-			{
-				throw GetElementNotFoundException(page, fieldName, v => v.IsElement && !v.IsList);
-			}
-
-			var propertyPage = propertyData.GetItemAsPage();
-
-			if (propertyPage == null)
-			{
-				throw new ElementExecuteException("Could not retrieve a page from property '{0}'", propertyData.Name);
-			}
-
-			return propertyPage;
-		}
-
-		/// <summary>
+	    /// <summary>
 		/// Validates the item.
 		/// </summary>
 		/// <param name="page">The page.</param>
