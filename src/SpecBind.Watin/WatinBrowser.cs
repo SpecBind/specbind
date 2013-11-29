@@ -64,7 +64,18 @@ namespace SpecBind.Watin
 			}
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Dismisses the alert.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="text">The text to enter.</param>
+        /// <exception cref="System.NotSupportedException">This feature is not supported.</exception>
+	    public void DismissAlert(AlertBoxAction action, string text)
+	    {
+            throw new NotSupportedException("This feature is not supported.");
+	    }
+
+	    /// <summary>
 		/// Ensures the on page.
 		/// </summary>
 		/// <param name="page">The page.</param>

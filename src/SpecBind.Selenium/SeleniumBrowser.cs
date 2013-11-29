@@ -70,6 +70,36 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Dismisses the alert.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="text">The text to enter.</param>
+        public override void DismissAlert(AlertBoxAction action, string text)
+        {
+            var alert = this.driver.Value.SwitchTo().Alert();
+
+            if (text != null)
+            {
+                alert.SendKeys(text);
+            }
+
+            switch (action)
+            {
+                case AlertBoxAction.Cancel:
+                case AlertBoxAction.Close:
+                case AlertBoxAction.Ignore:
+                case AlertBoxAction.No:
+                    alert.Dismiss();
+                    break;
+                case AlertBoxAction.Ok:
+                case AlertBoxAction.Retry:
+                case AlertBoxAction.Yes:
+                    alert.Accept();
+                    break;
+            }
+        }
+
+        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()

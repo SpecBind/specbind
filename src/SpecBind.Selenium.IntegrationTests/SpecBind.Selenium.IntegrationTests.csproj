@@ -62,6 +62,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Features\AlertTests.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AlertTests.feature</DependentUpon>
+    </Compile>
     <Compile Include="Features\InputTests.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -86,6 +91,7 @@
     <Compile Include="Pages\CoursesSearchPage.cs" />
     <Compile Include="Pages\CreateCoursePage.cs" />
     <Compile Include="Pages\HomePage.cs" />
+    <Compile Include="Pages\InformationPage.cs" />
     <Compile Include="Pages\LogOnPage.cs" />
     <Compile Include="Pages\StudentsSearchPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -95,6 +101,10 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Features\AlertTests.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>AlertTests.feature.cs</LastGenOutput>
+    </None>
     <None Include="Features\InputTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>InputTests.feature.cs</LastGenOutput>

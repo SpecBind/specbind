@@ -27,6 +27,13 @@ namespace SpecBind.BrowserSupport
 		/// </summary>
 		void Close();
 
+        /// <summary>
+        /// Dismisses the alert.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="text">The text to enter.</param>
+	    void DismissAlert(AlertBoxAction action, string text);
+
 		/// <summary>
 		/// Ensures the on page.
 		/// </summary>

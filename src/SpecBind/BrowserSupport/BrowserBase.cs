@@ -28,6 +28,15 @@ namespace SpecBind.BrowserSupport
         public abstract void Close();
 
         /// <summary>
+        /// Dismisses the alert.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="text">The text to enter.</param>
+        public virtual void DismissAlert(AlertBoxAction action, string text)
+        {
+        }
+
+        /// <summary>
         /// Navigates the browser to the given <paramref name="url" />.
         /// </summary>
         /// <param name="url">The URL specified as a well formed Uri.</param>

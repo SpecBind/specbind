@@ -47,7 +47,7 @@ namespace SpecBind.Tests
             pageMapper.Setup(p => p.GetTypeFromName("mypage")).Returns(typeof(TestBase));
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), CommonPageSteps.CurrentPageKey));
+            scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), PageStepBase.CurrentPageKey));
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -79,7 +79,7 @@ namespace SpecBind.Tests
             pageMapper.Setup(p => p.GetTypeFromName("mypage")).Returns(typeof(TestBase));
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), CommonPageSteps.CurrentPageKey));
+            scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), PageStepBase.CurrentPageKey));
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -150,7 +150,7 @@ namespace SpecBind.Tests
             pageMapper.Setup(p => p.GetTypeFromName("mypage")).Returns(typeof(TestBase));
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), CommonPageSteps.CurrentPageKey));
+            scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), PageStepBase.CurrentPageKey));
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -256,7 +256,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -282,7 +282,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns((IPage)null);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns((IPage)null);
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -406,7 +406,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -447,7 +447,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -647,7 +647,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -690,7 +690,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -772,7 +772,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -811,7 +811,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -850,7 +850,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -889,7 +889,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -1003,8 +1003,8 @@ namespace SpecBind.Tests
 
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(page.Object);
-            scenarioContext.Setup(s => s.SetValue(listItem.Object, CommonPageSteps.CurrentPageKey));
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(page.Object);
+            scenarioContext.Setup(s => s.SetValue(listItem.Object, PageStepBase.CurrentPageKey));
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -1037,8 +1037,8 @@ namespace SpecBind.Tests
 
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(page.Object);
-            scenarioContext.Setup(s => s.SetValue(listItem.Object, CommonPageSteps.CurrentPageKey));
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(page.Object);
+            scenarioContext.Setup(s => s.SetValue(listItem.Object, PageStepBase.CurrentPageKey));
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -1072,7 +1072,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(page.Object);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(page.Object);
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -1105,7 +1105,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 
@@ -1148,7 +1148,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(CommonPageSteps.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
 
             var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
 

@@ -21,13 +21,8 @@ namespace SpecBind
 	/// A set of common step bindings that drive the underlying fixtures.
 	/// </summary>
 	[Binding]
-	public class CommonPageSteps
+	public class CommonPageSteps : PageStepBase
 	{
-		/// <summary>
-		/// The scenario context key for holding the current page.
-		/// </summary>
-		public const string CurrentPageKey = "CurrentPage";
-
 		// Step regex values - in constants because they are shared.
 		private const string EnsureOnPageStepRegex = @"I am on the (.+) page";
 		private const string EnsureOnDialogStepRegex = @"I am on the (.+) dialog";
@@ -55,8 +50,8 @@ namespace SpecBind
 
 		private readonly IBrowser browser;
 		private readonly IPageMapper pageMapper;
-		private readonly IScenarioContextHelper scenarioContext;
-		private readonly ITokenManager tokenManager;
+
+	    private readonly ITokenManager tokenManager;
 		private readonly IActionPipelineService actionPipelineService;
 
 	    /// <summary>
@@ -68,10 +63,10 @@ namespace SpecBind
 	    /// <param name="tokenManager">The token manager.</param>
 	    /// <param name="actionPipelineService">The action pipeline service.</param>
 	    public CommonPageSteps(IBrowser browser, IPageMapper pageMapper, IScenarioContextHelper scenarioContext, ITokenManager tokenManager, IActionPipelineService actionPipelineService)
+            : base(scenarioContext)
 		{
 			this.browser = browser;
 			this.pageMapper = pageMapper;
-			this.scenarioContext = scenarioContext;
 			this.tokenManager = tokenManager;
 			this.actionPipelineService = actionPipelineService;
 		}
@@ -90,7 +85,7 @@ namespace SpecBind
 			IPage page;
 			this.browser.EnsureOnPage(type, out page);
 
-			this.scenarioContext.SetValue(page, CurrentPageKey);
+            this.UpdatePageContext(page);
 		}
 
 		/// <summary>
@@ -108,7 +103,7 @@ namespace SpecBind
             var item = this.actionPipelineService.PerformAction<GetElementAsPageAction>(page, context)
                                                  .CheckResult<IPage>();
 
-			this.scenarioContext.SetValue(item, CurrentPageKey);
+            this.UpdatePageContext(item);
 		}
 
 		/// <summary>
@@ -127,8 +122,8 @@ namespace SpecBind
 
 			var item = this.actionPipelineService.PerformAction<GetListItemByIndexAction>(page, context)
                                                  .CheckResult<IPage>();
-			
-			this.scenarioContext.SetValue(item, CurrentPageKey);
+
+            this.UpdatePageContext(item);
 		}
 
 		/// <summary>
@@ -178,7 +173,7 @@ namespace SpecBind
 			}
 
 			var page = this.browser.GoToPage(type, args);
-			this.scenarioContext.SetValue(page, CurrentPageKey);
+            this.UpdatePageContext(page);
 		}
 
 		/// <summary>
@@ -346,22 +341,7 @@ namespace SpecBind
 			return type;
 		}
 
-		/// <summary>
-		/// Gets the page from the scenario context.
-		/// </summary>
-		/// <returns>The current page.</returns>
-		private IPage GetPageFromContext()
-		{
-			var page = this.scenarioContext.GetValue<IPage>(CurrentPageKey);
-			if (page == null)
-			{
-				throw new PageNavigationException("No page has been set as being the current page.");
-			}
-
-			return page;
-		}
-
-		/// <summary>
+	    /// <summary>
 		/// Gets the item validations from the SpecFlow Table.
 		/// </summary>
 		/// <param name="data">The table data.</param>

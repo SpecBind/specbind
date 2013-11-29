@@ -59,6 +59,7 @@
     <Compile Include="Actions\BasicValidationChecksActionBase.cs" />
     <Compile Include="Actions\ButtonClickAction.cs" />
     <Compile Include="Actions\ContextActionBase.cs" />
+    <Compile Include="Actions\DismissDialogAction.cs" />
     <Compile Include="Actions\EnterDataAction.cs" />
     <Compile Include="Actions\GetElementAsPageAction.cs" />
     <Compile Include="Actions\GetListItemByIndexAction.cs" />
@@ -69,6 +70,8 @@
     <Compile Include="Actions\ValidateItemAction.cs" />
     <Compile Include="Actions\ValidateListAction.cs" />
     <Compile Include="Actions\ValidationCheckContext.cs" />
+    <Compile Include="AlertBoxSteps.cs" />
+    <Compile Include="BrowserSupport\AlertBoxAction.cs" />
     <Compile Include="BrowserSupport\BrowserBase.cs" />
     <Compile Include="BrowserSupport\BrowserFactory.cs" />
     <Compile Include="BrowserSupport\BrowserType.cs" />
@@ -86,6 +89,7 @@
     <Compile Include="Helpers\TableItemType.cs" />
     <Compile Include="Helpers\TokenManager.cs" />
     <Compile Include="Helpers\WrappedSettingHelper.cs" />
+    <Compile Include="PageStepBase.cs" />
     <Compile Include="Pages\ElementLocatorAttribute.cs" />
     <Compile Include="Pages\IActiveCheck.cs" />
     <Compile Include="Pages\IDataControl.cs" />

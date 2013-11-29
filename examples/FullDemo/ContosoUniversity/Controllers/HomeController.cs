@@ -37,6 +37,12 @@ namespace ContosoUniversity.Controllers
             return View(data);
         }
 
+        public ActionResult NewInfo()
+        {
+            ViewBag.Message = "This page will have new information!";
+            return View();
+        }
+
         protected override void Dispose(bool disposing)
         {
             db.Dispose();

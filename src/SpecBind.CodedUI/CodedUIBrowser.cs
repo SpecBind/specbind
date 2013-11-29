@@ -8,7 +8,8 @@ namespace SpecBind.CodedUI
 	using System.Drawing.Imaging;
 	using System.IO;
 	using System.Linq;
-	
+
+	using Microsoft.VisualStudio.TestTools.UITest.Extension;
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
 
@@ -81,7 +82,52 @@ namespace SpecBind.CodedUI
 			this.window.Value.NavigateToUrl(url);
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Dismisses the alert.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="text">The text to enter.</param>
+	    public override void DismissAlert(AlertBoxAction action, string text)
+        {
+            var localBrowser = this.window.Value;
+
+            if (text != null)
+            {
+                localBrowser.PerformDialogAction(BrowserDialogAction.PromptText, text);
+                return;
+            }
+
+            // Get the action
+            var browserAction = BrowserDialogAction.None;
+            switch (action)
+            {
+                case AlertBoxAction.Cancel:
+                    browserAction = BrowserDialogAction.Cancel;
+                    break;
+                case AlertBoxAction.Close:
+                    browserAction = BrowserDialogAction.Close;
+                    break;
+                case AlertBoxAction.Ignore:
+                    browserAction = BrowserDialogAction.Ignore;
+                    break;
+                case AlertBoxAction.No:
+                    browserAction = BrowserDialogAction.No;
+                    break;
+                case AlertBoxAction.Ok:
+                    browserAction = BrowserDialogAction.Ok;
+                    break;
+                case AlertBoxAction.Retry:
+                    browserAction = BrowserDialogAction.Retry;
+                    break;
+                case AlertBoxAction.Yes:
+                    browserAction = BrowserDialogAction.Yes;
+                    break;
+            }
+
+            localBrowser.PerformDialogAction(browserAction);
+        }
+
+	    /// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
 		public void Dispose()
@@ -99,7 +145,7 @@ namespace SpecBind.CodedUI
 	    public override string TakeScreenshot(string imageFolder, string fileNameBase)
         {
             var localBrowser = this.window.Value;
-
+            
             try
             {
                 var fullPath = Path.Combine(imageFolder, string.Format("{0}.jpg", fileNameBase));
