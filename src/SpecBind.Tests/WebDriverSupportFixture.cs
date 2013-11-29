@@ -38,7 +38,6 @@ namespace SpecBind.Tests
             container.Setup(c => c.RegisterInstanceAs(It.IsAny<IBrowser>(), null));
             container.Setup(c => c.RegisterInstanceAs<ISettingHelper>(It.IsAny<WrappedSettingHelper>(), null));
             container.Setup(c => c.RegisterInstanceAs(It.IsAny<IPageMapper>(), null));
-            container.Setup(c => c.RegisterInstanceAs<IPageDataFiller>(It.IsAny<PageDataFiller>(), null));
             container.Setup(c => c.RegisterInstanceAs<IScenarioContextHelper>(It.IsAny<ScenarioContextHelper>(), null));
             container.Setup(c => c.RegisterInstanceAs<ITokenManager>(It.IsAny<TokenManager>(), null));
             container.Setup(c => c.RegisterInstanceAs(It.IsAny<IActionRepository>(), null));

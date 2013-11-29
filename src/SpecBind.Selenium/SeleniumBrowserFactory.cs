@@ -67,6 +67,9 @@ namespace SpecBind.Selenium
                 .ImplicitlyWait(browserFactoryConfiguration.ElementLocateTimeout)
                 .SetPageLoadTimeout(browserFactoryConfiguration.PageLoadTimeout);
 
+            // Maximize window
+            managementSettings.Window.Maximize();
+
             return driver;
         }
 

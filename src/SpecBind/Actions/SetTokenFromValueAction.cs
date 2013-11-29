@@ -18,7 +18,7 @@ namespace SpecBind.Actions
         /// </summary>
         /// <param name="tokenManager">The token manager.</param>
         public SetTokenFromValueAction(ITokenManager tokenManager)
-            : base("Set Token From Value")
+            : base(typeof(SetTokenFromValueAction).Name)
         {
             this.tokenManager = tokenManager;
         }

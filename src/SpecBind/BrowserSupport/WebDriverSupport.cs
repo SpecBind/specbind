@@ -50,7 +50,6 @@ namespace SpecBind.BrowserSupport
 			mapper.Initialize(browser.BasePageType);
 			this.objectContainer.RegisterInstanceAs<IPageMapper>(mapper);
 
-			this.objectContainer.RegisterInstanceAs<IPageDataFiller>(new PageDataFiller());
 			this.objectContainer.RegisterInstanceAs<IScenarioContextHelper>(new ScenarioContextHelper());
 			this.objectContainer.RegisterInstanceAs(TokenManager.Current);
 

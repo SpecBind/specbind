@@ -8,9 +8,9 @@ namespace SpecBind.Selenium
     using System.Reflection;
 
     using OpenQA.Selenium;
-    using OpenQA.Selenium.Support.PageObjects;
     using OpenQA.Selenium.Support.UI;
 
+    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -18,7 +18,6 @@ namespace SpecBind.Selenium
     /// </summary>
     public class SeleniumPage : PageBase<object, IWebElement>
     {
-        private readonly SeleniumPageBuilder builder;
         private readonly object nativePage;
 
         /// <summary>
@@ -28,8 +27,6 @@ namespace SpecBind.Selenium
         public SeleniumPage(object nativePage) : base(nativePage.GetType())
         {
             this.nativePage = nativePage;
-
-            this.builder = new SeleniumPageBuilder();
         }
 
         /// <summary>
@@ -76,6 +73,7 @@ namespace SpecBind.Selenium
                     var selectElement = new SelectElement(element);
                     return selectElement.SelectedOption.Text;
                 case "input":
+                case "textarea":
                     // Special case for a checkbox control
                     if (string.Equals("checkbox", element.GetAttribute("type"), StringComparison.OrdinalIgnoreCase))
                     {
@@ -186,13 +184,28 @@ namespace SpecBind.Selenium
                     break;
                 case "input":
                     // Special case for a checkbox control
-                    if (string.Equals("checkbox", element.GetAttribute("type"), StringComparison.OrdinalIgnoreCase))
+                    var inputType = element.GetAttribute("type");
+                    if (string.Equals("checkbox", inputType, StringComparison.OrdinalIgnoreCase))
                     {
                         bool checkValue;
                         if (bool.TryParse(data, out checkValue) && element.Selected != checkValue)
                         {
                             element.Click();
                         }
+                        return;
+                    }
+
+                    if (string.Equals("radio", inputType, StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Need to click twice to select the element.
+                        element.Click();
+                        element.Click();
+                        return;
+                    }
+                    
+                    if (string.Equals("file", inputType, StringComparison.OrdinalIgnoreCase))
+                    {
+                        FileUploadHelper.UploadFile(data, element.SendKeys);
                         return;
                     }
                     goto default;

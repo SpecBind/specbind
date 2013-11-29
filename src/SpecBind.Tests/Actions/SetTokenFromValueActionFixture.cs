@@ -29,7 +29,7 @@ namespace SpecBind.Tests.Actions
         {
             var getItemAction = new SetTokenFromValueAction(null);
 
-            Assert.AreEqual("Set Token From Value", getItemAction.Name);
+            Assert.AreEqual("SetTokenFromValueAction", getItemAction.Name);
         }
 
         /// <summary>

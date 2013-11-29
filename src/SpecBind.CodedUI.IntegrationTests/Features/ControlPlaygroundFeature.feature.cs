@@ -72,14 +72,16 @@ namespace SpecBind.CodedUI.IntegrationTests.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Transition to a search page date picker to another control.")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "A test playground for inspecting control\'s behaviors")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute()]
         public virtual void TransitionToASearchPageDatePickerToAnotherControl_()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Transition to a search page date picker to another control.", ((string[])(null)));
-#line 3
-this.ScenarioSetup(scenarioInfo);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Transition to a search page date picker to another control.", new string[] {
+                        "Ignore"});
 #line 4
- testRunner.Given("I navigated to the Echo Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+this.ScenarioSetup(scenarioInfo);
 #line 5
+ testRunner.Given("I navigated to the Echo Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 6
    testRunner.And("I was on the Echo Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -94,7 +96,7 @@ this.ScenarioSetup(scenarioInfo);
             table1.AddRow(new string[] {
                         "Country",
                         "United States of America"});
-#line 6
+#line 7
   testRunner.When("I enter data", ((string)(null)), table1, "When ");
 #line hidden
             this.ScenarioCleanup();

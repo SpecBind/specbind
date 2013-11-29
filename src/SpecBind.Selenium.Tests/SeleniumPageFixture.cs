@@ -313,6 +313,27 @@ namespace SpecBind.Selenium.Tests
         }
 
         /// <summary>
+        /// Tests the get element text method when the control is a text area control.
+        /// </summary>
+        [TestMethod]
+        public void TestGetElementTextWhenControlIsTextAreaControl()
+        {
+            var element = new Mock<IWebElement>(MockBehavior.Strict);
+            element.SetupGet(e => e.TagName).Returns("textarea");
+            element.Setup(e => e.GetAttribute("type")).Returns("textarea");
+            element.Setup(e => e.GetAttribute("value")).Returns("Input Text Area");
+
+            var nativePage = new NativePage();
+            var page = new SeleniumPage(nativePage);
+
+            var result = page.GetElementText(element.Object);
+
+            Assert.AreEqual("Input Text Area", result);
+            element.VerifyAll();
+        }
+
+
+        /// <summary>
         /// Tests the get element text method when the control is a checkbox input control.
         /// </summary>
         [TestMethod]
@@ -426,6 +447,27 @@ namespace SpecBind.Selenium.Tests
             var fillMethod = page.GetPageFillMethod(null);
             fillMethod(element.Object, "true");
 
+            element.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the get page fill method for a radio button control.
+        /// </summary>
+        [TestMethod]
+        public void TestGetFillMethodForRadioButtonControl()
+        {
+            var element = new Mock<IWebElement>(MockBehavior.Strict);
+            element.SetupGet(e => e.TagName).Returns("input");
+            element.Setup(e => e.GetAttribute("type")).Returns("radio");
+            element.Setup(e => e.Click());
+
+            var nativePage = new NativePage();
+            var page = new SeleniumPage(nativePage);
+
+            var fillMethod = page.GetPageFillMethod(null);
+            fillMethod(element.Object, "true");
+
+            element.Verify(e => e.Click(), Times.Exactly(2));
             element.VerifyAll();
         }
 

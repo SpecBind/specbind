@@ -5,7 +5,6 @@ namespace SpecBind.CodedUI
 {
 	using System;
 	using System.Drawing;
-	using System.IO;
 	using System.Linq;
 	using System.Windows.Input;
 
@@ -248,7 +247,11 @@ namespace SpecBind.CodedUI
 
 			if (propertyType == typeof(HtmlFileInput))
 			{
-				return EnterFileInput;
+				return (control, s) =>
+				    {
+				        var inputControl = (HtmlFileInput)control;
+				        FileUploadHelper.UploadFile(s, path => inputControl.FileName = path);
+				    };
 			}
 
             if (propertyType == typeof(HtmlCustom))
@@ -257,48 +260,6 @@ namespace SpecBind.CodedUI
             }
 
 			return null;
-		}
-
-		/// <summary>
-		/// Enters the file input.
-		/// </summary>
-		/// <param name="control">The control.</param>
-		/// <param name="data">The data.</param>
-		private static void EnterFileInput(HtmlControl control, string data)
-		{
-			var locatorName = Path.GetFileNameWithoutExtension(data);
-			var fileBytes = ResourceLocator.GetResource(locatorName);
-			if (fileBytes == null)
-			{
-				throw new ElementExecuteException(
-					"Could not locate file resource: '{0}'. Registered Resources: '{1}'. Make sure your resource file is public and it is a binary resource.",
-					locatorName,
-					ResourceLocator.GetResourceNames());
-			}
-
-			//Create a temporary path for it.
-			var path = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString(), data);
-
-			try
-			{
-				File.WriteAllBytes(path, fileBytes);
-
-				var inputControl = (HtmlFileInput)control;
-				inputControl.FileName = path;
-			}
-			finally
-			{
-				if (File.Exists(path))
-				{
-					File.Delete(path);
-					
-					var parent = Path.GetDirectoryName(path);
-					if (parent != null)
-					{
-						Directory.Delete(parent);
-					}
-				}
-			}
 		}
 	}
 }

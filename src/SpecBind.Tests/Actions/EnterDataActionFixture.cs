@@ -29,7 +29,7 @@ namespace SpecBind.Tests.Actions
         {
             var enterDataAction = new EnterDataAction(null);
 
-            Assert.AreEqual("Enter Data", enterDataAction.Name);
+            Assert.AreEqual("EnterDataAction", enterDataAction.Name);
         }
 
         /// <summary>

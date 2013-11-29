@@ -26,7 +26,7 @@ namespace SpecBind.Tests.Actions
 		{
 			var buttonClickAction = new ButtonClickAction();
 
-			Assert.AreEqual("Item Click", buttonClickAction.Name);
+            Assert.AreEqual("ButtonClickAction", buttonClickAction.Name);
 		}
 
 		/// <summary>

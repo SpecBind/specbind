@@ -54,25 +54,22 @@ namespace SpecBind
 		private const string GivenWaitForActiveViewRegex = @"I waited for the view to become active";
 
 		private readonly IBrowser browser;
-		private readonly IPageDataFiller pageDataFiller;
 		private readonly IPageMapper pageMapper;
 		private readonly IScenarioContextHelper scenarioContext;
 		private readonly ITokenManager tokenManager;
 		private readonly IActionPipelineService actionPipelineService;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="CommonPageSteps" /> class.
-		/// </summary>
-		/// <param name="browser">The browser.</param>
-		/// <param name="pageDataFiller">The page data filler.</param>
-		/// <param name="pageMapper">The page mapper.</param>
-		/// <param name="scenarioContext">The scenario context.</param>
-		/// <param name="tokenManager">The token manager.</param>
-		/// <param name="actionPipelineService">The action pipeline service.</param>
-		public CommonPageSteps(IBrowser browser, IPageDataFiller pageDataFiller, IPageMapper pageMapper, IScenarioContextHelper scenarioContext, ITokenManager tokenManager, IActionPipelineService actionPipelineService)
+	    /// <summary>
+	    /// Initializes a new instance of the <see cref="CommonPageSteps" /> class.
+	    /// </summary>
+	    /// <param name="browser">The browser.</param>
+	    /// <param name="pageMapper">The page mapper.</param>
+	    /// <param name="scenarioContext">The scenario context.</param>
+	    /// <param name="tokenManager">The token manager.</param>
+	    /// <param name="actionPipelineService">The action pipeline service.</param>
+	    public CommonPageSteps(IBrowser browser, IPageMapper pageMapper, IScenarioContextHelper scenarioContext, ITokenManager tokenManager, IActionPipelineService actionPipelineService)
 		{
 			this.browser = browser;
-			this.pageDataFiller = pageDataFiller;
 			this.pageMapper = pageMapper;
 			this.scenarioContext = scenarioContext;
 			this.tokenManager = tokenManager;
@@ -125,12 +122,11 @@ namespace SpecBind
 		public void GivenEnsureOnListItemStep(string listName, int itemNumber)
 		{
 			var page = this.GetPageFromContext();
-			var item = this.pageDataFiller.GetListItem(page, listName.ToLookupKey(), itemNumber);
 
-			if (this.scenarioContext.ContainsTag(TagConstants.Debug))
-			{
-				item.Highlight();
-			}
+            var context = new GetListItemByIndexAction.ListItemByIndexContext(listName.ToLookupKey(), itemNumber);
+
+			var item = this.actionPipelineService.PerformAction<GetListItemByIndexAction>(page, context)
+                                                 .CheckResult<IPage>();
 			
 			this.scenarioContext.SetValue(item, CurrentPageKey);
 		}
@@ -257,7 +253,9 @@ namespace SpecBind
 			}
 
 			var page = this.GetPageFromContext();
-			this.pageDataFiller.ValidateItem(page, validations);
+
+            var context = new ValidateItemAction.ValidateItemContext(validations);
+            this.actionPipelineService.PerformAction<ValidateItemAction>(page, context).CheckResult();
 		}
 
 		/// <summary>
@@ -306,7 +304,8 @@ namespace SpecBind
 			var page = this.GetPageFromContext();
 			var validations = this.GetItemValidations(data);
 
-			this.pageDataFiller.ValidateList(page, fieldName.ToLookupKey(), comparisonType, validations);
+		    var context = new ValidateListAction.ValidateListContext(fieldName.ToLookupKey(), comparisonType, validations);
+            this.actionPipelineService.PerformAction<ValidateListAction>(page, context).CheckResult();
 		}
 
 		/// <summary>

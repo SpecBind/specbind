@@ -18,7 +18,7 @@ namespace SpecBind.Actions
         /// </summary>
         /// <param name="tokenManager">The token manager.</param>
         public EnterDataAction(ITokenManager tokenManager)
-            : base("Enter Data")
+            : base(typeof(EnterDataAction).Name)
         {
             this.tokenManager = tokenManager;
         }

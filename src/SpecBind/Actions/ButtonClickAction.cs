@@ -14,7 +14,8 @@ namespace SpecBind.Actions
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtonClickAction" /> class.
         /// </summary>
-		public ButtonClickAction() : base("Item Click")
+        public ButtonClickAction()
+            : base(typeof(ButtonClickAction).Name)
 		{
 		}
 
