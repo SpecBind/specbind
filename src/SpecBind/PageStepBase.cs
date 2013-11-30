@@ -1,4 +1,8 @@
-﻿namespace SpecBind
+﻿// <copyright file="PageStepBase.cs">
+//    Copyright © 2013 Dan Piessens.  All rights reserved.
+// </copyright>
+
+namespace SpecBind
 {
     using SpecBind.Helpers;
     using SpecBind.Pages;
