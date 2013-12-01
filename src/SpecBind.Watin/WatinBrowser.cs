@@ -173,6 +173,18 @@ namespace SpecBind.Watin
             return null;
         }
 
+        /// <summary>
+        /// Executes the script.
+        /// </summary>
+        /// <param name="script">The script to execute.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>The result of the script if needed.</returns>
+	    public object ExecuteScript(string script, params object[] args)
+	    {
+	        this.browser.Value.RunScript(script);
+            return null;
+	    }
+
 	    /// <summary>
 		/// Releases unmanaged and - optionally - managed resources.
 		/// </summary>

@@ -100,6 +100,34 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Executes the script.
+        /// </summary>
+        /// <param name="script">The script to execute.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>The result of the script if needed.</returns>
+        public override object ExecuteScript(string script, params object[] args)
+        {
+            var javascriptExecutor = this.driver.Value as IJavaScriptExecutor;
+
+            if (javascriptExecutor == null)
+            {
+                return null;
+            }
+
+            var result = javascriptExecutor.ExecuteScript(script, args);
+            
+            var webElement = result as IWebElement;
+            if (webElement == null)
+            {
+                return result;
+            }
+
+            var proxy = new WebElement(webElement);
+            proxy.CloneNativeElement(webElement);
+            return proxy;
+        }
+
+        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()

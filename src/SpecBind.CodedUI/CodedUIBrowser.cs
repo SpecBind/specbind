@@ -137,6 +137,18 @@ namespace SpecBind.CodedUI
 		}
 
         /// <summary>
+        /// Executes the script.
+        /// </summary>
+        /// <param name="script">The script to execute.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>The result of the script if needed.</returns>
+	    public override object ExecuteScript(string script, params object[] args)
+	    {
+	        var localBrowser = this.window.Value;
+            return localBrowser.ExecuteScript(script, args);
+	    }
+
+        /// <summary>
         /// Takes the screenshot from the native browser.
         /// </summary>
         /// <param name="imageFolder">The image folder.</param>
@@ -145,7 +157,6 @@ namespace SpecBind.CodedUI
 	    public override string TakeScreenshot(string imageFolder, string fileNameBase)
         {
             var localBrowser = this.window.Value;
-            
             try
             {
                 var fullPath = Path.Combine(imageFolder, string.Format("{0}.jpg", fileNameBase));

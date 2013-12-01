@@ -57,6 +57,14 @@ namespace SpecBind.BrowserSupport
         }
 
         /// <summary>
+        /// Executes the script.
+        /// </summary>
+        /// <param name="script">The script to execute.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>The result of the script if needed.</returns>
+        public abstract object ExecuteScript(string script, params object[] args);
+
+        /// <summary>
         /// Gets the URI for the page if supported by the browser.
         /// </summary>
         /// <param name="pageType">Type of the page.</param>

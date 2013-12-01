@@ -78,5 +78,13 @@ namespace SpecBind.BrowserSupport
         /// <param name="fileNameBase">The file name base.</param>
         /// <returns>The full path of the image file.</returns>
 	    string TakeScreenshot(string imageFolder, string fileNameBase);
+
+        /// <summary>
+        /// Executes the script.
+        /// </summary>
+        /// <param name="script">The script to execute.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>The result of the script if needed.</returns>
+	    object ExecuteScript(string script, params object[] args);
 	}
 }

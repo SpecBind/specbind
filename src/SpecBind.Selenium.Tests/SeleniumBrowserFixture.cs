@@ -262,6 +262,77 @@ namespace SpecBind.Selenium.Tests
         }
 
         /// <summary>
+        /// Tests the execute script method for the browser when it exists.
+        /// </summary>
+        [TestMethod]
+        public void TestExecuteScriptWhenDriverSupportItRunsScript()
+        {
+            var result = new object();
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            driver.As<IJavaScriptExecutor>().Setup(e => e.ExecuteScript("some script", It.IsAny<object[]>()))
+                                            .Returns(result);
+
+            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
+
+            Assert.IsNotNull(lazyDriver.Value);
+
+            var browser = new SeleniumBrowser(lazyDriver);
+
+            var resultObject = browser.ExecuteScript("some script", "Hello");
+
+            Assert.AreSame(result, resultObject);
+
+            driver.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the execute script method for the browser when it exists.
+        /// </summary>
+        [TestMethod]
+        public void TestExecuteScriptWhenResultIsNativeElementReturnsProxyClass()
+        {
+            var result = new Mock<IWebElement>(MockBehavior.Strict);
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            driver.As<IJavaScriptExecutor>().Setup(e => e.ExecuteScript("some script", It.IsAny<object[]>()))
+                                            .Returns(result.Object);
+
+            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
+
+            Assert.IsNotNull(lazyDriver.Value);
+
+            var browser = new SeleniumBrowser(lazyDriver);
+
+            var resultObject = browser.ExecuteScript("some script", "Hello");
+
+            Assert.IsNotNull(resultObject);
+            Assert.IsInstanceOfType(resultObject, typeof(WebElement));
+           
+            driver.VerifyAll();
+            result.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the execute script method when it doesn't support it returns null.
+        /// </summary>
+        [TestMethod]
+        public void TestExecuteScriptWhenDriverDoesNotSupportScriptReturnsNull()
+        {
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            
+            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
+
+            Assert.IsNotNull(lazyDriver.Value);
+
+            var browser = new SeleniumBrowser(lazyDriver);
+
+            var resultObject = browser.ExecuteScript("some script", "Hello");
+
+            Assert.IsNull(resultObject);
+
+            driver.VerifyAll();
+        }
+
+        /// <summary>
         /// Tests the take screenshot method does nothing when the interface is not supported.
         /// </summary>
         [TestMethod]
