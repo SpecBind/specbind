@@ -15,6 +15,7 @@ namespace SpecBind.Selenium.Tests
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.PageObjects;
 
+    using SpecBind.BrowserSupport;
     using SpecBind.Pages;
 
     /// <summary>
@@ -30,6 +31,7 @@ namespace SpecBind.Selenium.Tests
         public void TestCreatePage()
         {
             var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             var listItem = new Mock<IWebElement>(MockBehavior.Loose);
             listItem.Setup(l => l.Displayed).Returns(true);
@@ -46,7 +48,7 @@ namespace SpecBind.Selenium.Tests
 
             var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(BuildPage));
 
-            var pageObject = pageFunc(driver.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, null);
             var page = pageObject as BuildPage;
 
             Assert.IsNotNull(page);
@@ -94,6 +96,7 @@ namespace SpecBind.Selenium.Tests
         public void TestMultipleConstructorArguments()
         {
             var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             var listItem = new Mock<IWebElement>(MockBehavior.Loose);
             listItem.Setup(l => l.Displayed).Returns(true);
@@ -110,7 +113,7 @@ namespace SpecBind.Selenium.Tests
 
             var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NestedElementPage));
 
-            var pageObject = pageFunc(driver.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, null);
             var page = pageObject as NestedElementPage;
 
             Assert.IsNotNull(page);
@@ -137,10 +140,11 @@ namespace SpecBind.Selenium.Tests
         public void TestCreatePageWithNativeAttributes()
         {
             var driver = new Mock<IWebDriver>();
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NativeAttributePage));
 
-            var pageObject = pageFunc(driver.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, null);
             var page = pageObject as NativeAttributePage;
 
             Assert.IsNotNull(page);
@@ -155,10 +159,11 @@ namespace SpecBind.Selenium.Tests
         public void TestCreatePageWithCombinedNativeAndLocatorAttributes()
         {
             var driver = new Mock<IWebDriver>();
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NativeAttributePage));
 
-            var pageObject = pageFunc(driver.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, null);
             var page = pageObject as NativeAttributePage;
 
             Assert.IsNotNull(page);
@@ -173,10 +178,11 @@ namespace SpecBind.Selenium.Tests
         public void TestCreatePageWithDuplicateNativeAndLocatorAttributes()
         {
             var driver = new Mock<IWebDriver>();
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NativeAttributePage));
 
-            var pageObject = pageFunc(driver.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, null);
             var page = pageObject as NativeAttributePage;
 
             Assert.IsNotNull(page);
@@ -191,6 +197,7 @@ namespace SpecBind.Selenium.Tests
         public void TestCreatePageWithNativeProperties()
         {
             var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             var listItem = new Mock<IWebElement>(MockBehavior.Loose);
             listItem.Setup(l => l.Displayed).Returns(true);
@@ -207,7 +214,7 @@ namespace SpecBind.Selenium.Tests
 
             var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(BuildPage));
 
-            var pageObject = pageFunc(driver.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, null);
             var page = pageObject as BuildPage;
 
             Assert.IsNotNull(page);
@@ -261,10 +268,33 @@ namespace SpecBind.Selenium.Tests
             Assert.IsNotNull(pageFunc);
 
             var driver = new Mock<IWebDriver>();
-            var page = pageFunc(driver.Object, null);
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+            var page = pageFunc(driver.Object, browser.Object, null);
 
             Assert.IsNotNull(page);
             Assert.IsInstanceOfType(page, typeof(NoConstructorElement));
+        }
+
+        /// <summary>
+        /// Tests the create page method with the browser in the constructor.
+        /// </summary>
+        [TestMethod]
+        public void TestCreatePageWithBrowserArgument()
+        {
+            var driver = new Mock<IWebDriver>();
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+            var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(BrowserDocument));
+
+            var pageObject = pageFunc(driver.Object, browser.Object, null);
+            var page = pageObject as BrowserDocument;
+
+            Assert.IsNotNull(page);
+            Assert.IsNotNull(page.Browser);
+            
+            driver.VerifyAll();
+            browser.VerifyAll();
         }
 
         /// <summary>
@@ -575,6 +605,31 @@ namespace SpecBind.Selenium.Tests
             public ISearchContext SearchContext { get; private set; }
         }
 
+        #endregion
+
+        #region Class - BrowserDocument
+
+        /// <summary>
+        /// Class BrowserDocument.
+        /// </summary>
+        public class BrowserDocument
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="BrowserDocument"/> class.
+            /// </summary>
+            /// <param name="browser">The browser.</param>
+            public BrowserDocument(IBrowser browser)
+            {
+                this.Browser = browser;
+            }
+
+            /// <summary>
+            /// Gets the browser.
+            /// </summary>
+            /// <value>The browser.</value>
+            public IBrowser Browser { get; private set; }
+        }
+        
         #endregion
     }
 }

@@ -12,6 +12,7 @@ namespace SpecBind.Selenium
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.PageObjects;
 
+    using SpecBind.BrowserSupport;
     using SpecBind.Pages;
 
     /// <summary>
@@ -20,11 +21,23 @@ namespace SpecBind.Selenium
     public class SeleniumPageBuilder : PageBuilderBase<ISearchContext, object, IWebElement>
     {
         /// <summary>
+        /// Gets a value indicating whether to allow an empty constructor for a page object.
+        /// </summary>
+        /// <value><c>true</c> if an empty constructor should be allowed; otherwise, <c>false</c>.</value>
+        protected override bool AllowEmptyConstructor
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Creates the page.
         /// </summary>
         /// <param name="pageType">Type of the page.</param>
         /// <returns>The created page class.</returns>
-        public Func<ISearchContext, Action<object>, object> CreatePage(Type pageType)
+        public Func<ISearchContext, IBrowser, Action<object>, object> CreatePage(Type pageType)
         {
             return this.CreateElementInternal(pageType);
         }
@@ -105,57 +118,31 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
-        /// Gets the constructor.
+        /// Gets the constructor parameter for the given type.
         /// </summary>
-        /// <param name="itemType">Type of the item.</param>
+        /// <param name="parameterType">Type of the parameter to fill.</param>
         /// <param name="parentArgument">The parent argument.</param>
-        /// <param name="rootLocator">The root locator if different from the parent.</param>
+        /// <param name="rootLocator">The root locator argument if different from the parent.</param>
         /// <returns>The constructor information that matches.</returns>
-        protected override Tuple<ConstructorInfo, IEnumerable<Expression>> GetConstructor(Type itemType, ExpressionData parentArgument, ExpressionData rootLocator)
+        protected override Expression FillConstructorParameter(Type parameterType, ExpressionData parentArgument, ExpressionData rootLocator)
         {
-            foreach (var constructorInfo in itemType.GetConstructors(BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                                                    .OrderByDescending(c => c.GetParameters().Length))
-            {
-                var parameters = constructorInfo.GetParameters();
-                if (parameters.Length < 1)
-                {
-                    continue;
-                }
-                
-                var slots = new Expression[parameters.Length];
-                slots.Initialize();
-
-                for (var i = 0; i < parameters.Length; i++)
-                {
-                    var parameter = parameters[i];
-                    var parameterType = parameter.ParameterType;
-
-                    var parentArg = (rootLocator != null && !typeof(ISearchContext).IsAssignableFrom(parentArgument.Type))
+            var parentArg = (rootLocator != null && !typeof(ISearchContext).IsAssignableFrom(parentArgument.Type))
                                         ? rootLocator.Expression
                                         : parentArgument.Expression;
 
-                    // If it's a web driver use that first.
-                    if (typeof(IWebDriver).IsAssignableFrom(parameterType) && rootLocator != null)
-                    {
-                        slots[i] = Expression.Convert(rootLocator.Expression, parameterType);
-                    }
-                    else if (typeof(ISearchContext).IsAssignableFrom(parameterType))
-                    {
-                        // Use a search context second
-                        slots[i] = Expression.Convert(parentArg, parameterType);
-                    }
-                }
-
-                if (slots.All(s => s != null))
-                {
-                    return new Tuple<ConstructorInfo, IEnumerable<Expression>>(constructorInfo, slots);
-                }
+            // If it's a web driver use that first.
+            if (typeof(IWebDriver).IsAssignableFrom(parameterType) && rootLocator != null)
+            {
+                return Expression.Convert(rootLocator.Expression, parameterType);
+            }
+            
+            if (typeof(ISearchContext).IsAssignableFrom(parameterType))
+            {
+                // Use a search context second
+                return Expression.Convert(parentArg, parameterType);
             }
 
-            var emptyConstructor = itemType.GetConstructors().FirstOrDefault(c => c.GetParameters().Length == 0);
-            return emptyConstructor != null
-                       ? new Tuple<ConstructorInfo, IEnumerable<Expression>>(emptyConstructor, new List<Expression>(0))
-                       : null;
+            return null;
         }
 
         /// <summary>

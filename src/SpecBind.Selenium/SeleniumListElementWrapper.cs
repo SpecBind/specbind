@@ -9,6 +9,7 @@ namespace SpecBind.Selenium
 
     using OpenQA.Selenium;
 
+    using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
     using SpecBind.Pages;
 
@@ -21,17 +22,18 @@ namespace SpecBind.Selenium
         where TElement : IWebElement 
         where TChildElement : class
     {
-        private readonly Func<ISearchContext, Action<object>, object> builderFunc;
+        private readonly Func<ISearchContext, IBrowser, Action<object>, object> builderFunc;
         private readonly By locator;
 
         private ReadOnlyCollection<IWebElement> itemCollection;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SeleniumListElementWrapper{TElement, TChildElement}"/> class.
+        /// Initializes a new instance of the <see cref="SeleniumListElementWrapper{TElement, TChildElement}" /> class.
         /// </summary>
         /// <param name="parentElement">The parent element.</param>
-        public SeleniumListElementWrapper(TElement parentElement)
-            : base(parentElement)
+        /// <param name="browser">The browser.</param>
+        public SeleniumListElementWrapper(TElement parentElement, IBrowser browser)
+            : base(parentElement, browser)
         {
             var builder = new SeleniumPageBuilder();
             this.builderFunc = builder.CreatePage(typeof(TChildElement));
@@ -41,10 +43,11 @@ namespace SpecBind.Selenium
         /// <summary>
         /// Creates the element.
         /// </summary>
+        /// <param name="browser">The browser.</param>
         /// <param name="parentElement">The parent element.</param>
         /// <param name="index">The index.</param>
         /// <returns>The created child element.</returns>
-        protected override TChildElement CreateElement(TElement parentElement, int index)
+        protected override TChildElement CreateElement(IBrowser browser, TElement parentElement, int index)
         {
             if (this.locator != null)
             {
@@ -56,7 +59,7 @@ namespace SpecBind.Selenium
                 var element = (index > 0 && index <= this.itemCollection.Count) ? this.itemCollection[index - 1] : null;
                 if (element != null)
                 {
-                    var childElement = (TChildElement)this.builderFunc(parentElement, null);
+                    var childElement = (TChildElement)this.builderFunc(parentElement, browser, null);
 
                     var webElement = childElement as WebElement;
                     if (webElement != null)

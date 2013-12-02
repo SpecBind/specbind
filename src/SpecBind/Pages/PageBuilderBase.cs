@@ -10,6 +10,7 @@ namespace SpecBind.Pages
     using System.Linq.Expressions;
     using System.Reflection;
 
+    using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
 
     /// <summary>
@@ -29,6 +30,18 @@ namespace SpecBind.Pages
         protected PageBuilderBase()
         {
             this.assignMethodInfo = new Action<TElement, ElementLocatorAttribute, object[]>(this.AssignElementAttributes).GetMethodInfo();
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether to allow an empty constructor for a page object.
+        /// </summary>
+        /// <value><c>true</c> if an empty constructor should be allowed; otherwise, <c>false</c>.</value>
+        protected virtual bool AllowEmptyConstructor
+        {
+            get
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -79,7 +92,7 @@ namespace SpecBind.Pages
         /// <param name="elementType">Type of the page.</param>
         /// <returns>The page builder function.</returns>
         /// <exception cref="System.InvalidOperationException">Thrown if the constructor is invalid.</exception>
-        protected Func<TParent, Action<TOutput>, TOutput> CreateElementInternal(Type elementType)
+        protected Func<TParent, IBrowser, Action<TOutput>, TOutput> CreateElementInternal(Type elementType)
         {
             var expression = this.CreateNewItemExpression(elementType);
             return expression.Compile();
@@ -100,7 +113,7 @@ namespace SpecBind.Pages
 
             var expressions = new List<Expression>
 				                  {
-					                  Expression.Assign(docVariable, Expression.Convert(Expression.Invoke(createExpression, parentArgument, Expression.Constant(null, typeof(Action<TElement>))), frameType)),
+					                  Expression.Assign(docVariable, Expression.Convert(Expression.Invoke(createExpression, parentArgument, Expression.Constant(null, typeof(IBrowser)), Expression.Constant(null, typeof(Action<TElement>))), frameType)),
 									  Expression.Convert(Expression.Property(docVariable, property), typeof(TOutput))
 				                  };
 
@@ -140,20 +153,15 @@ namespace SpecBind.Pages
         }
 
         /// <summary>
-        /// Gets the constructor.
+        /// Gets the constructor parameter for the given type.
         /// </summary>
-        /// <param name="itemType">Type of the item.</param>
+        /// <param name="parameterType">Type of the parameter to fill.</param>
         /// <param name="parentArgument">The parent argument.</param>
         /// <param name="rootLocator">The root locator argument if different from the parent.</param>
         /// <returns>The constructor information that matches.</returns>
-        protected virtual Tuple<ConstructorInfo, IEnumerable<Expression>> GetConstructor(Type itemType, ExpressionData parentArgument, ExpressionData rootLocator)
+        protected virtual Expression FillConstructorParameter(Type parameterType, ExpressionData parentArgument, ExpressionData rootLocator)
         {
-            var constructor = itemType.GetConstructors()
-                .FirstOrDefault(c => c.GetParameters().Length == 1 && typeof(TParent).IsAssignableFrom(c.GetParameters().First().ParameterType));
-
-            return constructor != null 
-                ? new Tuple<ConstructorInfo, IEnumerable<Expression>>(constructor, new[] { Expression.Convert(parentArgument.Expression, typeof(TParent)) }) 
-                : null;
+            return typeof(TParent).IsAssignableFrom(parameterType) ? parentArgument.Expression : null;
         }
 
         /// <summary>
@@ -209,18 +217,21 @@ namespace SpecBind.Pages
         /// <param name="elementType">Type of the element.</param>
         /// <returns>The initial creation lambda expression.</returns>
         /// <exception cref="System.InvalidOperationException">Thrown if the constructor is invalid.</exception>
-        private Expression<Func<TParent, Action<TOutput>, TOutput>> CreateNewItemExpression(Type elementType)
+        private Expression<Func<TParent, IBrowser, Action<TOutput>, TOutput>> CreateNewItemExpression(Type elementType)
         {
             var parentParameter = Expression.Parameter(typeof(TParent), "parent");
             var parentArgument = new ExpressionData(parentParameter, typeof(TParent));
 
-            var constructor = this.GetConstructor(elementType, parentArgument, null);
+            var browserParameter = Expression.Parameter(typeof(IBrowser), "browser");
+            var browserArgument = new ExpressionData(browserParameter, typeof(IBrowser));
+
+            var constructor = this.GetConstructor(elementType, browserArgument, parentArgument, null);
             if (constructor == null)
             {
                 throw this.CreateConstructorException(null, elementType);
             }
 
-            var actionArgument = Expression.Parameter(typeof(Action<TOutput>), "action");
+            var actionParameter = Expression.Parameter(typeof(Action<TOutput>), "action");
             var docVariable = Expression.Variable(elementType);
 
             //Spin though properties and make an initializer for anything we can set that has an attribute
@@ -232,25 +243,78 @@ namespace SpecBind.Pages
                                           Expression.Constant(this),
 						                  pageMethodInfo,
 						                  Expression.Convert(docVariable, typeof(TOutput)),
-						                  actionArgument)
+						                  actionParameter)
 				                  };
 
             var documentData = new ExpressionData(docVariable, elementType);
-            this.MapObjectProperties(expressions, elementType, documentData, parentArgument);
+            this.MapObjectProperties(expressions, elementType, browserArgument, documentData, parentArgument);
             expressions.Add(docVariable);
 
             var methodCall = Expression.Block(new[] { docVariable }, expressions);
-            return Expression.Lambda<Func<TParent, Action<TOutput>, TOutput>>(methodCall, parentParameter, actionArgument);
+            return Expression.Lambda<Func<TParent, IBrowser, Action<TOutput>, TOutput>>(methodCall, parentParameter, browserParameter, actionParameter);
         }
+
+        /// <summary>
+        /// Gets the constructor.
+        /// </summary>
+        /// <param name="itemType">Type of the item.</param>
+        /// <param name="browser">The browser argument to inject a browser.</param>
+        /// <param name="parentArgument">The parent argument.</param>
+        /// <param name="rootLocator">The root locator argument if different from the parent.</param>
+        /// <returns>The constructor information that matches.</returns>
+        private Tuple<ConstructorInfo, IEnumerable<Expression>> GetConstructor(Type itemType, ExpressionData browser, ExpressionData parentArgument, ExpressionData rootLocator)
+        {
+            ConstructorInfo emptyConstructor = null;
+            foreach (var constructorInfo in itemType.GetConstructors(BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                                                    .OrderByDescending(c => c.GetParameters().Length))
+            {
+
+                var parameters = constructorInfo.GetParameters();
+                if (parameters.Length == 0)
+                {
+                    emptyConstructor = constructorInfo;
+                    continue;
+                }
+
+                var slots = new Expression[parameters.Length];
+                slots.Initialize();
+
+                for (var i = 0; i < parameters.Length; i++)
+                {
+                    var parameter = parameters[i];
+                    var parameterType = parameter.ParameterType;
+
+                    if (browser.Type.IsAssignableFrom(parameterType))
+                    {
+                        slots[i] = Expression.Convert(browser.Expression, browser.Type);
+                    }
+                    else
+                    {
+                        slots[i] = this.FillConstructorParameter(parameterType, parentArgument, rootLocator);
+                    }
+                }
+
+                if (slots.All(s => s != null))
+                {
+                    return new Tuple<ConstructorInfo, IEnumerable<Expression>>(constructorInfo, slots);
+                }
+            }
+
+            return this.AllowEmptyConstructor && emptyConstructor != null
+                       ? new Tuple<ConstructorInfo, IEnumerable<Expression>>(emptyConstructor, new List<Expression>(0))
+                       : null;
+        }
+        
 
         /// <summary>
         /// Maps the object properties for the given object.
         /// </summary>
         /// <param name="expressions">The parent expression list.</param>
         /// <param name="objectType">Type of the object.</param>
+        /// <param name="browser">The browser argument.</param>
         /// <param name="parentVariable">The parent variable.</param>
         /// <param name="rootLocator">The root locator item.</param>
-        private void MapObjectProperties(ICollection<Expression> expressions, Type objectType, ExpressionData parentVariable, ExpressionData rootLocator)
+        private void MapObjectProperties(ICollection<Expression> expressions, Type objectType, ExpressionData browser, ExpressionData parentVariable, ExpressionData rootLocator)
         {
             // ReSharper disable LoopCanBeConvertedToQuery
             foreach (var propertyInfo in objectType.GetProperties().Where(p =>
@@ -280,17 +344,17 @@ namespace SpecBind.Pages
                     var parentListVariable = Expression.Variable(parentListType, "collectionParent");
                     variableList.Add(parentListVariable);
 
-                    propertyExpressions.AddRange(this.CreateHtmlObject(rootLocator, parentVariable, parentListVariable, parentListType, propertyInfo.Name, attribute, customAttributes));
-                    propertyExpressions.Add(Expression.Assign(itemVariable, Expression.New(concreteTypeConstructor, parentListVariable)));
+                    propertyExpressions.AddRange(this.CreateHtmlObject(browser, rootLocator, parentVariable, parentListVariable, parentListType, propertyInfo.Name, attribute, customAttributes));
+                    propertyExpressions.Add(Expression.Assign(itemVariable, Expression.New(concreteTypeConstructor, parentListVariable, browser.Expression)));
                 }
                 else
                 {
                     //Normal path starts here
                     //New up property and then check if for inner properties.
-                    propertyExpressions.AddRange(this.CreateHtmlObject(rootLocator, parentVariable, itemVariable, propertyType, propertyInfo.Name, attribute, customAttributes));
+                    propertyExpressions.AddRange(this.CreateHtmlObject(browser, rootLocator, parentVariable, itemVariable, propertyType, propertyInfo.Name, attribute, customAttributes));
 
                     var itemData = new ExpressionData(itemVariable, propertyType);
-                    this.MapObjectProperties(propertyExpressions, propertyType, itemData, rootLocator);
+                    this.MapObjectProperties(propertyExpressions, propertyType, browser, itemData, rootLocator);
                 }
 
                 propertyExpressions.Add(Expression.Assign(Expression.Property(parentVariable.Expression, propertyInfo), itemVariable));
@@ -301,6 +365,7 @@ namespace SpecBind.Pages
         /// <summary>
         /// Creates the HTML object for each property that is part of the parent.
         /// </summary>
+        /// <param name="browser">The browser argument.</param>
         /// <param name="rootLocator">The root locator variable expression.</param>
         /// <param name="parentVariable">The parent variable.</param>
         /// <param name="itemVariable">The item variable.</param>
@@ -309,18 +374,11 @@ namespace SpecBind.Pages
         /// <param name="attribute">The attribute.</param>
         /// <param name="nativeAttributes">The native attributes.</param>
         /// <returns>The expressions needed to create the list</returns>
-        private IEnumerable<Expression> CreateHtmlObject(
-            ExpressionData rootLocator, 
-            ExpressionData parentVariable,
-            Expression itemVariable, 
-            Type propertyType, 
-            string propertyName, 
-            ElementLocatorAttribute attribute,
-            IEnumerable nativeAttributes)
+        private IEnumerable<Expression> CreateHtmlObject(ExpressionData browser, ExpressionData rootLocator, ExpressionData parentVariable, Expression itemVariable, Type propertyType, string propertyName, ElementLocatorAttribute attribute, IEnumerable nativeAttributes)
         {
             var objectType = this.GetPropertyProxyType(propertyType);
 
-            var propConstructor = this.GetConstructor(objectType, parentVariable, rootLocator);
+            var propConstructor = this.GetConstructor(objectType, browser, parentVariable, rootLocator);
             if (propConstructor == null)
             {
                 throw this.CreateConstructorException(propertyName, objectType);

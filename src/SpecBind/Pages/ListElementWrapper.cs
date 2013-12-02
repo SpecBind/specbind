@@ -6,23 +6,29 @@ namespace SpecBind.Pages
 	using System.Collections;
 	using System.Collections.Generic;
 
-	/// <summary>
+	using SpecBind.BrowserSupport;
+
+    /// <summary>
 	/// A wrapper class for lists of elements.
 	/// </summary>
 	/// <typeparam name="TElement">The type of the parent element.</typeparam>
 	/// <typeparam name="TChildElement">The type of the child element.</typeparam>
 	public abstract class ListElementWrapper<TElement, TChildElement> : IElementList<TElement, TChildElement>
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ListElementWrapper{T, TChildElement}" /> class.
-		/// </summary>
-		/// <param name="parentElement">The parent element.</param>
-		protected ListElementWrapper(TElement parentElement)
-		{
-			this.Parent = parentElement;
-		}
+        private readonly IBrowser webBrowser;
 
-		#region IEnumerator<TChildItem> Implementation
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ListElementWrapper{T, TChildElement}" /> class.
+        /// </summary>
+        /// <param name="parentElement">The parent element.</param>
+        /// <param name="webBrowser">The browser.</param>
+        protected ListElementWrapper(TElement parentElement, IBrowser webBrowser)
+        {
+            this.webBrowser = webBrowser;
+            this.Parent = parentElement;
+        }
+
+        #region IEnumerator<TChildItem> Implementation
 
 		/// <summary>
 		/// Gets the parent element.
@@ -56,15 +62,14 @@ namespace SpecBind.Pages
 
 		#region Methods
 
-		/// <summary>
-		/// Creates the element.
-		/// </summary>
-		/// <param name="parentElement">The parent element.</param>
-		/// <param name="index">The index.</param>
-		/// <returns>
-		/// The child element.
-		/// </returns>
-		protected abstract TChildElement CreateElement(TElement parentElement, int index);
+        /// <summary>
+        /// Creates the element.
+        /// </summary>
+        /// <param name="browser">The browser.</param>
+        /// <param name="parentElement">The parent element.</param>
+        /// <param name="index">The index.</param>
+        /// <returns>The child element.</returns>
+        protected abstract TChildElement CreateElement(IBrowser browser, TElement parentElement, int index);
 
 		/// <summary>
 		/// Checks to see if the element actually exists according to the DOM.
@@ -83,7 +88,7 @@ namespace SpecBind.Pages
 		private bool TryGetChildElement(int index, out TChildElement childElement)
 		{
 			childElement = default(TChildElement);
-			var element = this.CreateElement(this.Parent, index);
+			var element = this.CreateElement(this.webBrowser, this.Parent, index);
 			if (!Equals(element, default(TChildElement)) && this.ElementExists(element, index))
 			{
 				childElement = element;

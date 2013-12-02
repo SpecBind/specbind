@@ -10,6 +10,7 @@ namespace SpecBind.CodedUI
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
 
+	using SpecBind.BrowserSupport;
 	using SpecBind.Pages;
 
 	/// <summary>
@@ -22,17 +23,18 @@ namespace SpecBind.CodedUI
 		where TElement : UITestControl
 		where TChildElement : HtmlControl
 	{
-		private readonly Func<TElement, Action<HtmlControl>, TChildElement> builderFunc;
+		private readonly Func<TElement, IBrowser, Action<HtmlControl>, TChildElement> builderFunc;
         private readonly object lockObject;
 
         private List<TChildElement> items;
-        
-		/// <summary>
-		/// Initializes a new instance of the <see cref="CodedUIListElementWrapper{TElement, TChildElement}" /> class.
-		/// </summary>
-		/// <param name="parentElement">The parent element.</param>
-		public CodedUIListElementWrapper(TElement parentElement)
-			: base(parentElement)
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CodedUIListElementWrapper{TElement, TChildElement}" /> class.
+        /// </summary>
+        /// <param name="parentElement">The parent element.</param>
+        /// <param name="webBrowser">The browser.</param>
+		public CodedUIListElementWrapper(TElement parentElement, IBrowser webBrowser)
+            : base(parentElement, webBrowser)
 		{
             this.builderFunc = PageBuilder<TElement, TChildElement>.CreateElement(typeof(TChildElement));
             this.lockObject = new object();
@@ -48,15 +50,16 @@ namespace SpecBind.CodedUI
 		/// </value>
 		public bool ValidateElementExists { get; set; }
 
-		/// <summary>
-		/// Creates the element.
-		/// </summary>
-		/// <param name="parentElement">The parent element.</param>
-		/// <param name="index">The index.</param>
-		/// <returns>The newly created element.</returns>
-		protected override TChildElement CreateElement(TElement parentElement, int index)
+        /// <summary>
+        /// Creates the element.
+        /// </summary>
+        /// <param name="browser">The browser.</param>
+        /// <param name="parentElement">The parent element.</param>
+        /// <param name="index">The index.</param>
+        /// <returns>The newly created element.</returns>
+	    protected override TChildElement CreateElement(IBrowser browser, TElement parentElement, int index)
 		{
-		    var elementList = this.CreateElementList(parentElement);
+		    var elementList = this.CreateElementList(parentElement, browser);
 
 		    return (index > 0 && index <= elementList.Count) ? elementList[index - 1] : default(TChildElement);
 		}
@@ -94,15 +97,16 @@ namespace SpecBind.CodedUI
             element.FilterProperties.Clear();
 		}
 
-	    /// <summary>
-	    /// Creates the child proxy element.
-	    /// </summary>
-	    /// <param name="parentElement">The parent element.</param>
-	    /// <param name="control">The control.</param>
-	    /// <returns>The created child element.</returns>
-	    private TChildElement CreateChildProxyElement(TElement parentElement, UITestControl control)
+        /// <summary>
+        /// Creates the child proxy element.
+        /// </summary>
+        /// <param name="parentElement">The parent element.</param>
+        /// <param name="control">The control.</param>
+        /// <param name="browser">The browser.</param>
+        /// <returns>The created child element.</returns>
+	    private TChildElement CreateChildProxyElement(TElement parentElement, UITestControl control, IBrowser browser)
         {
-            var childElement =  this.builderFunc(parentElement, ClearSearchProperties);
+            var childElement =  this.builderFunc(parentElement, browser, ClearSearchProperties);
 
             childElement.CopyFrom(control);
 
@@ -113,8 +117,9 @@ namespace SpecBind.CodedUI
         /// Creates the element list.
         /// </summary>
         /// <param name="parentElement">The parent element.</param>
+        /// <param name="browser">The browser.</param>
         /// <returns>The list of child elements.</returns>
-        private List<TChildElement> CreateElementList(TElement parentElement)
+	    private List<TChildElement> CreateElementList(TElement parentElement, IBrowser browser)
 	    {
 	        lock (this.lockObject)
 	        {
@@ -122,10 +127,10 @@ namespace SpecBind.CodedUI
 	            {
                     try
 	                {
-	                    var templateItem = this.builderFunc(parentElement, null);
+	                    var templateItem = this.builderFunc(parentElement, browser, null);
 	                    var childList = templateItem.FindMatchingControls();
 
-                        var itemCollection = childList.Select((control, index) => this.CreateChildProxyElement(parentElement, control));
+                        var itemCollection = childList.Select((control, index) => this.CreateChildProxyElement(parentElement, control, browser));
                                               
 
 	                    if (typeof(HtmlRow).IsAssignableFrom(typeof(TChildElement)))

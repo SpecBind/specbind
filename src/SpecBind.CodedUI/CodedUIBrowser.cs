@@ -23,7 +23,7 @@ namespace SpecBind.CodedUI
 	// ReSharper disable once InconsistentNaming
     public class CodedUIBrowser : BrowserBase, IDisposable
 	{
-		private readonly Dictionary<Type, Func<UITestControl, Action<HtmlControl>, HtmlDocument>> pageCache;
+        private readonly Dictionary<Type, Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument>> pageCache;
 		private readonly Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>> frameCache;
 		private readonly Lazy<BrowserWindow> window;
 		
@@ -37,7 +37,7 @@ namespace SpecBind.CodedUI
 		{
 			this.frameCache = new Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>>(GetFrameCache);
 			this.window = browserWindow;
-			this.pageCache = new Dictionary<Type, Func<UITestControl, Action<HtmlControl>, HtmlDocument>>();
+            this.pageCache = new Dictionary<Type, Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument>>();
 		}
 
 		/// <summary>
@@ -241,7 +241,7 @@ namespace SpecBind.CodedUI
 		/// <returns>The internal document.</returns>
 		private HtmlDocument CreateNativePage(Type pageType)
 		{
-			Func<UITestControl, Action<HtmlControl>, HtmlDocument> function;
+			Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument> function;
 			if (!this.pageCache.TryGetValue(pageType, out function))
 			{
                 function = PageBuilder<UITestControl, HtmlDocument>.CreateElement(pageType);
@@ -275,7 +275,7 @@ namespace SpecBind.CodedUI
 				
 			}
 
-			var documentElement = function(parentElement, null);
+			var documentElement = function(parentElement, this, null);
 
 			if (isFrameDocument)
 			{

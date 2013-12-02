@@ -5,12 +5,14 @@
 namespace SpecBind.CodedUI.Tests
 {
 	using System;
-	using System.Linq;
-
+	
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+	using Moq;
+
+	using SpecBind.BrowserSupport;
 	using SpecBind.Pages;
 
 	/// <summary>
@@ -25,10 +27,10 @@ namespace SpecBind.CodedUI.Tests
 		[TestMethod]
 		public void TestCreatePage()
 		{
-			var window = new BrowserWindow();
+		    var window = new BrowserWindow();
             var pageFunc = PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(BuildPage));
 
-		    var pageObject = pageFunc(window, null);
+		    var pageObject = pageFunc(window, null, null);
             var page = pageObject as BuildPage;
 
 			Assert.IsNotNull(page);
@@ -126,6 +128,27 @@ namespace SpecBind.CodedUI.Tests
 			Assert.IsInstanceOfType(page, typeof(HtmlFrame));
 			Assert.AreEqual("1234", page.SearchProperties[HtmlControl.PropertyNames.Id]);
 		}
+
+        /// <summary>
+        /// Tests the create page method with the browser in the constructor.
+        /// </summary>
+        [TestMethod]
+        public void TestCreatePageWithBrowserArgument()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+            var window = new BrowserWindow();
+            var pageFunc = PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(BrowserDocument));
+
+            var pageObject = pageFunc(window, browser.Object, null);
+            var page = pageObject as BrowserDocument;
+
+            Assert.IsNotNull(page);
+            Assert.AreSame(browser.Object, page.Browser);
+            Assert.AreSame(window, page.Parent);
+
+            browser.VerifyAll();
+        }
 
 		#region Class - FrameDocument
 
@@ -295,5 +318,39 @@ namespace SpecBind.CodedUI.Tests
 		}
 
 		#endregion
+
+        #region Class - BrowserDocument
+
+        /// <summary>
+        /// Class BrowserDocument.
+        /// </summary>
+        public class BrowserDocument : HtmlDocument
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="BrowserDocument"/> class.
+            /// </summary>
+            /// <param name="parent">The parent.</param>
+            /// <param name="browser">The browser.</param>
+            public BrowserDocument(UITestControl parent, IBrowser browser)
+                : base(parent)
+            {
+                this.Parent = parent;
+                this.Browser = browser;
+            }
+
+            /// <summary>
+            /// Gets the parent.
+            /// </summary>
+            /// <value>The parent.</value>
+            public UITestControl Parent { get; private set; }
+
+            /// <summary>
+            /// Gets the browser.
+            /// </summary>
+            /// <value>The browser.</value>
+            public IBrowser Browser { get; private set; }
+        }
+
+        #endregion
 	}
 }

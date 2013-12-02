@@ -23,7 +23,7 @@ namespace SpecBind.Selenium
     {
         private readonly Lazy<IWebDriver> driver;
         private readonly SeleniumPageBuilder pageBuilder;
-        private readonly Dictionary<Type, Func<IWebDriver, Action<object>, object>> pageCache;
+        private readonly Dictionary<Type, Func<IWebDriver, IBrowser, Action<object>, object>> pageCache;
 
         private bool disposed;
         private bool switchedContext;
@@ -37,7 +37,7 @@ namespace SpecBind.Selenium
             this.driver = driver;
 
             this.pageBuilder = new SeleniumPageBuilder();
-            this.pageCache = new Dictionary<Type, Func<IWebDriver, Action<object>, object>>();
+            this.pageCache = new Dictionary<Type, Func<IWebDriver, IBrowser, Action<object>, object>>();
         }
 
         /// <summary>
@@ -210,14 +210,14 @@ namespace SpecBind.Selenium
                 this.switchedContext = false;
             }
 
-            Func<IWebDriver, Action<object>, object> pageBuildMethod;
+            Func<IWebDriver, IBrowser, Action<object>, object> pageBuildMethod;
             if (!this.pageCache.TryGetValue(pageType, out pageBuildMethod))
             {
                 pageBuildMethod = pageBuilder.CreatePage(pageType);
                 this.pageCache.Add(pageType, pageBuildMethod);
             }
 
-            var nativePage = pageBuildMethod(webDriver, null);
+            var nativePage = pageBuildMethod(webDriver, this, null);
 
             return new SeleniumPage(nativePage);
         }

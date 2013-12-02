@@ -10,6 +10,7 @@ namespace SpecBind.CodedUI
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
 
+	using SpecBind.BrowserSupport;
 	using SpecBind.Helpers;
 	using SpecBind.Pages;
 
@@ -28,7 +29,7 @@ namespace SpecBind.CodedUI
         /// <param name="elementType">Type of the page.</param>
         /// <returns>The page builder function.</returns>
         /// <exception cref="System.InvalidOperationException">Thrown if the constructor is invalid.</exception>
-        public static Func<TParent, Action<HtmlControl>, TOutput> CreateElement(Type elementType)
+        public static Func<TParent, IBrowser, Action<HtmlControl>, TOutput> CreateElement(Type elementType)
 		{
 		    var builder = new PageBuilder<TParent, TOutput>();
 		    return builder.CreateElementInternal(elementType);
