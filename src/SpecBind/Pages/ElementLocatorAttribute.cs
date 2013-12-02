@@ -11,7 +11,9 @@ namespace SpecBind.Pages
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 	public class ElementLocatorAttribute : Attribute
 	{
-		#region Constructors and Destructors
+	    private string tagName;
+
+	    #region Constructors and Destructors
 
 		/// <summary>
 		/// Finds a component based on its attributes.
@@ -65,21 +67,39 @@ namespace SpecBind.Pages
 		/// </value>
 		public string Name { get; set; }
 
-		/// <summary>
-		/// Gets or sets the name of the tag for a custom control. This should only be used with HtmlCustom type element.
-		/// </summary>
-		/// <value>
-		/// The name of the tag.
-		/// </value>
-		public string TagName { get; set; }
+        /// <summary>
+        /// Gets tag name property trimmed and lower case.
+        /// </summary>
+        /// <value>The name of the normalized tag.</value>
+        public string NormalizedTagName { get; private set; }
 
-		/// <summary>
-		/// Gets or sets the (inner) text to find.
-		/// </summary>
-		/// <value>
-		/// The text.
-		/// </value>
-		public string Text { get; set; }
+	    /// <summary>
+	    /// Gets or sets the name of the tag for a custom control. This should only be used with HtmlCustom type element.
+	    /// </summary>
+	    /// <value>
+	    /// The name of the tag.
+	    /// </value>
+	    public string TagName
+	    {
+	        get
+	        {
+	            return this.tagName;
+	        }
+
+	        set
+	        {
+	            this.tagName = value;
+	            this.NormalizedTagName = value != null ? value.Trim().ToLowerInvariant() : null;
+	        }
+	    }
+
+        /// <summary>
+	    /// Gets or sets the (inner) text to find.
+	    /// </summary>
+	    /// <value>
+	    /// The text.
+	    /// </value>
+	    public string Text { get; set; }
 
 		/// <summary>
 		/// Gets or sets the title to find.

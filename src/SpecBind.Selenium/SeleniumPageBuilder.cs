@@ -56,6 +56,26 @@ namespace SpecBind.Selenium
             SetProperty(locators, attribute, a => By.ClassName(a.Class), a => a.Class != null);
             SetProperty(locators, attribute, a => By.LinkText(a.Text), a => a.Text != null);
 
+            // Setup the alt tag with whatever specifies it.
+            SetProperty(locators, attribute, a => GetXPath(a.NormalizedTagName, "alt", a.Alt), a => a.Alt != null && a.TagName != null);
+            
+            // URL for Image and Hyperlink
+            SetProperty(locators, attribute, a => GetXPath("img", "src", a.Url), a => a.Url != null && a.NormalizedTagName == "img");
+            SetProperty(locators, attribute, a => GetXPath("a", "href", a.Url), a => a.Url != null && a.NormalizedTagName == "a");
+            SetProperty(locators, attribute, a => GetXPath("area", "href", a.Url), a => a.Url != null && a.NormalizedTagName == "area");
+
+            // Value attribute
+            SetProperty(locators, attribute, a => GetXPath(a.NormalizedTagName, "value", a.Value), a => a.Value != null);
+
+            // Title attribute
+            SetProperty(locators, attribute, a => GetXPath(a.NormalizedTagName, "title", a.Title), a => a.Title != null);
+
+            // Title attribute
+            SetProperty(locators, attribute, a => GetXPath(a.NormalizedTagName, "type", a.Type), a => a.Type != null);
+
+            // Index attribute
+            SetProperty(locators, attribute, a => By.XPath(string.Format("//{0}[{1}]", a.NormalizedTagName, a.Index - 1)), a => a.Index > 0 && a.TagName != null);
+
             return locators;
         }
 
@@ -152,6 +172,19 @@ namespace SpecBind.Selenium
         protected override Type GetElementCollectionType()
         {
             return typeof(SeleniumListElementWrapper<,>);
+        }
+
+        /// <summary>
+        /// Gets the locator based on XPath syntax.
+        /// </summary>
+        /// <param name="tagName">Name of the tag.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <param name="value">The value.</param>
+        /// <returns>The locator object.</returns>
+        private static By GetXPath(string tagName, string propertyName, string value)
+        {
+            return By.XPath(
+                string.Format("//{0}[@{1}='{2}']", tagName, propertyName.ToLowerInvariant(), value));
         }
 
         /// <summary>
