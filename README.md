@@ -8,14 +8,14 @@ Getting SpecBind installed is a simple process:
 
 1. Go to http://www.specflow.org and follow the instructions for installing the Visual Studio Extension
 2. Choose the driver type you want to use to interact with the host system:
-	* Coded UI (Recommended)
-	* Watin
+	* Coded UI
+	* Selenium
 
 3. Create a new test project in Visual Studio, Make it a Coded UI project if you are using that.
 4. Install the NuGet package for SpecBind
 
   * [Coded UI](https://www.nuget.org/packages/SpecBind.CodedUI)	``PM\> Install-Package SpecBind.CodedUI``
-  * [Watin](https://www.nuget.org/packages/SpecBind.Watin)``PM\> Install-Package SpecBind.Watin``
+  * [Selenium](https://www.nuget.org/packages/SpecBind.Selenium)``PM\> Install-Package SpecBind.Selenium``
 
 And you're done! 
 
