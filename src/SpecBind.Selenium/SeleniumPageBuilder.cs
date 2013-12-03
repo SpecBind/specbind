@@ -56,7 +56,7 @@ namespace SpecBind.Selenium
             SetProperty(locators, attribute, a => By.ClassName(a.Class), a => a.Class != null);
             SetProperty(locators, attribute, a => By.LinkText(a.Text), a => a.Text != null);
 
-            // Setup the alt tag with whatever specifies it.
+            // Alt attribute.
             SetProperty(locators, attribute, a => GetXPath(a.NormalizedTagName, "alt", a.Alt), a => a.Alt != null && a.TagName != null);
             
             // URL for Image and Hyperlink
@@ -65,13 +65,13 @@ namespace SpecBind.Selenium
             SetProperty(locators, attribute, a => GetXPath("area", "href", a.Url), a => a.Url != null && a.NormalizedTagName == "area");
 
             // Value attribute
-            SetProperty(locators, attribute, a => GetXPath(a.NormalizedTagName, "value", a.Value), a => a.Value != null);
+            SetProperty(locators, attribute, a => GetXPath(a.NormalizedTagName, "value", a.Value), a => a.Value != null && a.TagName != null);
 
             // Title attribute
-            SetProperty(locators, attribute, a => GetXPath(a.NormalizedTagName, "title", a.Title), a => a.Title != null);
+            SetProperty(locators, attribute, a => GetXPath(a.NormalizedTagName, "title", a.Title), a => a.Title != null && a.TagName != null);
 
-            // Title attribute
-            SetProperty(locators, attribute, a => GetXPath(a.NormalizedTagName, "type", a.Type), a => a.Type != null);
+            // Type attribute
+            SetProperty(locators, attribute, a => GetXPath(a.NormalizedTagName, "type", a.Type), a => a.Type != null && a.TagName != null);
 
             // Index attribute
             SetProperty(locators, attribute, a => By.XPath(string.Format("//{0}[{1}]", a.NormalizedTagName, a.Index - 1)), a => a.Index > 0 && a.TagName != null);

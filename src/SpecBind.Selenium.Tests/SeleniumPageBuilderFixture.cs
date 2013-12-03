@@ -228,6 +228,38 @@ namespace SpecBind.Selenium.Tests
             Assert.IsNotNull(page.UserName);
             AssertLocatorValue(page.UserName, By.Name("UserName"));
 
+            // Image Url Testing
+            Assert.IsNotNull(page.ImageElement);
+            AssertLocatorValue(page.ImageElement, new ByChained(By.TagName("img"), By.XPath("//img[@src='/myapp']")));
+
+            // Link Url Testing
+            Assert.IsNotNull(page.LinkElement);
+            AssertLocatorValue(page.LinkElement, new ByChained(By.TagName("a"), By.XPath("//a[@href='/myapp']")));
+
+            // Link Area Url Testing
+            Assert.IsNotNull(page.LinkAreaElement);
+            AssertLocatorValue(page.LinkAreaElement, new ByChained(By.TagName("area"), By.XPath("//area[@href='/myapp']")));
+            
+            // Image Alt Testing
+            Assert.IsNotNull(page.AltImageElement);
+            AssertLocatorValue(page.AltImageElement, new ByChained(By.TagName("img"), By.XPath("//img[@alt='Alt Text']")));
+
+            // Value Attribute Testing
+            Assert.IsNotNull(page.ValueElement);
+            AssertLocatorValue(page.ValueElement, new ByChained(By.TagName("input"), By.XPath("//input[@value='something']")));
+
+            // Title Attribute Testing
+            Assert.IsNotNull(page.TitleElement);
+            AssertLocatorValue(page.TitleElement, new ByChained(By.TagName("p"), By.XPath("//p[@title='royal']")));
+
+            // Type Attribute Testing
+            Assert.IsNotNull(page.InputTypeElement);
+            AssertLocatorValue(page.InputTypeElement, new ByChained(By.TagName("input"), By.XPath("//input[@type='password']")));
+
+            // Index Attribute Testing
+            Assert.IsNotNull(page.IndexElement);
+            AssertLocatorValue(page.IndexElement, new ByChained(By.TagName("button"), By.XPath("//button[1]")));
+
             // Nesting Test
             Assert.IsNotNull(page.MyDiv);
             AssertLocatorValue(page.MyDiv, By.ClassName("btn"));
@@ -340,7 +372,7 @@ namespace SpecBind.Selenium.Tests
             var proxy = element as WebElement;
             if (proxy != null)
             {
-                if (proxy.Locators.Any(l => l == findBy))
+                if (proxy.Locators.Any(l => l.ToString() == findBy.ToString()))
                 {
                     return;
                 }
@@ -434,6 +466,31 @@ namespace SpecBind.Selenium.Tests
             public IWebElement UserName { get; set; }
 
             /// <summary>
+            /// Gets or sets the input type element.
+            /// </summary>
+            /// <value>The input type element.</value>
+            [ElementLocator(Type = "password", TagName = "input")]
+            public IWebElement InputTypeElement { get; set; }
+
+            /// <summary>
+            /// Gets or sets the name of the user.
+            /// </summary>
+            /// <value>
+            /// The name of the user.
+            /// </value>
+            [ElementLocator(Alt = "Alt Text", TagName = "img")]
+            public IWebElement AltImageElement { get; set; }
+
+            /// <summary>
+            /// Gets or sets the name of the user.
+            /// </summary>
+            /// <value>
+            /// The name of the user.
+            /// </value>
+            [ElementLocator(Url = "/myapp", TagName = "img")]
+            public IWebElement ImageElement { get; set; }
+
+            /// <summary>
             /// Gets or sets my collection.
             /// </summary>
             /// <value>
@@ -441,6 +498,41 @@ namespace SpecBind.Selenium.Tests
             /// </value>
             [ElementLocator(Id = "ListDiv")]
             public IElementList<IWebElement, ListItem> MyCollection { get; set; }
+
+            /// <summary>
+            /// Gets or sets the link element.
+            /// </summary>
+            /// <value>The link element.</value>
+            [ElementLocator(Url = "/myapp", TagName = "a")]
+            public IWebElement LinkElement { get; set; }
+
+            /// <summary>
+            /// Gets or sets the link element.
+            /// </summary>
+            /// <value>The link element.</value>
+            [ElementLocator(Url = "/myapp", TagName = "area")]
+            public IWebElement LinkAreaElement { get; set; }
+
+            /// <summary>
+            /// Gets or sets the title element.
+            /// </summary>
+            /// <value>The title element.</value>
+            [ElementLocator(Title = "royal", TagName = "p")]
+            public IWebElement TitleElement { get; set; }
+
+            /// <summary>
+            /// Gets or sets the value element.
+            /// </summary>
+            /// <value>The value element.</value>
+            [ElementLocator(Value = "something", TagName = "input")]
+            public IWebElement ValueElement { get; set; }
+
+            /// <summary>
+            /// Gets or sets the index element.
+            /// </summary>
+            /// <value>The index element.</value>
+            [ElementLocator(TagName = "button", Index = 2)]
+            public IWebElement IndexElement { get; set; }
         }
 
         /// <summary>
