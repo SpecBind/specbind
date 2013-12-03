@@ -36,7 +36,7 @@ namespace SpecBind.Helpers
         /// Gets or sets the base URI.
         /// </summary>
         /// <value>The base URI.</value>
-        internal static Uri BaseUri { get; set; }
+        internal static Uri BaseUri { private get; set; }
 
 		/// <summary>
 		/// Gets the fully qualified page URI.
@@ -120,46 +120,6 @@ namespace SpecBind.Helpers
 		}
 
 		/// <summary>
-		/// Navigates the browser to the given URL.
-		/// </summary>
-		/// <param name="browser">The browser.</param>
-		/// <param name="subPath">The sub path under the base URL.</param>
-		public static void NavigateTo(this IBrowser browser, string subPath)
-		{
-			var uri = GetQualifiedPageUri(subPath);
-			System.Diagnostics.Debug.WriteLine("Uri Helper Navigating to URL: {0}", uri);
-
-			browser.GoTo(uri);
-		}
-
-		/// <summary>
-		/// Navigates the browser to the given URL specified by the page.
-		/// </summary>
-		/// <typeparam name="TPage">The type of the page.</typeparam>
-		/// <param name="browser">The browser.</param>
-		/// <returns>The URL the browser navigated to.</returns>
-		public static string NavigateTo<TPage>(this IBrowser browser)
-		{
-			return NavigateTo(browser, typeof(TPage));
-		}
-
-		/// <summary>
-		/// Navigates the browser to the given URL specified by the page.
-		/// </summary>
-		/// <param name="browser">The browser.</param>
-		/// <param name="pageType">Type of the page.</param>
-		/// <returns>The URL the browser navigated to.</returns>
-		public static string NavigateTo(this IBrowser browser, Type pageType)
-		{
-			var path = new Uri(CreateCompleteUri(GetPageUriInternal(browser, pageType), false));
-
-			System.Diagnostics.Debug.WriteLine("Uri Helper Navigating to URL: {0}", path);
-			browser.GoTo(path);
-
-			return path.ToString();
-		}
-
-        /// <summary>
         /// Creates the complete URI.
         /// </summary>
         /// <param name="uriStructure">The URI structure.</param>
