@@ -140,10 +140,6 @@
       <Project>{e27bd8d5-242f-496e-be3a-1c73a27e5275}</Project>
       <Name>SpecBind</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Specflow.CodedUI\SpecBind.Plugin.csproj">
-      <Project>{0bcfc808-1647-448e-a9dc-99b3d9d336b5}</Project>
-      <Name>SpecBind.Plugin</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

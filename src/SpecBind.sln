@@ -20,7 +20,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.Tests", "SpecBind.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.CodedUI", "SpecBind.CodedUI\SpecBind.CodedUI.csproj", "{15643F21-75D0-451F-97CF-5121A11B0705}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.Plugin", "Specflow.CodedUI\SpecBind.Plugin.csproj", "{0BCFC808-1647-448E-A9DC-99B3D9D336B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.Plugin", "SpecBind.Plugin\SpecBind.Plugin.csproj", "{0BCFC808-1647-448E-A9DC-99B3D9D336B5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.CodedUI.Tests", "SpecBind.CodedUI.Tests\SpecBind.CodedUI.Tests.csproj", "{0EDE594B-518E-420E-9779-E11971767220}"
 EndProject
