@@ -67,7 +67,7 @@
     <None Include="Deployment\App.config.install.xdt" />
     <None Include="Deployment\App.config.uninstall.xdt" />
     <None Include="Deployment\Install.ps1" />
-    <None Include="Deployment\SpecFlow.CodedUI.nuspec" />
+    <None Include="Deployment\SpecBind.Plugin.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
