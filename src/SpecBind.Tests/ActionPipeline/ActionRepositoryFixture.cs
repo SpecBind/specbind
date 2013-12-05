@@ -104,8 +104,7 @@ namespace SpecBind.Tests.ActionPipeline
         {
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve(typeof(HighlightPreAction), null)).Returns(new HighlightPreAction(null, null));
-            container.Setup(c => c.Resolve(typeof(TestAction), null)).Returns(new TestAction());
-
+            
             var repository = new ActionRepository(container.Object);
 
             repository.Initialize();
@@ -132,7 +131,7 @@ namespace SpecBind.Tests.ActionPipeline
         /// <summary>
         /// A test class for registering actions.
         /// </summary>
-        public class TestAction : IPreAction, IPostAction
+        private class TestAction : IPreAction, IPostAction
         {
             /// <summary>
             /// Performs the pre-execute action.
