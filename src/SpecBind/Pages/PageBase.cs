@@ -9,7 +9,9 @@ namespace SpecBind.Pages
 	using System.Linq.Expressions;
 	using System.Reflection;
 
-	/// <summary>
+	using SpecBind.Actions;
+
+    /// <summary>
 	/// A base class for pages.
 	/// </summary>
 	/// <typeparam name="TPageBase">The base type of any given page setup.</typeparam>
@@ -204,6 +206,15 @@ namespace SpecBind.Pages
 	    public virtual void Highlight(TElement element)
 	    {
 	    }
+
+        /// <summary>
+        /// Waits for element condition to be met.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="waitCondition">The wait condition.</param>
+        /// <param name="timeout">The time to wait before failing.</param>
+        /// <returns><c>true</c> if the condition is met, <c>false</c> otherwise.</returns>
+        public abstract bool WaitForElement(TElement element, WaitConditions waitCondition, TimeSpan? timeout);
 
 	    /// <summary>
 		/// Checks to see if the current type matches the base type of the system to not reflect base properties.

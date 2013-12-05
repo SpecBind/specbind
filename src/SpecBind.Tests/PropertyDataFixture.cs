@@ -10,6 +10,7 @@ namespace SpecBind.Tests
 
 	using Moq;
 
+	using SpecBind.Actions;
 	using SpecBind.Pages;
 	using SpecBind.Tests.Support;
 
@@ -760,6 +761,24 @@ namespace SpecBind.Tests
 						propData.VerifyAll();
 					});
 		}
+
+        /// <summary>
+        /// Tests WaitForElement method.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForElementCondition()
+        {
+            var timeout = TimeSpan.FromSeconds(15);
+            var element = new BaseElement();
+            var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
+            pageBase.Setup(p => p.WaitForElement(element, WaitConditions.Enabled, timeout)).Returns(true);
+
+            var propertyData = CreatePropertyData(pageBase, element);
+
+            propertyData.WaitForElementCondition(WaitConditions.Enabled, timeout);
+
+            pageBase.VerifyAll();
+        }
 
 		/// <summary>
 		/// Creates the property data.

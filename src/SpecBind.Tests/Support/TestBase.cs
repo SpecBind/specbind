@@ -5,6 +5,7 @@ namespace SpecBind.Tests.Support
 {
 	using System;
 
+	using SpecBind.Actions;
 	using SpecBind.Pages;
 
 	/// <summary>
@@ -101,5 +102,17 @@ namespace SpecBind.Tests.Support
 		{
 			return null;
 		}
+
+        /// <summary>
+        /// Waits for element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="waitCondition">The wait condition.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns><c>true</c> if the condition is met, <c>false</c> otherwise.</returns>
+	    public override bool WaitForElement(BaseElement element, WaitConditions waitCondition, TimeSpan? timeout)
+	    {
+	        return false;
+	    }
 	}
 }

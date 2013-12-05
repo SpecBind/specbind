@@ -10,6 +10,7 @@ namespace SpecBind.Selenium
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.UI;
 
+    using SpecBind.Actions;
     using SpecBind.Helpers;
     using SpecBind.Pages;
 
@@ -119,6 +120,46 @@ namespace SpecBind.Selenium
         public override Action<IWebElement, string> GetPageFillMethod(Type propertyType)
         {
             return FillPage;
+        }
+
+        /// <summary>
+        /// Waits for the element to meet a certain condition.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="waitCondition">The wait condition.</param>
+        /// <param name="timeout">The timeout to wait before failing.</param>
+        /// <returns><c>true</c> if the condition is met, <c>false</c> otherwise.</returns>
+        public override bool WaitForElement(IWebElement element, WaitConditions waitCondition, TimeSpan? timeout)
+        {
+            var waiter = new DefaultWait<IWebElement>(element);
+            waiter.Timeout = timeout.GetValueOrDefault(waiter.Timeout);
+
+            waiter.IgnoreExceptionTypes(typeof(ElementNotVisibleException));
+
+            try
+            {
+                switch (waitCondition)
+                {
+                    case WaitConditions.NotExists:
+                        waiter.Until(e => !e.Displayed);
+                        break;
+                    case WaitConditions.Enabled:
+                        waiter.Until(e => e.Enabled);
+                        break;
+                    case WaitConditions.NotEnabled:
+                        waiter.Until(e => !e.Enabled);
+                        break;
+                    case WaitConditions.Exists:
+                        waiter.Until(e => e.Displayed);
+                        break;
+                }
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
+            
+            return true;
         }
         
         /// <summary>

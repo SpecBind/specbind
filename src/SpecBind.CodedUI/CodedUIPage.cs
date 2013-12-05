@@ -12,6 +12,7 @@ namespace SpecBind.CodedUI
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
 
+	using SpecBind.Actions;
 	using SpecBind.Helpers;
 	using SpecBind.Pages;
 
@@ -70,6 +71,31 @@ namespace SpecBind.CodedUI
 	    {
 	        element.DrawHighlight();
 	    }
+
+        /// <summary>
+        /// Waits for element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="waitCondition">The wait condition.</param>
+        /// <param name="timeout">The timeout to wait before failing.</param>
+        /// <returns><c>true</c> if the condition is met, <c>false</c> otherwise.</returns>
+	    public override bool WaitForElement(HtmlControl element, WaitConditions waitCondition, TimeSpan? timeout)
+        {
+            var milliseconds = (int)timeout.GetValueOrDefault(TimeSpan.FromMilliseconds(500)).TotalMilliseconds;
+            switch (waitCondition)
+            {
+                case WaitConditions.Exists:
+                    return element.WaitForControlExist(milliseconds);
+                case WaitConditions.NotExists:
+                    return element.WaitForControlNotExist(milliseconds);
+                case WaitConditions.Enabled:
+                    return element.WaitForControlCondition(e => e.Enabled, milliseconds);
+                case WaitConditions.NotEnabled:
+                    return element.WaitForControlCondition(e => !e.Enabled, milliseconds);
+            }
+
+            return true;
+        }
 
 	    /// <summary>
 		/// Elements the enabled check.

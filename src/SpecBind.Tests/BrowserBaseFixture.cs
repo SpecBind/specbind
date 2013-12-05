@@ -12,6 +12,7 @@ namespace SpecBind.Tests
     using Moq.Protected;
 
     using SpecBind.BrowserSupport;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -100,6 +101,7 @@ namespace SpecBind.Tests
         [ExpectedException(typeof(PageNavigationException))]
         public void TestEnsureOnPageWhenUrlIsNotOnPageThrowsException()
         {
+            UriHelper.BaseUri = new Uri("http://localhost:2222");
             var testPage = new Mock<IPage>();
             testPage.SetupGet(p => p.PageType).Returns(typeof(TestPage));
 
@@ -121,6 +123,7 @@ namespace SpecBind.Tests
         [TestMethod]
         public void TestGoToPageWhenUrlIsOnPageReturnsNativeClass()
         {
+            UriHelper.BaseUri = new Uri("http://localhost:2222");
             var testPage = new Mock<IPage>();
             var browser = new Mock<BrowserBase>(MockBehavior.Strict);
             browser.Protected().Setup<IList<string>>("GetNativePageLocation", ItExpr.IsNull<IPage>()).Returns(new[] { "http://localhost:2222/foo" });
@@ -163,6 +166,7 @@ namespace SpecBind.Tests
         [ExpectedException(typeof(PageNavigationException))]
         public void TestGoToPageWhenUrlIsNotOnPageAndNavigationFailsThrowsAnException()
         {
+            UriHelper.BaseUri = new Uri("http://localhost:2222");
             var testPage = new Mock<IPage>();
             var browser = new Mock<BrowserBase>(MockBehavior.Strict);
             browser.Protected().Setup<IList<string>>("GetNativePageLocation", ItExpr.IsNull<IPage>()).Returns(new[] { "http://localhost:2222" });

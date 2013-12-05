@@ -11,6 +11,7 @@ namespace SpecBind.Selenium.Tests
 
     using OpenQA.Selenium;
 
+    using SpecBind.Actions;
     using SpecBind.Pages;
 
     /// <summary>
@@ -524,6 +525,101 @@ namespace SpecBind.Selenium.Tests
 
             var fillMethod = page.GetPageFillMethod(null);
             fillMethod(element.Object, "Selected Item");
+
+            element.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for control exists.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlExists()
+        {
+            var element = new Mock<IWebElement>(MockBehavior.Strict);
+            element.SetupGet(e => e.Displayed).Returns(true);
+
+            var nativePage = new NativePage();
+            var page = new SeleniumPage(nativePage);
+
+            var result = page.WaitForElement(element.Object, WaitConditions.Exists, null);
+
+            Assert.IsTrue(result);
+
+            element.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for control to not exist.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlExpectExistButIsNot()
+        {
+            var element = new Mock<IWebElement>(MockBehavior.Strict);
+            element.SetupGet(e => e.Displayed).Returns(false);
+
+            var nativePage = new NativePage();
+            var page = new SeleniumPage(nativePage);
+
+            var result = page.WaitForElement(element.Object, WaitConditions.Exists, null);
+
+            Assert.IsFalse(result);
+
+            element.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for control to not exist.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlNotExists()
+        {
+            var element = new Mock<IWebElement>(MockBehavior.Strict);
+            element.SetupGet(e => e.Displayed).Returns(false);
+
+            var nativePage = new NativePage();
+            var page = new SeleniumPage(nativePage);
+
+            var result = page.WaitForElement(element.Object, WaitConditions.NotExists, null);
+
+            Assert.IsTrue(result);
+
+            element.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for control enabled.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlEnabled()
+        {
+            var element = new Mock<IWebElement>(MockBehavior.Strict);
+            element.SetupGet(e => e.Enabled).Returns(true);
+
+            var nativePage = new NativePage();
+            var page = new SeleniumPage(nativePage);
+
+            var result = page.WaitForElement(element.Object, WaitConditions.Enabled, null);
+
+            Assert.IsTrue(result);
+
+            element.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for control to not exist.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlNotEnabled()
+        {
+            var element = new Mock<IWebElement>(MockBehavior.Strict);
+            element.SetupGet(e => e.Enabled).Returns(false);
+
+            var nativePage = new NativePage();
+            var page = new SeleniumPage(nativePage);
+
+            var result = page.WaitForElement(element.Object, WaitConditions.NotEnabled, null);
+
+            Assert.IsTrue(result);
 
             element.VerifyAll();
         }

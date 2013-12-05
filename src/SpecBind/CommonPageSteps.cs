@@ -33,7 +33,6 @@ namespace SpecBind
 		private const string ObserveDataStepRegex = @"I see";
 		private const string ObserveListDataStepRegex = @"I see (.+) list ([A-Za-z ]+)";
 		private const string ChooseALinkStepRegex = @"I choose (.+)";
-		private const string WaitForActiveViewRegex = @"I wait for the view to become active";
 		private const string SetTokenFromFieldRegex = @"I set token (.+) with the value of (.+)";
 
 		// The following Regex items are for the given "past tense" form
@@ -46,8 +45,7 @@ namespace SpecBind
 		private const string GivenChooseALinkStepRegex = @"I chose (.+)";
 		private const string GivenNavigateToPageStepRegex = @"I navigated to the (.+) page";
 		private const string GivenNavigateToPageWithParamsStepRegex = @"I navigated to the (.+) page with parameters";
-		private const string GivenWaitForActiveViewRegex = @"I waited for the view to become active";
-
+		
 		private readonly IBrowser browser;
 		private readonly IPageMapper pageMapper;
 
@@ -124,17 +122,6 @@ namespace SpecBind
                                                  .CheckResult<IPage>();
 
             this.UpdatePageContext(item);
-		}
-
-		/// <summary>
-		/// I wait for the view to be active.
-		/// </summary>
-		[Given(GivenWaitForActiveViewRegex)]
-		[When(WaitForActiveViewRegex)]
-		public void GivenIWaitForTheViewToBeActive()
-		{
-			var page = this.GetPageFromContext();
-			page.WaitForPageToBeActive();
 		}
 
 		/// <summary>

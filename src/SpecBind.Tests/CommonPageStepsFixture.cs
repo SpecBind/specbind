@@ -199,35 +199,6 @@ namespace SpecBind.Tests
         }
 
         /// <summary>
-        /// Tests the GivenIWaitForTheViewToBeActive with a successful result.
-        /// </summary>
-        [TestMethod]
-        public void TestGivenIWaitForViewToBeActiveStep()
-        {
-            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
-
-            var testPage = new Mock<IPage>(MockBehavior.Strict);
-            testPage.Setup(t => t.WaitForPageToBeActive());
-
-            var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
-            var browser = new Mock<IBrowser>(MockBehavior.Strict);
-            var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
-            
-            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
-
-            var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, tokenManager.Object, pipelineService.Object);
-
-            steps.GivenIWaitForTheViewToBeActive();
-
-            testPage.VerifyAll();
-            browser.VerifyAll();
-            pageMapper.VerifyAll();
-            scenarioContext.VerifyAll();
-            tokenManager.VerifyAll();
-        }
-
-        /// <summary>
         /// Tests the GivenEnsureOnPageStep with the page not existing found.
         /// </summary>
         [TestMethod]

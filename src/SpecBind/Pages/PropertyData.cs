@@ -7,7 +7,9 @@ namespace SpecBind.Pages
 	using System.Collections.Generic;
 	using System.Linq;
 
-	/// <summary>
+	using SpecBind.Actions;
+
+    /// <summary>
 	/// The property data for a given property.
 	/// </summary>
 	/// <typeparam name="TElement">The propertyValue of the element.</typeparam>
@@ -292,7 +294,18 @@ namespace SpecBind.Pages
 			return validationResult;
 		}
 
-		#endregion
+        /// <summary>
+        /// Waits for the element condition to be met.
+        /// </summary>
+        /// <param name="waitCondition">The wait condition.</param>
+        /// <param name="timeout">The timeout to wait before failing.</param>
+        /// <returns><c>true</c> if the condition is met, <c>false</c> otherwise.</returns>
+        public bool WaitForElementCondition(WaitConditions waitCondition, TimeSpan? timeout)
+        {
+            return this.ElementAction(this.elementHandler, o => this.elementHandler.WaitForElement(o, waitCondition, timeout));
+        }
+
+        #endregion
 
 		#region Methods
 
