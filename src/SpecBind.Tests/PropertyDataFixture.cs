@@ -173,6 +173,23 @@ namespace SpecBind.Tests
 			pageBase.VerifyAll();
 		}
 
+        /// <summary>
+        /// Tests the highlight element method.
+        /// </summary>
+        [TestMethod]
+        public void TestHighlightElement()
+        {
+            var element = new BaseElement();
+            var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
+            pageBase.Setup(p => p.Highlight(element));
+
+            var propertyData = CreatePropertyData(pageBase, element);
+
+            propertyData.Highlight();
+
+            pageBase.VerifyAll();
+        }
+
 		/// <summary>
 		/// Tests the ValidateItem method where the element does not exist.
 		/// </summary>
@@ -419,7 +436,7 @@ namespace SpecBind.Tests
 			var propertyData = CreatePropertyData(pageBase, element);
 			propertyData.Action = (p, f) => f(new List<BaseElement> { listElement });
 
-			var result = propertyData.ValidateList(ComparisonType.StartsWith, validations);
+			var result = propertyData.ValidateList(ComparisonType.EndsWith, validations);
 
 			Assert.IsTrue(result.IsValid);
 

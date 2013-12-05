@@ -72,7 +72,9 @@
     <Compile Include="Actions\ValidateElementExistsActionFixture.cs" />
     <Compile Include="Actions\ValidateItemActionFixture.cs" />
     <Compile Include="Actions\ValidateListActionFixture.cs" />
+    <Compile Include="BrowserBaseFixture.cs" />
     <Compile Include="ExceptionHelper.cs" />
+    <Compile Include="Helpers\AttributeExtensionsFixture.cs" />
     <Compile Include="Helpers\TableFormatterFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PageMapperFixture.cs" />
@@ -89,6 +91,7 @@
     <Compile Include="TokenManagerFixture.cs" />
     <Compile Include="PropertyDataFixture.cs" />
     <Compile Include="AlertBoxStepsFixture.cs" />
+    <Compile Include="ConfigurationFixture.cs" />
     <Compile Include="WebDriverSupportFixture.cs" />
     <Compile Include="ValidationResultFixture.cs" />
     <Compile Include="UriHelperFixture.cs" />

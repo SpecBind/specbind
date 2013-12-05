@@ -11,6 +11,7 @@ namespace SpecBind.Helpers
     /// <summary>
     /// A helper class for uploading files to the server.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public static class FileUploadHelper
     {
         /// <summary>

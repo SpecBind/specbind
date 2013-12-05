@@ -32,10 +32,8 @@ namespace SpecBind.BrowserSupport
         /// </summary>
         /// <param name="action">The action.</param>
         /// <param name="text">The text to enter.</param>
-        public virtual void DismissAlert(AlertBoxAction action, string text)
-        {
-        }
-
+        public abstract void DismissAlert(AlertBoxAction action, string text);
+        
         /// <summary>
         /// Navigates the browser to the given <paramref name="url" />.
         /// </summary>
@@ -46,7 +44,7 @@ namespace SpecBind.BrowserSupport
         /// Ensures the page is current in the browser window.
         /// </summary>
         /// <param name="page">The page.</param>
-        public virtual void EnsureOnPage(IPage page)
+        public void EnsureOnPage(IPage page)
         {
             string actualPath;
             string expectedPath;
@@ -84,7 +82,7 @@ namespace SpecBind.BrowserSupport
         /// <returns>
         /// The page object when navigated to.
         /// </returns>
-        public virtual IPage GoToPage(Type pageType, IDictionary<string, string> parameters)
+        public IPage GoToPage(Type pageType, IDictionary<string, string> parameters)
         {
             string actualPath;
             string expectedPath;
@@ -145,7 +143,7 @@ namespace SpecBind.BrowserSupport
         /// <param name="actualPath">The actual path.</param>
         /// <param name="expectedPath">The expected path.</param>
         /// <returns><c>true</c> if it is a match.</returns>
-        protected virtual bool CheckIsOnPage(Type pageType, IPage page, out string actualPath, out string expectedPath)
+        protected bool CheckIsOnPage(Type pageType, IPage page, out string actualPath, out string expectedPath)
         {
             var validateRegex = UriHelper.GetQualifiedPageUriRegex(this, pageType);
 

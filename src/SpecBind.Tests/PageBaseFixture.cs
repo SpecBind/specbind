@@ -36,6 +36,17 @@ namespace SpecBind.Tests
 			Assert.AreEqual(false, hasBaseClassProperty);
 		}
 
+        /// <summary>
+        /// The that the highlight method does nothing by default.
+        /// </summary>
+        [TestMethod]
+        public void TestHighlightDoesNothing()
+        {
+            var target = new TestBase();
+            target.Highlight();
+            target.Highlight(null);
+        }
+
 		/// <summary>
 		/// The that the a non-existent element cannot be found.
 		/// </summary>
@@ -113,5 +124,51 @@ namespace SpecBind.Tests
 
 			Assert.IsTrue(result);
 		}
+
+        /// <summary>
+        /// The that wait for page checks for and invokes the interface.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForPageToBeActiveCallsNativeInterfaceNoActionIfMissing()
+        {
+            var targetClass = new InheritedClass();
+            var target = new TestBase(targetClass);
+
+            target.WaitForPageToBeActive();
+        }
+
+        /// <summary>
+        /// The that wait for page checks for and invokes the interface.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForPageToBeActiveCallsNativeInterface()
+        {
+            var targetClass = new InheritedActivateClass();
+            var target = new TestBase(targetClass);
+
+            target.WaitForPageToBeActive();
+
+            Assert.IsTrue(targetClass.ActiveCheck);
+        }
+
+        /// <summary>
+        /// A test class.
+        /// </summary>
+	    private class InheritedActivateClass : InheritedClass, IActiveCheck
+	    {
+            /// <summary>
+            /// Gets a value indicating whether the active check was called.
+            /// </summary>
+            /// <value><c>true</c> if active check; otherwise, <c>false</c>.</value>
+            public bool ActiveCheck { get; private set; }
+
+            /// <summary>
+            /// Waits for the page to become active based on a property.
+            /// </summary>
+            public void WaitForActive()
+            {
+                this.ActiveCheck = true;
+            }
+	    }
 	}
 }
