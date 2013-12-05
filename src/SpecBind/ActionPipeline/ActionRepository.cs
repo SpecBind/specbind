@@ -80,22 +80,31 @@ namespace SpecBind.ActionPipeline
             var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic && !a.GlobalAssemblyCache);
             foreach (var asmType in assemblies.SelectMany(a => a.GetExportedTypes()).Where(t => !t.IsAbstract && !t.IsInterface))
             {
-                if (typeof(IPreAction).IsAssignableFrom(asmType))
-                {
-                    this.preActions.Add(this.CreateItem<IPreAction>(asmType));
-                }
-
-                if (typeof(IPostAction).IsAssignableFrom(asmType))
-                {
-                    this.postActions.Add(this.CreateItem<IPostAction>(asmType));
-                }
-
-                if (typeof(ILocatorAction).IsAssignableFrom(asmType))
-                {
-                    this.locatorActions.Add(this.CreateItem<ILocatorAction>(asmType));
-                }
+                this.RegisterType(asmType);
             }
 	    }
+
+        /// <summary>
+        /// Registers the type in the pipeline.
+        /// </summary>
+        /// <param name="type">The type to register in the pipeline.</param>
+        public void RegisterType(Type type)
+        {
+            if (typeof(IPreAction).IsAssignableFrom(type))
+            {
+                this.preActions.Add(this.CreateItem<IPreAction>(type));
+            }
+
+            if (typeof(IPostAction).IsAssignableFrom(type))
+            {
+                this.postActions.Add(this.CreateItem<IPostAction>(type));
+            }
+
+            if (typeof(ILocatorAction).IsAssignableFrom(type))
+            {
+                this.locatorActions.Add(this.CreateItem<ILocatorAction>(type));
+            }
+        }
 
         /// <summary>
         /// Creates the item through the DI container.

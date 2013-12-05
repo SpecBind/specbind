@@ -40,6 +40,27 @@ namespace SpecBind.Tests.ActionPipeline
         }
 
         /// <summary>
+        /// Tests the get pre actions method without an initialize call returns an empty list.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateActionReturnsContainerItem()
+        {
+            var mockItem = new Mock<IAction>(MockBehavior.Strict);
+            var container = new Mock<IObjectContainer>(MockBehavior.Strict);
+            container.Setup(c => c.Resolve(typeof(IAction), null)).Returns(mockItem.Object);
+
+            var repository = new ActionRepository(container.Object);
+
+            var result = repository.CreateAction<IAction>();
+
+            Assert.IsNotNull(result);
+            Assert.AreSame(mockItem.Object, result);
+
+            container.VerifyAll();
+            mockItem.VerifyAll();
+        }
+
+        /// <summary>
         /// Tests the get post actions method without an initialize call returns an empty list.
         /// </summary>
         [TestMethod]
@@ -82,14 +103,53 @@ namespace SpecBind.Tests.ActionPipeline
         public void TestInitializeLoadsKnownActionsInClasses()
         {
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
-            container.Setup(c => c.Resolve(typeof(HighlightPreAction), null))
-                     .Returns(new HighlightPreAction(null, null));
+            container.Setup(c => c.Resolve(typeof(HighlightPreAction), null)).Returns(new HighlightPreAction(null, null));
+            container.Setup(c => c.Resolve(typeof(TestAction), null)).Returns(new TestAction());
 
             var repository = new ActionRepository(container.Object);
 
             repository.Initialize();
 
             container.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests that the RegisterType method loads the given test type.
+        /// </summary>
+        [TestMethod]
+        public void TestRegisterTypeLoadsKnownActionsInClasses()
+        {
+            var container = new Mock<IObjectContainer>(MockBehavior.Strict);
+            container.Setup(c => c.Resolve(typeof(TestAction), null)).Returns(new TestAction());
+
+            var repository = new ActionRepository(container.Object);
+
+            repository.RegisterType(typeof(TestAction));
+
+            container.VerifyAll();
+        }
+
+        /// <summary>
+        /// A test class for registering actions.
+        /// </summary>
+        public class TestAction : IPreAction, IPostAction
+        {
+            /// <summary>
+            /// Performs the pre-execute action.
+            /// </summary>
+            /// <param name="action">The action.</param>
+            public void PerformPreAction(IAction action)
+            {
+            }
+
+            /// <summary>
+            /// Performs the post-execute action.
+            /// </summary>
+            /// <param name="action">The action.</param>
+            /// <param name="result">The result.</param>
+            public void PerformPostAction(IAction action, ActionResult result)
+            {
+            }
         }
     }
 }
