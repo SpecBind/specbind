@@ -74,6 +74,9 @@ namespace SpecBind.CodedUI.Tests
 			var propertyList = (CodedUIListElementWrapper<HtmlDiv, ListItem>)page.MyCollection;
 			Assert.IsNotNull(propertyList.Parent);
 			Assert.AreEqual("ListDiv", propertyList.Parent.SearchProperties[HtmlControl.PropertyNames.Id]);
+
+            // Table Test
+            Assert.IsNotNull(page.MyTable);
 		}
 
 		/// <summary>
@@ -255,6 +258,13 @@ namespace SpecBind.CodedUI.Tests
 			/// </value>
 			[ElementLocator(Id = "ListDiv")]
 			public IElementList<HtmlDiv, ListItem> MyCollection { get; set; }
+
+            /// <summary>
+            /// Gets or sets the driver.
+            /// </summary>
+            /// <value>The driver.</value>
+            [ElementLocator(Id = "Table")]
+            public CodedUITableDriver MyTable { get; set; }
 		}
 
 		/// <summary>

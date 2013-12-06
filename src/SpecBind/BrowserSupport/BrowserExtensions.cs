@@ -2,13 +2,13 @@
 //    Copyright © 2013 Dan Piessens  All rights reserved.
 // </copyright>
 
-namespace SpecBind.Pages
+namespace SpecBind.BrowserSupport
 {
-	using System;
+    using System;
 
-	using SpecBind.BrowserSupport;
+    using SpecBind.Pages;
 
-	/// <summary>
+    /// <summary>
 	/// A set of extension methods for <see cref="IBrowser"/> to assist with navigation.
 	/// </summary>
 	public static class BrowserExtensions

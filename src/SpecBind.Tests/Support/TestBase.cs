@@ -13,13 +13,11 @@ namespace SpecBind.Tests.Support
 	/// </summary>
 	public class TestBase : PageBase<BasePageClass, BaseElement>
 	{
-		private readonly InheritedClass item;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TestBase" /> class.
 		/// </summary>
 		public TestBase()
-			: base(typeof(InheritedClass))
+			: this(null)
 		{
 		}
 
@@ -28,19 +26,8 @@ namespace SpecBind.Tests.Support
 		/// </summary>
 		/// <param name="item">The item.</param>
 		public TestBase(InheritedClass item)
-			: this()
+            : base(typeof(InheritedClass), item)
 		{
-			this.item = item;
-		}
-
-		/// <summary>
-		/// Gets the native page.
-		/// </summary>
-		/// <typeparam name="TPage">The type of the page.</typeparam>
-		/// <returns>The native page object.</returns>
-		public override TPage GetNativePage<TPage>()
-		{
-			return this.item as TPage;
 		}
 
 		/// <summary>

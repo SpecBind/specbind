@@ -248,6 +248,10 @@ namespace SpecBind.Pages
 					e =>
 					{
 						var text = this.elementHandler.GetElementText(e);
+
+                        // Trim whitespace from text since the tables in SpecFlow will anyway.
+					    text = text != null ? text.Trim() : null;
+
 						realValue = text;
 						return validation.Compare(this, text);
 					});

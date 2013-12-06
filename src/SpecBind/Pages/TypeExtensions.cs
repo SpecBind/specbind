@@ -4,8 +4,9 @@
 namespace SpecBind.Pages
 {
 	using System;
+	using System.Linq;
 
-	/// <summary>
+    /// <summary>
 	/// A set of extension methods to analyze types.
 	/// </summary>
 	public static class TypeExtensions
@@ -17,7 +18,8 @@ namespace SpecBind.Pages
 		/// <returns><c>true</c> if it is a list type; otherwise <c>false</c>.</returns>
 		public static bool IsElementListType(this Type propertyType)
 		{
-			return propertyType.IsGenericType && typeof(IElementList<,>).IsAssignableFrom(propertyType.GetGenericTypeDefinition());
+			return (propertyType.IsGenericType && typeof(IElementList<,>).IsAssignableFrom(propertyType.GetGenericTypeDefinition())) ||
+                   propertyType.GetInterfaces().Any(i => i.IsGenericType && typeof(IElementList<,>).IsAssignableFrom(i.GetGenericTypeDefinition()));
 		}
 	}
 }

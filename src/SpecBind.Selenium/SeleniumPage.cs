@@ -19,27 +19,14 @@ namespace SpecBind.Selenium
     /// </summary>
     public class SeleniumPage : PageBase<object, IWebElement>
     {
-        private readonly object nativePage;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SeleniumPage"/> class.
         /// </summary>
         /// <param name="nativePage">The native page.</param>
-        public SeleniumPage(object nativePage) : base(nativePage.GetType())
+        public SeleniumPage(object nativePage) : base(nativePage.GetType(), nativePage)
         {
-            this.nativePage = nativePage;
         }
-
-        /// <summary>
-        /// Gets the native page.
-        /// </summary>
-        /// <typeparam name="TPage">The type of the t page.</typeparam>
-        /// <returns>The native page object.</returns>
-        public override TPage GetNativePage<TPage>()
-        {
-            return (TPage)this.nativePage;
-        }
-
+        
         /// <summary>
         /// Checks to see if the element is enabled.
         /// </summary>

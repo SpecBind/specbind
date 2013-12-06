@@ -20,15 +20,10 @@ namespace SpecBind.CodedUI
 	/// An implementation of a page for the code base.
 	/// </summary>
 	/// <typeparam name="TDocument">The type of the document.</typeparam>
+	// ReSharper disable once InconsistentNaming
 	public class CodedUIPage<TDocument> : PageBase<TDocument, HtmlControl>
 		where TDocument : class
 	{
-		#region Fields
-
-		private readonly TDocument page;
-
-		#endregion
-
 		#region Constructors and Destructors
 
 		/// <summary>
@@ -38,22 +33,11 @@ namespace SpecBind.CodedUI
 		/// The page.
 		/// </param>
 		public CodedUIPage(TDocument page)
-			: base(page.GetType())
+			: base(page.GetType(), page)
 		{
-			this.page = page;
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Gets the native page.
-		/// </summary>
-		/// <typeparam name="TPage">The type of the page.</typeparam>
-		/// <returns>The wrapped page object.</returns>
-		public override TPage GetNativePage<TPage>()
-		{
-			return this.page as TPage;
-		}
 
 		/// <summary>
 		/// Highlights this instance.

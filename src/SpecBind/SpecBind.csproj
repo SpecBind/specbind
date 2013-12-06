@@ -75,6 +75,7 @@
     <Compile Include="AlertBoxSteps.cs" />
     <Compile Include="BrowserSupport\AlertBoxAction.cs" />
     <Compile Include="BrowserSupport\BrowserBase.cs" />
+    <Compile Include="BrowserSupport\BrowserExtensions.cs" />
     <Compile Include="BrowserSupport\BrowserFactory.cs" />
     <Compile Include="BrowserSupport\BrowserType.cs" />
     <Compile Include="BrowserSupport\IBrowser.cs" />
@@ -92,10 +93,12 @@
     <Compile Include="Helpers\TokenManager.cs" />
     <Compile Include="Helpers\WrappedSettingHelper.cs" />
     <Compile Include="PageStepBase.cs" />
+    <Compile Include="Pages\ElementDescription.cs" />
     <Compile Include="Pages\ElementLocatorAttribute.cs" />
     <Compile Include="Pages\IActiveCheck.cs" />
     <Compile Include="Pages\IDataControl.cs" />
     <Compile Include="Pages\IElementList.cs" />
+    <Compile Include="Pages\IElementProvider.cs" />
     <Compile Include="Pages\IPageElementHandler.cs" />
     <Compile Include="Pages\IPropertyData.cs" />
     <Compile Include="Pages\ItemValidation.cs" />
@@ -114,11 +117,11 @@
     <Compile Include="Pages\IPageMapper.cs" />
     <Compile Include="Pages\PageAliasAttribute.cs" />
     <Compile Include="Pages\PageBuilderBase.cs" />
-    <Compile Include="Pages\BrowserExtensions.cs" />
     <Compile Include="Pages\PageMapper.cs" />
     <Compile Include="Pages\PageNavigationAttribute.cs" />
     <Compile Include="Pages\PageNavigationException.cs" />
     <Compile Include="Pages\PropertyData.cs" />
+    <Compile Include="Pages\TableElement.cs" />
     <Compile Include="Pages\TagConstants.cs" />
     <Compile Include="Pages\TypeExtensions.cs" />
     <Compile Include="Pages\ValidationItemResult.cs" />

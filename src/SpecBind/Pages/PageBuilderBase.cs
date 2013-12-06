@@ -337,15 +337,25 @@ namespace SpecBind.Pages
                 //Special case for lists
                 if (propertyType.IsElementListType())
                 {
-                    var concreteType = this.GetElementCollectionType().MakeGenericType(propertyType.GetGenericArguments());
-                    var concreteTypeConstructor = concreteType.GetConstructors().First();
+                    Type concreteType;
+                    if (propertyType.IsClass && !propertyType.IsAbstract)
+                    {
+                        concreteType = propertyType;
+                    }
+                    else
+                    {
+                        var collectionType = this.GetElementCollectionType();
+                        concreteType = collectionType.MakeGenericType(propertyType.GetGenericArguments());
+                    }
 
-                    var parentListType = propertyType.GetGenericArguments().First();
+                    var constructor = concreteType.GetConstructors().First();
+
+                    var parentListType = constructor.GetParameters().First().ParameterType;
                     var parentListVariable = Expression.Variable(parentListType, "collectionParent");
                     variableList.Add(parentListVariable);
 
                     propertyExpressions.AddRange(this.CreateHtmlObject(browser, rootLocator, parentVariable, parentListVariable, parentListType, propertyInfo.Name, attribute, customAttributes));
-                    propertyExpressions.Add(Expression.Assign(itemVariable, Expression.New(concreteTypeConstructor, parentListVariable, browser.Expression)));
+                    propertyExpressions.Add(Expression.Assign(itemVariable, Expression.New(constructor, parentListVariable, browser.Expression)));
                 }
                 else
                 {

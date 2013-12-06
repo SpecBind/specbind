@@ -86,7 +86,26 @@ namespace SpecBind.CodedUI
 			return element.Exists;
 		}
 
-	    /// <summary>
+        /// <summary>
+        /// Fetches the element list.
+        /// </summary>
+        /// <param name="parentElement">The parent element.</param>
+        /// <param name="browser">The browser.</param>
+        /// <returns>The list of child elements.</returns>
+        protected virtual List<TChildElement> FetchElementList(TElement parentElement, IBrowser browser)
+        {
+            var templateItem = this.builderFunc(parentElement, browser, null);
+            var childList = templateItem.FindMatchingControls();
+
+            var itemCollection =
+                childList.Select((control, index) => this.CreateChildProxyElement(parentElement, control, browser));
+
+            return typeof(HtmlRow).IsAssignableFrom(typeof(TChildElement))
+                       ? itemCollection.OfType<HtmlRow>().OrderBy(r => r.RowIndex).Cast<TChildElement>().ToList()
+                       : itemCollection.ToList();
+        }
+
+        /// <summary>
 	    /// Assigns the filter properties.
 	    /// </summary>
 	    /// <param name="element">The element.</param>
@@ -127,23 +146,7 @@ namespace SpecBind.CodedUI
 	            {
                     try
 	                {
-	                    var templateItem = this.builderFunc(parentElement, browser, null);
-	                    var childList = templateItem.FindMatchingControls();
-
-                        var itemCollection = childList.Select((control, index) => this.CreateChildProxyElement(parentElement, control, browser));
-                                              
-
-	                    if (typeof(HtmlRow).IsAssignableFrom(typeof(TChildElement)))
-	                    {
-	                        this.items = itemCollection.OfType<HtmlRow>()
-                                                       .OrderBy(r => r.RowIndex)
-                                                       .Cast<TChildElement>()
-                                                       .ToList();
-	                    }
-	                    else
-	                    {
-	                        this.items = itemCollection.ToList();
-	                    }
+                        this.items = this.FetchElementList(parentElement, browser);
 	                }
 	                catch (Exception)
 	                {

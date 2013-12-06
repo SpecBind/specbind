@@ -23,17 +23,20 @@ namespace SpecBind.Pages
 		#region Fields
 
 		private readonly Dictionary<string, PropertyData<TElement>> properties;
+        private readonly TPageBase page;
 
 		#endregion
 
 		#region Constructors and Destructors
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="PageBase{TPageBase, TElement}" /> class.
-		/// </summary>
-		/// <param name="pageType">Type of the page.</param>
-		protected PageBase(Type pageType)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PageBase{TPageBase, TElement}" /> class.
+        /// </summary>
+        /// <param name="pageType">Type of the page.</param>
+        /// <param name="page">The page.</param>
+		protected PageBase(Type pageType, TPageBase page)
 		{
+		    this.page = page;
 			this.PageType = pageType;
 			this.properties = new Dictionary<string, PropertyData<TElement>>(StringComparer.InvariantCultureIgnoreCase);
 			this.GetProperties();
@@ -55,14 +58,17 @@ namespace SpecBind.Pages
 
 		#region Public Methods and Operators
 
-		/// <summary>
-		/// Gets the native page object.
-		/// </summary>
-		/// <typeparam name="TPage">The type of the page.</typeparam>
-		/// <returns>
-		/// The native page object.
-		/// </returns>
-		public abstract TPage GetNativePage<TPage>() where TPage : class;
+        /// <summary>
+        /// Gets the native page object.
+        /// </summary>
+        /// <typeparam name="TPage">The type of the page.</typeparam>
+        /// <returns>
+        /// The native page object.
+        /// </returns>
+        public virtual TPage GetNativePage<TPage>() where TPage : class
+        {
+            return this.page as TPage;
+        }
 
 		/// <summary>
 		/// Gets the property names.
@@ -264,6 +270,27 @@ namespace SpecBind.Pages
 			propertyData.ElementAction = expression;
 		}
 
+        /// <summary>
+        /// Adds the element property.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="propertyData">The property data.</param>
+        private static void AddValueProperty(object value, PropertyData<TElement> propertyData)
+        {
+            var pageArgument = Expression.Parameter(typeof(IPage), "page");
+            var actionFunc = Expression.Parameter(typeof(Func<TElement, bool>), "actionFunc");
+            
+            var expression =
+                Expression.Lambda<Func<IPage, Func<TElement, bool>, bool>>(
+                                    Expression.Invoke(actionFunc, Expression.Convert(Expression.Constant(value, propertyData.PropertyType), typeof(TElement))),
+                                    pageArgument, 
+                                    actionFunc)
+                          .Compile();
+
+            propertyData.ElementAction = expression;
+
+        }
+
 		/// <summary>
 		/// Adds the element property.
 		/// </summary>
@@ -319,6 +346,25 @@ namespace SpecBind.Pages
 
 			var element = this.GetPageElement();
 			this.properties.Add(element.Name, element);
+
+            var locatorElement = this.GetNativePage<IElementProvider>();
+		    if (locatorElement != null)
+		    {
+		        foreach (var property in locatorElement.GetElements())
+		        {
+                    var propertyData = new PropertyData<TElement>(this)
+                                           {
+                                               Name = property.PropertyName, 
+                                               PropertyType = property.PropertyType,
+                                               IsElement = true
+                                           };
+
+		            AddValueProperty(property.Value, propertyData);
+		            this.properties.Add(propertyData.Name, propertyData);
+		        }
+
+		        return;
+		    }
 
 			foreach (var propertyInfo in pageType.GetProperties(Flags).Where(
                                                 p => p.CanRead && (this.SupportedPropertyType(p.PropertyType) || p.PropertyType.IsElementListType()) && this.TypeIsNotBaseClass(p)))

@@ -58,6 +58,7 @@
     <Compile Include="CodedUIBrowserFactory.cs" />
     <Compile Include="CodedUIListElementWrapper.cs" />
     <Compile Include="CodedUIPage.cs" />
+    <Compile Include="CodedUITableDriver.cs" />
     <Compile Include="FrameMapAttribute.cs" />
     <Compile Include="PageBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
