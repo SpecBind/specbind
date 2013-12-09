@@ -1,4 +1,4 @@
-﻿Feature: Integration tests of the table driver for Coded UI
+﻿Feature: Integration tests of the table driver for Selenium
 	
 Scenario: Validate Table "Start With" Validator
 	 Given I navigated to the Home page

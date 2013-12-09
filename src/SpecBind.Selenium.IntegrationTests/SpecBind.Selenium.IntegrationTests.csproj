@@ -82,6 +82,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SelectionTests.feature</DependentUpon>
     </Compile>
+    <Compile Include="Features\TableDriverValidationTests.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TableDriverValidationTests.feature</DependentUpon>
+    </Compile>
     <Compile Include="Features\ValidationTests.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -92,6 +97,7 @@
     <Compile Include="Pages\CreateCoursePage.cs" />
     <Compile Include="Pages\HomePage.cs" />
     <Compile Include="Pages\InformationPage.cs" />
+    <Compile Include="Pages\InstructorSearchPage.cs" />
     <Compile Include="Pages\LogOnPage.cs" />
     <Compile Include="Pages\StudentsSearchPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -116,6 +122,10 @@
     <None Include="Features\SelectionTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>SelectionTests.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\TableDriverValidationTests.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>TableDriverValidationTests.feature.cs</LastGenOutput>
     </None>
     <None Include="Features\ValidationTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

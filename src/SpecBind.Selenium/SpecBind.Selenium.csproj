@@ -56,6 +56,7 @@
     <Compile Include="RemoteScreenshotWebDriver.cs" />
     <Compile Include="SeleniumBrowser.cs" />
     <Compile Include="SeleniumBrowserFactory.cs" />
+    <Compile Include="SeleniumTableDriver.cs" />
     <Compile Include="WebElement.cs" />
     <Compile Include="SeleniumListElementWrapper.cs" />
     <Compile Include="SeleniumPage.cs" />

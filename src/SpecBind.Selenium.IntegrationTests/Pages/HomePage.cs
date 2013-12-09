@@ -31,6 +31,13 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
         public IWebElement Courses { get; set; }
 
         /// <summary>
+        /// Gets or sets the instructors link button.
+        /// </summary>
+        /// <value>The instructors link button.</value>
+        [ElementLocator(Id = "instructorsLink")]
+        public IWebElement Instructors { get; set; }
+
+        /// <summary>
         /// Gets or sets the login link button.
         /// </summary>
         /// <value>The login link button.</value>

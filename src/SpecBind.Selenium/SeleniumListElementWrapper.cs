@@ -22,9 +22,9 @@ namespace SpecBind.Selenium
         where TElement : IWebElement 
         where TChildElement : class
     {
-        private readonly Func<ISearchContext, IBrowser, Action<object>, object> builderFunc;
-        private readonly By locator;
-
+        private readonly Lazy<Func<ISearchContext, IBrowser, Action<object>, object>> builderFunc;
+        private readonly Lazy<By> locator;
+        
         private ReadOnlyCollection<IWebElement> itemCollection;
 
         /// <summary>
@@ -35,9 +35,8 @@ namespace SpecBind.Selenium
         public SeleniumListElementWrapper(TElement parentElement, IBrowser browser)
             : base(parentElement, browser)
         {
-            var builder = new SeleniumPageBuilder();
-            this.builderFunc = builder.CreatePage(typeof(TChildElement));
-            this.locator = GetElementLocator();
+            this.builderFunc = new Lazy<Func<ISearchContext, IBrowser, Action<object>, object>>(this.CreateBuilderFunction);
+            this.locator = new Lazy<By>(this.GetElementLocator);
         }
 
         /// <summary>
@@ -49,29 +48,61 @@ namespace SpecBind.Selenium
         /// <returns>The created child element.</returns>
         protected override TChildElement CreateElement(IBrowser browser, TElement parentElement, int index)
         {
-            if (this.locator != null)
+            if (this.locator.Value != null)
             {
                 if (this.itemCollection == null)
                 {
-                    this.itemCollection = parentElement.FindElements(this.locator);
+                    this.itemCollection = this.BuildItemCollection(parentElement);
                 }
 
                 var element = (index > 0 && index <= this.itemCollection.Count) ? this.itemCollection[index - 1] : null;
                 if (element != null)
                 {
-                    var childElement = (TChildElement)this.builderFunc(parentElement, browser, null);
-
-                    var webElement = childElement as WebElement;
-                    if (webElement != null)
-                    {
-                        webElement.CloneNativeElement(element);
-                    }
-
-                    return childElement;
+                    return this.CreateChildElement(browser, parentElement, element);
                 }
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Builds the item collection from the parent.
+        /// </summary>
+        /// <param name="parentElement">The parent element.</param>
+        /// <returns>The created collection.</returns>
+        protected virtual ReadOnlyCollection<IWebElement> BuildItemCollection(TElement parentElement)
+        {
+            return parentElement.FindElements(this.locator.Value);
+        }
+
+        /// <summary>
+        /// Creates the builder function.
+        /// </summary>
+        /// <returns>The created builder function.</returns>
+        protected Func<ISearchContext, IBrowser, Action<object>, object> CreateBuilderFunction()
+        {
+            var builder = new SeleniumPageBuilder();
+            return builder.CreatePage(typeof(TChildElement));
+        }
+
+        /// <summary>
+        /// Creates the child element.
+        /// </summary>
+        /// <param name="browser">The browser.</param>
+        /// <param name="parentElement">The parent element.</param>
+        /// <param name="element">The element.</param>
+        /// <returns>The created child element.</returns>
+        protected virtual TChildElement CreateChildElement(IBrowser browser, TElement parentElement, IWebElement element)
+        {
+            var childElement = (TChildElement)this.builderFunc.Value(parentElement, browser, null);
+
+            var webElement = childElement as WebElement;
+            if (webElement != null)
+            {
+                webElement.CloneNativeElement(element);
+            }
+
+            return childElement;
         }
 
         /// <summary>
@@ -90,7 +121,7 @@ namespace SpecBind.Selenium
         /// Gets the element locator.
         /// </summary>
         /// <returns>The most important locator attribute.</returns>
-        private static By GetElementLocator()
+        protected virtual By GetElementLocator()
         {
             ElementLocatorAttribute attribute;
 
