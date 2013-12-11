@@ -5,6 +5,7 @@
 namespace SpecBind.Selenium
 {
     using System;
+    using System.Collections.ObjectModel;
     using System.Configuration;
     using System.Linq;
     using System.Threading;
@@ -43,12 +44,19 @@ namespace SpecBind.Selenium
                 switch (browserType)
                 {
                     case BrowserType.IE:
-                        driver = new InternetExplorerDriver();
+                        var explorerOptions = new InternetExplorerOptions { EnsureCleanSession = browserFactoryConfiguration.EnsureCleanSession };
+                        driver = new InternetExplorerDriver(explorerOptions);
                         break;
                     case BrowserType.FireFox:
                         driver = new FirefoxDriver();
                         break;
                     case BrowserType.Chrome:
+                        var chromeOptions = new ChromeOptions { LeaveBrowserRunning = false};
+                        if (browserFactoryConfiguration.EnsureCleanSession)
+                        {
+                            chromeOptions.AddArgument("--incognito");
+                        }
+
                         driver = new ChromeDriver();
                         break;
                     case BrowserType.Safari:

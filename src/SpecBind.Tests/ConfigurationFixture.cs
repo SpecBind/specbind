@@ -32,6 +32,7 @@ namespace SpecBind.Tests
                                                       {
                                                           BrowserType = "Chrome",
                                                           Provider = "MyProvider, MyProvider.Class",
+                                                          EnsureCleanSession = true,
                                                           ElementLocateTimeout = TimeSpan.FromSeconds(10),
                                                           PageLoadTimeout = TimeSpan.FromSeconds(15),
                                                       }
@@ -45,6 +46,7 @@ namespace SpecBind.Tests
             Assert.AreEqual("Chrome", section.BrowserFactory.BrowserType);
             Assert.AreEqual(TimeSpan.FromSeconds(10), section.BrowserFactory.ElementLocateTimeout);
             Assert.AreEqual(TimeSpan.FromSeconds(15), section.BrowserFactory.PageLoadTimeout);
+            Assert.AreEqual(true, section.BrowserFactory.EnsureCleanSession);
             Assert.IsNotNull(section.BrowserFactory.Settings);
         }
     }

@@ -12,6 +12,7 @@ namespace SpecBind.Configuration
 	public class BrowserFactoryConfigurationElement : ConfigurationElement
 	{
 	    private const string ElementLocateTimeoutElementName = "elementLocateTimeout";
+        private const string EnsureCleanSessionElementName = "ensureCleanSession";
 	    private const string PageLoadTimeoutElementName = "pageLoadTimeout";
 		private const string ProviderElementName = "provider";
 		private const string BrowserTypeElementName = "browserType";
@@ -51,6 +52,24 @@ namespace SpecBind.Configuration
             set
             {
                 this[ElementLocateTimeoutElementName] = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the session cache and cookies should be cleared before starting.
+        /// </summary>
+        /// <value><c>true</c> if the session should be cleared; otherwise <c>false</c>.</value>
+        [ConfigurationProperty(EnsureCleanSessionElementName, DefaultValue = false, IsRequired = false)]
+        public bool EnsureCleanSession
+        {
+            get
+            {
+                return (bool)this[EnsureCleanSessionElementName];
+            }
+
+            set
+            {
+                this[EnsureCleanSessionElementName] = value;
             }
         }
 
