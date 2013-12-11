@@ -51,7 +51,7 @@ namespace SpecBind.Selenium
                         driver = new FirefoxDriver();
                         break;
                     case BrowserType.Chrome:
-                        var chromeOptions = new ChromeOptions { LeaveBrowserRunning = false};
+                        var chromeOptions = new ChromeOptions { LeaveBrowserRunning = false };
                         if (browserFactoryConfiguration.EnsureCleanSession)
                         {
                             chromeOptions.AddArgument("--incognito");
