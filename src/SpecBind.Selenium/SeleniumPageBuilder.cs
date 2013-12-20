@@ -113,6 +113,15 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Gets the type of the table driver.
+        /// </summary>
+        /// <returns>The type of the table driver.</returns>
+        protected override Type GetTableDriverType()
+        {
+            return typeof(SeleniumTableDriver);
+        }
+
+        /// <summary>
         /// Gets the custom attributes.
         /// </summary>
         /// <param name="propertyInfo">Type of the item.</param>
@@ -146,10 +155,6 @@ namespace SpecBind.Selenium
         /// <returns>The constructor information that matches.</returns>
         protected override Expression FillConstructorParameter(Type parameterType, ExpressionData parentArgument, ExpressionData rootLocator)
         {
-            var parentArg = (rootLocator != null && !typeof(ISearchContext).IsAssignableFrom(parentArgument.Type))
-                                        ? rootLocator.Expression
-                                        : parentArgument.Expression;
-
             // If it's a web driver use that first.
             if (typeof(IWebDriver).IsAssignableFrom(parameterType) && rootLocator != null)
             {
@@ -159,6 +164,10 @@ namespace SpecBind.Selenium
             if (typeof(ISearchContext).IsAssignableFrom(parameterType))
             {
                 // Use a search context second
+                var parentArg = (rootLocator != null && !typeof(ISearchContext).IsAssignableFrom(parentArgument.Type))
+                                        ? rootLocator.Expression
+                                        : parentArgument.Expression;
+
                 return Expression.Convert(parentArg, parameterType);
             }
 

@@ -93,6 +93,7 @@
     <Compile Include="PropertyDataFixture.cs" />
     <Compile Include="AlertBoxStepsFixture.cs" />
     <Compile Include="ConfigurationFixture.cs" />
+    <Compile Include="PageBuilderContextFixture.cs" />
     <Compile Include="WaitingStepsFixture.cs" />
     <Compile Include="WebDriverSupportFixture.cs" />
     <Compile Include="ValidationResultFixture.cs" />

@@ -33,7 +33,7 @@ namespace SpecBind.CodedUI.Tests
 		    var pageObject = pageFunc(window, null, null);
             var page = pageObject as BuildPage;
 
-			Assert.IsNotNull(page);
+            Assert.IsNotNull(page);
 			Assert.AreEqual("/builds", page.FilterProperties[HtmlDocument.PropertyNames.AbsolutePath]);
 			Assert.AreEqual("http://localhost:2222/builds", page.FilterProperties[HtmlDocument.PropertyNames.PageUrl]);
 
@@ -78,6 +78,24 @@ namespace SpecBind.CodedUI.Tests
             // Table Test
             Assert.IsNotNull(page.MyTable);
 		}
+
+        /// <summary>
+        /// Tests the table element if populated is not replaced on build.
+        /// </summary>
+	    [TestMethod]
+        public void TestTableElementIfPopulatedIsNotReplaced()
+	    {
+            var window = new BrowserWindow();
+            var pageFunc = PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(BuildPage));
+
+            var pageObject = pageFunc(window, null, null);
+            var page = pageObject as BuildPage;
+            
+            Assert.IsNotNull(page);
+            Assert.IsNotNull(page.MyPopulatedTable);
+            Assert.AreEqual(page.MyPopulatedTable.GetHashCode(), page.TableHashCode);
+
+	    }
 
 		/// <summary>
 		/// Tests the missing argument constructor scenario.
@@ -194,6 +212,8 @@ namespace SpecBind.CodedUI.Tests
 			public BuildPage(UITestControl parent)
 				: base(parent)
 			{
+                MyPopulatedTable = new TableElement<HtmlRow>();
+			    TableHashCode = MyPopulatedTable.GetHashCode();
 			}
 
 			/// <summary>
@@ -264,7 +284,20 @@ namespace SpecBind.CodedUI.Tests
             /// </summary>
             /// <value>The driver.</value>
             [ElementLocator(Id = "Table")]
-            public CodedUITableDriver MyTable { get; set; }
+            public TableElement<HtmlRow> MyTable { get; set; }
+
+            /// <summary>
+            /// Gets or sets the table driver that's already built.
+            /// </summary>
+            /// <value>The driver.</value>
+            [ElementLocator(Id = "Table2")]
+            public TableElement<HtmlRow> MyPopulatedTable { get; set; }
+
+            /// <summary>
+            /// Gets the table hash code.
+            /// </summary>
+            /// <value>The table hash code.</value>
+            public int TableHashCode { get; private set; }
 		}
 
 		/// <summary>

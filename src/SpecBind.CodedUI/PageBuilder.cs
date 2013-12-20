@@ -114,6 +114,15 @@ namespace SpecBind.CodedUI
         }
 
         /// <summary>
+        /// Gets the type of the table driver.
+        /// </summary>
+        /// <returns>The type of the table driver.</returns>
+        protected override Type GetTableDriverType()
+        {
+            return typeof(CodedUITableDriver);
+        }
+
+        /// <summary>
         /// Checks to see if the control is the same type as the base class and performs the appropriate actions.
         /// </summary>
         /// <param name="control">The control.</param>

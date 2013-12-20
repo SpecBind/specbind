@@ -95,6 +95,7 @@
     <Compile Include="PageStepBase.cs" />
     <Compile Include="Pages\ElementDescription.cs" />
     <Compile Include="Pages\ElementLocatorAttribute.cs" />
+    <Compile Include="Pages\ExpressionData.cs" />
     <Compile Include="Pages\IActiveCheck.cs" />
     <Compile Include="Pages\IDataControl.cs" />
     <Compile Include="Pages\IElementList.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="Pages\IPageMapper.cs" />
     <Compile Include="Pages\PageAliasAttribute.cs" />
     <Compile Include="Pages\PageBuilderBase.cs" />
+    <Compile Include="Pages\PageBuilderContext.cs" />
     <Compile Include="Pages\PageMapper.cs" />
     <Compile Include="Pages\PageNavigationAttribute.cs" />
     <Compile Include="Pages\PageNavigationException.cs" />

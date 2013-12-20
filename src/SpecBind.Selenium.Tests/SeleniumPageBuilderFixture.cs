@@ -128,7 +128,6 @@ namespace SpecBind.Selenium.Tests
             Assert.IsNotNull(element.SearchContext);
             Assert.IsNotNull(element.Driver);
 
-            Assert.AreNotSame(element.Driver, element.SearchContext);
             Assert.AreSame(driver.Object, element.Driver);
             Assert.AreSame(page.FirstChild, element.SearchContext);
         }
@@ -342,24 +341,6 @@ namespace SpecBind.Selenium.Tests
             Assert.IsTrue(typeof(IElementList<,>).IsAssignableFrom(baseType.GetGenericTypeDefinition()));
             Assert.AreEqual(typeof(SeleniumListElementWrapper<IWebElement, IWebElement>), concreteType);
         }
-
-        ///// <summary>
-        ///// Tests the frame document creation. Save for when frames are supported.
-        ///// </summary>
-        //[TestMethod]
-        //public void TestFrameDocument()
-        //{
-        //    var docType = typeof(MasterDocument);
-        //    var property = docType.GetProperty("FrameNavigation");
-
-        //    var window = new BrowserWindow();
-        //    var pageFunc = PageBuilder<BrowserWindow, HtmlControl>.CreateFrameLocator(docType, property);
-        //    var page = pageFunc(window);
-
-        //    Assert.IsNotNull(page);
-        //    Assert.IsInstanceOfType(page, typeof(HtmlFrame));
-        //    Assert.AreEqual("1234", page.SearchProperties[HtmlControl.PropertyNames.Id]);
-        //}
 
         /// <summary>
         /// Asserts the locator value.

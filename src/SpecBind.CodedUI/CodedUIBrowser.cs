@@ -12,6 +12,7 @@ namespace SpecBind.CodedUI
 	using Microsoft.VisualStudio.TestTools.UITest.Extension;
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
+	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 	using SpecBind.BrowserSupport;
 	using SpecBind.Helpers;

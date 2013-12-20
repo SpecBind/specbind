@@ -69,6 +69,12 @@ namespace SpecBind.Pages
         protected abstract Type GetElementCollectionType();
 
         /// <summary>
+        /// Gets the type of the table driver.
+        /// </summary>
+        /// <returns>A type that implements an enumerable collection.</returns>
+        protected abstract Type GetTableDriverType();
+
+        /// <summary>
         /// Gets the custom driver specific attributes for a given type.
         /// </summary>
         /// <param name="propertyInfo">Type of the item.</param>
@@ -219,20 +225,25 @@ namespace SpecBind.Pages
         /// <exception cref="System.InvalidOperationException">Thrown if the constructor is invalid.</exception>
         private Expression<Func<TParent, IBrowser, Action<TOutput>, TOutput>> CreateNewItemExpression(Type elementType)
         {
-            var parentParameter = Expression.Parameter(typeof(TParent), "parent");
-            var parentArgument = new ExpressionData(parentParameter, typeof(TParent));
-
             var browserParameter = Expression.Parameter(typeof(IBrowser), "browser");
-            var browserArgument = new ExpressionData(browserParameter, typeof(IBrowser));
+            var browserArgument = new ExpressionData(browserParameter, typeof(IBrowser), "browser");
 
-            var constructor = this.GetConstructor(elementType, browserArgument, parentArgument, null);
+            var parentParameter = Expression.Parameter(typeof(TParent), "parent");
+            var parentArgument = new ExpressionData(parentParameter, typeof(TParent), "rootContext");
+
+            var docVariable = Expression.Variable(elementType);
+            var documentData = new ExpressionData(docVariable, elementType, elementType.Name);
+
+            var context = new PageBuilderContext(browserArgument, parentArgument, documentData);
+
+            var constructor = this.GetConstructor(elementType, context);
             if (constructor == null)
             {
                 throw this.CreateConstructorException(null, elementType);
             }
 
             var actionParameter = Expression.Parameter(typeof(Action<TOutput>), "action");
-            var docVariable = Expression.Variable(elementType);
+           
 
             //Spin though properties and make an initializer for anything we can set that has an attribute
             var pageMethodInfo = new Action<TOutput, Action<TOutput>>(this.AssignPageAttributes).GetMethodInfo();
@@ -246,8 +257,10 @@ namespace SpecBind.Pages
 						                  actionParameter)
 				                  };
 
-            var documentData = new ExpressionData(docVariable, elementType);
-            this.MapObjectProperties(expressions, elementType, browserArgument, documentData, parentArgument);
+           
+            
+
+            this.MapObjectProperties(expressions, elementType, context);
             expressions.Add(docVariable);
 
             var methodCall = Expression.Block(new[] { docVariable }, expressions);
@@ -258,11 +271,9 @@ namespace SpecBind.Pages
         /// Gets the constructor.
         /// </summary>
         /// <param name="itemType">Type of the item.</param>
-        /// <param name="browser">The browser argument to inject a browser.</param>
-        /// <param name="parentArgument">The parent argument.</param>
-        /// <param name="rootLocator">The root locator argument if different from the parent.</param>
+        /// <param name="context">The page builder context.</param>
         /// <returns>The constructor information that matches.</returns>
-        private Tuple<ConstructorInfo, IEnumerable<Expression>> GetConstructor(Type itemType, ExpressionData browser, ExpressionData parentArgument, ExpressionData rootLocator)
+        private Tuple<ConstructorInfo, IEnumerable<Expression>> GetConstructor(Type itemType, PageBuilderContext context)
         {
             ConstructorInfo emptyConstructor = null;
             foreach (var constructorInfo in itemType.GetConstructors(BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
@@ -284,13 +295,13 @@ namespace SpecBind.Pages
                     var parameter = parameters[i];
                     var parameterType = parameter.ParameterType;
 
-                    if (browser.Type.IsAssignableFrom(parameterType))
+                    if (context.Browser.Type.IsAssignableFrom(parameterType))
                     {
-                        slots[i] = Expression.Convert(browser.Expression, browser.Type);
+                        slots[i] = Expression.Convert(context.Browser.Expression, context.Browser.Type);
                     }
                     else
                     {
-                        slots[i] = this.FillConstructorParameter(parameterType, parentArgument, rootLocator);
+                        slots[i] = this.FillConstructorParameter(parameterType, context.ParentElement, context.RootLocator);
                     }
                 }
 
@@ -304,21 +315,18 @@ namespace SpecBind.Pages
                        ? new Tuple<ConstructorInfo, IEnumerable<Expression>>(emptyConstructor, new List<Expression>(0))
                        : null;
         }
-        
 
         /// <summary>
         /// Maps the object properties for the given object.
         /// </summary>
         /// <param name="expressions">The parent expression list.</param>
         /// <param name="objectType">Type of the object.</param>
-        /// <param name="browser">The browser argument.</param>
-        /// <param name="parentVariable">The parent variable.</param>
-        /// <param name="rootLocator">The root locator item.</param>
-        private void MapObjectProperties(ICollection<Expression> expressions, Type objectType, ExpressionData browser, ExpressionData parentVariable, ExpressionData rootLocator)
+        /// <param name="context">The page builder context.</param>
+        private void MapObjectProperties(ICollection<Expression> expressions, Type objectType, PageBuilderContext context)
         {
             // ReSharper disable LoopCanBeConvertedToQuery
             foreach (var propertyInfo in objectType.GetProperties().Where(p =>
-                p.SetMethod != null && p.CanWrite && (typeof(TElement).IsAssignableFrom(p.PropertyType) || p.PropertyType.IsElementListType())))
+                p.SetMethod != null && p.CanWrite && p.PropertyType.IsSupportedPropertyType(typeof(TElement))))
             // ReSharper restore LoopCanBeConvertedToQuery
             {
                 var propertyType = propertyInfo.PropertyType;
@@ -329,71 +337,142 @@ namespace SpecBind.Pages
                     continue;
                 }
 
-                //Final Properties
+                // Final Properties
                 var itemVariable = Expression.Variable(propertyType);
+                context.CurrentElement = new ExpressionData(itemVariable, propertyType, propertyInfo.Name);
+
                 var variableList = new List<ParameterExpression> { itemVariable };
                 var propertyExpressions = new List<Expression>();
 
-                //Special case for lists
-                if (propertyType.IsElementListType())
+                // Special case for table driver wrapper
+                if (propertyType.IsTableElementType())
                 {
-                    Type concreteType;
-                    if (propertyType.IsClass && !propertyType.IsAbstract)
-                    {
-                        concreteType = propertyType;
-                    }
-                    else
-                    {
-                        var collectionType = this.GetElementCollectionType();
-                        concreteType = collectionType.MakeGenericType(propertyType.GetGenericArguments());
-                    }
-
-                    var constructor = concreteType.GetConstructors().First();
-
-                    var parentListType = constructor.GetParameters().First().ParameterType;
-                    var parentListVariable = Expression.Variable(parentListType, "collectionParent");
-                    variableList.Add(parentListVariable);
-
-                    propertyExpressions.AddRange(this.CreateHtmlObject(browser, rootLocator, parentVariable, parentListVariable, parentListType, propertyInfo.Name, attribute, customAttributes));
-                    propertyExpressions.Add(Expression.Assign(itemVariable, Expression.New(constructor, parentListVariable, browser.Expression)));
+                    this.BindTableElementProperty(propertyInfo, context, variableList, propertyExpressions, attribute, customAttributes);
+                }
+                else if (propertyType.IsElementListType())
+                {
+                    var listItem = this.CreateElementListItem(context, propertyType, variableList, propertyExpressions, attribute, customAttributes);
+                    propertyExpressions.Add(Expression.Assign(itemVariable, listItem));
                 }
                 else
                 {
                     //Normal path starts here
                     //New up property and then check if for inner properties.
-                    propertyExpressions.AddRange(this.CreateHtmlObject(browser, rootLocator, parentVariable, itemVariable, propertyType, propertyInfo.Name, attribute, customAttributes));
-
-                    var itemData = new ExpressionData(itemVariable, propertyType);
-                    this.MapObjectProperties(propertyExpressions, propertyType, browser, itemData, rootLocator);
+                    var childContext = context.CreateChildContext(context.CurrentElement);
+                    
+                    propertyExpressions.AddRange(this.CreateHtmlObject(childContext, attribute, customAttributes));
+                    this.MapObjectProperties(propertyExpressions, propertyType, childContext);
                 }
 
-                propertyExpressions.Add(Expression.Assign(Expression.Property(parentVariable.Expression, propertyInfo), itemVariable));
+                propertyExpressions.Add(Expression.Assign(Expression.Property(context.Document.Expression, propertyInfo), itemVariable));
                 expressions.Add(Expression.Block(variableList, propertyExpressions));
             }
         }
 
         /// <summary>
+        /// Creates the element list item.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="propertyType">Type of the property.</param>
+        /// <param name="variableList">The variable list.</param>
+        /// <param name="propertyExpressions">The property expressions.</param>
+        /// <param name="attribute">The attribute.</param>
+        /// <param name="customAttributes">The custom attributes.</param>
+        /// <returns>The expression used to create the item.</returns>
+        private NewExpression CreateElementListItem(
+            PageBuilderContext context,
+            Type propertyType,
+            ICollection<ParameterExpression> variableList,
+            List<Expression> propertyExpressions,
+            ElementLocatorAttribute attribute,
+            IEnumerable<object> customAttributes)
+        {
+            // Special case for lists
+            Type concreteType;
+            if (propertyType.IsClass && !propertyType.IsAbstract)
+            {
+                concreteType = propertyType;
+            }
+            else
+            {
+                var collectionType = this.GetElementCollectionType();
+                concreteType = collectionType.MakeGenericType(propertyType.GetGenericArguments());
+            }
+
+            var constructor = concreteType.GetConstructors().First();
+
+            var parentListType = constructor.GetParameters().First().ParameterType;
+            var parentListVariable = Expression.Variable(parentListType, "collectionParent");
+            variableList.Add(parentListVariable);
+
+            // Save the current context item to create the parent, then set it back.
+            var currentItem = context.CurrentElement;
+
+            context.CurrentElement = new ExpressionData(parentListVariable, parentListType);
+            propertyExpressions.AddRange(this.CreateHtmlObject(context, attribute, customAttributes));
+            context.CurrentElement = currentItem;
+
+            return Expression.New(constructor, parentListVariable, context.Browser.Expression);
+        }
+
+        /// <summary>
+        /// Binds the table element property to the property expression stack.
+        /// </summary>
+        /// <param name="propertyInfo">The property information.</param>
+        /// <param name="context">The page builder context.</param>
+        /// <param name="variableList">The variable list.</param>
+        /// <param name="propertyExpressions">The property expressions.</param>
+        /// <param name="attribute">The attribute.</param>
+        /// <param name="customAttributes">The custom attributes.</param>
+        private void BindTableElementProperty(
+            PropertyInfo propertyInfo,
+            PageBuilderContext context, 
+            ICollection<ParameterExpression> variableList,
+            List<Expression> propertyExpressions,
+            ElementLocatorAttribute attribute,
+            IEnumerable<object> customAttributes)
+        {
+            // Get any types and methods
+            var propertyType = propertyInfo.PropertyType;
+            var cellType = propertyType.GetGenericArguments().First();
+            var enumeratorType = typeof(IEnumerable<>).MakeGenericType(cellType);
+            var assignItemInfo = propertyType.GetMethod("SetDriver", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic);
+
+            // Create any variables and other experssions
+            var driverVariable = Expression.Variable(enumeratorType, "driver");
+            variableList.Add(driverVariable);           
+            var driverExpression = this.CreateElementListItem(context, this.GetTableDriverType(), variableList, propertyExpressions, attribute, customAttributes);
+
+            // Add any necessary property expressions
+            var itemVariable = context.CurrentElement.Expression;
+
+            propertyExpressions.Add(Expression.Assign(itemVariable, Expression.Property(context.Document.Expression, propertyInfo)));
+            propertyExpressions.Add(Expression.IfThen(
+                                        Expression.Equal(itemVariable, Expression.Constant(null, propertyType)),
+                                        Expression.Assign(itemVariable, Expression.New(propertyType))));
+            propertyExpressions.Add(Expression.Assign(driverVariable, Expression.Convert(driverExpression, enumeratorType)));
+            propertyExpressions.Add(Expression.Call(itemVariable, assignItemInfo, new Expression[] { driverVariable }));
+        }
+
+        /// <summary>
         /// Creates the HTML object for each property that is part of the parent.
         /// </summary>
-        /// <param name="browser">The browser argument.</param>
-        /// <param name="rootLocator">The root locator variable expression.</param>
-        /// <param name="parentVariable">The parent variable.</param>
-        /// <param name="itemVariable">The item variable.</param>
-        /// <param name="propertyType">Type of the property.</param>
-        /// <param name="propertyName">Name of the property.</param>
+        /// <param name="context">The context.</param>
         /// <param name="attribute">The attribute.</param>
         /// <param name="nativeAttributes">The native attributes.</param>
         /// <returns>The expressions needed to create the list</returns>
-        private IEnumerable<Expression> CreateHtmlObject(ExpressionData browser, ExpressionData rootLocator, ExpressionData parentVariable, Expression itemVariable, Type propertyType, string propertyName, ElementLocatorAttribute attribute, IEnumerable nativeAttributes)
+        private IEnumerable<Expression> CreateHtmlObject(PageBuilderContext context, ElementLocatorAttribute attribute, IEnumerable nativeAttributes)
         {
-            var objectType = this.GetPropertyProxyType(propertyType);
+            var buildElement = context.CurrentElement ?? context.Document;
+            var objectType = this.GetPropertyProxyType(buildElement.Type);
 
-            var propConstructor = this.GetConstructor(objectType, browser, parentVariable, rootLocator);
+            var propConstructor = this.GetConstructor(objectType, context);
             if (propConstructor == null)
             {
-                throw this.CreateConstructorException(propertyName, objectType);
+                throw this.CreateConstructorException(buildElement.Name, objectType);
             }
 
+            var itemVariable = buildElement.Expression;
             return new[]
 				       {
 					       (Expression)Expression.Assign(itemVariable, Expression.New(propConstructor.Item1, propConstructor.Item2)),
@@ -403,35 +482,6 @@ namespace SpecBind.Pages
                                            Expression.Constant(attribute, typeof(ElementLocatorAttribute)),
                                            Expression.Constant(nativeAttributes, typeof(object[])))
 				       };
-        }
-
-        /// <summary>
-        /// An smart structure for managing expressions and matching types.
-        /// </summary>
-        protected class ExpressionData
-        {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ExpressionData"/> class.
-            /// </summary>
-            /// <param name="expression">The expression.</param>
-            /// <param name="type">The type.</param>
-            public ExpressionData(Expression expression, Type type)
-            {
-                this.Expression = expression;
-                this.Type = type;
-            }
-
-            /// <summary>
-            /// Gets the expression.
-            /// </summary>
-            /// <value>The expression.</value>
-            public Expression Expression { get; private set; }
-
-            /// <summary>
-            /// Gets the type.
-            /// </summary>
-            /// <value>The type.</value>
-            public Type Type { get; private set; }
         }
     }
 }
