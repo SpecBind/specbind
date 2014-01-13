@@ -15,7 +15,7 @@
     <language>en-US</language>
     <dependencies>
       <group targetFramework=".NETFramework4.5">
-        <dependency id="SpecBind" version="1.0.0" />
+        <dependency id="SpecBind" version="1.2.1" />
         <dependency id="SpecFlow.SpecBindGeneratorPlugin" version="1.2.1" />
         <dependency id="Selenium.WebDriver" version="2.37.0" />
         <dependency id="Selenium.Support" version="2.37.0" />
