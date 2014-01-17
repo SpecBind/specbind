@@ -36,6 +36,11 @@ namespace SpecBind.ActionPipeline
         /// <returns>The value of the result.</returns>
         private static object CheckActionResult(ActionResult result)
         {
+            if (result == null)
+            {
+                return null;
+            }
+
             if (!result.Success && result.Exception != null)
             {
                 throw result.Exception;

@@ -60,5 +60,18 @@ namespace SpecBind.Tests.ActionPipeline
             var result = ActionResult.Failure(new ElementExecuteException("Something Failed!"));
             result.CheckResult<object>();
         }
+
+        /// <summary>
+        /// Tests the check result when it is null does nothing.
+        /// </summary>
+        [TestMethod]
+        public void TestCheckResultWhenNullReturnsNothing()
+        {
+            var actionResult = (ActionResult)null;
+            // ReSharper disable once ExpressionIsAlwaysNull
+            var result = actionResult.CheckResult<object>();
+
+            Assert.IsNull(result);
+        }
     }
 }
