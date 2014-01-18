@@ -115,6 +115,10 @@ namespace SpecBind.Tests.Validation
         /// </summary>
         private class TableContext : ActionContext, IValidationTable
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="TableContext"/> class.
+            /// </summary>
+            /// <param name="table">The validation table.</param>
             public TableContext(ValidationTable table)
                 : base(null)
             {

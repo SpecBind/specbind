@@ -13,6 +13,14 @@ namespace SpecBind.Validation
     public abstract class ValueComparerBase : ValidationComparerBase
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="ValueComparerBase"/> class.
+        /// </summary>
+        /// <param name="ruleKeys">The rule keys.</param>
+        protected ValueComparerBase(params string[] ruleKeys) : base(ruleKeys)
+        {
+        }
+
+        /// <summary>
         /// A delegate to represent the TryParse methods.
         /// </summary>
         /// <typeparam name="T">The parse methods.</typeparam>
@@ -22,15 +30,7 @@ namespace SpecBind.Validation
         private delegate bool ParseDelegate<T>(string s, out T value);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValueComparerBase"/> class.
-        /// </summary>
-        /// <param name="ruleKeys">The rule keys.</param>
-        protected ValueComparerBase(params string[] ruleKeys) : base(ruleKeys)
-        {
-        }
-
-        /// <summary>
-        /// Compares the values using the specificed property.
+        /// Compares the values using the specified property.
         /// </summary>
         /// <param name="property">The property.</param>
         /// <param name="expectedValue">The expected value.</param>
@@ -101,18 +101,6 @@ namespace SpecBind.Validation
         }
 
         /// <summary>
-        /// Pretends to run the string through the parser to follow the format.
-        /// </summary>
-        /// <param name="s">The string.</param>
-        /// <param name="value">The value.</param>
-        /// <returns><c>true</c> always.</returns>
-        private static bool StringParse(string s, out string value)
-        {
-            value = s;
-            return true;
-        }
-
-        /// <summary>
         /// Compares the double values according to the rule.
         /// </summary>
         /// <param name="expected">The expected value.</param>
@@ -132,6 +120,18 @@ namespace SpecBind.Validation
         protected virtual bool Compare(string expected, string actual)
         {
             return false;
+        }
+
+        /// <summary>
+        /// Pretends to run the string through the parser to follow the format.
+        /// </summary>
+        /// <param name="s">The string.</param>
+        /// <param name="value">The value.</param>
+        /// <returns><c>true</c> always.</returns>
+        private static bool StringParse(string s, out string value)
+        {
+            value = s;
+            return true;
         }
 
         /// <summary>

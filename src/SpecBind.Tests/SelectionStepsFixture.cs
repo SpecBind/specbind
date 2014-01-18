@@ -1,4 +1,8 @@
-﻿namespace SpecBind.Tests
+﻿// <copyright file="SelectionStepsFixture.cs">
+//    Copyright © 2013 Dan Piessens  All rights reserved.
+// </copyright>
+
+namespace SpecBind.Tests
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -6,7 +10,6 @@
 
     using SpecBind.ActionPipeline;
     using SpecBind.Actions;
-    using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
     using SpecBind.Pages;
 
@@ -58,8 +61,9 @@
 
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             pipelineService.Setup(p => p.PerformAction<GetListItemByCriteriaAction>(
-                page.Object, It.Is<GetListItemByCriteriaAction.ListItemByCriteriaContext>(
-                                    c => c.PropertyName == "myproperty" && c.ValidationTable.ValidationCount == 1)))
+                page.Object, 
+                It.Is<GetListItemByCriteriaAction.ListItemByCriteriaContext>(
+                    c => c.PropertyName == "myproperty" && c.ValidationTable.ValidationCount == 1)))
                            .Returns(ActionResult.Successful(listItem.Object));
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);

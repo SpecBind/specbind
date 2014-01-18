@@ -1,4 +1,8 @@
-﻿namespace SpecBind.Tests.Actions
+﻿// <copyright file="GetListItemByCriteriaActionFixture.cs">
+//    Copyright © 2013 Dan Piessens  All rights reserved.
+// </copyright>
+
+namespace SpecBind.Tests.Actions
 {
     using System;
     using System.Collections.Generic;

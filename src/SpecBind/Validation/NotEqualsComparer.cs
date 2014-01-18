@@ -1,4 +1,8 @@
-﻿namespace SpecBind.Validation
+﻿// <copyright file="NotEqualsComparer.cs">
+//    Copyright © 2013 Dan Piessens  All rights reserved.
+// </copyright>
+
+namespace SpecBind.Validation
 {
     using System;
 

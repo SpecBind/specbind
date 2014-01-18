@@ -40,7 +40,7 @@ namespace SpecBind.Validation
         public IEnumerable<string> RuleKeys { get; private set; }
 
         /// <summary>
-        /// Compares the values using the specificed property.
+        /// Compares the values using the specified property.
         /// </summary>
         /// <param name="property">The property.</param>
         /// <param name="expectedValue">The expected value.</param>

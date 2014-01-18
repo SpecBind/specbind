@@ -1,4 +1,9 @@
-﻿namespace SpecBind.Tests.Validation
+﻿// <copyright file="ContainsComparerFixture.cs">
+//    Copyright © 2013 Dan Piessens  All rights reserved.
+// </copyright>
+
+
+namespace SpecBind.Tests.Validation
 {
     using System.Linq;
 

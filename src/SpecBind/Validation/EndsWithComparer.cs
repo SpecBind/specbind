@@ -1,4 +1,8 @@
-﻿namespace SpecBind.Validation
+﻿// <copyright file="EndsWithComparer.cs">
+//    Copyright © 2013 Dan Piessens  All rights reserved.
+// </copyright>
+
+namespace SpecBind.Validation
 {
     using System;
 
@@ -18,7 +22,7 @@
         }
 
         /// <summary>
-        /// Compares the values using the specificed property.
+        /// Compares the values using the specified property.
         /// </summary>
         /// <param name="property">The property.</param>
         /// <param name="expectedValue">The expected value.</param>

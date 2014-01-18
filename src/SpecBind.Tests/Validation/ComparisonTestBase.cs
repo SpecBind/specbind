@@ -15,13 +15,13 @@ namespace SpecBind.Tests.Validation
     /// </summary>
     /// <typeparam name="T">The type of the comparison.</typeparam>
     public abstract class ComparisonTestBase<T>
-        where T: IValidationComparer, new()
+        where T : IValidationComparer, new()
     {
         /// <summary>
         /// Runs the item compare test.
         /// </summary>
-        /// <param name="actualValue">The actual value.</param>
         /// <param name="expectedValue">The expected value.</param>
+        /// <param name="actualValue">The actual value.</param>
         /// <param name="isTrue">if set to <c>true</c> the result should be true.</param>
         /// <param name="propertyData">The property data.</param>
         protected static void RunItemCompareTest(string expectedValue, string actualValue, bool isTrue, Mock<IPropertyData> propertyData = null)

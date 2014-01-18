@@ -158,7 +158,7 @@ namespace SpecBind.Tests.ActionPipeline
             /// Performs the pre-execute action.
             /// </summary>
             /// <param name="action">The action.</param>
-            /// <param name="context"></param>
+            /// <param name="context">The action context.</param>
             public void PerformPreAction(IAction action, ActionContext context)
             {
             }
@@ -167,7 +167,7 @@ namespace SpecBind.Tests.ActionPipeline
             /// Performs the post-execute action.
             /// </summary>
             /// <param name="action">The action.</param>
-            /// <param name="context"></param>
+            /// <param name="context">The action context.</param>
             /// <param name="result">The result.</param>
             public void PerformPostAction(IAction action, ActionContext context, ActionResult result)
             {

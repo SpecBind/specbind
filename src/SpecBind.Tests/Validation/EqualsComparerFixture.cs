@@ -1,4 +1,8 @@
-﻿namespace SpecBind.Tests.Validation
+﻿// <copyright file="EqualsComparerFixture.cs">
+//    Copyright © 2013 Dan Piessens  All rights reserved.
+// </copyright>
+
+namespace SpecBind.Tests.Validation
 {
     using System.Linq;
 
@@ -42,7 +46,7 @@
         }
 
         /// <summary>
-        /// Tests the comparison with equal int members returns true.
+        /// Tests the comparison with equal integer members returns true.
         /// </summary>
         [TestMethod]
         public void TestComparisonWithEqualIntsReturnsTrue()
