@@ -10,6 +10,8 @@ namespace SpecBind.ActionPipeline
 
     using BoDi;
 
+    using SpecBind.Validation;
+
     /// <summary>
 	/// The action repository for plugins in the pipeline.
 	/// </summary>
@@ -20,6 +22,7 @@ namespace SpecBind.ActionPipeline
         private readonly List<IPreAction> preActions;
         private readonly List<IPostAction> postActions;
         private readonly List<ILocatorAction> locatorActions;
+        private readonly List<IValidationComparer> validationComparisons;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActionRepository" /> class.
@@ -32,6 +35,8 @@ namespace SpecBind.ActionPipeline
             this.preActions = new List<IPreAction>(5);
             this.postActions = new List<IPostAction>(5);
             this.locatorActions = new List<ILocatorAction>(5);
+
+            this.validationComparisons = new List<IValidationComparer>(10);
 	    }
 
         /// <summary>
@@ -61,6 +66,15 @@ namespace SpecBind.ActionPipeline
 		{
 			return this.preActions.AsReadOnly();
 		}
+
+        /// <summary>
+        /// Gets the comparison actions used to process various types.
+        /// </summary>
+        /// <returns>An enumerable collection of actions.</returns>
+        public IReadOnlyCollection<IValidationComparer> GetComparisonTypes()
+        {
+            return this.validationComparisons.AsReadOnly();
+        }
 
 		/// <summary>
 		/// Gets the locator actions.
@@ -103,6 +117,11 @@ namespace SpecBind.ActionPipeline
             if (typeof(ILocatorAction).IsAssignableFrom(type))
             {
                 this.locatorActions.Add(this.CreateItem<ILocatorAction>(type));
+            }
+
+            if (typeof(IValidationComparer).IsAssignableFrom(type))
+            {
+                this.validationComparisons.Add(this.CreateItem<IValidationComparer>(type));
             }
         }
 

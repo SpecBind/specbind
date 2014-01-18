@@ -29,11 +29,10 @@ namespace SpecBind.CodedUI.IntegrationTests.Steps
         /// <param name="browser">The browser.</param>
         /// <param name="pageMapper">The page mapper.</param>
         /// <param name="scenarioContext">The scenario context.</param>
-        /// <param name="tokenManager">The token manager.</param>
         /// <param name="actionPipelineService">The action pipeline service.</param>
-        public ErrorCheckSteps(IBrowser browser, IPageMapper pageMapper, IScenarioContextHelper scenarioContext, ITokenManager tokenManager, IActionPipelineService actionPipelineService)
+        public ErrorCheckSteps(IBrowser browser, IPageMapper pageMapper, IScenarioContextHelper scenarioContext, IActionPipelineService actionPipelineService)
         {
-            this.commonPageSteps = new CommonPageSteps(browser, pageMapper, scenarioContext, tokenManager, actionPipelineService);
+            this.commonPageSteps = new CommonPageSteps(browser, pageMapper, scenarioContext, actionPipelineService);
         }
 
         /// <summary>

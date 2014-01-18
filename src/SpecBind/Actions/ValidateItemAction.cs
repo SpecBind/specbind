@@ -4,10 +4,10 @@
 namespace SpecBind.Actions
 {
     using System;
-    using System.Collections.Generic;
-
+    
     using SpecBind.ActionPipeline;
     using SpecBind.Pages;
+    using SpecBind.Validation;
 
     /// <summary>
     /// An action that helps perform item validation.
@@ -30,10 +30,10 @@ namespace SpecBind.Actions
         protected override ActionResult Execute(ValidateItemContext context)
         {
             var itemResult = new ValidationItemResult();
-            var result = new ValidationResult(context.Validations) { IsValid = true };
+            var result = new ValidationResult(context.ValidationTable.Validations) { IsValid = true };
             result.CheckedItems.Add(itemResult);
 
-            foreach (var validation in context.Validations)
+            foreach (var validation in context.ValidationTable.Validations)
             {
                 IPropertyData propertyData;
                 if (!this.ElementLocator.TryGetProperty(validation.FieldName, out propertyData))
@@ -66,23 +66,23 @@ namespace SpecBind.Actions
         /// <summary>
         /// The data context for validating an item.
         /// </summary>
-        public class ValidateItemContext : ActionContext
+        public class ValidateItemContext : ActionContext, IValidationTable
         {
             /// <summary>
-            /// Initializes a new instance of the <see cref="ValidateItemContext"/> class.
+            /// Initializes a new instance of the <see cref="ValidateItemContext" /> class.
             /// </summary>
-            /// <param name="validations">The validations.</param>
-            public ValidateItemContext(ICollection<ItemValidation> validations)
+            /// <param name="validationTable">The validation table.</param>
+            public ValidateItemContext(ValidationTable validationTable)
                 : base(null)
             {
-                this.Validations = validations;
+                this.ValidationTable = validationTable;
             }
 
             /// <summary>
-            /// Gets the validations.
+            /// Gets the validation table.
             /// </summary>
-            /// <value>The validations.</value>
-            public ICollection<ItemValidation> Validations { get; private set; }
+            /// <value>The validation table.</value>
+            public ValidationTable ValidationTable { get; private set; }
         }
     }
 }

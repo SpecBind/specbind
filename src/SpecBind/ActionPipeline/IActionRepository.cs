@@ -9,7 +9,9 @@ namespace SpecBind.ActionPipeline
 {
 	using System.Collections.Generic;
 
-	/// <summary>
+	using SpecBind.Validation;
+
+    /// <summary>
 	/// Contains a cache of available actions, pre-actions and post-actions.
 	/// </summary>
 	public interface IActionRepository
@@ -38,5 +40,11 @@ namespace SpecBind.ActionPipeline
 		/// </summary>
 		/// <returns>An enumerable collection of actions.</returns>
 		IEnumerable<ILocatorAction> GetLocatorActions();
+
+	    /// <summary>
+	    /// Gets the comparison actions used to process various types.
+	    /// </summary>
+	    /// <returns>An enumerable collection of actions.</returns>
+	    IReadOnlyCollection<IValidationComparer> GetComparisonTypes();
 	}
 }

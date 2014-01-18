@@ -37,10 +37,10 @@ namespace SpecBind.Tests.ActionPipeline
 			var page = new Mock<IPage>(MockBehavior.Strict);
 
 			var preAction = new Mock<IPreAction>(MockBehavior.Strict);
-			preAction.Setup(p => p.PerformPreAction(action.Object));
+			preAction.Setup(p => p.PerformPreAction(action.Object, context));
 
 			var postAction = new Mock<IPostAction>(MockBehavior.Strict);
-			postAction.Setup(p => p.PerformPostAction(action.Object, actionResult));
+			postAction.Setup(p => p.PerformPostAction(action.Object, context, actionResult));
 
 			var repository = new Mock<IActionRepository>(MockBehavior.Strict);
 			repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction.Object });
@@ -78,10 +78,10 @@ namespace SpecBind.Tests.ActionPipeline
 			var page = new Mock<IPage>(MockBehavior.Strict);
 
 			var preAction = new Mock<IPreAction>(MockBehavior.Strict);
-			preAction.Setup(p => p.PerformPreAction(action.Object));
+			preAction.Setup(p => p.PerformPreAction(action.Object, context));
 
 			var postAction = new Mock<IPostAction>(MockBehavior.Strict);
-			postAction.Setup(p => p.PerformPostAction(action.Object, It.Is<ActionResult>(r => !r.Success)));
+			postAction.Setup(p => p.PerformPostAction(action.Object, context, It.Is<ActionResult>(r => !r.Success)));
 
 			var repository = new Mock<IActionRepository>(MockBehavior.Strict);
 			repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction.Object });
@@ -114,10 +114,10 @@ namespace SpecBind.Tests.ActionPipeline
             var page = new Mock<IPage>(MockBehavior.Strict);
 
             var preAction = new Mock<IPreAction>(MockBehavior.Strict);
-            preAction.Setup(p => p.PerformPreAction(It.IsAny<MockAction>()));
+            preAction.Setup(p => p.PerformPreAction(It.IsAny<MockAction>(), context));
 
             var postAction = new Mock<IPostAction>(MockBehavior.Strict);
-            postAction.Setup(p => p.PerformPostAction(It.IsAny<MockAction>(), It.IsAny<ActionResult>()));
+            postAction.Setup(p => p.PerformPostAction(It.IsAny<MockAction>(), context, It.IsAny<ActionResult>()));
 
             var repository = new Mock<IActionRepository>(MockBehavior.Strict);
             repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction.Object });

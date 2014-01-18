@@ -8,6 +8,7 @@ namespace SpecBind.Pages
 	using System.Linq;
 
 	using SpecBind.Actions;
+	using SpecBind.Validation;
 
     /// <summary>
 	/// The property data for a given property.
@@ -218,6 +219,28 @@ namespace SpecBind.Pages
 			this.ElementAction(this.elementHandler, findItem);
 			return this.elementHandler.GetPageFromElement(item);
 		}
+
+        /// <summary>
+        /// Validates the list.
+        /// </summary>
+        /// <param name="validations">The validations.</param>
+        /// <returns>The validation result including checks performed.</returns>
+        public Tuple<IPage, ValidationResult> FindItemInList(ICollection<ItemValidation> validations)
+        {
+            var validationResult = new ValidationResult(validations);
+
+            var item = default(TElement);
+            this.Action(this.elementHandler,
+                propertyValue =>
+                    {
+                        var list = ((IEnumerable<TElement>)propertyValue).ToList();
+                        item = list.FirstOrDefault(i => this.CheckItem(i, validations, validationResult));
+                        return true;
+                    });
+
+            var page = !Equals(item, default(TElement)) ? this.elementHandler.GetPageFromElement(item) : null;
+            return new Tuple<IPage, ValidationResult>(page, validationResult);
+        }
 
         /// <summary>
         /// Highlights this instance.

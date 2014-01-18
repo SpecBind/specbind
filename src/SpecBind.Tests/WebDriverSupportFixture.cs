@@ -13,10 +13,10 @@ namespace SpecBind.Tests
     using Moq;
 
     using SpecBind.ActionPipeline;
-    using SpecBind.Actions;
     using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
     using SpecBind.Pages;
+    using SpecBind.Validation;
 
     using TechTalk.SpecFlow.Tracing;
 
@@ -32,8 +32,6 @@ namespace SpecBind.Tests
         [TestMethod]
         public void TestInitializeTests()
         {
-            var preActionMock = new Mock<ILocatorAction>();
-
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.RegisterInstanceAs(It.IsAny<IBrowser>(), null));
             container.Setup(c => c.RegisterInstanceAs<ISettingHelper>(It.IsAny<WrappedSettingHelper>(), null));
@@ -43,7 +41,9 @@ namespace SpecBind.Tests
             container.Setup(c => c.RegisterInstanceAs(It.IsAny<IActionRepository>(), null));
             container.Setup(c => c.RegisterTypeAs<ActionPipelineService, IActionPipelineService>(null));
 
-            container.Setup(c => c.Resolve(typeof(HighlightPreAction), null)).Returns(preActionMock.Object);
+            container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(ILocatorAction).IsAssignableFrom(t)), null)).Returns(new Mock<ILocatorAction>().Object);
+            container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IPreAction).IsAssignableFrom(t)), null)).Returns(new Mock<IPreAction>().Object);
+            container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IValidationComparer).IsAssignableFrom(t)), null)).Returns(new Mock<IValidationComparer>().Object);
             
             var driverSupport = new WebDriverSupport(container.Object);
 

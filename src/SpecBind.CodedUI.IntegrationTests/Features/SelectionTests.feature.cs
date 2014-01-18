@@ -125,6 +125,58 @@ this.ScenarioSetup(scenarioInfo);
 #line hidden
             this.ScenarioCleanup();
         }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Select an item in the list by criteria and click the link")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Clicking items on the screen")]
+        public virtual void SelectAnItemInTheListByCriteriaAndClickTheLink()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Select an item in the list by criteria and click the link", ((string[])(null)));
+#line 20
+this.ScenarioSetup(scenarioInfo);
+#line 21
+ testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 22
+   testRunner.And("I chose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 23
+   testRunner.And("I was on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Field",
+                        "Rule",
+                        "Value"});
+            table2.AddRow(new string[] {
+                        "Last Name",
+                        "equals",
+                        "Alexander"});
+            table2.AddRow(new string[] {
+                        "First Name",
+                        "Equals",
+                        "Carson"});
+#line 24
+   testRunner.And("I was on results grid list item matching criteria", ((string)(null)), table2, "And ");
+#line 28
+  testRunner.When("I choose Details", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 29
+  testRunner.Then("I am on the Student Detail page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Field",
+                        "Rule",
+                        "Value"});
+            table3.AddRow(new string[] {
+                        "Last Name",
+                        "Equals",
+                        "Alexander"});
+            table3.AddRow(new string[] {
+                        "First Name",
+                        "Equals",
+                        "Carson"});
+#line 30
+   testRunner.And("I see", ((string)(null)), table3, "And ");
+#line hidden
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore

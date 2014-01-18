@@ -6,7 +6,6 @@ namespace SpecBind
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Globalization;
 	using System.Linq;
 
 	using SpecBind.ActionPipeline;
@@ -14,7 +13,7 @@ namespace SpecBind
 	using SpecBind.BrowserSupport;
 	using SpecBind.Helpers;
 	using SpecBind.Pages;
-
+	
 	using TechTalk.SpecFlow;
 
 	/// <summary>
@@ -26,7 +25,6 @@ namespace SpecBind
 		// Step regex values - in constants because they are shared.
 		private const string EnsureOnPageStepRegex = @"I am on the (.+) page";
 		private const string EnsureOnDialogStepRegex = @"I am on the (.+) dialog";
-		private const string EnsureOnListItemRegex = @"I am on list (.+) item ([0-9]+)";
 		private const string EnterDataInFieldsStepRegex = @"I enter data";
         private const string NavigateToPageStepRegex = @"I navigate to the (.+) page";
         private const string NavigateToPageWithParamsStepRegex = @"I navigate to the (.+) page with parameters";
@@ -38,7 +36,6 @@ namespace SpecBind
 		// The following Regex items are for the given "past tense" form
 		private const string GivenEnsureOnPageStepRegex = @"I was on the (.+) page";
 		private const string GivenEnsureOnDialogStepRegex = @"I was on the (.+) dialog";
-		private const string GivenEnsureOnListItemRegex = @"I was on list (.+) item ([0-9]+)";
 		private const string GivenEnterDataInFieldsStepRegex = @"I entered data";
 		private const string GivenObserveDataStepRegex = @"I saw";
 		private const string GivenObserveListDataStepRegex = @"I saw (.+) list ([A-Za-z ]+)";
@@ -49,8 +46,7 @@ namespace SpecBind
 		private readonly IBrowser browser;
 		private readonly IPageMapper pageMapper;
 
-	    private readonly ITokenManager tokenManager;
-		private readonly IActionPipelineService actionPipelineService;
+	    private readonly IActionPipelineService actionPipelineService;
 
 	    /// <summary>
 	    /// Initializes a new instance of the <see cref="CommonPageSteps" /> class.
@@ -58,14 +54,12 @@ namespace SpecBind
 	    /// <param name="browser">The browser.</param>
 	    /// <param name="pageMapper">The page mapper.</param>
 	    /// <param name="scenarioContext">The scenario context.</param>
-	    /// <param name="tokenManager">The token manager.</param>
 	    /// <param name="actionPipelineService">The action pipeline service.</param>
-	    public CommonPageSteps(IBrowser browser, IPageMapper pageMapper, IScenarioContextHelper scenarioContext, ITokenManager tokenManager, IActionPipelineService actionPipelineService)
+	    public CommonPageSteps(IBrowser browser, IPageMapper pageMapper, IScenarioContextHelper scenarioContext, IActionPipelineService actionPipelineService)
             : base(scenarioContext)
 		{
 			this.browser = browser;
 			this.pageMapper = pageMapper;
-			this.tokenManager = tokenManager;
 			this.actionPipelineService = actionPipelineService;
 		}
 
@@ -99,26 +93,6 @@ namespace SpecBind
 
             var context = new ActionContext(propertyName.ToLookupKey());
             var item = this.actionPipelineService.PerformAction<GetElementAsPageAction>(page, context)
-                                                 .CheckResult<IPage>();
-
-            this.UpdatePageContext(item);
-		}
-
-		/// <summary>
-		/// A Given step for ensuring the browser is on the list item with the specified name and index.
-		/// </summary>
-		/// <param name="listName">Name of the list.</param>
-		/// <param name="itemNumber">The item number.</param>
-		[Given(GivenEnsureOnListItemRegex)]
-        [When(EnsureOnListItemRegex)]
-		[Then(EnsureOnListItemRegex)]
-		public void GivenEnsureOnListItemStep(string listName, int itemNumber)
-		{
-			var page = this.GetPageFromContext();
-
-            var context = new GetListItemByIndexAction.ListItemByIndexContext(listName.ToLookupKey(), itemNumber);
-
-			var item = this.actionPipelineService.PerformAction<GetListItemByIndexAction>(page, context)
                                                  .CheckResult<IPage>();
 
             this.UpdatePageContext(item);
@@ -215,7 +189,7 @@ namespace SpecBind
 		    if (results.Any(r => !r.Success))
 		    {
 		        var errors = string.Join("; ", results.Where(r => r.Exception != null).Select(r => r.Exception.Message));
-		        throw new ElementExecuteException("Errors occured while entering data. Details: {0}", errors);   
+		        throw new ElementExecuteException("Errors occurred while entering data. Details: {0}", errors);   
 		    }
 		}
 
@@ -227,13 +201,7 @@ namespace SpecBind
 		[Then(ObserveDataStepRegex)]
 		public void ThenISeeStep(Table data)
 		{
-			var validations = this.GetItemValidations(data);
-
-			if (validations == null || validations.Count <= 0)
-			{
-				return;
-			}
-
+		    var validations = data.ToValidationTable();
 			var page = this.GetPageFromContext();
 
             var context = new ValidateItemAction.ValidateItemContext(validations);
@@ -284,7 +252,7 @@ namespace SpecBind
 			}
 
 			var page = this.GetPageFromContext();
-			var validations = this.GetItemValidations(data);
+		    var validations = data.ToValidationTable();
 
 		    var context = new ValidateListAction.ValidateListContext(fieldName.ToLookupKey(), comparisonType, validations);
             this.actionPipelineService.PerformAction<ValidateListAction>(page, context).CheckResult();
@@ -322,101 +290,10 @@ namespace SpecBind
 			if (type == null)
 			{
 				throw new PageNavigationException(
-					"Cannot locate a page for name: {0}. Check page alises in the test assembly.", pageName);
+					"Cannot locate a page for name: {0}. Check page aliases in the test assembly.", pageName);
 			}
 
 			return type;
-		}
-
-	    /// <summary>
-		/// Gets the item validations from the SpecFlow Table.
-		/// </summary>
-		/// <param name="data">The table data.</param>
-		/// <returns>A list of validation items.</returns>
-		/// <exception cref="ElementExecuteException">A table must be specified for this step with the columns 'Field', 'Rule' and 'Value'.</exception>
-		private ICollection<ItemValidation> GetItemValidations(Table data)
-		{
-			string fieldHeader = null;
-			string valueHeader = null;
-			string ruleHeader = null;
-
-			if (data != null)
-			{
-				fieldHeader = data.Header.FirstOrDefault(h => h.NormalizedEquals("Field"));
-				valueHeader = data.Header.FirstOrDefault(h => h.NormalizedEquals("Value"));
-				ruleHeader = data.Header.FirstOrDefault(h => h.NormalizedEquals("Rule"));
-			}
-
-			if (fieldHeader == null || valueHeader == null || ruleHeader == null)
-			{
-				throw new ElementExecuteException("A table must be specified for this step with the columns 'Field', 'Rule' and 'Value'");
-			}
-
-			var validations = new List<ItemValidation>(data.RowCount);
-			foreach (var tableRow in data.Rows)
-			{
-				var fieldName = tableRow[fieldHeader].ToLookupKey();
-				var comparisonValue = tableRow[valueHeader];
-				var ruleValue = tableRow[ruleHeader].ToLookupKey();
-				var checkToken = true;
-
-				ComparisonType comparisonType;
-				switch (ruleValue)
-				{
-					case "exists":
-						comparisonType = ComparisonType.Exists;
-						comparisonValue = true.ToString(CultureInfo.InvariantCulture);
-						checkToken = false;
-						break;
-					case "doesnotexist":
-						comparisonType = ComparisonType.Exists;
-						comparisonValue = false.ToString(CultureInfo.InvariantCulture);
-						checkToken = false;
-						break;
-					case "isenabled":
-					case "enabled":
-						comparisonType = ComparisonType.Enabled;
-						comparisonValue = true.ToString(CultureInfo.InvariantCulture);
-						checkToken = false;
-						break;
-					case "isnotenabled":
-					case "notenabled":
-					case "disabled":
-						comparisonType = ComparisonType.Enabled;
-						comparisonValue = false.ToString(CultureInfo.InvariantCulture);
-						checkToken = false;
-						break;
-					case "contains":
-						comparisonType = ComparisonType.Contains;
-						break;
-					case "doesnotcontain":
-						comparisonType = ComparisonType.DoesNotContain;
-						break;
-					case "startswith":
-						comparisonType = ComparisonType.StartsWith;
-						break;
-					case "endswith":
-						comparisonType = ComparisonType.EndsWith;
-						break;
-					case "doesnotequal":
-					case "notequals":
-					case "notequal":
-						comparisonType = ComparisonType.DoesNotEqual;
-						break;
-					default:
-						comparisonType = ComparisonType.Equals;
-						break;
-				}
-
-				if (checkToken)
-				{
-					comparisonValue = this.tokenManager.GetToken(comparisonValue); 
-				}
-
-				validations.Add(new ItemValidation(fieldName, comparisonValue, comparisonType));
-			}
-
-			return validations;
 		}
 	}
 }

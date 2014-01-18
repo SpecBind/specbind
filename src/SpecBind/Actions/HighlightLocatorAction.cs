@@ -1,4 +1,4 @@
-﻿// <copyright file="HighlightPreAction.cs">
+﻿// <copyright file="HighlightLocatorAction.cs">
 //    Copyright © 2013 Dan Piessens  All rights reserved.
 // </copyright>
 
@@ -11,7 +11,7 @@ namespace SpecBind.Actions
     /// <summary>
     /// A pre-action that highlights elements when enabled.
     /// </summary>
-    public sealed class HighlightPreAction : ILocatorAction
+    public sealed class HighlightLocatorAction : ILocatorAction
     {
         /// <summary>
         /// The highlight mode tag constant.
@@ -22,11 +22,11 @@ namespace SpecBind.Actions
         private readonly ISettingHelper settingHelper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HighlightPreAction" /> class.
+        /// Initializes a new instance of the <see cref="HighlightLocatorAction" /> class.
         /// </summary>
         /// <param name="contextHelper">The context helper.</param>
         /// <param name="settingHelper">The setting helper.</param>
-        public HighlightPreAction(IScenarioContextHelper contextHelper, ISettingHelper settingHelper)
+        public HighlightLocatorAction(IScenarioContextHelper contextHelper, ISettingHelper settingHelper)
         {
             this.contextHelper = contextHelper;
             this.settingHelper = settingHelper;

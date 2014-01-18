@@ -5,6 +5,7 @@
 namespace SpecBind.Tests.Actions
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -13,6 +14,8 @@ namespace SpecBind.Tests.Actions
     using SpecBind.ActionPipeline;
     using SpecBind.Actions;
     using SpecBind.Pages;
+    using SpecBind.Tests.Validation;
+    using SpecBind.Validation;
 
     /// <summary>
     /// A test fixture for a button click action
@@ -46,7 +49,7 @@ namespace SpecBind.Tests.Actions
                                             ElementLocator = locator.Object
                                         };
 
-            var context = new ValidateListAction.ValidateListContext("doesnotexist", ComparisonType.Equals, new List<ItemValidation>());
+            var context = new ValidateListAction.ValidateListContext("doesnotexist", ComparisonType.Equals, new ValidationTable());
             ExceptionHelper.SetupForException<ElementExecuteException>(
                 () => buttonClickAction.Execute(context), e => locator.VerifyAll());
         }
@@ -69,7 +72,7 @@ namespace SpecBind.Tests.Actions
                                             ElementLocator = locator.Object
                                         };
 
-            var context = new ValidateListAction.ValidateListContext("myproperty", ComparisonType.Equals, new List<ItemValidation>());
+            var context = new ValidateListAction.ValidateListContext("myproperty", ComparisonType.Equals, new ValidationTable());
             var result = buttonClickAction.Execute(context);
 
             Assert.AreEqual(false, result.Success);
@@ -85,18 +88,20 @@ namespace SpecBind.Tests.Actions
         [TestMethod]
         public void TestExecuteWhenPropertyValidationReturnsErrorsReturnsFailureResult()
         {
-            var validations = new List<ItemValidation> { new ItemValidation("name", "Hello", ComparisonType.Equals) };
+            var table = new ValidationTable();
+            table.AddValidation("name", "Hello", "equals");
+            table.Process();
 
             var itemResult = new ValidationItemResult();
-            itemResult.NoteValidationResult(validations[0], false, "World");
+            itemResult.NoteValidationResult(table.Validations.First(), false, "World");
 
-            var validationResult = new ValidationResult(validations) { IsValid = false, ItemCount = 1 };
+            var validationResult = new ValidationResult(table.Validations) { IsValid = false, ItemCount = 1 };
             validationResult.CheckedItems.Add(itemResult);
 
             var propData = new Mock<IPropertyData>(MockBehavior.Strict);
             propData.SetupGet(p => p.IsList).Returns(true);
             propData.SetupGet(p => p.Name).Returns("MyProperty");
-            propData.Setup(p => p.ValidateList(ComparisonType.Equals, validations)).Returns(validationResult);
+            propData.Setup(p => p.ValidateList(ComparisonType.Equals, It.Is<ICollection<ItemValidation>>(c => c.Count == 1))).Returns(validationResult);
 
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);
             locator.Setup(p => p.GetProperty("myproperty")).Returns(propData.Object);
@@ -106,7 +111,7 @@ namespace SpecBind.Tests.Actions
                 ElementLocator = locator.Object
             };
 
-            var context = new ValidateListAction.ValidateListContext("myproperty", ComparisonType.Equals, validations);
+            var context = new ValidateListAction.ValidateListContext("myproperty", ComparisonType.Equals, table);
             var result = buttonClickAction.Execute(context);
 
             Assert.AreEqual(false, result.Success);
@@ -122,17 +127,19 @@ namespace SpecBind.Tests.Actions
         [TestMethod]
         public void TestExecuteWhenPropertyValidationReturnsSuccessReturnsASuccess()
         {
-            var validations = new List<ItemValidation> { new ItemValidation("name", "Hello", ComparisonType.Equals) };
+            var table = new ValidationTable();
+            table.AddValidation("name", "Hello", "equals");
+            table.Process();
 
             var itemResult = new ValidationItemResult();
-            itemResult.NoteValidationResult(validations[0], true, "World");
+            itemResult.NoteValidationResult(table.Validations.First(), true, "World");
 
-            var validationResult = new ValidationResult(validations) { IsValid = true, ItemCount = 1 };
+            var validationResult = new ValidationResult(table.Validations) { IsValid = true, ItemCount = 1 };
             validationResult.CheckedItems.Add(itemResult);
 
             var propData = new Mock<IPropertyData>(MockBehavior.Strict);
             propData.SetupGet(p => p.IsList).Returns(true);
-            propData.Setup(p => p.ValidateList(ComparisonType.Equals, validations)).Returns(validationResult);
+            propData.Setup(p => p.ValidateList(ComparisonType.Equals, It.Is<ICollection<ItemValidation>>(c => c.Count == 1))).Returns(validationResult);
 
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);
             locator.Setup(p => p.GetProperty("myproperty")).Returns(propData.Object);
@@ -142,7 +149,7 @@ namespace SpecBind.Tests.Actions
                 ElementLocator = locator.Object
             };
 
-            var context = new ValidateListAction.ValidateListContext("myproperty", ComparisonType.Equals, validations);
+            var context = new ValidateListAction.ValidateListContext("myproperty", ComparisonType.Equals, table);
             var result = buttonClickAction.Execute(context);
 
             Assert.AreEqual(true, result.Success);

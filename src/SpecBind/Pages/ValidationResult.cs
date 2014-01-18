@@ -9,8 +9,9 @@ namespace SpecBind.Pages
 	using System.Linq;
 
 	using SpecBind.Helpers;
+	using SpecBind.Validation;
 
-	/// <summary>
+    /// <summary>
 	/// Tracks the individual validations on the list to create a trace in the completed exception.
 	/// </summary>
 	public class ValidationResult
@@ -78,9 +79,9 @@ namespace SpecBind.Pages
 
 			var properties = this.CheckedItems.First().PropertyResults;
 			var tableFormatter = new TableFormater<ValidationItemResult.PropertyResult>()
-										.AddColumn("Field", p => p, p => p.Validation.FieldName, CheckFieldExists)
-										.AddColumn("Rule", p => p.Validation.ComparisonType, p => p.ToString())
-										.AddColumn("Value", p => p, p => p.Validation.ComparisonValue, CheckFieldValue);
+										.AddColumn("Field", p => p, p => p.Validation.RawFieldName, CheckFieldExists)
+										.AddColumn("Rule", p => p.Validation.RawComparisonType, p => p)
+										.AddColumn("Value", p => p, p => p.Validation.RawComparisonValue, CheckFieldValue);
 
 			return tableFormatter.CreateTable(properties);
 		}

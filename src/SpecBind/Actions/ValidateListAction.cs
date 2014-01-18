@@ -6,9 +6,11 @@ namespace SpecBind.Actions
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using SpecBind.ActionPipeline;
     using SpecBind.Pages;
+    using SpecBind.Validation;
 
     /// <summary>
     /// An action that validates a list of items for specific actions.
@@ -40,7 +42,7 @@ namespace SpecBind.Actions
                             propertyData.Name));
             }
 
-            var validationResult = propertyData.ValidateList(actionContext.CompareType, actionContext.Validations);
+            var validationResult = propertyData.ValidateList(actionContext.CompareType, actionContext.ValidationTable.Validations.ToList());
             if (validationResult.IsValid)
             {
                 return ActionResult.Successful();
@@ -58,7 +60,7 @@ namespace SpecBind.Actions
         /// <summary>
         /// A context for list validation.
         /// </summary>
-        public class ValidateListContext : ActionContext
+        public class ValidateListContext : ActionContext, IValidationTable
         {
             /// <summary>
             /// Initializes a new instance of the <see cref="ValidateListContext"/> class.
@@ -66,11 +68,11 @@ namespace SpecBind.Actions
             /// <param name="propertyName">Name of the property.</param>
             /// <param name="compareType">Type of the compare.</param>
             /// <param name="validations">The validations.</param>
-            public ValidateListContext(string propertyName, ComparisonType compareType, ICollection<ItemValidation> validations)
+            public ValidateListContext(string propertyName, ComparisonType compareType, ValidationTable validations)
                 : base(propertyName)
             {
                 this.CompareType = compareType;
-                this.Validations = validations;
+                this.ValidationTable = validations;
             }
 
             /// <summary>
@@ -80,10 +82,10 @@ namespace SpecBind.Actions
             public ComparisonType CompareType { get; private set; }
                 
             /// <summary>
-            /// Gets the validations.
+            /// Gets the validation table.
             /// </summary>
-            /// <value>The validations.</value>
-            public ICollection<ItemValidation> Validations { get; private set; }
+            /// <value>The validation table.</value>
+            public ValidationTable ValidationTable { get; private set; }
         }
     }
 }

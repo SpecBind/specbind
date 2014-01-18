@@ -4,6 +4,8 @@
 
 namespace SpecBind.Tests.Actions
 {
+    using System.Linq;
+
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
@@ -11,6 +13,8 @@ namespace SpecBind.Tests.Actions
     using SpecBind.ActionPipeline;
     using SpecBind.Actions;
     using SpecBind.Pages;
+    using SpecBind.Tests.Validation;
+    using SpecBind.Validation;
 
     /// <summary>
     /// A test fixture for a validate item action
@@ -44,8 +48,11 @@ namespace SpecBind.Tests.Actions
                                             ElementLocator = locator.Object
                                         };
 
-            var validations = new[] { new ItemValidation("doesnotexist", "My Data", ComparisonType.Equals) };
-            var context = new ValidateItemAction.ValidateItemContext(validations);
+            var table = new ValidationTable();
+            table.AddValidation("doesnotexist", "My Data", "equals");
+            table.Process();
+           
+            var context = new ValidateItemAction.ValidateItemContext(table);
 
             var result = validateItemAction.Execute(context);
 
@@ -63,11 +70,13 @@ namespace SpecBind.Tests.Actions
         [TestMethod]
         public void TestExecuteWhenFieldExistsAndIsValidReturnsSuccess()
         {
-            var validation = new ItemValidation("name", "Hello", ComparisonType.Equals);
+            var table = new ValidationTable();
+            table.AddValidation("name", "My Data", "equals");
+            table.Process();
 
             var propData = new Mock<IPropertyData>(MockBehavior.Strict);
             string actualValue;
-            propData.Setup(p => p.ValidateItem(validation, out actualValue)).Returns(true);
+            propData.Setup(p => p.ValidateItem(table.Validations.First(), out actualValue)).Returns(true);
 
             // ReSharper disable once RedundantAssignment
             var propertyData = propData.Object;
@@ -79,7 +88,7 @@ namespace SpecBind.Tests.Actions
                 ElementLocator = locator.Object
             };
 
-            var context = new ValidateItemAction.ValidateItemContext(new[] { validation });
+            var context = new ValidateItemAction.ValidateItemContext(table);
 
             var result = validateItemAction.Execute(context);
 
@@ -94,11 +103,13 @@ namespace SpecBind.Tests.Actions
         [TestMethod]
         public void TestExecuteWhenFieldExistsButIsNotValidReturnsFailure()
         {
-            var validation = new ItemValidation("name", "wrong", ComparisonType.Equals);
+            var table = new ValidationTable();
+            table.AddValidation("name", "equals", "wrong");
+            table.Process();
 
             var propData = new Mock<IPropertyData>(MockBehavior.Strict);
             string actualValue;
-            propData.Setup(p => p.ValidateItem(validation, out actualValue)).Returns(false);
+            propData.Setup(p => p.ValidateItem(table.Validations.First(), out actualValue)).Returns(false);
 
             // ReSharper disable once RedundantAssignment
             var propertyData = propData.Object;
@@ -110,7 +121,7 @@ namespace SpecBind.Tests.Actions
                 ElementLocator = locator.Object
             };
 
-            var context = new ValidateItemAction.ValidateItemContext(new[] { validation });
+            var context = new ValidateItemAction.ValidateItemContext(table);
 
             var result = validateItemAction.Execute(context);
 
