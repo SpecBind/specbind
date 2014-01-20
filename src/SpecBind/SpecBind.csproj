@@ -64,6 +64,7 @@
     <Compile Include="Actions\GetElementAsPageAction.cs" />
     <Compile Include="Actions\GetListItemByCriteriaAction.cs" />
     <Compile Include="Actions\GetListItemByIndexAction.cs" />
+    <Compile Include="Actions\ILogger.cs" />
     <Compile Include="Actions\SetTokenFromValueAction.cs" />
     <Compile Include="Actions\HighlightLocatorAction.cs" />
     <Compile Include="Actions\ValidateElementEnabledAction.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Helpers\FileUploadHelper.cs" />
     <Compile Include="Helpers\ISettingHelper.cs" />
     <Compile Include="Helpers\ITokenManager.cs" />
+    <Compile Include="BrowserSupport\ProxyLogger.cs" />
     <Compile Include="Helpers\ResourceLocator.cs" />
     <Compile Include="Helpers\TableFormater.cs" />
     <Compile Include="Helpers\TableItemType.cs" />

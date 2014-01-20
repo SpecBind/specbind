@@ -13,6 +13,7 @@ namespace SpecBind.Tests
     using Moq;
 
     using SpecBind.ActionPipeline;
+    using SpecBind.Actions;
     using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
     using SpecBind.Pages;
@@ -40,6 +41,7 @@ namespace SpecBind.Tests
             container.Setup(c => c.RegisterInstanceAs<ITokenManager>(It.IsAny<TokenManager>(), null));
             container.Setup(c => c.RegisterInstanceAs(It.IsAny<IActionRepository>(), null));
             container.Setup(c => c.RegisterTypeAs<ActionPipelineService, IActionPipelineService>(null));
+            container.Setup(c => c.RegisterTypeAs<ProxyLogger, ILogger>(null));
 
             container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(ILocatorAction).IsAssignableFrom(t)), null)).Returns(new Mock<ILocatorAction>().Object);
             container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IPreAction).IsAssignableFrom(t)), null)).Returns(new Mock<IPreAction>().Object);

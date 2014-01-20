@@ -10,6 +10,7 @@ namespace SpecBind.BrowserSupport
 	using BoDi;
 
 	using SpecBind.ActionPipeline;
+	using SpecBind.Actions;
 	using SpecBind.Helpers;
 	using SpecBind.Pages;
 
@@ -56,6 +57,7 @@ namespace SpecBind.BrowserSupport
 		    var repository = new ActionRepository(this.objectContainer);
 			this.objectContainer.RegisterInstanceAs<IActionRepository>(repository);
 			this.objectContainer.RegisterTypeAs<ActionPipelineService, IActionPipelineService>();
+            this.objectContainer.RegisterTypeAs<ProxyLogger, ILogger>();
 
             // Initialize the repository
             repository.Initialize();
