@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>SpecBind</id>
-    <version>1.0.0</version>
+    <version>$version$</version>
     <title>SpecBind</title>
     <authors>dpiessens</authors>
     <owners>dpiessens</owners>
