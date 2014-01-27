@@ -9,7 +9,6 @@ namespace SpecBind.CodedUI.IntegrationTests.Steps
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using SpecBind.ActionPipeline;
-    using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
     using SpecBind.Pages;
 
@@ -21,18 +20,16 @@ namespace SpecBind.CodedUI.IntegrationTests.Steps
     [Binding]
     public class ErrorCheckSteps : Steps
     {
-        private readonly CommonPageSteps commonPageSteps;
+        private readonly DataSteps dataSteps;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ErrorCheckSteps" /> class.
         /// </summary>
-        /// <param name="browser">The browser.</param>
-        /// <param name="pageMapper">The page mapper.</param>
         /// <param name="scenarioContext">The scenario context.</param>
         /// <param name="actionPipelineService">The action pipeline service.</param>
-        public ErrorCheckSteps(IBrowser browser, IPageMapper pageMapper, IScenarioContextHelper scenarioContext, IActionPipelineService actionPipelineService)
+        public ErrorCheckSteps(IScenarioContextHelper scenarioContext, IActionPipelineService actionPipelineService)
         {
-            this.commonPageSteps = new CommonPageSteps(browser, pageMapper, scenarioContext, actionPipelineService);
+            this.dataSteps = new DataSteps(scenarioContext, actionPipelineService);
         }
 
         /// <summary>
@@ -44,7 +41,7 @@ namespace SpecBind.CodedUI.IntegrationTests.Steps
         {
             try
             {
-                this.commonPageSteps.WhenIEnterDataInFieldsStep(data);
+                this.dataSteps.WhenIEnterDataInFieldsStep(data);
             }
             catch (ElementExecuteException)
             {

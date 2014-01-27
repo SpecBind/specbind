@@ -22,6 +22,56 @@ namespace SpecBind.Tests
     public class SelectionStepsFixture
     {
         /// <summary>
+        /// Tests the WhenIChooseALinkStep method with a successful result.
+        /// </summary>
+        [TestMethod]
+        public void TestWhenIChooseALinkStep()
+        {
+
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<ButtonClickAction>(testPage.Object, It.Is<ActionContext>(c => c.PropertyName == "mylink")))
+                           .Returns(ActionResult.Successful());
+
+            var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WhenIChooseALinkStep("my link");
+
+            pageMapper.VerifyAll();
+            scenarioContext.VerifyAll();
+            pipelineService.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the WhenIChooseALinkStep method when a step has not been set.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(PageNavigationException))]
+        public void TestWhenIChooseALinkStepContextNotSet()
+        {
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns((IPage)null);
+
+            var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object);
+
+            ExceptionHelper.SetupForException<PageNavigationException>(
+                () => steps.WhenIChooseALinkStep("my link"),
+                e =>
+                {
+                    scenarioContext.VerifyAll();
+                    pipelineService.VerifyAll();
+                });
+        }
+
+        /// <summary>
         /// Tests the GivenEnsureOnListItemStep method for common path.
         /// </summary>
         [TestMethod]

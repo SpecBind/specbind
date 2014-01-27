@@ -76,6 +76,7 @@
     <Compile Include="Actions\WaitForElementActionFixture.cs" />
     <Compile Include="BrowserBaseFixture.cs" />
     <Compile Include="BrowserSuport\ProxyLoggerFixture.cs" />
+    <Compile Include="DataStepsFixture.cs" />
     <Compile Include="ExceptionHelper.cs" />
     <Compile Include="Helpers\AttributeExtensionsFixture.cs" />
     <Compile Include="Helpers\TableFormatterFixture.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="ConfigurationFixture.cs" />
     <Compile Include="PageBuilderContextFixture.cs" />
     <Compile Include="SelectionStepsFixture.cs" />
+    <Compile Include="TokenStepsFixture.cs" />
     <Compile Include="Validation\ComparisonTestBase.cs" />
     <Compile Include="Validation\ContainsComparerFixture.cs" />
     <Compile Include="Validation\DoesNotContainComparerFixture.cs" />

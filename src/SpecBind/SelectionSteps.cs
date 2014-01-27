@@ -18,10 +18,12 @@ namespace SpecBind
     public class SelectionSteps : PageStepBase
     {
         // Step regex values - in constants because they are shared.
+        private const string ChooseALinkStepRegex = @"I choose (.+)";
         private const string EnsureOnListItemRegex = @"I am on list (.+) item ([0-9]+)";
         private const string GoToListItemWithCriteriaRegex = @"I am on (.+) list item matching criteria";
         
         // The following Regex items are for the given "past tense" form
+        private const string GivenChooseALinkStepRegex = @"I chose (.+)";
         private const string GivenEnsureOnListItemRegex = @"I was on list (.+) item ([0-9]+)";
         private const string GivenGoToListItemWithCriteriaRegex = @"I was on (.+) list item matching criteria";
 
@@ -36,6 +38,23 @@ namespace SpecBind
             : base(scenarioContext)
         {
             this.actionPipelineService = actionPipelineService;
+        }
+
+        /// <summary>
+        /// A When step indicating a link click should occur.
+        /// </summary>
+        /// <param name="linkName">Name of the link.</param>
+        [Given(GivenChooseALinkStepRegex)]
+        [When(ChooseALinkStepRegex)]
+        public void WhenIChooseALinkStep(string linkName)
+        {
+            var page = this.GetPageFromContext();
+
+            var context = new ActionContext(linkName.ToLookupKey());
+
+            this.actionPipelineService
+                    .PerformAction<ButtonClickAction>(page, context)
+                    .CheckResult();
         }
 
         /// <summary>
