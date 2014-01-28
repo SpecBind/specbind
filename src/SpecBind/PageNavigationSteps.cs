@@ -1,4 +1,4 @@
-﻿// <copyright file="CommonPageSteps.cs">
+﻿// <copyright file="PageNavigationSteps.cs">
 //    Copyright © 2013 Dan Piessens  All rights reserved.
 // </copyright>
 
@@ -20,7 +20,7 @@ namespace SpecBind
 	/// A set of common step bindings that drive the underlying fixtures.
 	/// </summary>
 	[Binding]
-	public class CommonPageSteps : PageStepBase
+	public class PageNavigationSteps : PageStepBase
 	{
 		// Step regex values - in constants because they are shared.
 		private const string EnsureOnPageStepRegex = @"I am on the (.+) page";
@@ -39,13 +39,13 @@ namespace SpecBind
 	    private readonly IActionPipelineService actionPipelineService;
 
 	    /// <summary>
-	    /// Initializes a new instance of the <see cref="CommonPageSteps" /> class.
+	    /// Initializes a new instance of the <see cref="PageNavigationSteps" /> class.
 	    /// </summary>
 	    /// <param name="browser">The browser.</param>
 	    /// <param name="pageMapper">The page mapper.</param>
 	    /// <param name="scenarioContext">The scenario context.</param>
 	    /// <param name="actionPipelineService">The action pipeline service.</param>
-	    public CommonPageSteps(IBrowser browser, IPageMapper pageMapper, IScenarioContextHelper scenarioContext, IActionPipelineService actionPipelineService)
+	    public PageNavigationSteps(IBrowser browser, IPageMapper pageMapper, IScenarioContextHelper scenarioContext, IActionPipelineService actionPipelineService)
             : base(scenarioContext)
 		{
 			this.browser = browser;

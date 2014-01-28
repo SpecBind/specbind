@@ -109,7 +109,7 @@
     <Compile Include="Pages\IPropertyData.cs" />
     <Compile Include="Pages\ListElementWrapper.cs" />
     <Compile Include="Pages\PageBase.cs" />
-    <Compile Include="CommonPageSteps.cs" />
+    <Compile Include="PageNavigationSteps.cs" />
     <Compile Include="Helpers\IScenarioContextHelper.cs" />
     <Compile Include="Helpers\ScenarioContextHelper.cs" />
     <Compile Include="Helpers\SettingHelper.cs" />
@@ -141,9 +141,13 @@
     <Compile Include="Validation\EndsWithComparer.cs" />
     <Compile Include="Validation\EqualsComparer.cs" />
     <Compile Include="Validation\ExistsComparer.cs" />
+    <Compile Include="Validation\GreaterThanComparer.cs" />
+    <Compile Include="Validation\GreaterThanEqualsComparer.cs" />
     <Compile Include="Validation\ItemValidation.cs" />
     <Compile Include="Validation\IValidationComparer.cs" />
     <Compile Include="Validation\IValidationTable.cs" />
+    <Compile Include="Validation\LessThanComparer.cs" />
+    <Compile Include="Validation\LessThanEqualsComparer.cs" />
     <Compile Include="Validation\NotEqualsComparer.cs" />
     <Compile Include="Validation\StartsWithComparer.cs" />
     <Compile Include="Validation\ValidationComparerBase.cs" />

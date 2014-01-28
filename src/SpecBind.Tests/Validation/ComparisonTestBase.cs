@@ -3,6 +3,8 @@
 // </copyright>
 namespace SpecBind.Tests.Validation
 {
+    using System;
+
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
@@ -35,6 +37,29 @@ namespace SpecBind.Tests.Validation
             Assert.AreEqual(isTrue, result, "Test: {0}, Actual: {1}", expectedValue, actualValue);
 
             propertyData.VerifyAll();
+        }
+
+        /// <summary>
+        /// Runs the comparison expecting an exception.
+        /// </summary>
+        /// <param name="expectedValue">The expected value.</param>
+        /// <param name="actualValue">The actual value.</param>
+        /// <param name="propertyData">The property data.</param>
+        protected static void CheckNotSupported(string expectedValue, string actualValue, Mock<IPropertyData> propertyData = null)
+        {
+            propertyData = propertyData ?? new Mock<IPropertyData>(MockBehavior.Strict);
+
+            var validation = new T();
+
+            try
+            {
+                validation.Compare(propertyData.Object, expectedValue, actualValue);
+            }
+            catch (NotSupportedException)
+            {
+                propertyData.VerifyAll();
+                throw;
+            }
         }
     }
 }

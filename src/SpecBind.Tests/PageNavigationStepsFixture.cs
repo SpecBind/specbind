@@ -1,4 +1,4 @@
-﻿// <copyright file="CommonPageStepsFixture.cs">
+﻿// <copyright file="PageNavigationStepsFixture.cs">
 //    Copyright © 2013 Dan Piessens  All rights reserved.
 // </copyright>
 
@@ -10,8 +10,6 @@ namespace SpecBind.Tests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
-
-    using System.Linq;
 
     using SpecBind.ActionPipeline;
     using SpecBind.Actions;
@@ -26,7 +24,7 @@ namespace SpecBind.Tests
     ///     A test fixture for common page steps.
     /// </summary>
     [TestClass]
-    public class CommonPageStepsFixture
+    public class PageNavigationStepsFixture
     {
         /// <summary>
         /// Tests the GivenNavigateToPageStep with a successful result.
@@ -49,7 +47,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), PageStepBase.CurrentPageKey));
 
-            var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, pipelineService.Object);
+            var steps = new PageNavigationSteps(browser.Object, pageMapper.Object, scenarioContext.Object, pipelineService.Object);
 
             steps.GivenNavigateToPageStep("mypage");
 
@@ -81,7 +79,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), PageStepBase.CurrentPageKey));
 
-            var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, pipelineService.Object);
+            var steps = new PageNavigationSteps(browser.Object, pageMapper.Object, scenarioContext.Object, pipelineService.Object);
 
             var table = new Table("Id", "Part");
             table.AddRow("1", "A");
@@ -111,7 +109,7 @@ namespace SpecBind.Tests
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, pipelineService.Object);
+            var steps = new PageNavigationSteps(browser.Object, pageMapper.Object, scenarioContext.Object, pipelineService.Object);
 
             try
             {
@@ -152,7 +150,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), PageStepBase.CurrentPageKey));
 
-            var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, pipelineService.Object);
+            var steps = new PageNavigationSteps(browser.Object, pageMapper.Object, scenarioContext.Object, pipelineService.Object);
 
             steps.GivenEnsureOnPageStep("mypage");
 
@@ -179,7 +177,7 @@ namespace SpecBind.Tests
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, pipelineService.Object);
+            var steps = new PageNavigationSteps(browser.Object, pageMapper.Object, scenarioContext.Object, pipelineService.Object);
 
             try
             {
@@ -220,7 +218,7 @@ namespace SpecBind.Tests
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, pipelineService.Object);
+            var steps = new PageNavigationSteps(browser.Object, pageMapper.Object, scenarioContext.Object, pipelineService.Object);
 
             try
             {
@@ -260,7 +258,7 @@ namespace SpecBind.Tests
             scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(page.Object);
             scenarioContext.Setup(s => s.SetValue(listItem.Object, PageStepBase.CurrentPageKey));
 
-            var steps = new CommonPageSteps(browser.Object, pageMapper.Object, scenarioContext.Object, pipelineService.Object);
+            var steps = new PageNavigationSteps(browser.Object, pageMapper.Object, scenarioContext.Object, pipelineService.Object);
 
             steps.GivenEnsureOnDialogStep("my property");
 

@@ -84,22 +84,17 @@ namespace SpecBind.BrowserSupport
         /// </returns>
         public IPage GoToPage(Type pageType, IDictionary<string, string> parameters)
         {
-            string actualPath;
-            string expectedPath;
-            if (!this.CheckIsOnPage(pageType, null, out actualPath, out expectedPath))
+            var filledUri = UriHelper.FillPageUri(this, pageType, parameters);
+            try
             {
-                var filledUri = UriHelper.FillPageUri(this, pageType, parameters);
-                try
-                {
-                    var qualifiedUri = UriHelper.GetQualifiedPageUri(filledUri);
-                    System.Diagnostics.Debug.WriteLine("Navigating to URL: {0}", qualifiedUri);
+                var qualifiedUri = UriHelper.GetQualifiedPageUri(filledUri);
+                System.Diagnostics.Debug.WriteLine("Navigating to URL: {0}", qualifiedUri);
 
-                    this.GoTo(qualifiedUri);
-                }
-                catch (Exception ex)
-                {
-                    throw new PageNavigationException("Could not navigate to URI: {0}. Details: {1}", filledUri, ex.Message);
-                }
+                this.GoTo(qualifiedUri);
+            }
+            catch (Exception ex)
+            {
+                throw new PageNavigationException("Could not navigate to URI: {0}. Details: {1}", filledUri, ex.Message);
             }
 
             return this.CreateNativePage(pageType, true);

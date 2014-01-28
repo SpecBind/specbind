@@ -118,27 +118,6 @@ namespace SpecBind.Tests
         }
 
         /// <summary>
-        /// Tests the GoToPage method when it is on a page.
-        /// </summary>
-        [TestMethod]
-        public void TestGoToPageWhenUrlIsOnPageReturnsNativeClass()
-        {
-            UriHelper.BaseUri = new Uri("http://localhost:2222");
-            var testPage = new Mock<IPage>();
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict);
-            browser.Protected().Setup<IList<string>>("GetNativePageLocation", ItExpr.IsNull<IPage>()).Returns(new[] { "http://localhost:2222/foo" });
-            browser.Protected().Setup<IPage>("CreateNativePage", typeof(TestPage), true).Returns(testPage.Object);
-
-            var result = browser.Object.GoToPage(typeof(TestPage), new Dictionary<string, string>());
-
-            Assert.IsNotNull(result);
-            Assert.AreSame(testPage.Object, result);
-
-            browser.VerifyAll();
-            testPage.VerifyAll();
-        }
-
-        /// <summary>
         /// Tests the GoToPage method when it needs to navigate to the page first.
         /// </summary>
         [TestMethod]
@@ -146,7 +125,6 @@ namespace SpecBind.Tests
         {
             var testPage = new Mock<IPage>();
             var browser = new Mock<BrowserBase>(MockBehavior.Strict);
-            browser.Protected().Setup<IList<string>>("GetNativePageLocation", ItExpr.IsNull<IPage>()).Returns(new[] { "http://localhost:2222" });
             browser.Protected().Setup<IPage>("CreateNativePage", typeof(TestPage), true).Returns(testPage.Object);
             browser.Setup(b => b.GoTo(new Uri("http://localhost:2222/foo")));
 
@@ -169,7 +147,6 @@ namespace SpecBind.Tests
             UriHelper.BaseUri = new Uri("http://localhost:2222");
             var testPage = new Mock<IPage>();
             var browser = new Mock<BrowserBase>(MockBehavior.Strict);
-            browser.Protected().Setup<IList<string>>("GetNativePageLocation", ItExpr.IsNull<IPage>()).Returns(new[] { "http://localhost:2222" });
             browser.Setup(b => b.GoTo(new Uri("http://localhost:2222/foo"))).Throws<InvalidOperationException>();
 
             // ReSharper disable once ImplicitlyCapturedClosure

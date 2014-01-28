@@ -85,7 +85,7 @@
     <Compile Include="PageMapperFixture.cs" />
     <Compile Include="PageExtensionsFixture.cs" />
     <Compile Include="StringLookupExtensionsFixture.cs" />
-    <Compile Include="CommonPageStepsFixture.cs" />
+    <Compile Include="PageNavigationStepsFixture.cs" />
     <Compile Include="Support\BaseElement.cs" />
     <Compile Include="Support\BasePageClass.cs" />
     <Compile Include="Support\InheritedClass.cs" />
@@ -106,8 +106,12 @@
     <Compile Include="Validation\EndsWithComparerFixture.cs" />
     <Compile Include="Validation\EqualsComparerFixture.cs" />
     <Compile Include="Validation\ExistsComparerFixture.cs" />
+    <Compile Include="Validation\GreaterThanComparerFixture.cs" />
+    <Compile Include="Validation\GreaterThanEqualsComparerFixture.cs" />
     <Compile Include="Validation\ItemValidationFixture.cs" />
     <Compile Include="Validation\ItemValidationHelper.cs" />
+    <Compile Include="Validation\LessThanComparerFixture.cs" />
+    <Compile Include="Validation\LessThanEqualsComparerFixture.cs" />
     <Compile Include="Validation\NotEqualsComparerFixture.cs" />
     <Compile Include="Validation\StartsWithComparerFixture.cs" />
     <Compile Include="Validation\ValidationTablePreActionFixture.cs" />
