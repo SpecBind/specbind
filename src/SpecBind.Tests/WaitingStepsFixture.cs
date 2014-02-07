@@ -166,7 +166,7 @@ namespace SpecBind.Tests
         }
 
         /// <summary>
-        /// Tests the wait for control enabled step with no timeout specfied.
+        /// Tests the wait for control enabled step with no timeout specified.
         /// </summary>
         [TestMethod]
         public void TestWaitForControlEnabledNoTimeoutStep()
