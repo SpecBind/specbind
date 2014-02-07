@@ -331,7 +331,7 @@ namespace SpecBind.Pages
 				IsElement = true,
 				IsList = false,
 				PropertyType = this.PageType,
-				ElementAction = (page, func) => func(this.GetNativePage<TElement>())
+				ElementAction = (p, func) => func(this.GetNativePage<TElement>())
 			};
 		}
 

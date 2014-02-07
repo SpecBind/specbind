@@ -334,11 +334,7 @@ namespace SpecBind.Pages
 
         #endregion
 
-		#region Methods
-
-		#endregion
-
-		/// <summary>
+        /// <summary>
 		/// Compares the property value.
 		/// </summary>
 		/// <param name="propertyValue">The property value.</param>
