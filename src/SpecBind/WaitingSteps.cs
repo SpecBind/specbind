@@ -76,7 +76,7 @@ namespace SpecBind
         [Given(GivenWaitToSeeElementRegex + TimeoutClause)]
         [When(WaitToSeeElementRegex + TimeoutClause)]
         [Then(WaitToSeeElementRegex + TimeoutClause)]
-        public void WaitToSeeElement(string propertyName, int timeout)
+        public void WaitToSeeElementWithTimeout(string propertyName, int timeout)
         {
             this.CallPipelineAction(propertyName, WaitConditions.Exists, GetTimeSpan(timeout));
         }
@@ -101,7 +101,7 @@ namespace SpecBind
         [Given(GivenWaitToNotSeeElementRegex + TimeoutClause)]
         [When(WaitToNotSeeElementRegex + TimeoutClause)]
         [Then(WaitToNotSeeElementRegex + TimeoutClause)]
-        public void WaitToNotSeeElement(string propertyName, int timeout)
+        public void WaitToNotSeeElementWithTimeout(string propertyName, int timeout)
         {
             this.CallPipelineAction(propertyName, WaitConditions.NotExists, GetTimeSpan(timeout));
         }
@@ -126,7 +126,7 @@ namespace SpecBind
         [Given(GivenWaitForElementEnabledRegex + TimeoutClause)]
         [When(WaitForElementEnabledRegex + TimeoutClause)]
         [Then(WaitForElementEnabledRegex + TimeoutClause)]
-        public void WaitForElementEnabled(string propertyName, int timeout)
+        public void WaitForElementEnabledWithTimeout(string propertyName, int timeout)
         {
             this.CallPipelineAction(propertyName, WaitConditions.Enabled, GetTimeSpan(timeout));
         }
@@ -151,7 +151,7 @@ namespace SpecBind
         [Given(GivenWaitForElementNotEnabledRegex + TimeoutClause)]
         [When(WaitForElementNotEnabledRegex + TimeoutClause)]
         [Then(WaitForElementNotEnabledRegex + TimeoutClause)]
-        public void WaitForElementNotEnabled(string propertyName, int timeout)
+        public void WaitForElementNotEnabledWithTimeout(string propertyName, int timeout)
         {
             this.CallPipelineAction(propertyName, WaitConditions.NotEnabled, GetTimeSpan(timeout));
         }

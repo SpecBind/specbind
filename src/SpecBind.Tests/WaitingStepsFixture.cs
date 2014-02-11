@@ -59,7 +59,7 @@ namespace SpecBind.Tests
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-            steps.WaitToSeeElement("My Field", 10);
+            steps.WaitToSeeElementWithTimeout("My Field", 10);
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();
@@ -84,7 +84,7 @@ namespace SpecBind.Tests
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-            steps.WaitToSeeElement("My Field", 0);
+            steps.WaitToSeeElementWithTimeout("My Field", 0);
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();
@@ -134,7 +134,7 @@ namespace SpecBind.Tests
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-            steps.WaitToNotSeeElement("My Field", 10);
+            steps.WaitToNotSeeElementWithTimeout("My Field", 10);
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();
@@ -184,7 +184,7 @@ namespace SpecBind.Tests
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-            steps.WaitForElementEnabled("My Field", 10);
+            steps.WaitForElementEnabledWithTimeout("My Field", 10);
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();
@@ -234,7 +234,7 @@ namespace SpecBind.Tests
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-            steps.WaitForElementNotEnabled("My Field", 10);
+            steps.WaitForElementNotEnabledWithTimeout("My Field", 10);
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();
