@@ -23,24 +23,6 @@ namespace SpecBind.Tests
         private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(10);
 
         /// <summary>
-        /// Tests the regex to time span conversion.
-        /// </summary>
-        [TestMethod]
-        public void TestRegexToTimeSpanConversion()
-        {
-            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
-            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
-            var result = steps.TransformWaitTimeToTimeout(10);
-
-            Assert.AreEqual(TimeSpan.FromSeconds(10), result);
-
-            pipelineService.VerifyAll();
-            scenarioContext.VerifyAll();
-        }
-
-        /// <summary>
         /// Tests the wait for control exists step.
         /// </summary>
         [TestMethod]
@@ -59,7 +41,7 @@ namespace SpecBind.Tests
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-            steps.WaitToSeeElementWithTimeout("My Field", 10);
+            steps.WaitToSeeElementWithTimeout(10, "My Field");
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();
@@ -84,7 +66,7 @@ namespace SpecBind.Tests
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-            steps.WaitToSeeElementWithTimeout("My Field", 0);
+            steps.WaitToSeeElementWithTimeout(0, "My Field");
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();
@@ -134,7 +116,7 @@ namespace SpecBind.Tests
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-            steps.WaitToNotSeeElementWithTimeout("My Field", 10);
+            steps.WaitToNotSeeElementWithTimeout(10, "My Field");
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();
@@ -184,7 +166,7 @@ namespace SpecBind.Tests
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-            steps.WaitForElementEnabledWithTimeout("My Field", 10);
+            steps.WaitForElementEnabledWithTimeout(10, "My Field");
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();
@@ -234,7 +216,7 @@ namespace SpecBind.Tests
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-            steps.WaitForElementNotEnabledWithTimeout("My Field", 10);
+            steps.WaitForElementNotEnabledWithTimeout(10, "My Field");
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();
