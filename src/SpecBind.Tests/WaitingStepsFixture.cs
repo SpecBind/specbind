@@ -59,7 +59,32 @@ namespace SpecBind.Tests
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-            steps.WaitToSeeElement("My Field", Timeout);
+            steps.WaitToSeeElement("My Field", 10);
+
+            pipelineService.VerifyAll();
+            scenarioContext.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for control exists step with a timeout of 0.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlExistsStepInvalidTimeout()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<WaitForElementAction>(
+                testPage.Object,
+                It.Is<WaitForElementAction.WaitForElementContext>(c => c.PropertyName == "myfield" && c.Condition == WaitConditions.Exists && c.Timeout == null)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitToSeeElement("My Field", 0);
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();
@@ -109,7 +134,7 @@ namespace SpecBind.Tests
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-            steps.WaitToNotSeeElement("My Field", Timeout);
+            steps.WaitToNotSeeElement("My Field", 10);
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();
@@ -159,7 +184,7 @@ namespace SpecBind.Tests
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-            steps.WaitForElementEnabled("My Field", Timeout);
+            steps.WaitForElementEnabled("My Field", 10);
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();
@@ -209,7 +234,7 @@ namespace SpecBind.Tests
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-            steps.WaitForElementNotEnabled("My Field", Timeout);
+            steps.WaitForElementNotEnabled("My Field", 10);
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();

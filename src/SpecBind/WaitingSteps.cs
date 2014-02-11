@@ -18,7 +18,7 @@ namespace SpecBind
     public class WaitingSteps : PageStepBase
     {
         // Step regex values - in constants because they are shared.
-        private const string TimeoutClause = @" (for \d+ seconds?)";
+        private const string TimeoutClause = @" for (\d+) seconds?";
         private const string WaitToSeeElementRegex = @"I wait to see (.+)";
         private const string WaitToNotSeeElementRegex = @"I wait to not see (.+)";
         private const string WaitForElementEnabledRegex = @"I wait for (.+) to become enabled";
@@ -76,9 +76,9 @@ namespace SpecBind
         [Given(GivenWaitToSeeElementRegex + TimeoutClause)]
         [When(WaitToSeeElementRegex + TimeoutClause)]
         [Then(WaitToSeeElementRegex + TimeoutClause)]
-        public void WaitToSeeElement(string propertyName, TimeSpan timeout)
+        public void WaitToSeeElement(string propertyName, int timeout)
         {
-            this.CallPipelineAction(propertyName, WaitConditions.Exists, timeout);
+            this.CallPipelineAction(propertyName, WaitConditions.Exists, GetTimeSpan(timeout));
         }
 
         /// <summary>
@@ -101,9 +101,9 @@ namespace SpecBind
         [Given(GivenWaitToNotSeeElementRegex + TimeoutClause)]
         [When(WaitToNotSeeElementRegex + TimeoutClause)]
         [Then(WaitToNotSeeElementRegex + TimeoutClause)]
-        public void WaitToNotSeeElement(string propertyName, TimeSpan timeout)
+        public void WaitToNotSeeElement(string propertyName, int timeout)
         {
-            this.CallPipelineAction(propertyName, WaitConditions.NotExists, timeout);
+            this.CallPipelineAction(propertyName, WaitConditions.NotExists, GetTimeSpan(timeout));
         }
 
         /// <summary>
@@ -126,9 +126,9 @@ namespace SpecBind
         [Given(GivenWaitForElementEnabledRegex + TimeoutClause)]
         [When(WaitForElementEnabledRegex + TimeoutClause)]
         [Then(WaitForElementEnabledRegex + TimeoutClause)]
-        public void WaitForElementEnabled(string propertyName, TimeSpan timeout)
+        public void WaitForElementEnabled(string propertyName, int timeout)
         {
-            this.CallPipelineAction(propertyName, WaitConditions.Enabled, timeout);
+            this.CallPipelineAction(propertyName, WaitConditions.Enabled, GetTimeSpan(timeout));
         }
 
         /// <summary>
@@ -151,9 +151,9 @@ namespace SpecBind
         [Given(GivenWaitForElementNotEnabledRegex + TimeoutClause)]
         [When(WaitForElementNotEnabledRegex + TimeoutClause)]
         [Then(WaitForElementNotEnabledRegex + TimeoutClause)]
-        public void WaitForElementNotEnabled(string propertyName, TimeSpan timeout)
+        public void WaitForElementNotEnabled(string propertyName, int timeout)
         {
-            this.CallPipelineAction(propertyName, WaitConditions.NotEnabled, timeout);
+            this.CallPipelineAction(propertyName, WaitConditions.NotEnabled, GetTimeSpan(timeout));
         }
 
         /// <summary>
@@ -165,6 +165,16 @@ namespace SpecBind
         {
             var page = this.GetPageFromContext();
             page.WaitForPageToBeActive();
+        }
+
+        /// <summary>
+        /// Gets the time span from the seconds value.
+        /// </summary>
+        /// <param name="seconds">The seconds.</param>
+        /// <returns>The parsed time span.</returns>
+        private static TimeSpan? GetTimeSpan(int seconds)
+        {
+            return seconds > 0 ? TimeSpan.FromSeconds(seconds) : (TimeSpan?)null;
         }
 
         /// <summary>
