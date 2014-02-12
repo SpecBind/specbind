@@ -74,6 +74,7 @@ namespace SpecBind.Actions
         /// </summary>
         /// <param name="pageType">Type of the page.</param>
         /// <param name="token">The token.</param>
+        /// <returns>The page object once the item is located.</returns>
         private IPage CheckForPage(Type pageType, CancellationToken token)
         {
             var page = this.browser.Page(pageType);
