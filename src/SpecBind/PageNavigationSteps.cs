@@ -27,12 +27,16 @@ namespace SpecBind
 		private const string EnsureOnDialogStepRegex = @"I am on the (.+) dialog";
 		private const string NavigateToPageStepRegex = @"I navigate to the (.+) page";
         private const string NavigateToPageWithParamsStepRegex = @"I navigate to the (.+) page with parameters";
+        private const string WaitForPageStepRegex = @"I wait for the (.+) page";
+        private const string WaitForPageWithTimeoutStepRegex = @"I wait (\d+) seconds? for the (.+) page";
 		
 		// The following Regex items are for the given "past tense" form
 		private const string GivenEnsureOnPageStepRegex = @"I was on the (.+) page";
 		private const string GivenEnsureOnDialogStepRegex = @"I was on the (.+) dialog";
 		private const string GivenNavigateToPageStepRegex = @"I navigated to the (.+) page";
 		private const string GivenNavigateToPageWithParamsStepRegex = @"I navigated to the (.+) page with parameters";
+        private const string GivedWaitForPageStepRegex = @"I waited for the (.+) page";
+        private const string GivenWaitForPageWithTimeoutStepRegex = @"I waited (\d+) seconds? for the (.+) page";
 		
 		private readonly IBrowser browser;
 		private readonly IPageMapper pageMapper;
@@ -127,6 +131,32 @@ namespace SpecBind
             this.UpdatePageContext(page);
 		}
 
+        /// <summary>
+        /// A step that waits for a page to become visible.
+        /// </summary>
+        /// <param name="pageName">Name of the page.</param>
+        [Given(GivedWaitForPageStepRegex)]
+        [When(WaitForPageStepRegex)]
+        [Then(WaitForPageStepRegex)]
+        public void WaitForPageStep(string pageName)
+	    {
+            this.CallWaitForPageAction(pageName, null);
+	    }
+
+        /// <summary>
+        /// A step that waits for a page to become visible with a timeout.
+        /// </summary>
+        /// <param name="seconds">The seconds to wait for the page to appear.</param>
+        /// <param name="pageName">Name of the page.</param>
+        [Given(GivenWaitForPageWithTimeoutStepRegex)]
+        [When(WaitForPageWithTimeoutStepRegex)]
+        [Then(WaitForPageWithTimeoutStepRegex)]
+        public void WaitForPageStepWithTimeout(int seconds, string pageName)
+        {
+            var timeout = seconds > 0 ? TimeSpan.FromSeconds(seconds) : (TimeSpan?)null;
+            this.CallWaitForPageAction(pageName, timeout);
+        }
+
 		/// <summary>
 		/// Gets the type of the page.
 		/// </summary>
@@ -145,5 +175,25 @@ namespace SpecBind
 
 			return type;
 		}
+
+        /// <summary>
+        /// Calls the wait for page action.
+        /// </summary>
+        /// <param name="pageName">Name of the page.</param>
+        /// <param name="timeout">The timeout.</param>
+	    private void CallWaitForPageAction(string pageName, TimeSpan? timeout)
+	    {
+            var context = new WaitForPageAction.WaitForPageActionContext(pageName, timeout);
+
+            IPage page = null;
+            try
+            {
+                page = this.actionPipelineService.PerformAction<WaitForPageAction>(null, context).CheckResult<IPage>();
+            }
+            finally
+            {
+                this.UpdatePageContext(page);
+            }
+	    }
 	}
 }
