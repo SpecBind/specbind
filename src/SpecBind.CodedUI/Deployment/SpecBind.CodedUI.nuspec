@@ -16,7 +16,7 @@
     <dependencies>
       <group targetFramework=".NETFramework4.5">
         <dependency id="SpecBind" version="$version$" />
-        <dependency id="SpecFlow.SpecBindGeneratorPlugin" version="$version$" />
+        <dependency id="SpecBindGeneratorPlugin.SpecFlow" version="$version$" />
       </group>
     </dependencies>
   </metadata>

@@ -3,7 +3,8 @@
 // </copyright>
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Specflow.CodedUI;
+
+using SpecBind.Plugin;
 
 using TechTalk.SpecFlow.Infrastructure;
 

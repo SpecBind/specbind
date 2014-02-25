@@ -16,9 +16,9 @@
     <dependencies>
       <group targetFramework=".NETFramework4.5">
         <dependency id="SpecBind" version="$version$" />
-        <dependency id="SpecFlow.SpecBindGeneratorPlugin" version="$version$" />
         <dependency id="Selenium.WebDriver" version="2.37.0" />
         <dependency id="Selenium.Support" version="2.37.0" />
+        <dependency id="SpecBindGeneratorPlugin.SpecFlow" version="$version$" />
       </group>
     </dependencies>
   </metadata>

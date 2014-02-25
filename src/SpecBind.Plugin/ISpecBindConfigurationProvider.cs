@@ -2,7 +2,7 @@
 //    Copyright © 2013 Dan Piessens.  All rights reserved.
 // </copyright>
 
-namespace Specflow.CodedUI
+namespace SpecBind.Plugin
 {
     /// <summary>
     /// A provider interface to get the type of driver being used.

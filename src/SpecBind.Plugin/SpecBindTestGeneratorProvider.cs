@@ -1,17 +1,17 @@
 ﻿// <copyright file="SpecBindTestGeneratorProvider.cs">
 //    Copyright © 2013 Dan Piessens  All rights reserved.
 // </copyright>
-namespace Specflow.CodedUI
+namespace SpecBind.Plugin
 {
     using System;
     using System.CodeDom;
-	using System.Linq;
+    using System.Linq;
 
-	using TechTalk.SpecFlow.Generator;
-	using TechTalk.SpecFlow.Generator.UnitTestProvider;
-	using TechTalk.SpecFlow.Utils;
+    using TechTalk.SpecFlow.Generator;
+    using TechTalk.SpecFlow.Generator.UnitTestProvider;
+    using TechTalk.SpecFlow.Utils;
 
-	/// <summary>
+    /// <summary>
 	/// A unit test provider that added the appropriate attributes to each test.
 	/// </summary>
 	public class SpecBindTestGeneratorProvider : MsTest2010GeneratorProvider

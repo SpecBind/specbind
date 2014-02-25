@@ -7,8 +7,8 @@
     <ProjectGuid>{0BCFC808-1647-448E-A9DC-99B3D9D336B5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Specflow.CodedUI</RootNamespace>
-    <AssemblyName>SpecBindCodedUIPlugin.Generator.SpecflowPlugin</AssemblyName>
+    <RootNamespace>SpecBind.Plugin</RootNamespace>
+    <AssemblyName>SpecBindGeneratorPlugin.Generator.SpecflowPlugin</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -36,6 +36,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
     <Reference Include="TechTalk.SpecFlow">
       <HintPath>..\packages\SpecFlow.1.9.0\lib\net35\TechTalk.SpecFlow.dll</HintPath>
     </Reference>
@@ -66,7 +67,6 @@
   <ItemGroup>
     <None Include="Deployment\App.config.install.xdt" />
     <None Include="Deployment\App.config.uninstall.xdt" />
-    <None Include="Deployment\Install.ps1" />
     <None Include="Deployment\SpecBind.Plugin.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>

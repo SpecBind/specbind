@@ -3,6 +3,7 @@
   <specFlow>
     <plugins>
       <add name="SpecBindCodedUIPlugin" xdt:Transform="Remove" xdt:Locator="Match(name)" />
+      <add name="SpecBindGeneratorPlugin" xdt:Transform="Remove" xdt:Locator="Match(name)" />
     </plugins>
   </specFlow>
 </configuration>

@@ -3,7 +3,7 @@
   <specFlow>
     <unitTestProvider name="MsTest" xdt:Transform="InsertIfMissing" />
     <plugins xdt:Transform="InsertIfMissing">
-      <add name="SpecBindCodedUIPlugin" path="@specBindDllPathChangeMe@" type="Generator" xdt:Transform="InsertIfMissing" xdt:Locator="Match(name)" />
+      <add name="SpecBindGeneratorPlugin" type="Generator" xdt:Transform="InsertIfMissing" xdt:Locator="Match(name)" />
     </plugins>
   </specFlow>
 </configuration>

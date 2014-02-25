@@ -1,7 +1,7 @@
 ﻿// // <copyright file="SpecBindGeneratorPlugin.cs">
 // //    Copyright © 2013 Dan Piessens.  All rights reserved.
 // // </copyright>
-namespace Specflow.CodedUI
+namespace SpecBind.Plugin
 {
     using BoDi;
 
