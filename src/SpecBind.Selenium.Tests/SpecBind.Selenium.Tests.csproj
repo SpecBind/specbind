@@ -76,6 +76,7 @@
     <Compile Include="NativeAttributeBuilderFixture.cs" />
     <Compile Include="SeleniumPageFixture.cs" />
     <Compile Include="SeleniumTableDriverFixture.cs" />
+    <Compile Include="LocatorBuilderFixture.cs" />
     <Compile Include="WebElementFixture.cs" />
   </ItemGroup>
   <ItemGroup>

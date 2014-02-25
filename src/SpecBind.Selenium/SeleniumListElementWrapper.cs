@@ -126,7 +126,7 @@ namespace SpecBind.Selenium
             ElementLocatorAttribute attribute;
 
             return typeof(TChildElement).TryGetAttribute(out attribute)
-                       ? SeleniumPageBuilder.GetElementLocators(attribute).FirstOrDefault()
+                       ? LocatorBuilder.GetElementLocators(attribute).FirstOrDefault()
                        : null;
         }
      }
