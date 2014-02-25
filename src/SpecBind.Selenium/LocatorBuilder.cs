@@ -52,7 +52,7 @@ namespace SpecBind.Selenium
             // Index attribute
             if (attribute.Index > 0)
             {
-                xpathTag.Index = (attribute.Index - 1);
+                xpathTag.Index = attribute.Index - 1;
             }
 
             // Only set tag if xpath is empty
@@ -134,10 +134,14 @@ namespace SpecBind.Selenium
             {
                 get
                 {
-                    return attributes.Count > 0 || Index.HasValue;
+                    return this.attributes.Count > 0 || this.Index.HasValue;
                 }
             }
 
+            /// <summary>
+            /// Gets the name of the tag.
+            /// </summary>
+            /// <value>The name of the tag.</value>
             public string TagName { get; private set; }
 
             /// <summary>
@@ -173,7 +177,7 @@ namespace SpecBind.Selenium
 
                 // Add any attributes
                 var atributeAdded = false;
-                foreach (var attribute in attributes)
+                foreach (var attribute in this.attributes)
                 {
                     if (atributeAdded)
                     {
@@ -187,7 +191,7 @@ namespace SpecBind.Selenium
                 // Add the tag index here if there are no other attributes
                 if (!hasAttributes && hasIndex)
                 {
-                    builder.Append(Index.Value);
+                    builder.Append(this.Index.Value);
                 }
 
                 builder.Append("]");
@@ -195,7 +199,7 @@ namespace SpecBind.Selenium
                 // add wrapper for index if attributes exist
                 if (hasIndex && hasAttributes)
                 {
-                    builder.AppendFormat(")[{0}]", Index.Value);
+                    builder.AppendFormat(")[{0}]", this.Index.Value);
                 }
 
                 return builder.ToString();
