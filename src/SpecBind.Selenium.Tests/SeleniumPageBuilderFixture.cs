@@ -229,35 +229,35 @@ namespace SpecBind.Selenium.Tests
 
             // Image Url Testing
             Assert.IsNotNull(page.ImageElement);
-            AssertLocatorValue(page.ImageElement, new ByChained(By.TagName("img"), By.XPath("//img[@src='/myapp']")));
+            AssertLocatorValue(page.ImageElement, By.XPath("//img[@src='/myapp']"));
 
             // Link Url Testing
             Assert.IsNotNull(page.LinkElement);
-            AssertLocatorValue(page.LinkElement, new ByChained(By.TagName("a"), By.XPath("//a[@href='/myapp']")));
+            AssertLocatorValue(page.LinkElement, By.XPath("//a[@href='/myapp']"));
 
             // Link Area Url Testing
             Assert.IsNotNull(page.LinkAreaElement);
-            AssertLocatorValue(page.LinkAreaElement, new ByChained(By.TagName("area"), By.XPath("//area[@href='/myapp']")));
+            AssertLocatorValue(page.LinkAreaElement, By.XPath("//area[@href='/myapp']"));
             
             // Image Alt Testing
             Assert.IsNotNull(page.AltImageElement);
-            AssertLocatorValue(page.AltImageElement, new ByChained(By.TagName("img"), By.XPath("//img[@alt='Alt Text']")));
+            AssertLocatorValue(page.AltImageElement, By.XPath("//img[@alt='Alt Text']"));
 
             // Value Attribute Testing
             Assert.IsNotNull(page.ValueElement);
-            AssertLocatorValue(page.ValueElement, new ByChained(By.TagName("input"), By.XPath("//input[@value='something']")));
+            AssertLocatorValue(page.ValueElement, By.XPath("//input[@value='something']"));
 
             // Title Attribute Testing
             Assert.IsNotNull(page.TitleElement);
-            AssertLocatorValue(page.TitleElement, new ByChained(By.TagName("p"), By.XPath("//p[@title='royal']")));
+            AssertLocatorValue(page.TitleElement, By.XPath("//p[@title='royal']"));
 
             // Type Attribute Testing
             Assert.IsNotNull(page.InputTypeElement);
-            AssertLocatorValue(page.InputTypeElement, new ByChained(By.TagName("input"), By.XPath("//input[@type='password']")));
+            AssertLocatorValue(page.InputTypeElement, By.XPath("//input[@type='password']"));
 
             // Index Attribute Testing
             Assert.IsNotNull(page.IndexElement);
-            AssertLocatorValue(page.IndexElement, new ByChained(By.TagName("button"), By.XPath("//button[1]")));
+            AssertLocatorValue(page.IndexElement, By.XPath("//button[1]"));
 
             // Nesting Test
             Assert.IsNotNull(page.MyDiv);
