@@ -5,6 +5,7 @@
 namespace SpecBind.Selenium
 {
     using System;
+    using System.Linq;
     using System.Reflection;
 
     using OpenQA.Selenium;
@@ -198,6 +199,15 @@ namespace SpecBind.Selenium
         /// <param name="data">The data.</param>
         private static void FillPage(IWebElement element, string data)
         {
+            // Respect the data control interface first.
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            var dataControlElement = element as IDataControl;
+            if (dataControlElement != null)
+            {
+                dataControlElement.SetValue(data);
+                return;
+            }
+
             var tagName = element.TagName.ToLowerInvariant().Trim();
             switch (tagName)
             {

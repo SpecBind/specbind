@@ -167,7 +167,7 @@ namespace SpecBind.Selenium
         /// and with other whitespace collapsed.
         /// </summary>
         /// <value>The text.</value>
-        public string Text
+        public virtual string Text
         {
             get
             {
@@ -309,7 +309,7 @@ namespace SpecBind.Selenium
         /// <remarks>The text to be typed may include special characters like arrow keys,
         /// backspaces, function keys, and so on. Valid special keys are defined in
         /// <see cref="T:OpenQA.Selenium.Keys" />.</remarks>
-        public void SendKeys(string text)
+        public virtual void SendKeys(string text)
         {
             this.WrappedElement.SendKeys(text);
         }
