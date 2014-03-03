@@ -157,7 +157,7 @@ namespace SpecBind.Selenium
         /// <returns><c>true</c> if the type is supported, <c>false</c> otherwise.</returns>
         protected override bool SupportedPropertyType(Type type)
         {
-            return type.IsInterface;
+            return typeof(IWebElement).IsAssignableFrom(type);
         }
 
         /// <summary>
