@@ -5,7 +5,6 @@
 namespace SpecBind.Selenium
 {
     using System;
-    using System.Linq;
     using System.Reflection;
 
     using OpenQA.Selenium;
@@ -122,7 +121,7 @@ namespace SpecBind.Selenium
             var waiter = new DefaultWait<IWebElement>(element);
             waiter.Timeout = timeout.GetValueOrDefault(waiter.Timeout);
 
-            waiter.IgnoreExceptionTypes(typeof(ElementNotVisibleException));
+            waiter.IgnoreExceptionTypes(typeof(ElementNotVisibleException), typeof(NotFoundException));
 
             try
             {
