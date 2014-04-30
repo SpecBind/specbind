@@ -14,6 +14,14 @@ namespace SpecBind.Tests.Support
     public class MockBrowserFactory : BrowserFactory
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="MockBrowserFactory"/> class.
+        /// </summary>
+        public MockBrowserFactory()
+            : base(false)
+        {
+        }
+
+        /// <summary>
         /// Gets the browser.
         /// </summary>
         /// <value>The browser.</value>

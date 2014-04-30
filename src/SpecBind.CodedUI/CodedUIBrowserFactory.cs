@@ -21,6 +21,14 @@ namespace SpecBind.CodedUI
 	public class CodedUIBrowserFactory : BrowserFactory
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="CodedUIBrowserFactory"/> class.
+        /// </summary>
+        public CodedUIBrowserFactory()
+            : base(false)
+        {
+        }
+
+        /// <summary>
         /// Creates the browser.
         /// </summary>
         /// <param name="browserType">Type of the browser.</param>

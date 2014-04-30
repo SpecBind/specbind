@@ -35,6 +35,16 @@ namespace SpecBind.BrowserSupport
 			this.objectContainer = objectContainer;
 		}
 
+        /// <summary>
+        /// Checks the browser factory for any necessary drivers.
+        /// </summary>
+        [BeforeTestRun]
+        public static void CheckForDriver()
+        {
+            var factory = BrowserFactory.GetBrowserFactory();
+            factory.ValidateDriverSetup();
+        }
+
 		/// <summary>
 		/// Initializes the page mapper at the start of the test run.
 		/// </summary>
