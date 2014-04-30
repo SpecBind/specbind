@@ -16,6 +16,7 @@ namespace SpecBind.Selenium
     using OpenQA.Selenium.Chrome;
     using OpenQA.Selenium.Firefox;
     using OpenQA.Selenium.IE;
+    using OpenQA.Selenium.PhantomJS;
     using OpenQA.Selenium.Remote;
     using OpenQA.Selenium.Safari;
 
@@ -31,6 +32,7 @@ namespace SpecBind.Selenium
         // Constants to assist with settings
         private const string ChromeUrl = "http://chromedriver.storage.googleapis.com";
         private const string RemoteUrlSetting = "RemoteUrl";
+        private const string PhantomjsExe = "phantomjs.exe";
         
         private static readonly string SeleniumDriverPath;
 
@@ -79,6 +81,9 @@ namespace SpecBind.Selenium
                         }
 
                         driver = new ChromeDriver();
+                        break;
+                    case BrowserType.PhantomJS:
+                        driver = new PhantomJSDriver();
                         break;
                     case BrowserType.Safari:
                         driver = new SafariDriver();
@@ -153,6 +158,9 @@ namespace SpecBind.Selenium
                         case BrowserType.Chrome:
                             DownloadChromeDriver();
                             break;
+                        case BrowserType.PhantomJS:
+                            DownloadPhantomJsDriver();
+                            break;
                         default:
                             throw;
                     }
@@ -162,6 +170,18 @@ namespace SpecBind.Selenium
                     throw ex;
                 }
             }
+        }
+
+        private void DownloadPhantomJsDriver()
+        {
+            var fileName = "phantomjs-1.9.7-windows.zip";
+            
+            DownloadAndExtractZip("http://cdn.bitbucket.org/ariya/phantomjs/downloads", fileName);
+
+            // Move the phantomjs.exe out of the unzipped folder
+            var unzippedFolder = Path.Combine(SeleniumDriverPath, Path.GetFileNameWithoutExtension(fileName)); 
+            File.Move(Path.Combine(unzippedFolder, PhantomjsExe), Path.Combine(SeleniumDriverPath, PhantomjsExe));            
+            Directory.Delete(unzippedFolder, true);
         }
 
         /// <summary>
@@ -284,6 +304,9 @@ namespace SpecBind.Selenium
                     break;
                 case BrowserType.iPad:
                     capability = DesiredCapabilities.IPad();
+                    break;
+                case BrowserType.PhantomJS:
+                    capability = DesiredCapabilities.PhantomJS();
                     break;
                 default:
                     throw new InvalidOperationException(string.Format("Browser Type '{0}' is not supported as a remote driver.", browserType));
