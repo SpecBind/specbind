@@ -172,14 +172,17 @@ namespace SpecBind.Selenium
             }
         }
 
-        private void DownloadPhantomJsDriver()
+        /// <summary>
+        /// Downloads the Phantom JS driver.
+        /// </summary>
+        private static void DownloadPhantomJsDriver()
         {
-            var fileName = "phantomjs-1.9.7-windows.zip";
+            const string FileName = "phantomjs-1.9.7-windows.zip";
             
-            DownloadAndExtractZip("http://cdn.bitbucket.org/ariya/phantomjs/downloads", fileName);
+            DownloadAndExtractZip("http://cdn.bitbucket.org/ariya/phantomjs/downloads", FileName);
 
             // Move the phantomjs.exe out of the unzipped folder
-            var unzippedFolder = Path.Combine(SeleniumDriverPath, Path.GetFileNameWithoutExtension(fileName)); 
+            var unzippedFolder = Path.Combine(SeleniumDriverPath, Path.GetFileNameWithoutExtension(FileName)); 
             File.Move(Path.Combine(unzippedFolder, PhantomjsExe), Path.Combine(SeleniumDriverPath, PhantomjsExe));            
             Directory.Delete(unzippedFolder, true);
         }
