@@ -131,6 +131,12 @@ namespace SpecBind.Pages
 		/// <value>The value attribute.</value>
 		public string Value { get; set; }
 
-		#endregion
+        /// <summary>
+        /// Gets or sets the CSS selector to use
+        /// </summary>
+        /// <value>The CSS selector.</value>
+	    public string CssSelector { get; set; }
+
+	    #endregion
 	}
 }
