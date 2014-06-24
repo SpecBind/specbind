@@ -42,6 +42,17 @@ Scenario: Validate List "Start With" Validator
 		   | First Name | Equals | Carson    |
 		   | Last Name  | Equals | Alexander |
 
+Scenario: Validate List "Start With" Validator and String Validation Field
+	 Given I navigated to the Home page
+       And I chose Students
+	   And I was on the Students Search page
+	   And I was on list results grid item 1
+	  When I choose Details
+	  Then I am on the Student Detail page
+	   And I see
+		   | Field      | Rule   | Value     |
+		   | Full Name | Equals | Carson Alexander |
+
 Scenario: Validate List "Ends With" Validator
 	 Given I navigated to the Home page
        And I chose Students

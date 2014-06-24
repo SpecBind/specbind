@@ -38,5 +38,17 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
         [ElementLocator(Id = "lastName")]
         [FindsBy(How = How.Id, Using = "lastName")]
         public IWebElement LastName { get; set; }
+
+        /// <summary>
+        /// Gets the full name based on other fields as a string.
+        /// </summary>
+        /// <value>The full name.</value>
+        public string FullName
+        {
+            get
+            {
+                return string.Format("{0} {1}", this.FirstName.Text, this.LastName.Text);
+            }
+        }
     }
 }
