@@ -32,7 +32,7 @@ namespace SpecBind.Tests.Validation
         {
             validation.FieldName = validation.RawFieldName;
             validation.ComparisonValue = validation.RawComparisonValue;
-            validation.Comparer = new EqualsComparer();
+            validation.Comparer = comparer ?? new EqualsComparer();
 
             return validation;
         }

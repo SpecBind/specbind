@@ -163,12 +163,8 @@ this.ScenarioSetup(scenarioInfo);
                         "Rule",
                         "Value"});
             table3.AddRow(new string[] {
-                        "Course Title",
-                        "Exists",
-                        ""});
-            table3.AddRow(new string[] {
-                        "Course Title",
-                        "Enabled",
+                        "Foo",
+                        "Does Not Exist",
                         ""});
 #line 29
    testRunner.Then("I see", ((string)(null)), table3, "Then ");

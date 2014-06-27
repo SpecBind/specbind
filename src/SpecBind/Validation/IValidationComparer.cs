@@ -25,6 +25,18 @@ namespace SpecBind.Validation
         IEnumerable<string> RuleKeys { get; }
 
         /// <summary>
+        /// Gets a value indicating whether the element should be checked for existence.
+        /// </summary>
+        /// <value><c>true</c> if the element should be checked; otherwise, <c>false</c>.</value>
+        bool ShouldCheckElementExistence { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this validation requires a field value.
+        /// </summary>
+        /// <value><c>true</c> if a field value is required; otherwise, <c>false</c>.</value>
+        bool RequiresFieldValue { get; }
+
+        /// <summary>
         /// Compares the values using the specified property.
         /// </summary>
         /// <param name="property">The property.</param>

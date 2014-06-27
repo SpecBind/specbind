@@ -103,6 +103,7 @@
     <Compile Include="Validation\ComparisonTestBase.cs" />
     <Compile Include="Validation\ContainsComparerFixture.cs" />
     <Compile Include="Validation\DoesNotContainComparerFixture.cs" />
+    <Compile Include="Validation\DoesNotExistComparerFixture.cs" />
     <Compile Include="Validation\EnabledComparerFixture.cs" />
     <Compile Include="Validation\EndsWithComparerFixture.cs" />
     <Compile Include="Validation\EqualsComparerFixture.cs" />

@@ -270,10 +270,18 @@ namespace SpecBind.Pages
 			var compareWrapper = new Func<TElement, bool>(
 					e =>
 					{
-						var text = this.elementHandler.GetElementText(e);
+                        string text = null;
 
-                        // Trim whitespace from text since the tables in SpecFlow will anyway.
-					    text = text != null ? text.Trim() : null;
+					    if (validation.RequiresFieldValue)
+					    {
+                            text = this.elementHandler.GetElementText(e);
+
+                            // Trim whitespace from text since the tables in SpecFlow will anyway.
+					        if (text != null)
+					        {
+                                text = text.Trim();
+					        }
+					    }
 
 						realValue = text;
 						return validation.Compare(this, text);
@@ -282,7 +290,11 @@ namespace SpecBind.Pages
 			bool result;
 			if (this.IsElement)
 			{
-				this.ThrowIfElementDoesNotExist();
+                if (validation.CheckElementExistence)
+			    {
+                    this.ThrowIfElementDoesNotExist();    
+			    }
+
 				result = this.ElementAction(this.elementHandler, compareWrapper);
 			}
 			else if (this.IsList)

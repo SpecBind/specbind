@@ -19,6 +19,30 @@ namespace SpecBind.Validation
         }
 
         /// <summary>
+        /// Gets a value indicating whether this validation requires a field value.
+        /// </summary>
+        /// <value><c>true</c> if a field value is required; otherwise, <c>false</c>.</value>
+        public override bool RequiresFieldValue
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Determines wither the element should be checked for existence.
+        /// </summary>
+        /// <value><c>true</c> if the element should be checked; otherwise, <c>false</c>.</value>
+        public override bool ShouldCheckElementExistence
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Compares the values using the specified property.
         /// </summary>
         /// <param name="property">The property.</param>

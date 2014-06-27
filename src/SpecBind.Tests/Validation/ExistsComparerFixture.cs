@@ -30,6 +30,18 @@ namespace SpecBind.Tests.Validation
         }
 
         /// <summary>
+        /// Tests the properties to ensure no other checks are needed.
+        /// </summary>
+        [TestMethod]
+        public void TestRuleDoesNotCheckForFieldExistenceOrFieldValue()
+        {
+            var item = new ExistsComparer();
+
+           Assert.IsFalse(item.RequiresFieldValue);
+           Assert.IsFalse(item.ShouldCheckElementExistence);
+        }
+
+        /// <summary>
         /// Tests the compare method for simple comparisons.
         /// </summary>
         [TestMethod]

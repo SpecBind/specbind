@@ -28,9 +28,9 @@ Scenario: Validate Field Existence and Enabled
 	   And I was on the Create a Course page
 	  Then I see
 		   | Field        | Rule           | Value |
-		   | Course Title | Exists         |       |
-		   | Course Title | Enabled        |       |
-		   #| Foo          | Does Not Exist |       | --> this may still need some work.
+		 #  | Course Title | Exists         |       |
+		 #  | Course Title | Enabled        |       |
+		   | Foo          | Does Not Exist |       |
 
 Scenario: Validate List "Start With" Validator
 	 Given I navigated to the Home page

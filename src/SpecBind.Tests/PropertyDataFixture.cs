@@ -214,6 +214,29 @@ namespace SpecBind.Tests
 				e => pageBase.VerifyAll());
 		}
 
+        /// <summary>
+        /// Tests the ValidateItem method where the element does not exist but the check is skipped.
+        /// </summary>
+        [TestMethod]
+        public void TestValidateItemWhereElementDoesNotExistAndCheckIsDisabled()
+        {
+            var element = new BaseElement();
+            var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
+            pageBase.Setup(p => p.ElementExistsCheck(element)).Returns(false);
+
+            var propertyData = CreatePropertyData(pageBase, element);
+            propertyData.IsElement = true;
+
+            var validation = ItemValidationHelper.Create("MyProperty", "false", new ExistsComparer());
+
+            string actualValue;
+            var result = propertyData.ValidateItem(validation, out actualValue);
+
+            Assert.IsTrue(result);
+
+            pageBase.VerifyAll();
+        }
+
 		/// <summary>
 		/// Tests the ValidateItem method for an element.
 		/// </summary>

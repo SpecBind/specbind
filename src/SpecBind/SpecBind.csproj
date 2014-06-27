@@ -139,6 +139,7 @@
     <Compile Include="TokenSteps.cs" />
     <Compile Include="Validation\ContainsComparer.cs" />
     <Compile Include="Validation\DoesNotContainComparer.cs" />
+    <Compile Include="Validation\DoesNotExistComparer.cs" />
     <Compile Include="Validation\EnabledComparer.cs" />
     <Compile Include="Validation\EndsWithComparer.cs" />
     <Compile Include="Validation\EqualsComparer.cs" />

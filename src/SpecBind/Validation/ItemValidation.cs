@@ -30,6 +30,18 @@ namespace SpecBind.Validation
 		#region Public Properties
 
         /// <summary>
+        /// Gets a value indicating whether the item should be checked first for existence.
+        /// </summary>
+        /// <value><c>true</c> if the item should be checked; otherwise, <c>false</c>.</value>
+        public bool CheckElementExistence
+        {
+            get
+            {
+                return this.Comparer.ShouldCheckElementExistence;
+            }
+        }
+
+        /// <summary>
         /// Gets the comparer.
         /// </summary>
         /// <value>The comparer.</value>
@@ -69,11 +81,23 @@ namespace SpecBind.Validation
         /// <value>The name of the raw field.</value>
         public string RawFieldName { get; private set; }
 
+        /// <summary>
+        /// Gets a value indicating whether this validation requires a field value.
+        /// </summary>
+        /// <value><c>true</c> if a field value is required; otherwise, <c>false</c>.</value>
+        public bool RequiresFieldValue
+        {
+            get
+            {
+                return this.Comparer.RequiresFieldValue;
+            }
+        }
+
         #endregion
 
 		#region Public Methods
 
-		/// <summary>
+        /// <summary>
 		/// Compares the specified <see paramref="actualValue"/> to the property data <see cref="ComparisonValue"/>.
 		/// </summary>
 		/// <param name="propertyData">The property data.</param>

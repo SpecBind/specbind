@@ -185,6 +185,10 @@ namespace SpecBind.Selenium
             {
                 return false;
             }
+            catch (NotFoundException)
+            {
+                return false;
+            }
             catch (ElementNotVisibleException)
             {
                 return false;
