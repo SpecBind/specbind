@@ -188,7 +188,7 @@ namespace SpecBind.Tests
             UriHelper.BaseUri = new Uri("http://localhost:2222/");
             var url = UriHelper.GetPageUri(browser.Object, typeof(NavigationAttributePage));
 
-            Assert.AreEqual(url, "http://localhost:2222/root");
+            Assert.AreEqual("/root", url);
 
 			browser.VerifyAll();
 		}
@@ -205,6 +205,7 @@ namespace SpecBind.Tests
 
 			try
 			{
+                UriHelper.BaseUri = new Uri("http://localhost:2222/");
 				UriHelper.GetPageUri(browser.Object, typeof(InvalidPage));
 			}
 			catch (PageNavigationException ex)
@@ -259,10 +260,11 @@ namespace SpecBind.Tests
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			browser.Setup(b => b.GetUriForPageType(typeof(InvalidPage))).Returns("/testpage");
 
+            UriHelper.BaseUri = new Uri("http://localhost:2222/");
 			var url = UriHelper.FillPageUri(
 				browser.Object, typeof(InvalidPage), null);
 
-			Assert.AreEqual("/testpage", url);
+            Assert.AreEqual("http://localhost:2222/testpage", url);
 
 			browser.VerifyAll();
 		}
