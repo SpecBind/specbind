@@ -154,7 +154,7 @@ namespace SpecBind.Tests
                 () => browser.Object.GoToPage(typeof(TestPage), new Dictionary<string, string>()),
                 ex =>
                     {
-                        StringAssert.StartsWith(ex.Message, "Could not navigate to URI: /foo.");
+                        StringAssert.StartsWith(ex.Message, "Could not navigate to URI: http://localhost:2222/foo.");
 
                         browser.VerifyAll();
                         testPage.VerifyAll();

@@ -185,9 +185,10 @@ namespace SpecBind.Tests
 		{
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
+            UriHelper.BaseUri = new Uri("http://localhost:2222/");
             var url = UriHelper.GetPageUri(browser.Object, typeof(NavigationAttributePage));
 
-			Assert.AreEqual(url, "/root");
+            Assert.AreEqual(url, "http://localhost:2222/root");
 
 			browser.VerifyAll();
 		}
@@ -223,10 +224,11 @@ namespace SpecBind.Tests
 		{
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
+            UriHelper.BaseUri = new Uri("http://localhost:2222/");
 			var url = UriHelper.FillPageUri(
 				browser.Object, typeof(NavigationAttributePage), new Dictionary<string, string> { { "Id", "1" } });
 
-			Assert.AreEqual("/root/1", url);
+            Assert.AreEqual("http://localhost:2222/root/1", url);
 
 			browser.VerifyAll();
 		}
@@ -239,10 +241,11 @@ namespace SpecBind.Tests
 		{
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
+            UriHelper.BaseUri = new Uri("http://localhost:2222/");
 			var url = UriHelper.FillPageUri(
 				browser.Object, typeof(NavigationAttributePage), null);
 
-			Assert.AreEqual("/root/{id}", url);
+            Assert.AreEqual("http://localhost:2222/root/{id}", url);
 
 			browser.VerifyAll();
 		}

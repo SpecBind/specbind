@@ -87,10 +87,8 @@ namespace SpecBind.BrowserSupport
             var filledUri = UriHelper.FillPageUri(this, pageType, parameters);
             try
             {
-                var qualifiedUri = UriHelper.GetQualifiedPageUri(filledUri);
-                System.Diagnostics.Debug.WriteLine("Navigating to URL: {0}", qualifiedUri);
-
-                this.GoTo(qualifiedUri);
+                System.Diagnostics.Debug.WriteLine("Navigating to URL: {0}", filledUri);
+                this.GoTo(new Uri(filledUri));
             }
             catch (Exception ex)
             {

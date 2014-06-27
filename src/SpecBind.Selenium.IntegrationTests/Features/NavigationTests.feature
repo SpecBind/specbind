@@ -12,3 +12,9 @@ Scenario: Navigate to a student screen with a parameter
 			| Field      | Rule   | Value     |
 			| First Name | Equals | Carson    |
 			| Last Name  | Equals | Alexander |
+
+Scenario: Navigate to Google
+   Given I navigated to the Google Home page
+   Then I see
+         | Field      | Rule       | Value |
+         | Search Box | Is Enabled | True  |

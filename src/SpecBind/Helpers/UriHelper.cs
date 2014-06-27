@@ -102,7 +102,7 @@ namespace SpecBind.Helpers
 
             if (string.IsNullOrWhiteSpace(uriStructure.UrlTemplate))
 			{
-				return uriStructure.Path;
+                return CreateCompleteUri(uriStructure, false);
 			}
 
 			pageArguments = pageArguments ?? new Dictionary<string, string>(0);
@@ -110,13 +110,15 @@ namespace SpecBind.Helpers
 
 			var uriRegex = new Regex(@"\{([A-Za-z]+)\}");
 
-			return uriRegex.Replace(
-				uriStructure.UrlTemplate,
-				m =>
-					{
-						var groupName = m.Groups[1].Value;
-						return pageArguments.ContainsKey(groupName) ? pageArguments[groupName] : m.Value;
-					});
+		    var filledPage = uriRegex.Replace(
+		        uriStructure.UrlTemplate,
+		        m =>
+		            {
+		                var groupName = m.Groups[1].Value;
+		                return pageArguments.ContainsKey(groupName) ? pageArguments[groupName] : m.Value;
+		            });
+
+		    return CreateCompleteUri(new UriStructure(filledPage, false), false);
 		}
 
 		/// <summary>
