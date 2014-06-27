@@ -7,9 +7,16 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
 
     using SpecBind.Pages;
 
+    /// <summary>
+    /// The page model for Google
+    /// </summary>
     [PageNavigation("http://www.google.com", IsAbsoluteUrl = true)]
     public class GoogleHomePage
     {
+        /// <summary>
+        /// Gets or sets the search box.
+        /// </summary>
+        /// <value>The search box.</value>
         [ElementLocator(Name = "q")]
         public IWebElement SearchBox { get; set; }    
     }
