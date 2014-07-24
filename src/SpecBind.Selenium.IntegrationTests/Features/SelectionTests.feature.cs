@@ -177,6 +177,33 @@ this.ScenarioSetup(scenarioInfo);
 #line hidden
             this.ScenarioCleanup();
         }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Select a JQuery UI tab")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Clicking items on the screen")]
+        public virtual void SelectAJQueryUITab()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Select a JQuery UI tab", ((string[])(null)));
+#line 35
+this.ScenarioSetup(scenarioInfo);
+#line 36
+    testRunner.Given("I navigated to the JQuery clicking page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 37
+     testRunner.When("I choose Second Tab", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Field",
+                        "Rule",
+                        "Value"});
+            table4.AddRow(new string[] {
+                        "Active Tab",
+                        "Equals",
+                        "Proin dolor"});
+#line 38
+     testRunner.Then("I see", ((string)(null)), table4, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore

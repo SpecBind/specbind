@@ -31,3 +31,10 @@ Scenario: Select an item in the list by criteria and click the link
          | Field      | Rule   | Value     |
          | Last Name  | Equals | Alexander |
          | First Name | Equals | Carson    |
+
+Scenario: Select a JQuery UI tab
+    Given I navigated to the JQuery clicking page
+     When I choose Second Tab
+     Then I see
+		| Field      | Rule   | Value       |
+		| Active Tab | Equals | Proin dolor |
