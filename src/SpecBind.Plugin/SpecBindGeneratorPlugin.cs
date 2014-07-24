@@ -3,6 +3,8 @@
 // // </copyright>
 namespace SpecBind.Plugin
 {
+    using System;
+
     using BoDi;
 
     using TechTalk.SpecFlow.Generator.Configuration;
@@ -31,9 +33,14 @@ namespace SpecBind.Plugin
         /// <param name="generatorConfiguration">The generator configuration.</param>
         public void RegisterCustomizations(ObjectContainer container, SpecFlowProjectConfiguration generatorConfiguration)
         {
-            container.RegisterTypeAs<SpecBindTestGeneratorProvider, IUnitTestGeneratorProvider>();
-            container.RegisterTypeAs<MsTest2010RuntimeProvider, IUnitTestRuntimeProvider>();
             container.RegisterTypeAs<SpecBindConfigurationProvider, ISpecBindConfigurationProvider>();
+
+            var unitTestGenProvider = generatorConfiguration.GeneratorConfiguration.GeneratorUnitTestProvider;
+            if (string.Equals(unitTestGenProvider, "mstest", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(unitTestGenProvider, "mstest.2010", StringComparison.OrdinalIgnoreCase))
+            {
+                container.RegisterTypeAs<SpecBindTestGeneratorProvider, IUnitTestGeneratorProvider>();
+            }
         }
 
         /// <summary>
