@@ -144,7 +144,22 @@ namespace SpecBind.BrowserSupport
 		/// <returns>The resolved assembly.</returns>
 		private static Assembly OnAssemblyCheck(AssemblyName assemblyName)
 		{
-			var currentLocation = Path.GetFullPath(typeof(BrowserFactory).Assembly.Location);
+		    try
+		    {
+		        // try load assembly from app domain first rather than filesystem as test runners
+		        // can place ddls in separate directories and may not always work as below.
+		        var assembly = Assembly.Load(assemblyName);
+		        if (assembly != null)
+		        {
+		            return assembly;
+		        }
+		    }
+		    catch
+		    {
+		        //Ignore and resume as previous.
+		    }
+
+		    var currentLocation = Path.GetFullPath(typeof(BrowserFactory).Assembly.Location);
 			if (!string.IsNullOrWhiteSpace(currentLocation) && File.Exists(currentLocation))
 			{
 				var parentDirectory = Path.GetDirectoryName(currentLocation);
