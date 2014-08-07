@@ -6,6 +6,7 @@ namespace SpecBind.Selenium
 {
     using System;
     using System.Configuration;
+    using System.Diagnostics;
     using System.IO;
     using System.IO.Compression;
     using System.Linq;
@@ -71,7 +72,7 @@ namespace SpecBind.Selenium
                         driver = new InternetExplorerDriver(explorerOptions);
                         break;
                     case BrowserType.FireFox:
-                        driver = new FirefoxDriver();
+                        driver = GetFireFoxDriver(browserFactoryConfiguration);
                         break;
                     case BrowserType.Chrome:
                         var chromeOptions = new ChromeOptions { LeaveBrowserRunning = false };
@@ -103,6 +104,55 @@ namespace SpecBind.Selenium
 
             // Maximize window
             managementSettings.Window.Maximize();
+
+            return driver;
+        }
+
+        private static IWebDriver GetFireFoxDriver(BrowserFactoryConfigurationElement browserFactoryConfiguration)
+        {
+            IWebDriver driver;
+
+            Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver called");
+
+            if (browserFactoryConfiguration.Settings != null && browserFactoryConfiguration.Settings.Count > 0)
+            {
+                var ffprofile = new FirefoxProfile();
+
+                foreach (NameValueConfigurationElement configurationElement in browserFactoryConfiguration.Settings)
+                {
+                    Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting:{0} with value: {1}", configurationElement.Name, configurationElement.Value);
+                    bool boolValue;
+                    int intValue;
+
+                    if (int.TryParse(configurationElement.Value, out intValue))
+                    {
+                        Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting with int value: '{0}'", configurationElement.Name);
+                        ffprofile.SetPreference(configurationElement.Name, intValue);
+                    }
+                    else if (bool.TryParse(configurationElement.Value, out boolValue))
+                    {
+                        Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting with bool value: '{0}'", configurationElement.Name);
+                        ffprofile.SetPreference(configurationElement.Name, boolValue);
+                    }
+                    else
+                    {
+                        Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting with string value: '{0}'", configurationElement.Name);
+                        ffprofile.SetPreference(configurationElement.Name, configurationElement.Value);
+                    }                    
+                }
+
+                driver = new FirefoxDriver(ffprofile);
+            }
+            else
+            {
+                driver = new FirefoxDriver();
+            }
+
+            if (browserFactoryConfiguration.EnsureCleanSession)
+            {
+                Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Clearing firefox cookies");
+                driver.Manage().Cookies.DeleteAllCookies();
+            }
 
             return driver;
         }
