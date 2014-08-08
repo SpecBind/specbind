@@ -108,55 +108,6 @@ namespace SpecBind.Selenium
             return driver;
         }
 
-        private static IWebDriver GetFireFoxDriver(BrowserFactoryConfigurationElement browserFactoryConfiguration)
-        {
-            IWebDriver driver;
-
-            Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver called");
-
-            if (browserFactoryConfiguration.Settings != null && browserFactoryConfiguration.Settings.Count > 0)
-            {
-                var ffprofile = new FirefoxProfile();
-
-                foreach (NameValueConfigurationElement configurationElement in browserFactoryConfiguration.Settings)
-                {
-                    Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting:{0} with value: {1}", configurationElement.Name, configurationElement.Value);
-                    bool boolValue;
-                    int intValue;
-
-                    if (int.TryParse(configurationElement.Value, out intValue))
-                    {
-                        Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting with int value: '{0}'", configurationElement.Name);
-                        ffprofile.SetPreference(configurationElement.Name, intValue);
-                    }
-                    else if (bool.TryParse(configurationElement.Value, out boolValue))
-                    {
-                        Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting with bool value: '{0}'", configurationElement.Name);
-                        ffprofile.SetPreference(configurationElement.Name, boolValue);
-                    }
-                    else
-                    {
-                        Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting with string value: '{0}'", configurationElement.Name);
-                        ffprofile.SetPreference(configurationElement.Name, configurationElement.Value);
-                    }                    
-                }
-
-                driver = new FirefoxDriver(ffprofile);
-            }
-            else
-            {
-                driver = new FirefoxDriver();
-            }
-
-            if (browserFactoryConfiguration.EnsureCleanSession)
-            {
-                Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Clearing firefox cookies");
-                driver.Manage().Cookies.DeleteAllCookies();
-            }
-
-            return driver;
-        }
-
         /// <summary>
         /// Creates the browser.
         /// </summary>
@@ -287,6 +238,59 @@ namespace SpecBind.Selenium
                 // Delete the zip file
                 File.Delete(zipPath);
             }
+        }
+
+        /// <summary>
+        /// Gets the FireFox driver.
+        /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
+        /// <returns>The configured web driver.</returns>
+        private static IWebDriver GetFireFoxDriver(BrowserFactoryConfigurationElement browserFactoryConfiguration)
+        {
+            IWebDriver driver;
+
+            if (browserFactoryConfiguration.Settings != null && browserFactoryConfiguration.Settings.Count > 0)
+            {
+                var ffprofile = new FirefoxProfile();
+
+                foreach (NameValueConfigurationElement configurationElement in browserFactoryConfiguration.Settings)
+                {
+                    // Removed debug lines but left in comments for future logger support
+                    // Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting:{0} with value: {1}", configurationElement.Name, configurationElement.Value);
+                    bool boolValue;
+                    int intValue;
+
+                    if (int.TryParse(configurationElement.Value, out intValue))
+                    {
+                        // Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting with int value: '{0}'", configurationElement.Name);
+                        ffprofile.SetPreference(configurationElement.Name, intValue);
+                    }
+                    else if (bool.TryParse(configurationElement.Value, out boolValue))
+                    {
+                        // Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting with bool value: '{0}'", configurationElement.Name);
+                        ffprofile.SetPreference(configurationElement.Name, boolValue);
+                    }
+                    else
+                    {
+                        // Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting with string value: '{0}'", configurationElement.Name);
+                        ffprofile.SetPreference(configurationElement.Name, configurationElement.Value);
+                    }
+                }
+
+                driver = new FirefoxDriver(ffprofile);
+            }
+            else
+            {
+                driver = new FirefoxDriver();
+            }
+
+            if (browserFactoryConfiguration.EnsureCleanSession)
+            {
+                Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Clearing firefox cookies");
+                driver.Manage().Cookies.DeleteAllCookies();
+            }
+
+            return driver;
         }
 
         /// <summary>
