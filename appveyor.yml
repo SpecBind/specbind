@@ -94,9 +94,9 @@ test:
 #      artifacts configuration    #
 #---------------------------------#
 
-artifacts:
+# artifacts:
   # pushing all *.nupkg files in directory
-  - path: '**\*.nupkg'
+#  - path: '**\*.nupkg'
 
 
 #---------------------------------#
