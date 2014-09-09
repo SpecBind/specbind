@@ -8,5 +8,4 @@ Scenario: Validate Table "Start With" Validator
 		   | Field      | Rule   | Value       |
 		   | First Name | Equals | Kim         |
 		   | Last Name  | Equals | Abercrombie |
-		   | Hire Date  | Equals | 3/11/1995   |
 		   | Office     | Equals | Smith 17    |
