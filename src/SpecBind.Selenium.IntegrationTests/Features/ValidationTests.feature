@@ -81,6 +81,9 @@ Scenario: Validate List "Equals" Validator
 		   | Field        | Value  |
 		   | Find by name | Alonso |
 	   And I choose Search
+	  Then I see
+		   | Field   | Rule   | Value             |
+		   | Caption | Equals | Find your Friends |
 	  Then I see results grid list equals
 		   | Field      | Rule   | Value    |
 		   | First Name | Equals | Meredith |
