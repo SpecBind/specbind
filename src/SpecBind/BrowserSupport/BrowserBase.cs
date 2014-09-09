@@ -129,6 +129,14 @@ namespace SpecBind.BrowserSupport
         public abstract string TakeScreenshot(string imageFolder, string fileNameBase);
 
         /// <summary>
+        /// Save the html from the native browser.
+        /// </summary>
+        /// <param name="destinationFolder">The destination folder.</param>
+        /// <param name="fileNameBase">The file name base.</param>
+        /// <returns>The complete file path if created; otherwise <c>null</c>.</returns>
+        public abstract string SaveHtml(string destinationFolder, string fileNameBase);
+
+        /// <summary>
         /// Checks wither the page matches the current browser URL.
         /// </summary>
         /// <param name="pageType">Type of the page.</param>

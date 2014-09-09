@@ -5,6 +5,7 @@
 namespace SpecBind.BrowserSupport
 {
 	using System;
+	using System.Diagnostics;
 	using System.IO;
 
 	using BoDi;
@@ -110,6 +111,7 @@ namespace SpecBind.BrowserSupport
             var fileName = scenarioHelper.GetStepFileName();
             var basePath = Directory.GetCurrentDirectory();
             var fullPath = browser.TakeScreenshot(basePath, fileName);
+            browser.SaveHtml(basePath, fileName);
 
             var traceListener = this.objectContainer.Resolve<ITraceListener>();
             if (fullPath != null && traceListener != null)

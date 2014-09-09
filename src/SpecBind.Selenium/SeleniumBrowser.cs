@@ -177,6 +177,31 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Save the html from the native browser.
+        /// </summary>
+        /// <param name="destinationFolder">The destination folder.</param>
+        /// <param name="fileNameBase">The file name base.</param>
+        /// <returns>The complete file path if created; otherwise <c>null</c>.</returns>
+        public override string SaveHtml(string destinationFolder, string fileNameBase)
+        {
+            var localDriver = this.driver.Value;
+            try
+            {
+                var fullPath = Path.Combine(destinationFolder, string.Format("{0}.html", fileNameBase));
+                using (var writer = File.CreateText(fullPath))
+                {
+                    writer.Write(localDriver.PageSource);
+                }
+
+                return fullPath;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Gets the native page location.
         /// </summary>
         /// <param name="page">The page interface.</param>
