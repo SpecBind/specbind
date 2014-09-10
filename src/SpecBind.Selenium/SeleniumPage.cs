@@ -91,11 +91,7 @@ namespace SpecBind.Selenium
         /// <returns><c>true</c> if the element is clicked, <c>false</c> otherwise.</returns>
         public override bool ClickElement(IWebElement element)
         {
-            if (!element.Selected)
-            {
-                element.Click();
-            }
-
+            element.Click();
             return true;
         }
 
