@@ -355,32 +355,13 @@ namespace SpecBind.Selenium.Tests
         }
 
         /// <summary>
-        /// Tests the click element when element is not selected.
+        /// Tests the click element
         /// </summary>
         [TestMethod]
-        public void TestGetClickElementWhenControlIsNotSelected()
+        public void TestGetClickElement()
         {
             var element = new Mock<IWebElement>(MockBehavior.Strict);
-            element.SetupGet(e => e.Selected).Returns(false);
             element.Setup(e => e.Click());
-
-            var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
-
-            var result = page.ClickElement(element.Object);
-
-            Assert.AreEqual(true, result);
-            element.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the click element when element is selected.
-        /// </summary>
-        [TestMethod]
-        public void TestGetClickElementWhenControlIsSelected()
-        {
-            var element = new Mock<IWebElement>(MockBehavior.Strict);
-            element.SetupGet(e => e.Selected).Returns(true);
             
             var nativePage = new NativePage();
             var page = new SeleniumPage(nativePage);
