@@ -121,6 +121,7 @@ namespace SpecBind.Tests
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.Close());
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns("TestFileName.jpg");
+            browser.Setup(b => b.SaveHtml(It.IsAny<string>(), "TestFileName")).Returns((string)null);
 
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve<IBrowser>()).Returns(browser.Object);
@@ -152,6 +153,7 @@ namespace SpecBind.Tests
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.Close());
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns((string)null);
+            browser.Setup(b => b.SaveHtml(It.IsAny<string>(), "TestFileName")).Returns((string)null);
 
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve<IBrowser>()).Returns(browser.Object);
@@ -181,6 +183,7 @@ namespace SpecBind.Tests
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.Close());
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns((string)null);
+            browser.Setup(b => b.SaveHtml(It.IsAny<string>(), "TestFileName")).Returns((string)null);
 
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve<IBrowser>()).Returns(browser.Object);

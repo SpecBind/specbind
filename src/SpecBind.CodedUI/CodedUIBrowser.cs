@@ -137,7 +137,7 @@ namespace SpecBind.CodedUI
 			GC.SuppressFinalize(this);
 		}
 
-        /// <summary>
+	    /// <summary>
         /// Executes the script.
         /// </summary>
         /// <param name="script">The script to execute.</param>
@@ -164,6 +164,33 @@ namespace SpecBind.CodedUI
 
                 var screenshot = localBrowser.CaptureImage();
                 screenshot.Save(fullPath, ImageFormat.Jpeg);
+
+                return fullPath;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Save the html from the native browser.
+        /// </summary>
+        /// <param name="destinationFolder">The destination folder.</param>
+        /// <param name="fileNameBase">The file name base.</param>
+        /// <returns>The complete file path if created; otherwise <c>null</c>.</returns>
+        public override string SaveHtml(string destinationFolder, string fileNameBase)
+        {
+            var localBrowser = this.window.Value;
+            try
+            {
+                var document = new HtmlDocument(localBrowser);
+                var html = document.GetProperty("OuterHtml").ToString();
+                var fullPath = Path.Combine(destinationFolder, string.Format("{0}.html", fileNameBase));
+                using (var writer = File.CreateText(fullPath))
+                {
+                    writer.Write(html);
+                }
 
                 return fullPath;
             }

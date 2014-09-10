@@ -280,6 +280,7 @@ namespace SpecBind.Pages
 					        if (text != null)
 					        {
                                 text = text.Trim();
+					            text = text.Replace(Environment.NewLine, " ");
 					        }
 					    }
 
