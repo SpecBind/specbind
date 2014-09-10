@@ -162,7 +162,7 @@ namespace SpecBind.Tests.Actions
             
             // Check rough timing
             Assert.IsTrue(stopwatch.Elapsed >= TimeSpan.FromSeconds(1), "elapsed time less than a second " + stopwatch.Elapsed);
-            Assert.IsTrue(stopwatch.Elapsed < TimeSpan.FromSeconds(1.3), "elapsed time less than 1.3 second " + stopwatch.Elapsed);
+            Assert.IsTrue(stopwatch.Elapsed < TimeSpan.FromSeconds(1.3), "elapsed time is greater than or equal to 1.3 second " + stopwatch.Elapsed);
 
             pageMapper.VerifyAll();
             browser.VerifyAll();
