@@ -73,6 +73,13 @@ namespace SpecBind.Pages
 		/// </value>
 		internal Func<IPage, Func<object, bool>, bool> Action { private get; set; }
 
+
+        /// <summary>
+        /// Gets or sets the set action.
+        /// </summary>
+        /// <value>The set action.</value>
+        internal Action<IPage, object> SetAction { get; set; }
+
 		/// <summary>
 		///     Gets or sets the element action.
 		/// </summary>
@@ -81,7 +88,7 @@ namespace SpecBind.Pages
 		/// </value>
 		internal Func<IPage, Func<TElement, bool>, bool> ElementAction { private get; set; }
 
-		#endregion
+        #endregion
 
 		#region Public Methods
 
@@ -123,6 +130,21 @@ namespace SpecBind.Pages
 		/// <param name="data">The data.</param>
 		public void FillData(string data)
 		{
+            // Support only string property filling for now
+		    if (!this.IsElement)
+		    {
+		        if (typeof(string).IsAssignableFrom(this.PropertyType))
+		        {
+		            this.SetAction(this.elementHandler, data);
+		        }
+		        else
+		        {
+		            throw new ElementExecuteException("Only string properties are supported today. Property Type: {0}", this.PropertyType);
+		        }
+
+		        return;
+		    }
+
 			this.ThrowIfElementDoesNotExist();
 
 			var fillMethod = this.elementHandler.GetPageFillMethod(this.PropertyType);

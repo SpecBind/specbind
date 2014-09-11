@@ -41,7 +41,11 @@ namespace SpecBind.Tests.Actions
         {
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);
-            locator.Setup(p => p.GetElement("doesnotexist")).Throws(new ElementExecuteException("Cannot find item"));
+
+            // ReSharper disable once RedundantAssignment
+            IPropertyData property = null;
+            locator.Setup(p => p.TryGetElement("doesnotexist", out property)).Returns(false);
+            locator.Setup(p => p.GetProperty("doesnotexist")).Throws(new ElementExecuteException("Cannot find item"));
 
             var enterDataAction = new EnterDataAction(tokenManager.Object)
             {
@@ -97,19 +101,57 @@ namespace SpecBind.Tests.Actions
             var propData = new Mock<IPropertyData>(MockBehavior.Strict);
             propData.Setup(p => p.FillData("translated data"));
 
+            // ReSharper disable once RedundantAssignment
+            var property = propData.Object;
+
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);
-            locator.Setup(p => p.GetElement("doesnotexist")).Returns(propData.Object);
+            locator.Setup(p => p.TryGetElement("myitem", out property)).Returns(true);
 
             var getItemAction = new EnterDataAction(tokenManager.Object)
             {
                                         ElementLocator = locator.Object
                                     };
 
-            var context = new EnterDataAction.EnterDataContext("doesnotexist", "some data");
+            var context = new EnterDataAction.EnterDataContext("myitem", "some data");
             var result = getItemAction.Execute(context);
 
             Assert.AreEqual(true, result.Success);
             
+            locator.VerifyAll();
+            propData.VerifyAll();
+            tokenManager.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the get item action with a property that exists.
+        /// </summary>
+        [TestMethod]
+        public void TestExecuteWhenContextIsValidPropertyFillsThePropertyData()
+        {
+            var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
+            tokenManager.Setup(t => t.SetToken("some data")).Returns("translated data");
+
+            var propData = new Mock<IPropertyData>(MockBehavior.Strict);
+            propData.Setup(p => p.FillData("translated data"));
+
+            // ReSharper disable RedundantAssignment
+            IPropertyData element = null;
+            // ReSharper restore RedundantAssignment
+
+            var locator = new Mock<IElementLocator>(MockBehavior.Strict);
+            locator.Setup(p => p.TryGetElement("myitem", out element)).Returns(false);
+            locator.Setup(p => p.GetProperty("myitem")).Returns(propData.Object);
+
+            var getItemAction = new EnterDataAction(tokenManager.Object)
+            {
+                ElementLocator = locator.Object
+            };
+
+            var context = new EnterDataAction.EnterDataContext("myitem", "some data");
+            var result = getItemAction.Execute(context);
+
+            Assert.AreEqual(true, result.Success);
+
             locator.VerifyAll();
             propData.VerifyAll();
             tokenManager.VerifyAll();

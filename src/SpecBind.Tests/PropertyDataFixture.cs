@@ -135,6 +135,43 @@ namespace SpecBind.Tests
 				e => pageBase.VerifyAll());
 		}
 
+        /// <summary>
+        /// Tests the FillData method where the it is a property and not a string type.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ElementExecuteException))]
+        public void TestFillDataWherePropertyIsNotAString()
+        {
+            var element = new BaseElement();
+            var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
+
+            var propertyData = CreatePropertyData(pageBase, element);
+            propertyData.IsElement = false;
+            propertyData.PropertyType = typeof(DateTime);
+
+            ExceptionHelper.SetupForException<ElementExecuteException>(
+                () => propertyData.FillData("My Data"),
+                e => pageBase.VerifyAll());
+        }
+
+        /// <summary>
+        /// Tests the FillData method where the it is a property and a string type.
+        /// </summary>
+        [TestMethod]
+        public void TestFillDataWherePropertyIsAString()
+        {
+            var element = new BaseElement();
+            var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
+
+            var propertyData = CreatePropertyData(pageBase, element);
+            propertyData.IsElement = false;
+            propertyData.PropertyType = typeof(string);
+
+            ExceptionHelper.SetupForException<ElementExecuteException>(
+                () => propertyData.FillData("My Data"),
+                e => pageBase.VerifyAll());
+        }
+
 		/// <summary>
 		/// Tests the FillData method where the element does not exist.
 		/// </summary>
@@ -277,6 +314,7 @@ namespace SpecBind.Tests
 
 			var propertyData = CreatePropertyData(pageBase, element);
 			propertyData.Action = (p, f) => f(listMock.Object);
+            propertyData.IsElement = false;
 			propertyData.IsList = true;
 
 			string actualValue;
@@ -298,7 +336,8 @@ namespace SpecBind.Tests
 
 			var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
 			var propertyData = CreatePropertyData(pageBase, element);
-
+            propertyData.IsElement = false;
+		    
 			string actualValue;
             var result = propertyData.ValidateItem(ItemValidationHelper.Create("MyProperty", typeof(BaseElement).FullName), out actualValue);
 
@@ -317,7 +356,8 @@ namespace SpecBind.Tests
 
 			var pageBase = new Mock<IPageElementHandler<List<string>>>(MockBehavior.Strict);
 			var propertyData = CreatePropertyData(pageBase, element);
-
+            propertyData.IsElement = false;
+		    
 			string actualValue;
 			var result = propertyData.ValidateItem(ItemValidationHelper.Create("MyProperty", "My Data"), out actualValue);
 
@@ -775,6 +815,7 @@ namespace SpecBind.Tests
 			var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
 			
 			var propertyData = CreatePropertyData(pageBase, element);
+            propertyData.IsElement = false;
 			propertyData.IsList = true;
 
 			ExceptionHelper.SetupForException<NotSupportedException>(
@@ -820,6 +861,7 @@ namespace SpecBind.Tests
 				       {
 						   Name = "MyProperty",
 						   PropertyType = typeof(TElement),
+                           IsElement = true,
 						   ElementAction = (p, f) =>
 						   {
 							   Assert.AreSame(p, mock.Object);
@@ -829,8 +871,9 @@ namespace SpecBind.Tests
 							   {
 								   Assert.AreSame(p, mock.Object);
 								   return f(element);
-							   }
-				       };
+							   },
+                           SetAction = (p, f) => { } 
+                       };
 		}
 	}
 }

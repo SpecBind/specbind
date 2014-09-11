@@ -306,16 +306,29 @@ namespace SpecBind.Pages
 			var nativePageVariable = Expression.Variable(typeof(TPageBase), "nativePageType");
 			var propertyVariable = Expression.Variable(pageType, "pageItem");
 
-			var methodCall = Expression.Block(
+			var getMethodCall = Expression.Block(
 				new[] { nativePageVariable, propertyVariable },
 				Expression.Assign(nativePageVariable, Expression.Call(nativePageFunc.GetMethodInfo(), pageArgument)),
 				Expression.Assign(propertyVariable, Expression.Convert(nativePageVariable, pageType)), 
 				Expression.Invoke(actionFunc, Expression.Property(propertyVariable, propertyInfo)));
 
-			var expression =
-				Expression.Lambda<Func<IPage, Func<object, bool>, bool>>(methodCall, pageArgument, actionFunc).Compile();
+			var getExpression =
+				Expression.Lambda<Func<IPage, Func<object, bool>, bool>>(getMethodCall, pageArgument, actionFunc).Compile();
 
-			propertyData.Action = expression;
+			propertyData.Action = getExpression;
+
+		    var setValue = Expression.Variable(typeof(object));
+            var setMethodCall = Expression.Block(
+                new[] { nativePageVariable, propertyVariable },
+                Expression.Assign(nativePageVariable, Expression.Call(nativePageFunc.GetMethodInfo(), pageArgument)),
+                Expression.Assign(propertyVariable, Expression.Convert(nativePageVariable, pageType)),
+                Expression.Assign(Expression.Property(propertyVariable, propertyInfo), 
+                                  Expression.Convert(setValue, propertyInfo.PropertyType)));
+
+            var setExpression =
+                Expression.Lambda<Action<IPage, object>>(setMethodCall, pageArgument, setValue).Compile();
+
+            propertyData.SetAction = setExpression;
 		}
 
 		/// <summary>

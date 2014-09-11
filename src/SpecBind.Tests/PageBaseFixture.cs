@@ -126,6 +126,25 @@ namespace SpecBind.Tests
 		}
 
         /// <summary>
+        /// Tests that a property value can be set with the property.
+        /// </summary>
+        [TestMethod]
+        public void TestSetPropertySetsPropertyValue()
+        {
+            var page = new InheritedClass();
+            var target = new TestBase(page);
+
+            IPropertyData data;
+            var result = target.TryGetProperty("Name", out data);
+            Assert.AreEqual(true, result);
+
+            // Set the property value via the action
+            data.FillData("Dan");
+            
+            Assert.AreEqual("Dan", page.Name);
+        }
+
+        /// <summary>
         /// The that wait for page checks for and invokes the interface.
         /// </summary>
         [TestMethod]

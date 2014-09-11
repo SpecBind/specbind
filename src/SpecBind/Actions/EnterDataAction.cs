@@ -5,6 +5,7 @@ namespace SpecBind.Actions
 {
     using SpecBind.ActionPipeline;
     using SpecBind.Helpers;
+    using SpecBind.Pages;
 
     /// <summary>
     /// An action that enters data into a field.
@@ -30,11 +31,17 @@ namespace SpecBind.Actions
         /// <returns>The result of the action.</returns>
         protected override ActionResult Execute(EnterDataContext context)
         {
-            var element = this.ElementLocator.GetElement(context.PropertyName);
+            // First look for an element
+            IPropertyData item;
+            if (!this.ElementLocator.TryGetElement(context.PropertyName, out item))
+            {
+                // Try to get a property and check to make sure it's a string for now
+                item = this.ElementLocator.GetProperty(context.PropertyName);
+            }
 
             var fieldValue = this.tokenManager.SetToken(context.Data);
 
-            element.FillData(fieldValue);
+            item.FillData(fieldValue);
             
             return ActionResult.Successful();
         }
