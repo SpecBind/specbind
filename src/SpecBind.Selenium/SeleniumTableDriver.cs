@@ -10,6 +10,7 @@ namespace SpecBind.Selenium
     using OpenQA.Selenium;
 
     using SpecBind.BrowserSupport;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -54,7 +55,7 @@ namespace SpecBind.Selenium
                     var headerName = cell.Text;
                     if (!string.IsNullOrWhiteSpace(headerName))
                     {
-                        this.cellLookup.Add(i, headerName.Trim());
+                        this.cellLookup.Add(i, headerName.ToLookupKey());
                     }
                 }
 
