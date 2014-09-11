@@ -154,15 +154,15 @@ this.ScenarioSetup(scenarioInfo);
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Test Combo Box Input For An Invalid Value Of Spanish")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Test Successful Text Input On A String Page Field")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Test Data Entry For Controls")]
-        public virtual void TestComboBoxInputForAnInvalidValueOfSpanish()
+        public virtual void TestSuccessfulTextInputOnAStringPageField()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Test Combo Box Input For An Invalid Value Of Spanish", ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Test Successful Text Input On A String Page Field", ((string[])(null)));
 #line 29
 this.ScenarioSetup(scenarioInfo);
 #line 30
- testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+  testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 31
    testRunner.And("I chose Courses", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 32
@@ -176,21 +176,67 @@ this.ScenarioSetup(scenarioInfo);
                         "Field",
                         "Value"});
             table5.AddRow(new string[] {
-                        "Department",
-                        "Spanish"});
+                        "Dash Title",
+                        "12345-My Course"});
 #line 35
-  testRunner.When("I enter invalid data", ((string)(null)), table5, "When ");
+  testRunner.When("I enter data", ((string)(null)), table5, "When ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                         "Field",
                         "Rule",
                         "Value"});
             table6.AddRow(new string[] {
+                        "Number",
+                        "Equals",
+                        "12345"});
+            table6.AddRow(new string[] {
+                        "Course Title",
+                        "Equals",
+                        "My Course"});
+#line 38
+  testRunner.Then("I see", ((string)(null)), table6, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Test Combo Box Input For An Invalid Value Of Spanish")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Test Data Entry For Controls")]
+        public virtual void TestComboBoxInputForAnInvalidValueOfSpanish()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Test Combo Box Input For An Invalid Value Of Spanish", ((string[])(null)));
+#line 43
+this.ScenarioSetup(scenarioInfo);
+#line 44
+ testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 45
+   testRunner.And("I chose Courses", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 46
+   testRunner.And("I was on the Courses page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 47
+   testRunner.And("I chose Create New", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 48
+   testRunner.And("I was on the Create a Course page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Field",
+                        "Value"});
+            table7.AddRow(new string[] {
+                        "Department",
+                        "Spanish"});
+#line 49
+  testRunner.When("I enter invalid data", ((string)(null)), table7, "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Field",
+                        "Rule",
+                        "Value"});
+            table8.AddRow(new string[] {
                         "Department",
                         "Equals",
                         ""});
-#line 38
-  testRunner.Then("I see", ((string)(null)), table6, "Then ");
+#line 52
+  testRunner.Then("I see", ((string)(null)), table8, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -201,38 +247,38 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void TestSuccessfulCheckBoxInput()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Test Successful Check Box Input", ((string[])(null)));
-#line 42
+#line 56
 this.ScenarioSetup(scenarioInfo);
-#line 43
+#line 57
   testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 44
+#line 58
     testRunner.And("I chose Courses", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 45
+#line 59
     testRunner.And("I was on the Courses page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 46
+#line 60
     testRunner.And("I chose Create New", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 47
+#line 61
     testRunner.And("I was on the Create a Course page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
                         "Field",
                         "Value"});
-            table7.AddRow(new string[] {
+            table9.AddRow(new string[] {
                         "Popular",
                         "true"});
-#line 48
-   testRunner.When("I enter data", ((string)(null)), table7, "When ");
+#line 62
+   testRunner.When("I enter data", ((string)(null)), table9, "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
                         "Field",
                         "Rule",
                         "Value"});
-            table8.AddRow(new string[] {
+            table10.AddRow(new string[] {
                         "Popular",
                         "Equals",
                         "true"});
-#line 51
-   testRunner.Then("I see", ((string)(null)), table8, "Then ");
+#line 65
+   testRunner.Then("I see", ((string)(null)), table10, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -243,38 +289,38 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void TestTextAreaInput()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Test Text Area Input", ((string[])(null)));
-#line 55
+#line 69
 this.ScenarioSetup(scenarioInfo);
-#line 56
+#line 70
   testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 57
+#line 71
     testRunner.And("I chose Courses", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 58
+#line 72
     testRunner.And("I was on the Courses page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 59
+#line 73
     testRunner.And("I chose Create New", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 60
+#line 74
     testRunner.And("I was on the Create a Course page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
                         "Field",
                         "Value"});
-            table9.AddRow(new string[] {
+            table11.AddRow(new string[] {
                         "Description",
                         "This is a really long description of what\'s needed."});
-#line 61
-   testRunner.When("I enter data", ((string)(null)), table9, "When ");
+#line 75
+   testRunner.When("I enter data", ((string)(null)), table11, "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
                         "Field",
                         "Rule",
                         "Value"});
-            table10.AddRow(new string[] {
+            table12.AddRow(new string[] {
                         "Description",
                         "Equals",
                         "This is a really long description of what\'s needed."});
-#line 64
-   testRunner.Then("I see", ((string)(null)), table10, "Then ");
+#line 78
+   testRunner.Then("I see", ((string)(null)), table12, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -285,23 +331,23 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void TestSuccessfulPasswordInput()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Test Successful Password Input", ((string[])(null)));
-#line 68
+#line 82
 this.ScenarioSetup(scenarioInfo);
-#line 69
+#line 83
   testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 70
+#line 84
     testRunner.And("I chose Log On", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 71
+#line 85
     testRunner.And("I was on the Log On page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
                         "Field",
                         "Value"});
-            table11.AddRow(new string[] {
+            table13.AddRow(new string[] {
                         "Password",
                         "I\'m Cool"});
-#line 72
-   testRunner.When("I enter data", ((string)(null)), table11, "When ");
+#line 86
+   testRunner.When("I enter data", ((string)(null)), table13, "When ");
 #line hidden
             this.ScenarioCleanup();
         }
