@@ -161,7 +161,7 @@ namespace SpecBind.Tests.Actions
             Assert.AreEqual("Browser did not resolve to the 'SamplePage' page in 00:00:01", result.Exception.Message);
             
             // Check rough timing
-            Assert.IsTrue(stopwatch.Elapsed >= TimeSpan.FromSeconds(1), "elapsed time less than a second " + stopwatch.Elapsed);
+            Assert.IsTrue(stopwatch.Elapsed >= TimeSpan.FromSeconds(0.9), "elapsed time less than 0.9 seconds" + stopwatch.Elapsed);
             Assert.IsTrue(stopwatch.Elapsed < TimeSpan.FromSeconds(1.3), "elapsed time is greater than or equal to 1.3 second " + stopwatch.Elapsed);
 
             pageMapper.VerifyAll();
