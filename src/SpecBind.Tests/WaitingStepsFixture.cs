@@ -248,6 +248,56 @@ namespace SpecBind.Tests
         }
 
         /// <summary>
+        /// Tests the wait for list items step with no timeout specified.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForListItemsNoTimeoutStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<WaitForListItemsAction>(
+                testPage.Object,
+                It.Is<WaitForListItemsAction.WaitForListItemsContext>(c => c.PropertyName == "myfield" && c.Timeout == null)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitForListElementToContainItems("My Field");
+
+            pipelineService.VerifyAll();
+            scenarioContext.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for list items step with a timeout specified.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForListItemsWithTimeoutStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<WaitForListItemsAction>(
+                testPage.Object,
+                It.Is<WaitForListItemsAction.WaitForListItemsContext>(c => c.PropertyName == "myfield" && c.Timeout == TimeSpan.FromSeconds(3))))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitForListElementToContainItemsWithTimeout(3, "My Field");
+
+            pipelineService.VerifyAll();
+            scenarioContext.VerifyAll();
+        }
+
+        /// <summary>
         /// Tests the GivenIWaitForTheViewToBeActive with a successful result.
         /// </summary>
         [TestMethod]

@@ -75,6 +75,7 @@
     <Compile Include="Actions\ValidationCheckContext.cs" />
     <Compile Include="Actions\WaitConditions.cs" />
     <Compile Include="Actions\WaitForElementAction.cs" />
+    <Compile Include="Actions\WaitForListItemsAction.cs" />
     <Compile Include="Actions\WaitForPageAction.cs" />
     <Compile Include="AlertBoxSteps.cs" />
     <Compile Include="BrowserSupport\AlertBoxAction.cs" />

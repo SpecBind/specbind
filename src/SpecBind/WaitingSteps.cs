@@ -26,6 +26,8 @@ namespace SpecBind
         private const string WaitForElementEnabledWithTimeoutRegex = @"I wait (\d+) seconds? for (.+) to become enabled";
         private const string WaitForElementNotEnabledRegex = @"I wait for (.+) to become disabled";
         private const string WaitForElementNotEnabledWithTimeoutRegex = @"I wait (\d+) seconds? for (.+) to become disabled";
+        private const string WaitForListElementToContainItemsRegex = @"I wait for (.+) to contain items";
+        private const string WaitForListElementToContainItemsWithTimeoutRegex = @"I wait (\d+) seconds? for (.+) to contain items";
         private const string WaitForActiveViewRegex = @"I wait for the view to become active";
 
         // The following Regex items are for the given "past tense" form
@@ -37,6 +39,8 @@ namespace SpecBind
         private const string GivenWaitForElementEnabledWithTimeoutRegex = @"I waited (\d+) seconds? for (.+) to become enabled";
         private const string GivenWaitForElementNotEnabledRegex = @"I waited for (.+) to become disabled";
         private const string GivenWaitForElementNotEnabledWithTimeoutRegex = @"I waited (\d+) seconds? for (.+) to become disabled";
+        private const string GivenWaitForListElementToContainItemsRegex = @"I waited for (.+) to contain items";
+        private const string GivenWaitForListElementToContainItemsWithTimeoutRegex = @"I waited (\d+) seconds? for (.+) to contain items";
         private const string GivenWaitForActiveViewRegex = @"I waited for the view to become active";
 
         private readonly IActionPipelineService actionPipelineService;
@@ -150,6 +154,34 @@ namespace SpecBind
         public void WaitForElementNotEnabledWithTimeout(int timeout, string propertyName)
         {
             this.CallPipelineAction(propertyName, WaitConditions.NotEnabled, GetTimeSpan(timeout));
+        }
+
+        /// <summary>
+        /// A step that waits for a list element to contain children.
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        [Given(GivenWaitForListElementToContainItemsRegex)]
+        [When(WaitForListElementToContainItemsRegex)]
+        [Then(WaitForListElementToContainItemsRegex)]
+        public void WaitForListElementToContainItems(string propertyName)
+        {
+            this.WaitForListElementToContainItemsWithTimeout(0, propertyName);
+        }
+
+        /// <summary>
+        /// A step that waits for a list element to contain children.
+        /// </summary>
+        /// <param name="timeout">The timeout for waiting.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        [Given(GivenWaitForListElementToContainItemsWithTimeoutRegex)]
+        [When(WaitForListElementToContainItemsWithTimeoutRegex)]
+        [Then(WaitForListElementToContainItemsWithTimeoutRegex)]
+        public void WaitForListElementToContainItemsWithTimeout(int timeout, string propertyName)
+        {
+            var page = this.GetPageFromContext();
+
+            var context = new WaitForListItemsAction.WaitForListItemsContext(propertyName.ToLookupKey(), GetTimeSpan(timeout));
+            this.actionPipelineService.PerformAction<WaitForListItemsAction>(page, context).CheckResult();
         }
 
         /// <summary>
