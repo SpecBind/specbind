@@ -25,5 +25,7 @@ One of the key features of SpecBind is it features a common set of steps that ca
 
 ## Next Steps
 
+_Build Status:_ [![Build status](https://ci.appveyor.com/api/projects/status/qhajavc6p5ut2480)](https://ci.appveyor.com/project/dpiessens/specbind)
+
 Follow the [Getting Started](https://github.com/dpiessens/specbind/wiki/Getting-Started-With-SpecBind) section to begin creating tests, or [Documentation](https://github.com/dpiessens/specbind/wiki/Documentation) for in detailed information on SpecBind.
 
