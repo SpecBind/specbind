@@ -317,18 +317,21 @@ namespace SpecBind.Pages
 
 			propertyData.Action = getExpression;
 
-		    var setValue = Expression.Variable(typeof(object));
-            var setMethodCall = Expression.Block(
-                new[] { nativePageVariable, propertyVariable },
-                Expression.Assign(nativePageVariable, Expression.Call(nativePageFunc.GetMethodInfo(), pageArgument)),
-                Expression.Assign(propertyVariable, Expression.Convert(nativePageVariable, pageType)),
-                Expression.Assign(Expression.Property(propertyVariable, propertyInfo), 
-                                  Expression.Convert(setValue, propertyInfo.PropertyType)));
+		    if (propertyInfo.CanWrite && propertyInfo.GetSetMethod() != null)
+		    {
+		        var setValue = Expression.Variable(typeof(object));
+		        var setMethodCall = Expression.Block(
+		            new[] { nativePageVariable, propertyVariable },
+		            Expression.Assign(nativePageVariable, Expression.Call(nativePageFunc.GetMethodInfo(), pageArgument)),
+		            Expression.Assign(propertyVariable, Expression.Convert(nativePageVariable, pageType)),
+		            Expression.Assign(
+		                Expression.Property(propertyVariable, propertyInfo),
+		                Expression.Convert(setValue, propertyInfo.PropertyType)));
 
-            var setExpression =
-                Expression.Lambda<Action<IPage, object>>(setMethodCall, pageArgument, setValue).Compile();
+		        var setExpression = Expression.Lambda<Action<IPage, object>>(setMethodCall, pageArgument, setValue).Compile();
 
-            propertyData.SetAction = setExpression;
+		        propertyData.SetAction = setExpression;
+		    }
 		}
 
 		/// <summary>

@@ -133,7 +133,7 @@ namespace SpecBind.Pages
             // Support only string property filling for now
 		    if (!this.IsElement)
 		    {
-		        if (typeof(string).IsAssignableFrom(this.PropertyType))
+		        if (typeof(string).IsAssignableFrom(this.PropertyType) && this.SetAction != null)
 		        {
 		            this.SetAction(this.elementHandler, data);
 		        }
