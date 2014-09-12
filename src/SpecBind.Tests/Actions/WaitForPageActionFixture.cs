@@ -150,20 +150,12 @@ namespace SpecBind.Tests.Actions
             var action = new WaitForPageAction(pageMapper.Object, browser.Object, logger.Object);
             var context = new WaitForPageAction.WaitForPageActionContext("SamplePage", TimeSpan.FromSeconds(1));
 
-            var stopwatch = new Stopwatch();
-
-            stopwatch.Start();
             var result = action.Execute(context);
-            stopwatch.Stop();
-
+            
             Assert.AreEqual(false, result.Success);
             Assert.IsNotNull(result.Exception);
             Assert.AreEqual("Browser did not resolve to the 'SamplePage' page in 00:00:01", result.Exception.Message);
             
-            // Check rough timing
-            Assert.IsTrue(stopwatch.Elapsed >= TimeSpan.FromSeconds(0.9), "elapsed time less than 0.9 seconds" + stopwatch.Elapsed);
-            Assert.IsTrue(stopwatch.Elapsed < TimeSpan.FromSeconds(1.3), "elapsed time is greater than or equal to 1.3 second " + stopwatch.Elapsed);
-
             pageMapper.VerifyAll();
             browser.VerifyAll();
             page.VerifyAll();

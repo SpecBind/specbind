@@ -160,19 +160,11 @@ namespace SpecBind.Tests.Actions
             var action = new WaitForListItemsAction(logger.Object) { ElementLocator = locator.Object };
             var context = new WaitForListItemsAction.WaitForListItemsContext("SampleList", TimeSpan.FromSeconds(1));
 
-            var stopwatch = new Stopwatch();
-
-            stopwatch.Start();
             var result = action.Execute(context);
-            stopwatch.Stop();
 
             Assert.AreEqual(false, result.Success);
             Assert.IsNotNull(result.Exception);
             Assert.AreEqual("List 'SampleList' did not contain elements after 00:00:01", result.Exception.Message);
-
-            // Check rough timing
-            Assert.IsTrue(stopwatch.Elapsed >= TimeSpan.FromSeconds(0.9), string.Format("Elapsed time less than 0.9 seconds. Actual: {0}", stopwatch.Elapsed));
-            Assert.IsTrue(stopwatch.Elapsed < TimeSpan.FromSeconds(1.3),  string.Format("Elapsed time is greater than or equal to 1.3 second Actual: {0}", stopwatch.Elapsed));
 
             property.VerifyAll();
             locator.VerifyAll();
