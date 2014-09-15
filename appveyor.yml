@@ -33,6 +33,10 @@ os: Windows Server 2012 R2
     # - platform: x64
       # configuration: Release
 
+# environment variables
+environment:
+  PackageDir: NuGet_Packages
+
 install:
   - cinst stylecop
 
@@ -66,15 +70,15 @@ build:
 
 # scripts to run before build
 before_build:
-  - ps: Remove-Item NuGet_Packages -Recurse -Force -ErrorAction SilentlyContinue
+  - ps: Remove-Item "$Env:PackageDir" -Recurse -Force -ErrorAction SilentlyContinue
   - nuget restore src\SpecBind.sln
 
 # scripts to run after build
 after_build:
-  - nuget pack src\SpecBind\SpecBind.nuspec -OutputDirectory NuGet_Packages -BasePath src\SpecBind -Verbose -Version {version} -Symbols -Properties Configuration=Release
-  - nuget pack src\SpecBind.Plugin\SpecBind.Plugin.nuspec -OutputDirectory NuGet_Packages -BasePath src\SpecBind.Plugin -Verbose -Version {version} -Symbols -Properties Configuration=Release
-  - nuget pack src\SpecBind.CodedUI\SpecBind.CodedUI.nuspec -OutputDirectory NuGet_Packages -BasePath src\SpecBind.CodedUI -Verbose -Version {version} -Symbols -Properties Configuration=Release
-  - nuget pack src\SpecBind.Selenium\SpecBind.Selenium.nuspec -OutputDirectory NuGet_Packages -BasePath src\SpecBind.Selenium -Verbose -Version {version} -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind\SpecBind.nuspec -OutputDirectory %PackageDir% -BasePath src\SpecBind -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind.Plugin\SpecBind.Plugin.nuspec -OutputDirectory %PackageDir% -BasePath src\SpecBind.Plugin -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind.CodedUI\SpecBind.CodedUI.nuspec -OutputDirectory %PackageDir% -BasePath src\SpecBind.CodedUI -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind.Selenium\SpecBind.Selenium.nuspec -OutputDirectory %PackageDir% -BasePath src\SpecBind.Selenium -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
 
 #---------------------------------#
 #       tests configuration       #
