@@ -59,17 +59,22 @@ build:
   publish_wap: false              # package Web Application Projects (WAP) for Web Deploy
   publish_wap_xcopy: false        # package Web Application Projects (WAP) for XCopy deployment
   publish_azure: false            # package Azure Cloud Service projects and push to artifacts
-  publish_nuget: true             # package projects with .nuspec files and push to artifacts
+  publish_nuget: false             # package projects with .nuspec files and push to artifacts
 
   # MSBuild verbosity level quiet|minimal|normal|detailed
   verbosity: normal
 
 # scripts to run before build
 before_build:
+  - ps: Remove-Item NuGet_Packages -Recurse -Force -ErrorAction SilentlyContinue
   - nuget restore src\SpecBind.sln
 
 # scripts to run after build
 after_build:
+  - nuget pack src\SpecBind\SpecBind.nuspec -OutputDirectory NuGet_Packages -BasePath src\SpecBind -Verbose -Version {version} -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind.Plugin\SpecBind.Plugin.nuspec -OutputDirectory NuGet_Packages -BasePath src\SpecBind.Plugin -Verbose -Version {version} -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind.CodedUI\SpecBind.CodedUI.nuspec -OutputDirectory NuGet_Packages -BasePath src\SpecBind.CodedUI -Verbose -Version {version} -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind.Selenium\SpecBind.Selenium.nuspec -OutputDirectory NuGet_Packages -BasePath src\SpecBind.Selenium -Verbose -Version {version} -Symbols -Properties Configuration=Release
 
 #---------------------------------#
 #       tests configuration       #
@@ -91,9 +96,9 @@ test:
 #      artifacts configuration    #
 #---------------------------------#
 
-# artifacts:
+ artifacts:
   # pushing all *.nupkg files in directory
-#  - path: '**\*.nupkg'
+  - path: 'NuGet_Packages\*.nupkg'
 
 
 #---------------------------------#
