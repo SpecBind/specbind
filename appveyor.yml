@@ -1,9 +1,3 @@
-# Notes:
-#   - Minimal appveyor.yml file is an empty file. All sections are optional.
-#   - Indent each level of configuration with 2 spaces. Do not use tabs!
-#   - All section names are case-sensitive.
-#   - Section names should be unique on each level.
-
 #---------------------------------#
 #      general configuration      #
 #---------------------------------#
@@ -35,7 +29,7 @@ os: Windows Server 2012 R2
 
 # environment variables
 environment:
-  PackageDir: NuGet_Packages
+  package_dir: NuGet_Packages
 
 install:
   - cinst stylecop
@@ -70,15 +64,15 @@ build:
 
 # scripts to run before build
 before_build:
-  - ps: Remove-Item "$Env:PackageDir" -Recurse -Force -ErrorAction SilentlyContinue
+  - ps: Remove-Item "$Env:PACKAGE_DIR" -Recurse -Force -ErrorAction SilentlyContinue
   - nuget restore src\SpecBind.sln
 
 # scripts to run after build
 after_build:
-  - nuget pack src\SpecBind\SpecBind.nuspec -OutputDirectory %PackageDir% -BasePath src\SpecBind -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
-  - nuget pack src\SpecBind.Plugin\SpecBind.Plugin.nuspec -OutputDirectory %PackageDir% -BasePath src\SpecBind.Plugin -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
-  - nuget pack src\SpecBind.CodedUI\SpecBind.CodedUI.nuspec -OutputDirectory %PackageDir% -BasePath src\SpecBind.CodedUI -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
-  - nuget pack src\SpecBind.Selenium\SpecBind.Selenium.nuspec -OutputDirectory %PackageDir% -BasePath src\SpecBind.Selenium -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind\SpecBind.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind.Plugin\SpecBind.Plugin.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind.Plugin -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind.CodedUI\SpecBind.CodedUI.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind.CodedUI -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind.Selenium\SpecBind.Selenium.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind.Selenium -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
 
 #---------------------------------#
 #       tests configuration       #
@@ -108,7 +102,4 @@ test:
 #---------------------------------#
 #     deployment configuration    #
 #---------------------------------#
-
-# providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
-# provider names are case-sensitive!
 deploy: off
