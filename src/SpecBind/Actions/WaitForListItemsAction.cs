@@ -37,7 +37,7 @@ namespace SpecBind.Actions
         {
             // Get the element
             var propertyName = actionContext.PropertyName;
-            var element = this.ElementLocator.GetElement(propertyName);
+            var element = this.ElementLocator.GetProperty(propertyName);
 
             // Make sure the element is a list
             if (!element.IsList)

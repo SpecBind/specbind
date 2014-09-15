@@ -5,8 +5,7 @@
 namespace SpecBind.Tests.Actions
 {
     using System;
-    using System.Diagnostics;
-
+    
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
@@ -42,7 +41,7 @@ namespace SpecBind.Tests.Actions
             var logger = new Mock<ILogger>();
 
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);
-            locator.Setup(p => p.GetElement("doesnotexist")).Throws(new ElementExecuteException("Cannot find item"));
+            locator.Setup(p => p.GetProperty("doesnotexist")).Throws(new ElementExecuteException("Cannot find item"));
 
             var action = new WaitForListItemsAction(logger.Object) { ElementLocator = locator.Object };
             var context = new WaitForListItemsAction.WaitForListItemsContext("doesnotexist", null);
@@ -63,7 +62,7 @@ namespace SpecBind.Tests.Actions
             property.SetupGet(p => p.IsList).Returns(false);
 
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);
-            locator.Setup(p => p.GetElement("notalist")).Returns(property.Object);
+            locator.Setup(p => p.GetProperty("notalist")).Returns(property.Object);
 
             var action = new WaitForListItemsAction(logger.Object) { ElementLocator = locator.Object };
             var context = new WaitForListItemsAction.WaitForListItemsContext("notalist", null);
@@ -91,7 +90,7 @@ namespace SpecBind.Tests.Actions
             property.Setup(p => p.GetItemAtIndex(0)).Returns(listItem.Object);
 
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);
-            locator.Setup(p => p.GetElement("SampleList")).Returns(property.Object);
+            locator.Setup(p => p.GetProperty("SampleList")).Returns(property.Object);
 
             var action = new WaitForListItemsAction(logger.Object) { ElementLocator = locator.Object };
             var context = new WaitForListItemsAction.WaitForListItemsContext("SampleList", TimeSpan.FromSeconds(3));
@@ -125,7 +124,7 @@ namespace SpecBind.Tests.Actions
 
 
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);
-            locator.Setup(p => p.GetElement("SampleList")).Returns(property.Object);
+            locator.Setup(p => p.GetProperty("SampleList")).Returns(property.Object);
 
             var action = new WaitForListItemsAction(logger.Object) { ElementLocator = locator.Object };
             var context = new WaitForListItemsAction.WaitForListItemsContext("SampleList", TimeSpan.FromSeconds(3));
@@ -155,7 +154,7 @@ namespace SpecBind.Tests.Actions
             property.Setup(p => p.GetItemAtIndex(0)).Returns((IPage)null);
 
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);
-            locator.Setup(p => p.GetElement("SampleList")).Returns(property.Object);
+            locator.Setup(p => p.GetProperty("SampleList")).Returns(property.Object);
 
             var action = new WaitForListItemsAction(logger.Object) { ElementLocator = locator.Object };
             var context = new WaitForListItemsAction.WaitForListItemsContext("SampleList", TimeSpan.FromSeconds(1));
