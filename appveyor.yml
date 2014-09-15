@@ -94,7 +94,7 @@ test:
 #      artifacts configuration    #
 #---------------------------------#
 
- artifacts:
+artifacts:
   # pushing all *.nupkg files in directory
   - path: 'NuGet_Packages\*.nupkg'
 
