@@ -69,10 +69,11 @@ before_build:
 
 # scripts to run after build
 after_build:
-  - nuget pack src\SpecBind\SpecBind.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
-  - nuget pack src\SpecBind.Plugin\SpecBind.Plugin.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind.Plugin -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
-  - nuget pack src\SpecBind.CodedUI\SpecBind.CodedUI.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind.CodedUI -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
-  - nuget pack src\SpecBind.Selenium\SpecBind.Selenium.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind.Selenium -Verbose -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
+  - mkdir %PACKAGE_DIR%
+  - nuget pack src\SpecBind\SpecBind.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind -Verbosity Detailed -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind.Plugin\SpecBind.Plugin.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind.Plugin -Verbosity Detailed -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind.CodedUI\SpecBind.CodedUI.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind.CodedUI -Verbosity Detailed -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind.Selenium\SpecBind.Selenium.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind.Selenium -Verbosity Detailed -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
 
 #---------------------------------#
 #       tests configuration       #
