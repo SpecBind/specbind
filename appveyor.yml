@@ -64,7 +64,7 @@ build:
 
 # scripts to run before build
 before_build:
-  - ps: Remove-Item "$Env:PACKAGE_DIR" -Recurse -Force -ErrorAction SilentlyContinue
+  - ps: If (Test-Path "$env:package_dir") { Remove-Item "$env:package_dir" -Recurse -Force -ErrorAction SilentlyContinue }
   - nuget restore src\SpecBind.sln
 
 # scripts to run after build
