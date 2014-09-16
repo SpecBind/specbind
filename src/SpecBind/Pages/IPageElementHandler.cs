@@ -5,7 +5,9 @@ namespace SpecBind.Pages
 {
 	using System;
 
-	/// <summary>
+	using SpecBind.Actions;
+
+    /// <summary>
 	/// An interface that manages page elements.
 	/// </summary>
 	/// <typeparam name="TElement">The type of the basic element on a page.</typeparam>
@@ -64,5 +66,14 @@ namespace SpecBind.Pages
         /// </summary>
         /// <param name="element">The element.</param>
 	    void Highlight(TElement element);
+
+        /// <summary>
+        /// Waits for element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="waitCondition">The wait condition.</param>
+        /// <param name="timeout">The timeout to wait before failing.</param>
+        /// <returns><c>true</c> if the condition is met, <c>false</c> otherwise.</returns>
+        bool WaitForElement(TElement element, WaitConditions waitCondition, TimeSpan? timeout);
 	}
 }

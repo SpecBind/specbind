@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0BCFC808-1647-448E-A9DC-99B3D9D336B5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SpecBind.Plugin</RootNamespace>
+    <AssemblyName>SpecBindGeneratorPlugin.Generator.SpecflowPlugin</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TechTalk.SpecFlow">
+      <HintPath>..\packages\SpecFlow.1.9.0\lib\net35\TechTalk.SpecFlow.dll</HintPath>
+    </Reference>
+    <Reference Include="TechTalk.SpecFlow.Generator">
+      <HintPath>..\packages\SpecFlow.1.9.0\tools\TechTalk.SpecFlow.Generator.dll</HintPath>
+    </Reference>
+    <Reference Include="TechTalk.SpecFlow.Utils">
+      <HintPath>..\packages\SpecFlow.1.9.0\tools\TechTalk.SpecFlow.Utils.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SpecBind\Configuration\ApplicationConfigurationElement.cs">
+      <Link>Configuration\ApplicationConfigurationElement.cs</Link>
+    </Compile>
+    <Compile Include="..\SpecBind\Configuration\BrowserFactoryConfigurationElement.cs">
+      <Link>Configuration\BrowserFactoryConfigurationElement.cs</Link>
+    </Compile>
+    <Compile Include="..\SpecBind\Configuration\ConfigurationSectionHandler.cs">
+      <Link>Configuration\ConfigurationSectionHandler.cs</Link>
+    </Compile>
+    <Compile Include="Constants.cs" />
+    <Compile Include="ISpecBindConfigurationProvider.cs" />
+    <Compile Include="SpecBindTestGeneratorProvider.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpecBindGeneratorPlugin.cs" />
+    <Compile Include="SpecBindConfigurationProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Deployment\App.config.install.xdt" />
+    <None Include="Deployment\App.config.uninstall.xdt" />
+    <None Include="Deployment\SpecBind.Plugin.nuspec" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>mkdir "$(SolutionDir)\lib"
+copy /y "$(TargetPath)" "$(SolutionDir)\lib"</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.targets" Condition="Exists('$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

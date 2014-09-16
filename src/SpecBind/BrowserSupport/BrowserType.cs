@@ -49,5 +49,11 @@ namespace SpecBind.BrowserSupport
         /// </summary>
         // ReSharper disable once InconsistentNaming
         iPad = 8,
+
+        /// <summary>
+        /// PhantomJS Browser
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        PhantomJS = 9,
 	}
 }

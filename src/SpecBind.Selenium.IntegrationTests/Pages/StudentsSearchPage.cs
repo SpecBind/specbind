@@ -27,9 +27,17 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
         /// Gets or sets the Search button.
         /// </summary>
         /// <value>The Search button.</value>
-        [ElementLocator(Id = "searchButton", Type = "submit")]
+        [ElementLocator(Id = "searchButton")]
         [FindsBy(How = How.Id, Using = "searchButton")]
         public IWebElement Search { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Caption div.
+        /// </summary>
+        /// <value>The Caption</value>
+        [ElementLocator(Class = "caption")]
+        [FindsBy(How = How.ClassName, Using = "caption")]
+        public IWebElement Caption { get; set; }
 
         /// <summary>
         /// Gets or sets the results grid.

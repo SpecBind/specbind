@@ -4,13 +4,15 @@
 namespace SpecBind.CodedUI
 {
 	using System;
-	using System.Configuration;
 	using System.Threading;
 
+	using Microsoft.VisualStudio.TestTools.UITest.Extension;
 	using Microsoft.VisualStudio.TestTools.UITesting;
 
 	using SpecBind.BrowserSupport;
 	using SpecBind.Configuration;
+
+	using BrowserFactory = SpecBind.BrowserSupport.BrowserFactory;
 
     /// <summary>
 	/// A browser factory class for Coded UI tests.
@@ -18,6 +20,14 @@ namespace SpecBind.CodedUI
 	// ReSharper disable once InconsistentNaming
 	public class CodedUIBrowserFactory : BrowserFactory
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CodedUIBrowserFactory"/> class.
+        /// </summary>
+        public CodedUIBrowserFactory()
+            : base(false)
+        {
+        }
+
         /// <summary>
         /// Creates the browser.
         /// </summary>
@@ -41,10 +51,11 @@ namespace SpecBind.CodedUI
                 default:
                     throw new InvalidOperationException(string.Format("Browser type '{0}' is not supported in Coded UI.", browserType));
 			}
-
+            
+            Playback.PlaybackSettings.SmartMatchOptions = SmartMatchOptions.Control;
             Playback.PlaybackSettings.SearchTimeout = (int)browserFactoryConfiguration.ElementLocateTimeout.TotalMilliseconds;
             Playback.PlaybackSettings.WaitForReadyTimeout = (int)browserFactoryConfiguration.PageLoadTimeout.TotalMilliseconds;
-
+           
 			var launchAction = new Func<BrowserWindow>(() =>
 				{
 					//Switch key if needed.
@@ -53,7 +64,15 @@ namespace SpecBind.CodedUI
 						BrowserWindow.CurrentBrowser = browserKey;
 					}
 
-                    return BrowserWindow.Launch();
+                    var window = BrowserWindow.Launch();
+
+				    if (browserFactoryConfiguration.EnsureCleanSession)
+				    {
+				        BrowserWindow.ClearCache();
+                        BrowserWindow.ClearCookies();
+				    }
+
+				    return window;
 				});
 
 			var browser = new Lazy<BrowserWindow>(launchAction, LazyThreadSafetyMode.None);

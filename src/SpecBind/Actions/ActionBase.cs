@@ -4,7 +4,7 @@
 
 namespace SpecBind.Actions
 {
-	using SpecBind.ActionPipeline;
+    using SpecBind.ActionPipeline;
 
 	/// <summary>
 	/// A base class for an action in the pipeline.
@@ -37,10 +37,11 @@ namespace SpecBind.Actions
 		/// <value>The element locator.</value>
 		public IElementLocator ElementLocator { protected get; set; }
 
-		/// <summary>
-		/// Executes this instance action.
-		/// </summary>
-		/// <returns>The result of the action.</returns>
-		public abstract ActionResult Execute();
+        /// <summary>
+        /// Executes this instance action.
+        /// </summary>
+        /// <param name="actionContext">The action context.</param>
+        /// <returns>The result of the action.</returns>
+	    public abstract ActionResult Execute(ActionContext actionContext);
 	}
 }

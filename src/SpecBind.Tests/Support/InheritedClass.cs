@@ -3,7 +3,9 @@
 // </copyright>
 namespace SpecBind.Tests.Support
 {
-	/// <summary>
+    using System;
+
+    /// <summary>
 	/// A sample inherited class.
 	/// </summary>
 	public class InheritedClass : BasePageClass
@@ -23,5 +25,11 @@ namespace SpecBind.Tests.Support
 		/// The button.
 		/// </value>
 		public BaseElement Button { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date of birth.
+        /// </summary>
+        /// <value>The date of birth.</value>
+	    public DateTime DateOfBirth { get; set; }
 	}
 }

@@ -20,11 +20,25 @@ Scenario: Test Successful Text Input
 	  And I chose Create New
 	  And I was on the Create a Course page
 	 When I enter data
-	      | Field        | Value          |
-	      | Number       | 12345          |
+	      | Field  | Value |
+	      | Number | 12345 |
 	 Then I see
 		  | Field  | Rule   | Value |
 		  | Number | Equals | 12345 |
+
+Scenario: Test Successful Text Input On A String Page Field
+	 Given I navigated to the Home page
+	  And I chose Courses
+	  And I was on the Courses page
+	  And I chose Create New
+	  And I was on the Create a Course page
+	 When I enter data
+	      | Field      | Value           |
+	      | Dash Title | 12345-My Course |
+	 Then I see
+		  | Field        | Rule   | Value     |
+		  | Number       | Equals | 12345     |
+		  | Course Title | Equals | My Course |
 
 Scenario: Test Combo Box Input For An Invalid Value Of Spanish
 	Given I navigated to the Home page

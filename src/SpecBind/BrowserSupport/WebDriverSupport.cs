@@ -5,11 +5,13 @@
 namespace SpecBind.BrowserSupport
 {
 	using System;
+	using System.Diagnostics;
 	using System.IO;
 
 	using BoDi;
 
 	using SpecBind.ActionPipeline;
+	using SpecBind.Actions;
 	using SpecBind.Helpers;
 	using SpecBind.Pages;
 
@@ -34,6 +36,16 @@ namespace SpecBind.BrowserSupport
 			this.objectContainer = objectContainer;
 		}
 
+        /// <summary>
+        /// Checks the browser factory for any necessary drivers.
+        /// </summary>
+        [BeforeTestRun]
+        public static void CheckForDriver()
+        {
+            var factory = BrowserFactory.GetBrowserFactory();
+            factory.ValidateDriverSetup();
+        }
+
 		/// <summary>
 		/// Initializes the page mapper at the start of the test run.
 		/// </summary>
@@ -50,13 +62,13 @@ namespace SpecBind.BrowserSupport
 			mapper.Initialize(browser.BasePageType);
 			this.objectContainer.RegisterInstanceAs<IPageMapper>(mapper);
 
-			this.objectContainer.RegisterInstanceAs<IPageDataFiller>(new PageDataFiller());
 			this.objectContainer.RegisterInstanceAs<IScenarioContextHelper>(new ScenarioContextHelper());
 			this.objectContainer.RegisterInstanceAs(TokenManager.Current);
 
 		    var repository = new ActionRepository(this.objectContainer);
 			this.objectContainer.RegisterInstanceAs<IActionRepository>(repository);
 			this.objectContainer.RegisterTypeAs<ActionPipelineService, IActionPipelineService>();
+            this.objectContainer.RegisterTypeAs<ProxyLogger, ILogger>();
 
             // Initialize the repository
             repository.Initialize();
@@ -99,6 +111,7 @@ namespace SpecBind.BrowserSupport
             var fileName = scenarioHelper.GetStepFileName();
             var basePath = Directory.GetCurrentDirectory();
             var fullPath = browser.TakeScreenshot(basePath, fileName);
+            browser.SaveHtml(basePath, fileName);
 
             var traceListener = this.objectContainer.Resolve<ITraceListener>();
             if (fullPath != null && traceListener != null)

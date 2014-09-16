@@ -4,6 +4,7 @@
 
 namespace SpecBind.Tests.ActionPipeline
 {
+    using System;
     using System.Linq;
 
     using BoDi;
@@ -13,7 +14,7 @@ namespace SpecBind.Tests.ActionPipeline
     using Moq;
 
     using SpecBind.ActionPipeline;
-    using SpecBind.Actions;
+    using SpecBind.Validation;
 
     /// <summary>
     /// A test fixture for the ActionRepository.
@@ -37,6 +38,27 @@ namespace SpecBind.Tests.ActionPipeline
             Assert.AreEqual(0, result.Count());
 
             container.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the get pre actions method without an initialize call returns an empty list.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateActionReturnsContainerItem()
+        {
+            var mockItem = new Mock<IAction>(MockBehavior.Strict);
+            var container = new Mock<IObjectContainer>(MockBehavior.Strict);
+            container.Setup(c => c.Resolve(typeof(IAction), null)).Returns(mockItem.Object);
+
+            var repository = new ActionRepository(container.Object);
+
+            var result = repository.CreateAction<IAction>();
+
+            Assert.IsNotNull(result);
+            Assert.AreSame(mockItem.Object, result);
+
+            container.VerifyAll();
+            mockItem.VerifyAll();
         }
 
         /// <summary>
@@ -76,20 +98,80 @@ namespace SpecBind.Tests.ActionPipeline
         }
 
         /// <summary>
+        /// Tests the get validation comparers method without an initialize call returns an empty list.
+        /// </summary>
+        [TestMethod]
+        public void TestGetValidationComparersWithoutInitializeReturnsEmptyList()
+        {
+            var container = new Mock<IObjectContainer>(MockBehavior.Strict);
+
+            var repository = new ActionRepository(container.Object);
+
+            var result = repository.GetComparisonTypes();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count());
+
+            container.VerifyAll();
+        }
+
+        /// <summary>
         /// Tests that the Initialize method loads any extensions known to be in the project.
         /// </summary>
         [TestMethod]
         public void TestInitializeLoadsKnownActionsInClasses()
         {
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
-            container.Setup(c => c.Resolve(typeof(HighlightPreAction), null))
-                     .Returns(new HighlightPreAction(null, null));
-
+            container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(ILocatorAction).IsAssignableFrom(t)), null)).Returns(new Mock<ILocatorAction>().Object);
+            container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IPreAction).IsAssignableFrom(t)), null)).Returns(new Mock<IPreAction>().Object);
+            container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IValidationComparer).IsAssignableFrom(t)), null)).Returns(new Mock<IValidationComparer>().Object);
+            
             var repository = new ActionRepository(container.Object);
 
             repository.Initialize();
 
             container.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests that the RegisterType method loads the given test type.
+        /// </summary>
+        [TestMethod]
+        public void TestRegisterTypeLoadsKnownActionsInClasses()
+        {
+            var container = new Mock<IObjectContainer>(MockBehavior.Strict);
+            container.Setup(c => c.Resolve(typeof(TestAction), null)).Returns(new TestAction());
+
+            var repository = new ActionRepository(container.Object);
+
+            repository.RegisterType(typeof(TestAction));
+
+            container.VerifyAll();
+        }
+
+        /// <summary>
+        /// A test class for registering actions.
+        /// </summary>
+        private class TestAction : IPreAction, IPostAction
+        {
+            /// <summary>
+            /// Performs the pre-execute action.
+            /// </summary>
+            /// <param name="action">The action.</param>
+            /// <param name="context">The action context.</param>
+            public void PerformPreAction(IAction action, ActionContext context)
+            {
+            }
+
+            /// <summary>
+            /// Performs the post-execute action.
+            /// </summary>
+            /// <param name="action">The action.</param>
+            /// <param name="context">The action context.</param>
+            /// <param name="result">The result.</param>
+            public void PerformPostAction(IAction action, ActionContext context, ActionResult result)
+            {
+            }
         }
     }
 }

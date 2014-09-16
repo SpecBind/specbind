@@ -9,8 +9,9 @@ namespace SpecBind.Tests
 
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
 	using SpecBind.Pages;
-
-	/// <summary>
+	using SpecBind.Tests.Validation;
+	
+    /// <summary>
 	/// A test fixture for the ValidationResult class.
 	/// </summary>
 	[TestClass]
@@ -23,7 +24,7 @@ namespace SpecBind.Tests
 		[ExpectedException(typeof(InvalidOperationException))]
 		public void TestGetComparisonTableByRuleWhenMultipleResultsThrowsException()
 		{
-			var validations = new[] { new ItemValidation("MyField", "Something", ComparisonType.Equals) };
+			var validations = new[] { ItemValidationHelper.Create("MyField", "Something") };
 			
 			var validationResult = new ValidationResult(validations);
 			validationResult.CheckedItems.Add(new ValidationItemResult());
@@ -38,7 +39,7 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGetComparisonTableByRuleWithValidFields()
 		{
-			var validation = new ItemValidation("MyField", "Something", ComparisonType.Equals);
+            var validation = ItemValidationHelper.Create("MyField", "Something");
 			var validationResult = new ValidationResult(new[] { validation });
 
 			var itemResult = new ValidationItemResult();
@@ -50,7 +51,7 @@ namespace SpecBind.Tests
 
 			var expectedTable = new StringBuilder()
 										.AppendLine("| Field   | Rule   | Value     |")
-											.Append("| MyField | Equals | Something |");
+											.Append("| MyField | equals | Something |");
 
 			Assert.AreEqual(expectedTable.ToString(), result);
 		}
@@ -61,7 +62,7 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGetComparisonTableByRuleWithInvalidFieldValue()
 		{
-			var validation = new ItemValidation("MyField", "Something", ComparisonType.Equals);
+            var validation = ItemValidationHelper.Create("MyField", "Something");
 			var validationResult = new ValidationResult(new[] { validation });
 
 			var itemResult = new ValidationItemResult();
@@ -73,7 +74,7 @@ namespace SpecBind.Tests
 
 			var expectedTable = new StringBuilder()
 										.AppendLine("| Field   | Rule   | Value               |")
-											.Append("| MyField | Equals | Something [Nothing] |");
+											.Append("| MyField | equals | Something [Nothing] |");
 
 			Assert.AreEqual(expectedTable.ToString(), result);
 		}
@@ -84,7 +85,7 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGetComparisonTableByRuleWithMissingField()
 		{
-			var validation = new ItemValidation("MyField", "Something", ComparisonType.Equals);
+            var validation = ItemValidationHelper.Create("MyField", "Something");
 			var validationResult = new ValidationResult(new[] { validation });
 
 			var itemResult = new ValidationItemResult();
@@ -96,7 +97,7 @@ namespace SpecBind.Tests
 
 			var expectedTable = new StringBuilder()
 										.AppendLine("| Field               | Rule   | Value     |")
-											.Append("| MyField [Not Found] | Equals | Something |");
+											.Append("| MyField [Not Found] | equals | Something |");
 
 			Assert.AreEqual(expectedTable.ToString(), result);
 		}
@@ -107,7 +108,7 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGetComparisonTableWithValidFields()
 		{
-			var validation = new ItemValidation("MyField", "Something", ComparisonType.Equals);
+            var validation = ItemValidationHelper.Create("MyField", "Something");
 			var validationResult = new ValidationResult(new[] { validation });
 
 			var itemResult = new ValidationItemResult();
@@ -118,7 +119,7 @@ namespace SpecBind.Tests
 			var result = validationResult.GetComparisonTable();
 
 			var expectedTable = new StringBuilder()
-										.AppendLine("| MyField Equals Something |")
+										.AppendLine("| MyField equals Something |")
 											.Append("| Something                |");
 
 			Assert.AreEqual(expectedTable.ToString(), result);
@@ -130,7 +131,7 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGetComparisonTableWithInvalidFields()
 		{
-			var validation = new ItemValidation("MyField", "Something", ComparisonType.Equals);
+            var validation = ItemValidationHelper.Create("MyField", "Something");
 			var validationResult = new ValidationResult(new[] { validation });
 
 			var itemResult = new ValidationItemResult();
@@ -141,7 +142,7 @@ namespace SpecBind.Tests
 			var result = validationResult.GetComparisonTable();
 
 			var expectedTable = new StringBuilder()
-										.AppendLine("| MyField Equals Something |")
+										.AppendLine("| MyField equals Something |")
 											.Append("| Else                     |");
 
 			Assert.AreEqual(expectedTable.ToString(), result);
@@ -153,7 +154,7 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGetComparisonTableWithInvalidNullFields()
 		{
-			var validation = new ItemValidation("MyField", "Something", ComparisonType.Equals);
+            var validation = ItemValidationHelper.Create("MyField", "Something");
 			var validationResult = new ValidationResult(new[] { validation });
 
 			var itemResult = new ValidationItemResult();
@@ -164,7 +165,7 @@ namespace SpecBind.Tests
 			var result = validationResult.GetComparisonTable();
 
 			var expectedTable = new StringBuilder()
-										.AppendLine("| MyField Equals Something |")
+										.AppendLine("| MyField equals Something |")
 											.Append("| <EMPTY>                  |");
 
 			Assert.AreEqual(expectedTable.ToString(), result);
@@ -176,7 +177,7 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGetComparisonTableWithMissingFields()
 		{
-			var validation = new ItemValidation("MyField", "Something", ComparisonType.Equals);
+            var validation = ItemValidationHelper.Create("MyField", "Something");
 			var validationResult = new ValidationResult(new[] { validation });
 
 			var itemResult = new ValidationItemResult();
@@ -187,7 +188,7 @@ namespace SpecBind.Tests
 			var result = validationResult.GetComparisonTable();
 
 			var expectedTable = new StringBuilder()
-										.AppendLine("| MyField Equals Something |")
+										.AppendLine("| MyField equals Something |")
 											.Append("| <NOT FOUND>              |");
 
 			Assert.AreEqual(expectedTable.ToString(), result);

@@ -8,9 +8,11 @@ namespace SpecBind.CodedUI
 	using System.Drawing.Imaging;
 	using System.IO;
 	using System.Linq;
-	
+
+	using Microsoft.VisualStudio.TestTools.UITest.Extension;
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
+	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 	using SpecBind.BrowserSupport;
 	using SpecBind.Helpers;
@@ -22,7 +24,7 @@ namespace SpecBind.CodedUI
 	// ReSharper disable once InconsistentNaming
     public class CodedUIBrowser : BrowserBase, IDisposable
 	{
-		private readonly Dictionary<Type, Func<UITestControl, Action<HtmlControl>, HtmlDocument>> pageCache;
+        private readonly Dictionary<Type, Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument>> pageCache;
 		private readonly Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>> frameCache;
 		private readonly Lazy<BrowserWindow> window;
 		
@@ -36,7 +38,7 @@ namespace SpecBind.CodedUI
 		{
 			this.frameCache = new Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>>(GetFrameCache);
 			this.window = browserWindow;
-			this.pageCache = new Dictionary<Type, Func<UITestControl, Action<HtmlControl>, HtmlDocument>>();
+            this.pageCache = new Dictionary<Type, Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument>>();
 		}
 
 		/// <summary>
@@ -95,7 +97,52 @@ namespace SpecBind.CodedUI
 			this.window.Value.NavigateToUrl(url);
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Dismisses the alert.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="text">The text to enter.</param>
+	    public override void DismissAlert(AlertBoxAction action, string text)
+        {
+            var localBrowser = this.window.Value;
+
+            if (text != null)
+            {
+                localBrowser.PerformDialogAction(BrowserDialogAction.PromptText, text);
+                return;
+            }
+
+            // Get the action
+            var browserAction = BrowserDialogAction.None;
+            switch (action)
+            {
+                case AlertBoxAction.Cancel:
+                    browserAction = BrowserDialogAction.Cancel;
+                    break;
+                case AlertBoxAction.Close:
+                    browserAction = BrowserDialogAction.Close;
+                    break;
+                case AlertBoxAction.Ignore:
+                    browserAction = BrowserDialogAction.Ignore;
+                    break;
+                case AlertBoxAction.No:
+                    browserAction = BrowserDialogAction.No;
+                    break;
+                case AlertBoxAction.Ok:
+                    browserAction = BrowserDialogAction.Ok;
+                    break;
+                case AlertBoxAction.Retry:
+                    browserAction = BrowserDialogAction.Retry;
+                    break;
+                case AlertBoxAction.Yes:
+                    browserAction = BrowserDialogAction.Yes;
+                    break;
+            }
+
+            localBrowser.PerformDialogAction(browserAction);
+        }
+
+	    /// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
 		public void Dispose()
@@ -103,6 +150,18 @@ namespace SpecBind.CodedUI
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+
+	    /// <summary>
+        /// Executes the script.
+        /// </summary>
+        /// <param name="script">The script to execute.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>The result of the script if needed.</returns>
+	    public override object ExecuteScript(string script, params object[] args)
+	    {
+	        var localBrowser = this.window.Value;
+            return localBrowser.ExecuteScript(script, args);
+	    }
 
         /// <summary>
         /// Takes the screenshot from the native browser.
@@ -113,13 +172,39 @@ namespace SpecBind.CodedUI
 	    public override string TakeScreenshot(string imageFolder, string fileNameBase)
         {
             var localBrowser = this.window.Value;
-
             try
             {
                 var fullPath = Path.Combine(imageFolder, string.Format("{0}.jpg", fileNameBase));
 
                 var screenshot = localBrowser.CaptureImage();
                 screenshot.Save(fullPath, ImageFormat.Jpeg);
+
+                return fullPath;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Save the html from the native browser.
+        /// </summary>
+        /// <param name="destinationFolder">The destination folder.</param>
+        /// <param name="fileNameBase">The file name base.</param>
+        /// <returns>The complete file path if created; otherwise <c>null</c>.</returns>
+        public override string SaveHtml(string destinationFolder, string fileNameBase)
+        {
+            var localBrowser = this.window.Value;
+            try
+            {
+                var document = new HtmlDocument(localBrowser);
+                var html = document.GetProperty("OuterHtml").ToString();
+                var fullPath = Path.Combine(destinationFolder, string.Format("{0}.html", fileNameBase));
+                using (var writer = File.CreateText(fullPath))
+                {
+                    writer.Write(html);
+                }
 
                 return fullPath;
             }
@@ -198,7 +283,7 @@ namespace SpecBind.CodedUI
 		/// <returns>The internal document.</returns>
 		private HtmlDocument CreateNativePage(Type pageType)
 		{
-			Func<UITestControl, Action<HtmlControl>, HtmlDocument> function;
+			Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument> function;
 			if (!this.pageCache.TryGetValue(pageType, out function))
 			{
                 function = PageBuilder<UITestControl, HtmlDocument>.CreateElement(pageType);
@@ -232,7 +317,7 @@ namespace SpecBind.CodedUI
 				
 			}
 
-			var documentElement = function(parentElement, null);
+			var documentElement = function(parentElement, this, null);
 
 			if (isFrameDocument)
 			{

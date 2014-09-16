@@ -16,6 +16,28 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
     public class CreateCoursePage
     {
         /// <summary>
+        /// Gets or sets the dash title.
+        /// </summary>
+        /// <value>The dash title.</value>
+        public string DashTitle
+        {
+            get
+            {
+                return string.Format("{0}-{1}", this.Number.Text.Trim(), this.CourseTitle.Text.Trim());
+            }
+
+            set
+            {
+                var split = value.Split(new[] { '-' }, 2);
+                if (split.Length == 2)
+                {
+                    this.Number.SendKeys(split[0]);
+                    this.CourseTitle.SendKeys(split[1]);
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the department combo box.
         /// </summary>
         /// <value>The the department combo box.</value>

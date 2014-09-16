@@ -45,11 +45,25 @@ namespace SpecBind.CodedUI.IntegrationTests.Pages
         public HtmlHyperlink Departments { get; set; }
 
         /// <summary>
+        /// Gets or sets the instructors link button.
+        /// </summary>
+        /// <value>The instructors link button.</value>
+        [ElementLocator(Id = "instructorsLink")]
+        public HtmlHyperlink Instructors { get; set; }
+
+        /// <summary>
         /// Gets or sets the login link button.
         /// </summary>
         /// <value>The login link button.</value>
         [ElementLocator(Id = "loginLink")]
         public HtmlHyperlink LogOn { get; set; }
+
+        /// <summary>
+        /// Gets or sets the new information link button.
+        /// </summary>
+        /// <value>The new information link button.</value>
+        [ElementLocator(Id = "newInfoLink")]
+        public HtmlHyperlink NewInformation { get; set; }
 
 		/// <summary>
 		/// Gets or sets the students link button.

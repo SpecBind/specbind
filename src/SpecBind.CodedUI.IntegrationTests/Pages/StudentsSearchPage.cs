@@ -58,6 +58,13 @@ namespace SpecBind.CodedUI.IntegrationTests.Pages
 			{
 			}
 
+            /// <summary>
+            /// Gets or sets the details link.
+            /// </summary>
+            /// <value>The details link.</value>
+            [ElementLocator(Id = "detailsLink")]
+            public HtmlHyperlink Details { get; set; }
+
 			/// <summary>
 			/// Gets or sets the first name cell.
 			/// </summary>

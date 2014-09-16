@@ -15,6 +15,7 @@ namespace SpecBind.Selenium.Tests
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.PageObjects;
 
+    using SpecBind.BrowserSupport;
     using SpecBind.Pages;
 
     /// <summary>
@@ -30,6 +31,7 @@ namespace SpecBind.Selenium.Tests
         public void TestCreatePage()
         {
             var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             var listItem = new Mock<IWebElement>(MockBehavior.Loose);
             listItem.Setup(l => l.Displayed).Returns(true);
@@ -46,7 +48,7 @@ namespace SpecBind.Selenium.Tests
 
             var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(BuildPage));
 
-            var pageObject = pageFunc(driver.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, null);
             var page = pageObject as BuildPage;
 
             Assert.IsNotNull(page);
@@ -94,6 +96,7 @@ namespace SpecBind.Selenium.Tests
         public void TestMultipleConstructorArguments()
         {
             var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             var listItem = new Mock<IWebElement>(MockBehavior.Loose);
             listItem.Setup(l => l.Displayed).Returns(true);
@@ -110,7 +113,7 @@ namespace SpecBind.Selenium.Tests
 
             var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NestedElementPage));
 
-            var pageObject = pageFunc(driver.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, null);
             var page = pageObject as NestedElementPage;
 
             Assert.IsNotNull(page);
@@ -125,7 +128,6 @@ namespace SpecBind.Selenium.Tests
             Assert.IsNotNull(element.SearchContext);
             Assert.IsNotNull(element.Driver);
 
-            Assert.AreNotSame(element.Driver, element.SearchContext);
             Assert.AreSame(driver.Object, element.Driver);
             Assert.AreSame(page.FirstChild, element.SearchContext);
         }
@@ -137,10 +139,11 @@ namespace SpecBind.Selenium.Tests
         public void TestCreatePageWithNativeAttributes()
         {
             var driver = new Mock<IWebDriver>();
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NativeAttributePage));
 
-            var pageObject = pageFunc(driver.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, null);
             var page = pageObject as NativeAttributePage;
 
             Assert.IsNotNull(page);
@@ -155,10 +158,11 @@ namespace SpecBind.Selenium.Tests
         public void TestCreatePageWithCombinedNativeAndLocatorAttributes()
         {
             var driver = new Mock<IWebDriver>();
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NativeAttributePage));
 
-            var pageObject = pageFunc(driver.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, null);
             var page = pageObject as NativeAttributePage;
 
             Assert.IsNotNull(page);
@@ -173,10 +177,11 @@ namespace SpecBind.Selenium.Tests
         public void TestCreatePageWithDuplicateNativeAndLocatorAttributes()
         {
             var driver = new Mock<IWebDriver>();
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NativeAttributePage));
 
-            var pageObject = pageFunc(driver.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, null);
             var page = pageObject as NativeAttributePage;
 
             Assert.IsNotNull(page);
@@ -191,6 +196,7 @@ namespace SpecBind.Selenium.Tests
         public void TestCreatePageWithNativeProperties()
         {
             var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             var listItem = new Mock<IWebElement>(MockBehavior.Loose);
             listItem.Setup(l => l.Displayed).Returns(true);
@@ -207,7 +213,7 @@ namespace SpecBind.Selenium.Tests
 
             var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(BuildPage));
 
-            var pageObject = pageFunc(driver.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, null);
             var page = pageObject as BuildPage;
 
             Assert.IsNotNull(page);
@@ -220,6 +226,38 @@ namespace SpecBind.Selenium.Tests
 
             Assert.IsNotNull(page.UserName);
             AssertLocatorValue(page.UserName, By.Name("UserName"));
+
+            // Image Url Testing
+            Assert.IsNotNull(page.ImageElement);
+            AssertLocatorValue(page.ImageElement, By.XPath("//img[@src='/myapp']"));
+
+            // Link Url Testing
+            Assert.IsNotNull(page.LinkElement);
+            AssertLocatorValue(page.LinkElement, By.XPath("//a[@href='/myapp']"));
+
+            // Link Area Url Testing
+            Assert.IsNotNull(page.LinkAreaElement);
+            AssertLocatorValue(page.LinkAreaElement, By.XPath("//area[@href='/myapp']"));
+            
+            // Image Alt Testing
+            Assert.IsNotNull(page.AltImageElement);
+            AssertLocatorValue(page.AltImageElement, By.XPath("//img[@alt='Alt Text']"));
+
+            // Value Attribute Testing
+            Assert.IsNotNull(page.ValueElement);
+            AssertLocatorValue(page.ValueElement, By.XPath("//input[@value='something']"));
+
+            // Title Attribute Testing
+            Assert.IsNotNull(page.TitleElement);
+            AssertLocatorValue(page.TitleElement, By.XPath("//p[@title='royal']"));
+
+            // Type Attribute Testing
+            Assert.IsNotNull(page.InputTypeElement);
+            AssertLocatorValue(page.InputTypeElement, By.XPath("//input[@type='password']"));
+
+            // Index Attribute Testing
+            Assert.IsNotNull(page.IndexElement);
+            AssertLocatorValue(page.IndexElement, By.XPath("//button[1]"));
 
             // Nesting Test
             Assert.IsNotNull(page.MyDiv);
@@ -261,10 +299,33 @@ namespace SpecBind.Selenium.Tests
             Assert.IsNotNull(pageFunc);
 
             var driver = new Mock<IWebDriver>();
-            var page = pageFunc(driver.Object, null);
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+            var page = pageFunc(driver.Object, browser.Object, null);
 
             Assert.IsNotNull(page);
             Assert.IsInstanceOfType(page, typeof(NoConstructorElement));
+        }
+
+        /// <summary>
+        /// Tests the create page method with the browser in the constructor.
+        /// </summary>
+        [TestMethod]
+        public void TestCreatePageWithBrowserArgument()
+        {
+            var driver = new Mock<IWebDriver>();
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+            var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(BrowserDocument));
+
+            var pageObject = pageFunc(driver.Object, browser.Object, null);
+            var page = pageObject as BrowserDocument;
+
+            Assert.IsNotNull(page);
+            Assert.IsNotNull(page.Browser);
+            
+            driver.VerifyAll();
+            browser.VerifyAll();
         }
 
         /// <summary>
@@ -281,24 +342,6 @@ namespace SpecBind.Selenium.Tests
             Assert.AreEqual(typeof(SeleniumListElementWrapper<IWebElement, IWebElement>), concreteType);
         }
 
-        ///// <summary>
-        ///// Tests the frame document creation. Save for when frames are supported.
-        ///// </summary>
-        //[TestMethod]
-        //public void TestFrameDocument()
-        //{
-        //    var docType = typeof(MasterDocument);
-        //    var property = docType.GetProperty("FrameNavigation");
-
-        //    var window = new BrowserWindow();
-        //    var pageFunc = PageBuilder<BrowserWindow, HtmlControl>.CreateFrameLocator(docType, property);
-        //    var page = pageFunc(window);
-
-        //    Assert.IsNotNull(page);
-        //    Assert.IsInstanceOfType(page, typeof(HtmlFrame));
-        //    Assert.AreEqual("1234", page.SearchProperties[HtmlControl.PropertyNames.Id]);
-        //}
-
         /// <summary>
         /// Asserts the locator value.
         /// </summary>
@@ -310,7 +353,7 @@ namespace SpecBind.Selenium.Tests
             var proxy = element as WebElement;
             if (proxy != null)
             {
-                if (proxy.Locators.Any(l => l == findBy))
+                if (proxy.Locators.Any(l => l.ToString() == findBy.ToString()))
                 {
                     return;
                 }
@@ -404,6 +447,31 @@ namespace SpecBind.Selenium.Tests
             public IWebElement UserName { get; set; }
 
             /// <summary>
+            /// Gets or sets the input type element.
+            /// </summary>
+            /// <value>The input type element.</value>
+            [ElementLocator(Type = "password", TagName = "input")]
+            public IWebElement InputTypeElement { get; set; }
+
+            /// <summary>
+            /// Gets or sets the name of the user.
+            /// </summary>
+            /// <value>
+            /// The name of the user.
+            /// </value>
+            [ElementLocator(Alt = "Alt Text", TagName = "img")]
+            public IWebElement AltImageElement { get; set; }
+
+            /// <summary>
+            /// Gets or sets the name of the user.
+            /// </summary>
+            /// <value>
+            /// The name of the user.
+            /// </value>
+            [ElementLocator(Url = "/myapp", TagName = "img")]
+            public IWebElement ImageElement { get; set; }
+
+            /// <summary>
             /// Gets or sets my collection.
             /// </summary>
             /// <value>
@@ -411,6 +479,41 @@ namespace SpecBind.Selenium.Tests
             /// </value>
             [ElementLocator(Id = "ListDiv")]
             public IElementList<IWebElement, ListItem> MyCollection { get; set; }
+
+            /// <summary>
+            /// Gets or sets the link element.
+            /// </summary>
+            /// <value>The link element.</value>
+            [ElementLocator(Url = "/myapp", TagName = "a")]
+            public IWebElement LinkElement { get; set; }
+
+            /// <summary>
+            /// Gets or sets the link element.
+            /// </summary>
+            /// <value>The link element.</value>
+            [ElementLocator(Url = "/myapp", TagName = "area")]
+            public IWebElement LinkAreaElement { get; set; }
+
+            /// <summary>
+            /// Gets or sets the title element.
+            /// </summary>
+            /// <value>The title element.</value>
+            [ElementLocator(Title = "royal", TagName = "p")]
+            public IWebElement TitleElement { get; set; }
+
+            /// <summary>
+            /// Gets or sets the value element.
+            /// </summary>
+            /// <value>The value element.</value>
+            [ElementLocator(Value = "something", TagName = "input")]
+            public IWebElement ValueElement { get; set; }
+
+            /// <summary>
+            /// Gets or sets the index element.
+            /// </summary>
+            /// <value>The index element.</value>
+            [ElementLocator(TagName = "button", Index = 2)]
+            public IWebElement IndexElement { get; set; }
         }
 
         /// <summary>
@@ -441,7 +544,7 @@ namespace SpecBind.Selenium.Tests
         /// An inner list item.
         /// </summary>
         [ElementLocator(TagName = "LI")]
-        public class ListItem : WebElement
+        public class ListItem : WebElement, IDataControl
         {
             /// <summary>
             /// Initializes a new instance of the <see cref="WebElement" /> class.
@@ -460,6 +563,16 @@ namespace SpecBind.Selenium.Tests
             /// </value>
             [ElementLocator(Id = "itemTitle")]
             public IWebElement MyTitle { get; set; }
+
+            /// <summary>
+            /// Sets the value in the control.
+            /// </summary>
+            /// <param name="value">The value to set.</param>
+            /// <exception cref="System.NotImplementedException">Not Implemented</exception>
+            public void SetValue(string value)
+            {
+                throw new System.NotImplementedException();
+            }
         }
 
         #endregion
@@ -575,6 +688,31 @@ namespace SpecBind.Selenium.Tests
             public ISearchContext SearchContext { get; private set; }
         }
 
+        #endregion
+
+        #region Class - BrowserDocument
+
+        /// <summary>
+        /// Class BrowserDocument.
+        /// </summary>
+        public class BrowserDocument
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="BrowserDocument"/> class.
+            /// </summary>
+            /// <param name="browser">The browser.</param>
+            public BrowserDocument(IBrowser browser)
+            {
+                this.Browser = browser;
+            }
+
+            /// <summary>
+            /// Gets the browser.
+            /// </summary>
+            /// <value>The browser.</value>
+            public IBrowser Browser { get; private set; }
+        }
+        
         #endregion
     }
 }

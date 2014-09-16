@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>SpecBind.Selenium</id>
+    <version>$version$</version>
+    <title>SpecBind Selenium Module</title>
+    <authors>dpiessens</authors>
+    <owners>dpiessens</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <projectUrl>https://github.com/dpiessens/specbind</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>An extension to SpecBind that allows it to integrate with Selenium.</description>
+    <summary>An extension to SpecBind that allows it to integrate with Selenium.</summary>
+    <tags>specbind selenium</tags>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="SpecBind" version="$version$" />
+        <dependency id="Selenium.WebDriver" version="2.37.0" />
+        <dependency id="Selenium.Support" version="2.37.0" />
+        <dependency id="SpecBindGeneratorPlugin.SpecFlow" version="$version$" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\SpecBind.Selenium.dll" target="lib\net45" />
+    <file src="bin\Release\SpecBind.Selenium.xml" target="lib\net45" />
+    <file src="Deployment\App.config.transform" target="content" />
+  </files>
+</package>

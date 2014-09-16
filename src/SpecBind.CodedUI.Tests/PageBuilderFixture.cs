@@ -5,12 +5,14 @@
 namespace SpecBind.CodedUI.Tests
 {
 	using System;
-	using System.Linq;
-
+	
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+	using Moq;
+
+	using SpecBind.BrowserSupport;
 	using SpecBind.Pages;
 
 	/// <summary>
@@ -25,13 +27,13 @@ namespace SpecBind.CodedUI.Tests
 		[TestMethod]
 		public void TestCreatePage()
 		{
-			var window = new BrowserWindow();
+		    var window = new BrowserWindow();
             var pageFunc = PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(BuildPage));
 
-		    var pageObject = pageFunc(window, null);
+		    var pageObject = pageFunc(window, null, null);
             var page = pageObject as BuildPage;
 
-			Assert.IsNotNull(page);
+            Assert.IsNotNull(page);
 			Assert.AreEqual("/builds", page.FilterProperties[HtmlDocument.PropertyNames.AbsolutePath]);
 			Assert.AreEqual("http://localhost:2222/builds", page.FilterProperties[HtmlDocument.PropertyNames.PageUrl]);
 
@@ -72,7 +74,28 @@ namespace SpecBind.CodedUI.Tests
 			var propertyList = (CodedUIListElementWrapper<HtmlDiv, ListItem>)page.MyCollection;
 			Assert.IsNotNull(propertyList.Parent);
 			Assert.AreEqual("ListDiv", propertyList.Parent.SearchProperties[HtmlControl.PropertyNames.Id]);
+
+            // Table Test
+            Assert.IsNotNull(page.MyTable);
 		}
+
+        /// <summary>
+        /// Tests the table element if populated is not replaced on build.
+        /// </summary>
+	    [TestMethod]
+        public void TestTableElementIfPopulatedIsNotReplaced()
+	    {
+            var window = new BrowserWindow();
+            var pageFunc = PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(BuildPage));
+
+            var pageObject = pageFunc(window, null, null);
+            var page = pageObject as BuildPage;
+            
+            Assert.IsNotNull(page);
+            Assert.IsNotNull(page.MyPopulatedTable);
+            Assert.AreEqual(page.MyPopulatedTable.GetHashCode(), page.TableHashCode);
+
+	    }
 
 		/// <summary>
 		/// Tests the missing argument constructor scenario.
@@ -127,6 +150,27 @@ namespace SpecBind.CodedUI.Tests
 			Assert.AreEqual("1234", page.SearchProperties[HtmlControl.PropertyNames.Id]);
 		}
 
+        /// <summary>
+        /// Tests the create page method with the browser in the constructor.
+        /// </summary>
+        [TestMethod]
+        public void TestCreatePageWithBrowserArgument()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+            var window = new BrowserWindow();
+            var pageFunc = PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(BrowserDocument));
+
+            var pageObject = pageFunc(window, browser.Object, null);
+            var page = pageObject as BrowserDocument;
+
+            Assert.IsNotNull(page);
+            Assert.AreSame(browser.Object, page.Browser);
+            Assert.AreSame(window, page.Parent);
+
+            browser.VerifyAll();
+        }
+
 		#region Class - FrameDocument
 
 		/// <summary>
@@ -168,6 +212,8 @@ namespace SpecBind.CodedUI.Tests
 			public BuildPage(UITestControl parent)
 				: base(parent)
 			{
+                MyPopulatedTable = new TableElement<HtmlRow>();
+			    TableHashCode = MyPopulatedTable.GetHashCode();
 			}
 
 			/// <summary>
@@ -232,6 +278,26 @@ namespace SpecBind.CodedUI.Tests
 			/// </value>
 			[ElementLocator(Id = "ListDiv")]
 			public IElementList<HtmlDiv, ListItem> MyCollection { get; set; }
+
+            /// <summary>
+            /// Gets or sets the driver.
+            /// </summary>
+            /// <value>The driver.</value>
+            [ElementLocator(Id = "Table")]
+            public TableElement<HtmlRow> MyTable { get; set; }
+
+            /// <summary>
+            /// Gets or sets the table driver that's already built.
+            /// </summary>
+            /// <value>The driver.</value>
+            [ElementLocator(Id = "Table2")]
+            public TableElement<HtmlRow> MyPopulatedTable { get; set; }
+
+            /// <summary>
+            /// Gets the table hash code.
+            /// </summary>
+            /// <value>The table hash code.</value>
+            public int TableHashCode { get; private set; }
 		}
 
 		/// <summary>
@@ -295,5 +361,39 @@ namespace SpecBind.CodedUI.Tests
 		}
 
 		#endregion
+
+        #region Class - BrowserDocument
+
+        /// <summary>
+        /// Class BrowserDocument.
+        /// </summary>
+        public class BrowserDocument : HtmlDocument
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="BrowserDocument"/> class.
+            /// </summary>
+            /// <param name="parent">The parent.</param>
+            /// <param name="browser">The browser.</param>
+            public BrowserDocument(UITestControl parent, IBrowser browser)
+                : base(parent)
+            {
+                this.Parent = parent;
+                this.Browser = browser;
+            }
+
+            /// <summary>
+            /// Gets the parent.
+            /// </summary>
+            /// <value>The parent.</value>
+            public UITestControl Parent { get; private set; }
+
+            /// <summary>
+            /// Gets the browser.
+            /// </summary>
+            /// <value>The browser.</value>
+            public IBrowser Browser { get; private set; }
+        }
+
+        #endregion
 	}
 }

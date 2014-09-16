@@ -12,7 +12,8 @@ namespace SpecBind.Helpers
 	/// <summary>
 	/// A class that assists in locating resources in the project.
 	/// </summary>
-	public static class ResourceLocator
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public static class ResourceLocator
 	{
 		private static readonly List<Tuple<string, ResourceManager>> ResourceManagers = new List<Tuple<string, ResourceManager>>();
 		private static bool initialized;

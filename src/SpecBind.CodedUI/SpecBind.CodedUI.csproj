@@ -58,6 +58,7 @@
     <Compile Include="CodedUIBrowserFactory.cs" />
     <Compile Include="CodedUIListElementWrapper.cs" />
     <Compile Include="CodedUIPage.cs" />
+    <Compile Include="CodedUITableDriver.cs" />
     <Compile Include="FrameMapAttribute.cs" />
     <Compile Include="PageBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -98,6 +99,7 @@
     </PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.targets" Condition="Exists('$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

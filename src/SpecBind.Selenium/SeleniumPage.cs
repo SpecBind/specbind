@@ -8,9 +8,10 @@ namespace SpecBind.Selenium
     using System.Reflection;
 
     using OpenQA.Selenium;
-    using OpenQA.Selenium.Support.PageObjects;
     using OpenQA.Selenium.Support.UI;
 
+    using SpecBind.Actions;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -18,30 +19,14 @@ namespace SpecBind.Selenium
     /// </summary>
     public class SeleniumPage : PageBase<object, IWebElement>
     {
-        private readonly SeleniumPageBuilder builder;
-        private readonly object nativePage;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SeleniumPage"/> class.
         /// </summary>
         /// <param name="nativePage">The native page.</param>
-        public SeleniumPage(object nativePage) : base(nativePage.GetType())
+        public SeleniumPage(object nativePage) : base(nativePage.GetType(), nativePage)
         {
-            this.nativePage = nativePage;
-
-            this.builder = new SeleniumPageBuilder();
         }
-
-        /// <summary>
-        /// Gets the native page.
-        /// </summary>
-        /// <typeparam name="TPage">The type of the t page.</typeparam>
-        /// <returns>The native page object.</returns>
-        public override TPage GetNativePage<TPage>()
-        {
-            return (TPage)this.nativePage;
-        }
-
+        
         /// <summary>
         /// Checks to see if the element is enabled.
         /// </summary>
@@ -76,6 +61,7 @@ namespace SpecBind.Selenium
                     var selectElement = new SelectElement(element);
                     return selectElement.SelectedOption.Text;
                 case "input":
+                case "textarea":
                     // Special case for a checkbox control
                     if (string.Equals("checkbox", element.GetAttribute("type"), StringComparison.OrdinalIgnoreCase))
                     {
@@ -105,11 +91,7 @@ namespace SpecBind.Selenium
         /// <returns><c>true</c> if the element is clicked, <c>false</c> otherwise.</returns>
         public override bool ClickElement(IWebElement element)
         {
-            if (!element.Selected)
-            {
-                element.Click();
-            }
-
+            element.Click();
             return true;
         }
 
@@ -122,6 +104,46 @@ namespace SpecBind.Selenium
         {
             return FillPage;
         }
+
+        /// <summary>
+        /// Waits for the element to meet a certain condition.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="waitCondition">The wait condition.</param>
+        /// <param name="timeout">The timeout to wait before failing.</param>
+        /// <returns><c>true</c> if the condition is met, <c>false</c> otherwise.</returns>
+        public override bool WaitForElement(IWebElement element, WaitConditions waitCondition, TimeSpan? timeout)
+        {
+            var waiter = new DefaultWait<IWebElement>(element);
+            waiter.Timeout = timeout.GetValueOrDefault(waiter.Timeout);
+
+            waiter.IgnoreExceptionTypes(typeof(ElementNotVisibleException), typeof(NotFoundException));
+
+            try
+            {
+                switch (waitCondition)
+                {
+                    case WaitConditions.NotExists:
+                        waiter.Until(e => !e.Displayed);
+                        break;
+                    case WaitConditions.Enabled:
+                        waiter.Until(e => e.Enabled);
+                        break;
+                    case WaitConditions.NotEnabled:
+                        waiter.Until(e => !e.Enabled);
+                        break;
+                    case WaitConditions.Exists:
+                        waiter.Until(e => e.Displayed);
+                        break;
+                }
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
+            
+            return true;
+        }
         
         /// <summary>
         /// Checks to see if the property type is supported.
@@ -130,7 +152,7 @@ namespace SpecBind.Selenium
         /// <returns><c>true</c> if the type is supported, <c>false</c> otherwise.</returns>
         protected override bool SupportedPropertyType(Type type)
         {
-            return type.IsInterface;
+            return typeof(IWebElement).IsAssignableFrom(type) || typeof(string).IsAssignableFrom(type);
         }
 
         /// <summary>
@@ -159,6 +181,10 @@ namespace SpecBind.Selenium
             {
                 return false;
             }
+            catch (NotFoundException)
+            {
+                return false;
+            }
             catch (ElementNotVisibleException)
             {
                 return false;
@@ -172,6 +198,15 @@ namespace SpecBind.Selenium
         /// <param name="data">The data.</param>
         private static void FillPage(IWebElement element, string data)
         {
+            // Respect the data control interface first.
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            var dataControlElement = element as IDataControl;
+            if (dataControlElement != null)
+            {
+                dataControlElement.SetValue(data);
+                return;
+            }
+
             var tagName = element.TagName.ToLowerInvariant().Trim();
             switch (tagName)
             {
@@ -186,13 +221,28 @@ namespace SpecBind.Selenium
                     break;
                 case "input":
                     // Special case for a checkbox control
-                    if (string.Equals("checkbox", element.GetAttribute("type"), StringComparison.OrdinalIgnoreCase))
+                    var inputType = element.GetAttribute("type");
+                    if (string.Equals("checkbox", inputType, StringComparison.OrdinalIgnoreCase))
                     {
                         bool checkValue;
                         if (bool.TryParse(data, out checkValue) && element.Selected != checkValue)
                         {
                             element.Click();
                         }
+                        return;
+                    }
+
+                    if (string.Equals("radio", inputType, StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Need to click twice to select the element.
+                        element.Click();
+                        element.Click();
+                        return;
+                    }
+                    
+                    if (string.Equals("file", inputType, StringComparison.OrdinalIgnoreCase))
+                    {
+                        FileUploadHelper.UploadFile(data, element.SendKeys);
                         return;
                     }
                     goto default;

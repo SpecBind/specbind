@@ -6,11 +6,9 @@ using TechTalk.SpecFlow;
 
 namespace SpecBind.CodedUI.IntegrationTests.Steps
 {
-    using Microsoft.VisualStudio.TestTools.UITest.Extension;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using SpecBind.ActionPipeline;
-    using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
     using SpecBind.Pages;
 
@@ -22,20 +20,16 @@ namespace SpecBind.CodedUI.IntegrationTests.Steps
     [Binding]
     public class ErrorCheckSteps : Steps
     {
-        private readonly CommonPageSteps commonPageSteps;
+        private readonly DataSteps dataSteps;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ErrorCheckSteps" /> class.
         /// </summary>
-        /// <param name="browser">The browser.</param>
-        /// <param name="pageDataFiller">The page data filler.</param>
-        /// <param name="pageMapper">The page mapper.</param>
         /// <param name="scenarioContext">The scenario context.</param>
-        /// <param name="tokenManager">The token manager.</param>
         /// <param name="actionPipelineService">The action pipeline service.</param>
-        public ErrorCheckSteps(IBrowser browser, IPageDataFiller pageDataFiller, IPageMapper pageMapper, IScenarioContextHelper scenarioContext, ITokenManager tokenManager, IActionPipelineService actionPipelineService)
+        public ErrorCheckSteps(IScenarioContextHelper scenarioContext, IActionPipelineService actionPipelineService)
         {
-            this.commonPageSteps = new CommonPageSteps(browser, pageDataFiller, pageMapper, scenarioContext, tokenManager, actionPipelineService);
+            this.dataSteps = new DataSteps(scenarioContext, actionPipelineService);
         }
 
         /// <summary>
@@ -47,14 +41,14 @@ namespace SpecBind.CodedUI.IntegrationTests.Steps
         {
             try
             {
-                this.commonPageSteps.WhenIEnterDataInFieldsStep(data);
+                this.dataSteps.WhenIEnterDataInFieldsStep(data);
             }
-            catch (PlaybackFailureException)
+            catch (ElementExecuteException)
             {
                 return;
             }
-            
-            throw new AssertFailedException("Step should have thrown a PlaybackFailureException due to invalid data");
+
+            throw new AssertFailedException("Step should have thrown a ElementExecuteException due to invalid data");
         }
     }
 }

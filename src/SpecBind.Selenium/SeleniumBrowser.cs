@@ -13,6 +13,7 @@ namespace SpecBind.Selenium
     using OpenQA.Selenium;
     
     using SpecBind.BrowserSupport;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -22,9 +23,10 @@ namespace SpecBind.Selenium
     {
         private readonly Lazy<IWebDriver> driver;
         private readonly SeleniumPageBuilder pageBuilder;
-        private readonly Dictionary<Type, Func<IWebDriver, Action<object>, object>> pageCache;
+        private readonly Dictionary<Type, Func<IWebDriver, IBrowser, Action<object>, object>> pageCache;
 
         private bool disposed;
+        private bool switchedContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SeleniumBrowser"/> class.
@@ -35,7 +37,7 @@ namespace SpecBind.Selenium
             this.driver = driver;
 
             this.pageBuilder = new SeleniumPageBuilder();
-            this.pageCache = new Dictionary<Type, Func<IWebDriver, Action<object>, object>>();
+            this.pageCache = new Dictionary<Type, Func<IWebDriver, IBrowser, Action<object>, object>>();
         }
 
         /// <summary>
@@ -79,6 +81,64 @@ namespace SpecBind.Selenium
             {
                 this.driver.Value.Close();
             }
+        }
+
+        /// <summary>
+        /// Dismisses the alert.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="text">The text to enter.</param>
+        public override void DismissAlert(AlertBoxAction action, string text)
+        {
+            var alert = this.driver.Value.SwitchTo().Alert();
+
+            if (text != null)
+            {
+                alert.SendKeys(text);
+            }
+
+            switch (action)
+            {
+                case AlertBoxAction.Cancel:
+                case AlertBoxAction.Close:
+                case AlertBoxAction.Ignore:
+                case AlertBoxAction.No:
+                    alert.Dismiss();
+                    break;
+                case AlertBoxAction.Ok:
+                case AlertBoxAction.Retry:
+                case AlertBoxAction.Yes:
+                    alert.Accept();
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Executes the script.
+        /// </summary>
+        /// <param name="script">The script to execute.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>The result of the script if needed.</returns>
+        public override object ExecuteScript(string script, params object[] args)
+        {
+            var javascriptExecutor = this.driver.Value as IJavaScriptExecutor;
+
+            if (javascriptExecutor == null)
+            {
+                return null;
+            }
+
+            var result = javascriptExecutor.ExecuteScript(script, args);
+            
+            var webElement = result as IWebElement;
+            if (webElement == null)
+            {
+                return result;
+            }
+
+            var proxy = new WebElement(webElement);
+            proxy.CloneNativeElement(webElement);
+            return proxy;
         }
 
         /// <summary>
@@ -131,6 +191,31 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Save the html from the native browser.
+        /// </summary>
+        /// <param name="destinationFolder">The destination folder.</param>
+        /// <param name="fileNameBase">The file name base.</param>
+        /// <returns>The complete file path if created; otherwise <c>null</c>.</returns>
+        public override string SaveHtml(string destinationFolder, string fileNameBase)
+        {
+            var localDriver = this.driver.Value;
+            try
+            {
+                var fullPath = Path.Combine(destinationFolder, string.Format("{0}.html", fileNameBase));
+                using (var writer = File.CreateText(fullPath))
+                {
+                    writer.Write(localDriver.PageSource);
+                }
+
+                return fullPath;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Gets the native page location.
         /// </summary>
         /// <param name="page">The page interface.</param>
@@ -151,14 +236,28 @@ namespace SpecBind.Selenium
         {
             var webDriver = this.driver.Value;
 
-            Func<IWebDriver, Action<object>, object> pageBuildMethod;
+            // Check to see if a frames reference exists, and switch if needed
+            PageNavigationAttribute navigationAttribute;
+            if (pageType.TryGetAttribute(out navigationAttribute) && !string.IsNullOrWhiteSpace(navigationAttribute.FrameName))
+            {
+                webDriver.SwitchTo().Frame(navigationAttribute.FrameName);
+                this.switchedContext = true;
+            }
+            else if (this.switchedContext)
+            {
+                webDriver.SwitchTo().DefaultContent();
+                this.switchedContext = false;
+            }
+
+            Func<IWebDriver, IBrowser, Action<object>, object> pageBuildMethod;
             if (!this.pageCache.TryGetValue(pageType, out pageBuildMethod))
             {
                 pageBuildMethod = pageBuilder.CreatePage(pageType);
                 this.pageCache.Add(pageType, pageBuildMethod);
             }
 
-            var nativePage = pageBuildMethod(webDriver, null);
+            var nativePage = pageBuildMethod(webDriver, this, null);
+
             return new SeleniumPage(nativePage);
         }
 

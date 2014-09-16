@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "New Information";
+}
+
+<h2>New Information</h2>
+
+<p>Click the bottons to display different prompt boxes.</p>
+
+<p>Result: <div id="resultText"></div></p>
+
+<button id="alertButton" onclick="alertUser()">Alert Box</button>
+
+<button id="confirmButton" onclick="confirmUser()">Confirm Box</button>
+
+<button id="promptButton" onclick="promptUser()">Prompt Example</button>
+
+<script>
+    function alertUser() {
+        alert("I am an alert box!");
+        displayResult("Alert Cleared");
+    }
+
+    function promptUser() {
+        var person = prompt("Please enter your name");
+        
+        if (person != null) {
+            displayResult(person);
+        }
+    }
+    
+    function confirmUser() {
+        var x;
+        var r = confirm("Press a button!");
+
+        if (r == true) {
+            x = "You pressed OK!";
+        }
+        else {
+            x = "You pressed Cancel!";
+        }
+        
+        displayResult(x);
+    }
+    
+    function displayResult(text)
+    {
+        document.getElementById("resultText").innerHTML = text;
+    }
+</script>

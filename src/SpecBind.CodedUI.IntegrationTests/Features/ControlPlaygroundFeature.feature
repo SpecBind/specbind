@@ -1,5 +1,6 @@
 ﻿Feature: A test playground for inspecting control's behaviors
-	
+
+@Ignore
 Scenario: Transition to a search page date picker to another control.
 	Given I navigated to the Echo Search page
 	  And I was on the Echo Search page

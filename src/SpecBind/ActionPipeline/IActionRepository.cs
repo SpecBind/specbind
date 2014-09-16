@@ -1,16 +1,28 @@
 ﻿// <copyright file="IActionRepository.cs">
 //    Copyright © 2013 Dan Piessens  All rights reserved.
 // </copyright>
+// <copyright file="IActionRepository.cs">
+//    Copyright © 2013 Dan Piessens  All rights reserved.
+// </copyright>
 
 namespace SpecBind.ActionPipeline
 {
 	using System.Collections.Generic;
 
-	/// <summary>
+	using SpecBind.Validation;
+
+    /// <summary>
 	/// Contains a cache of available actions, pre-actions and post-actions.
 	/// </summary>
 	public interface IActionRepository
 	{
+        /// <summary>
+        /// Creates the action.
+        /// </summary>
+        /// <typeparam name="TAction">The type of the action.</typeparam>
+        /// <returns>The created action object.</returns>
+        TAction CreateAction<TAction>();
+
 		/// <summary>
 		/// Gets the post-execute actions.
 		/// </summary>
@@ -28,5 +40,11 @@ namespace SpecBind.ActionPipeline
 		/// </summary>
 		/// <returns>An enumerable collection of actions.</returns>
 		IEnumerable<ILocatorAction> GetLocatorActions();
+
+	    /// <summary>
+	    /// Gets the comparison actions used to process various types.
+	    /// </summary>
+	    /// <returns>An enumerable collection of actions.</returns>
+	    IReadOnlyCollection<IValidationComparer> GetComparisonTypes();
 	}
 }

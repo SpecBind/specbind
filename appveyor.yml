@@ -1,0 +1,106 @@
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# version format
+version: 1.3.2.{build}
+
+# branches to build
+branches:
+  # whitelist
+  only:
+    - master
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+# Operating system (build VM template)
+os: Windows Server 2012 R2
+
+# this is how to allow failing jobs in the matrix
+# matrix:
+  # fast_finish: true     # set this flag to immediately finish build once one of the jobs fails.
+  # allow_failures:
+    # - platform: x86
+      # configuration: Debug
+    # - platform: x64
+      # configuration: Release
+
+# environment variables
+environment:
+  package_dir: NuGet_Packages
+
+install:
+  - cinst stylecop
+
+# enable patching of AssemblyInfo.* files
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: "{version}"
+  assembly_file_version: "{version}"
+  assembly_informational_version: "{version}"
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: Any CPU
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration: Release
+
+build:
+  project: src\SpecBind.sln       # path to Visual Studio solution or project
+  publish_wap: false              # package Web Application Projects (WAP) for Web Deploy
+  publish_wap_xcopy: false        # package Web Application Projects (WAP) for XCopy deployment
+  publish_azure: false            # package Azure Cloud Service projects and push to artifacts
+  publish_nuget: false             # package projects with .nuspec files and push to artifacts
+
+  # MSBuild verbosity level quiet|minimal|normal|detailed
+  verbosity: normal
+
+# scripts to run before build
+before_build:
+  - ps: If (Test-Path "$env:package_dir") { Remove-Item "$env:package_dir" -Recurse -Force -ErrorAction SilentlyContinue }
+  - nuget restore src\SpecBind.sln
+
+# scripts to run after build
+after_build:
+  - mkdir %PACKAGE_DIR%
+  - nuget pack src\SpecBind\SpecBind.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind -Verbosity Detailed -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind.Plugin\SpecBind.Plugin.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind.Plugin -Verbosity Detailed -Version %APPVEYOR_BUILD_VERSION% -Properties Configuration=Release -Tool
+  - nuget pack src\SpecBind.CodedUI\SpecBind.CodedUI.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind.CodedUI -Verbosity Detailed -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
+  - nuget pack src\SpecBind.Selenium\SpecBind.Selenium.nuspec -OutputDirectory %PACKAGE_DIR% -BasePath src\SpecBind.Selenium -Verbosity Detailed -Version %APPVEYOR_BUILD_VERSION% -Symbols -Properties Configuration=Release
+
+#---------------------------------#
+#       tests configuration       #
+#---------------------------------#
+
+test:
+  assemblies:
+    - src\SpecBind.Tests\bin\**\*.Tests.dll
+    - src\SpecBind.Selenium.Tests\bin\**\*.Tests.dll
+
+# to run tests from different categories as separate jobs in parallel
+#test:
+#  categories:
+#    - A            # A category common for all jobs
+#    - [UI]         # 1st job
+#    - [DAL, BL]    # 2nd job
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+artifacts:
+  # pushing all *.nupkg files in directory
+  - path: 'NuGet_Packages\*.nupkg'
+
+
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
+deploy: off

@@ -17,6 +17,7 @@ namespace SpecBind.Tests
     using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
     using SpecBind.Pages;
+    using SpecBind.Validation;
 
     using TechTalk.SpecFlow.Tracing;
 
@@ -32,19 +33,19 @@ namespace SpecBind.Tests
         [TestMethod]
         public void TestInitializeTests()
         {
-            var preActionMock = new Mock<ILocatorAction>();
-
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.RegisterInstanceAs(It.IsAny<IBrowser>(), null));
             container.Setup(c => c.RegisterInstanceAs<ISettingHelper>(It.IsAny<WrappedSettingHelper>(), null));
             container.Setup(c => c.RegisterInstanceAs(It.IsAny<IPageMapper>(), null));
-            container.Setup(c => c.RegisterInstanceAs<IPageDataFiller>(It.IsAny<PageDataFiller>(), null));
             container.Setup(c => c.RegisterInstanceAs<IScenarioContextHelper>(It.IsAny<ScenarioContextHelper>(), null));
             container.Setup(c => c.RegisterInstanceAs<ITokenManager>(It.IsAny<TokenManager>(), null));
             container.Setup(c => c.RegisterInstanceAs(It.IsAny<IActionRepository>(), null));
             container.Setup(c => c.RegisterTypeAs<ActionPipelineService, IActionPipelineService>(null));
+            container.Setup(c => c.RegisterTypeAs<ProxyLogger, ILogger>(null));
 
-            container.Setup(c => c.Resolve(typeof(HighlightPreAction), null)).Returns(preActionMock.Object);
+            container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(ILocatorAction).IsAssignableFrom(t)), null)).Returns(new Mock<ILocatorAction>().Object);
+            container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IPreAction).IsAssignableFrom(t)), null)).Returns(new Mock<IPreAction>().Object);
+            container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IValidationComparer).IsAssignableFrom(t)), null)).Returns(new Mock<IValidationComparer>().Object);
             
             var driverSupport = new WebDriverSupport(container.Object);
 
@@ -120,6 +121,7 @@ namespace SpecBind.Tests
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.Close());
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns("TestFileName.jpg");
+            browser.Setup(b => b.SaveHtml(It.IsAny<string>(), "TestFileName")).Returns((string)null);
 
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve<IBrowser>()).Returns(browser.Object);
@@ -151,6 +153,7 @@ namespace SpecBind.Tests
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.Close());
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns((string)null);
+            browser.Setup(b => b.SaveHtml(It.IsAny<string>(), "TestFileName")).Returns((string)null);
 
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve<IBrowser>()).Returns(browser.Object);
@@ -180,6 +183,7 @@ namespace SpecBind.Tests
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.Close());
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns((string)null);
+            browser.Setup(b => b.SaveHtml(It.IsAny<string>(), "TestFileName")).Returns((string)null);
 
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve<IBrowser>()).Returns(browser.Object);

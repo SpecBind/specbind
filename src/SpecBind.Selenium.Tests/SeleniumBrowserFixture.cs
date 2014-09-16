@@ -14,6 +14,7 @@ namespace SpecBind.Selenium.Tests
 
     using OpenQA.Selenium;
 
+    using SpecBind.BrowserSupport;
     using SpecBind.Pages;
     using SpecBind.Selenium.Tests.Resources;
 
@@ -59,6 +60,94 @@ namespace SpecBind.Selenium.Tests
 
             driver.VerifyAll();
             navigation.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the dismiss alert calls accept when ok is chosen.
+        /// </summary>
+        [TestMethod]
+        public void TestDismissAlertAcceptsWhenOkIsChoosen()
+        {
+            TestAlertScenario(AlertBoxAction.Ok, true);
+        }
+
+        /// <summary>
+        /// Tests the dismiss alert calls accept when yes is chosen.
+        /// </summary>
+        [TestMethod]
+        public void TestDismissAlertAcceptsWhenYesIsChoosen()
+        {
+            TestAlertScenario(AlertBoxAction.Yes, true);
+        }
+
+        /// <summary>
+        /// Tests the dismiss alert calls accept when retry is chosen.
+        /// </summary>
+        [TestMethod]
+        public void TestDismissAlertAcceptsWhenRetryIsChoosen()
+        {
+            TestAlertScenario(AlertBoxAction.Retry, true);
+        }
+        
+        /// <summary>
+        /// Tests the dismiss alert calls accept when cancel is chosen.
+        /// </summary>
+        [TestMethod]
+        public void TestDismissAlertAcceptsWhenCancelIsChoosen()
+        {
+            TestAlertScenario(AlertBoxAction.Cancel, false);
+        }
+
+        /// <summary>
+        /// Tests the dismiss alert calls accept when close is chosen.
+        /// </summary>
+        [TestMethod]
+        public void TestDismissAlertAcceptsWhenCloseIsChoosen()
+        {
+            TestAlertScenario(AlertBoxAction.Close, false);
+        }
+
+        /// <summary>
+        /// Tests the dismiss alert calls accept when ignore is chosen.
+        /// </summary>
+        [TestMethod]
+        public void TestDismissAlertAcceptsWhenIgnoreIsChoosen()
+        {
+            TestAlertScenario(AlertBoxAction.Ignore, false);
+        }
+
+        /// <summary>
+        /// Tests the dismiss alert calls accept when no is chosen.
+        /// </summary>
+        [TestMethod]
+        public void TestDismissAlertAcceptsWhenNoIsChoosen()
+        {
+            TestAlertScenario(AlertBoxAction.No, false);
+        }
+
+        /// <summary>
+        /// Tests the dismiss alert calls accept when ok is chosen after entering text.
+        /// </summary>
+        [TestMethod]
+        public void TestDismissAlertEntersTextAndAcceptsWhenOkIsChoosen()
+        {
+            var alerter = new Mock<IAlert>(MockBehavior.Strict);
+            alerter.Setup(a => a.SendKeys("My Text"));
+            alerter.Setup(a => a.Accept());
+
+            var locator = new Mock<ITargetLocator>(MockBehavior.Strict);
+            locator.Setup(l => l.Alert()).Returns(alerter.Object);
+
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            driver.Setup(d => d.SwitchTo()).Returns(locator.Object);
+
+            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object));
+
+            browser.DismissAlert(AlertBoxAction.Ok, "My Text");
+
+            alerter.VerifyAll();
+            driver.VerifyAll();
+            locator.VerifyAll();
         }
 
         /// <summary>
@@ -173,6 +262,77 @@ namespace SpecBind.Selenium.Tests
         }
 
         /// <summary>
+        /// Tests the execute script method for the browser when it exists.
+        /// </summary>
+        [TestMethod]
+        public void TestExecuteScriptWhenDriverSupportItRunsScript()
+        {
+            var result = new object();
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            driver.As<IJavaScriptExecutor>().Setup(e => e.ExecuteScript("some script", It.IsAny<object[]>()))
+                                            .Returns(result);
+
+            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
+
+            Assert.IsNotNull(lazyDriver.Value);
+
+            var browser = new SeleniumBrowser(lazyDriver);
+
+            var resultObject = browser.ExecuteScript("some script", "Hello");
+
+            Assert.AreSame(result, resultObject);
+
+            driver.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the execute script method for the browser when it exists.
+        /// </summary>
+        [TestMethod]
+        public void TestExecuteScriptWhenResultIsNativeElementReturnsProxyClass()
+        {
+            var result = new Mock<IWebElement>(MockBehavior.Strict);
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            driver.As<IJavaScriptExecutor>().Setup(e => e.ExecuteScript("some script", It.IsAny<object[]>()))
+                                            .Returns(result.Object);
+
+            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
+
+            Assert.IsNotNull(lazyDriver.Value);
+
+            var browser = new SeleniumBrowser(lazyDriver);
+
+            var resultObject = browser.ExecuteScript("some script", "Hello");
+
+            Assert.IsNotNull(resultObject);
+            Assert.IsInstanceOfType(resultObject, typeof(WebElement));
+           
+            driver.VerifyAll();
+            result.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the execute script method when it doesn't support it returns null.
+        /// </summary>
+        [TestMethod]
+        public void TestExecuteScriptWhenDriverDoesNotSupportScriptReturnsNull()
+        {
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            
+            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
+
+            Assert.IsNotNull(lazyDriver.Value);
+
+            var browser = new SeleniumBrowser(lazyDriver);
+
+            var resultObject = browser.ExecuteScript("some script", "Hello");
+
+            Assert.IsNull(resultObject);
+
+            driver.VerifyAll();
+        }
+
+        /// <summary>
         /// Tests the take screenshot method does nothing when the interface is not supported.
         /// </summary>
         [TestMethod]
@@ -246,6 +406,39 @@ namespace SpecBind.Selenium.Tests
 
             Assert.IsNotNull(fullPath);
             driver.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the alert scenario.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="acceptResult">if set to <c>true</c> the result should accept; otherwise it should dismiss.</param>
+        private static void TestAlertScenario(AlertBoxAction action, bool acceptResult)
+        {
+            var alerter = new Mock<IAlert>(MockBehavior.Strict);
+
+            if (acceptResult)
+            {
+                alerter.Setup(a => a.Accept());
+            }
+            else
+            {
+                alerter.Setup(a => a.Dismiss());
+            }
+            
+            var locator = new Mock<ITargetLocator>(MockBehavior.Strict);
+            locator.Setup(l => l.Alert()).Returns(alerter.Object);
+
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            driver.Setup(d => d.SwitchTo()).Returns(locator.Object);
+
+            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object));
+
+            browser.DismissAlert(action, null);
+
+            alerter.VerifyAll();
+            driver.VerifyAll();
+            locator.VerifyAll();
         }
 
         /// <summary>

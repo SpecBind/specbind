@@ -28,9 +28,9 @@ Scenario: Validate Field Existence and Enabled
 	   And I was on the Create a Course page
 	  Then I see
 		   | Field        | Rule           | Value |
-		   | Course Title | Exists         |       |
-		   | Course Title | Enabled        |       |
-		   #| Foo          | Does Not Exist |       | --> this may still need some work.
+		 #  | Course Title | Exists         |       |
+		 #  | Course Title | Enabled        |       |
+		   | Foo          | Does Not Exist |       |
 
 Scenario: Validate List "Start With" Validator
 	 Given I navigated to the Home page
@@ -41,6 +41,17 @@ Scenario: Validate List "Start With" Validator
 		   | Field      | Rule   | Value     |
 		   | First Name | Equals | Carson    |
 		   | Last Name  | Equals | Alexander |
+
+Scenario: Validate List "Start With" Validator and String Validation Field
+	 Given I navigated to the Home page
+       And I chose Students
+	   And I was on the Students Search page
+	   And I was on list results grid item 1
+	  When I choose Details
+	  Then I am on the Student Detail page
+	   And I see
+		   | Field      | Rule   | Value     |
+		   | Full Name | Equals | Carson Alexander |
 
 Scenario: Validate List "Ends With" Validator
 	 Given I navigated to the Home page
@@ -70,6 +81,9 @@ Scenario: Validate List "Equals" Validator
 		   | Field        | Value  |
 		   | Find by name | Alonso |
 	   And I choose Search
+	  Then I see
+		   | Field   | Rule   | Value             |
+		   | Caption | Equals | Find your Friends |
 	  Then I see results grid list equals
 		   | Field      | Rule   | Value    |
 		   | First Name | Equals | Meredith |

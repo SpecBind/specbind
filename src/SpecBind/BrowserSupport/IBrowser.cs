@@ -35,6 +35,13 @@ namespace SpecBind.BrowserSupport
 		/// </summary>
 		void Close();
 
+        /// <summary>
+        /// Dismisses the alert.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="text">The text to enter.</param>
+	    void DismissAlert(AlertBoxAction action, string text);
+
 		/// <summary>
 		/// Ensures the on page.
 		/// </summary>
@@ -79,5 +86,21 @@ namespace SpecBind.BrowserSupport
         /// <param name="fileNameBase">The file name base.</param>
         /// <returns>The full path of the image file.</returns>
 	    string TakeScreenshot(string imageFolder, string fileNameBase);
+
+        /// <summary>
+        /// Save the html from the native browser.
+        /// </summary>
+        /// <param name="destinationFolder">The destination folder.</param>
+        /// <param name="fileNameBase">The file name base.</param>
+        /// <returns>The complete file path if created; otherwise <c>null</c>.</returns>
+        string SaveHtml(string destinationFolder, string fileNameBase);
+
+        /// <summary>
+        /// Executes the script.
+        /// </summary>
+        /// <param name="script">The script to execute.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>The result of the script if needed.</returns>
+	    object ExecuteScript(string script, params object[] args);
 	}
 }

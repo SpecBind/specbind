@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <specFlow>
+    <plugins>
+      <add name="SpecBindCodedUIPlugin" xdt:Transform="Remove" xdt:Locator="Match(name)" />
+      <add name="SpecBindGeneratorPlugin" xdt:Transform="Remove" xdt:Locator="Match(name)" />
+    </plugins>
+  </specFlow>
+</configuration>

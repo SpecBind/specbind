@@ -17,29 +17,24 @@ namespace SpecBind.BrowserSupport
 	[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 	public abstract class BrowserFactory
 	{
-		/// <summary>
+	    private readonly bool driverNeedsValidation;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BrowserFactory"/> class.
+        /// </summary>
+        /// <param name="driverNeedsValidation">if set to <c>true</c> driver needs validation checks at startup.</param>
+	    protected BrowserFactory(bool driverNeedsValidation)
+	    {
+	        this.driverNeedsValidation = driverNeedsValidation;
+	    }
+
+	    /// <summary>
 		/// Gets the browser for the test run.
 		/// </summary>
 		/// <returns>A new browser object.</returns>
 		public IBrowser GetBrowser()
-		{
-            var configSection = SettingHelper.GetConfigurationSection();
-		    
-            // Default configuration settings
-            var browserFactoryConfiguration = new BrowserFactoryConfigurationElement
-                                                  {
-                                                      BrowserType = Enum.GetName(typeof(BrowserType), BrowserType.IE),
-                                                      ElementLocateTimeout = TimeSpan.FromSeconds(30.0),
-                                                      PageLoadTimeout = TimeSpan.FromSeconds(30.0)
-                                                  };
-
-		    if (configSection != null && configSection.BrowserFactory != null)
-		    {
-		        browserFactoryConfiguration = configSection.BrowserFactory;
-		    }
-		    
-            var browserType = this.GetBrowserType(browserFactoryConfiguration);
-            return this.CreateBrowser(browserType, browserFactoryConfiguration);
+	    {
+	        return this.LoadConfigurationAndCreateBrowser(this.CreateBrowser);
 		}
 
 		/// <summary>
@@ -62,6 +57,25 @@ namespace SpecBind.BrowserSupport
 
 			return (BrowserFactory)Activator.CreateInstance(type);
 		}
+
+        /// <summary>
+        /// Validates the driver setup.
+        /// </summary>
+        internal void ValidateDriverSetup()
+        {
+            // By default the driver doesn't need to validate anything.
+            if (!this.driverNeedsValidation)
+            {
+                return;
+            }
+
+            this.LoadConfigurationAndCreateBrowser(
+                (browserType, config) =>
+                    {
+                        this.ValidateDriverSetup(browserType, config);
+                        return null;
+                    });
+        }
 
 	    /// <summary>
 	    /// Creates the browser.
@@ -88,6 +102,41 @@ namespace SpecBind.BrowserSupport
 			return BrowserType.IE;
 		}
 
+        /// <summary>
+        /// Validates the driver setup.
+        /// </summary>
+        /// <param name="browserType">Type of the browser.</param>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
+        protected virtual void ValidateDriverSetup(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration)
+	    {
+	    }
+
+        /// <summary>
+        /// Loads the configuration and creates the browser object.
+        /// </summary>
+        /// <param name="createMethod">The create method.</param>
+        /// <returns>The <see cref="IBrowser"/> object.</returns>
+        private IBrowser LoadConfigurationAndCreateBrowser(Func<BrowserType, BrowserFactoryConfigurationElement, IBrowser> createMethod)
+	    {
+            var configSection = SettingHelper.GetConfigurationSection();
+
+            // Default configuration settings
+            var browserFactoryConfiguration = new BrowserFactoryConfigurationElement
+            {
+                BrowserType = Enum.GetName(typeof(BrowserType), BrowserType.IE),
+                ElementLocateTimeout = TimeSpan.FromSeconds(30.0),
+                PageLoadTimeout = TimeSpan.FromSeconds(30.0)
+            };
+
+            if (configSection != null && configSection.BrowserFactory != null)
+            {
+                browserFactoryConfiguration = configSection.BrowserFactory;
+            }
+
+            var browserType = this.GetBrowserType(browserFactoryConfiguration);
+            return createMethod(browserType, browserFactoryConfiguration);
+	    }
+
 		/// <summary>
 		/// Called when an assembly load failure occurs, this will try to load it from the same directory as the main assembly.
 		/// </summary>
@@ -95,7 +144,22 @@ namespace SpecBind.BrowserSupport
 		/// <returns>The resolved assembly.</returns>
 		private static Assembly OnAssemblyCheck(AssemblyName assemblyName)
 		{
-			var currentLocation = Path.GetFullPath(typeof(BrowserFactory).Assembly.Location);
+		    try
+		    {
+		        // try load assembly from app domain first rather than filesystem as test runners
+		        // can place ddls in separate directories and may not always work as below.
+		        var assembly = Assembly.Load(assemblyName);
+		        if (assembly != null)
+		        {
+		            return assembly;
+		        }
+		    }
+		    catch
+		    {
+		        //Ignore and resume as previous.
+		    }
+
+		    var currentLocation = Path.GetFullPath(typeof(BrowserFactory).Assembly.Location);
 			if (!string.IsNullOrWhiteSpace(currentLocation) && File.Exists(currentLocation))
 			{
 				var parentDirectory = Path.GetDirectoryName(currentLocation);

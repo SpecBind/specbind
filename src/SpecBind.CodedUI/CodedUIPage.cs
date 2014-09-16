@@ -5,7 +5,6 @@ namespace SpecBind.CodedUI
 {
 	using System;
 	using System.Drawing;
-	using System.IO;
 	using System.Linq;
 	using System.Windows.Input;
 
@@ -13,6 +12,7 @@ namespace SpecBind.CodedUI
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
 
+	using SpecBind.Actions;
 	using SpecBind.Helpers;
 	using SpecBind.Pages;
 
@@ -20,15 +20,10 @@ namespace SpecBind.CodedUI
 	/// An implementation of a page for the code base.
 	/// </summary>
 	/// <typeparam name="TDocument">The type of the document.</typeparam>
+	// ReSharper disable once InconsistentNaming
 	public class CodedUIPage<TDocument> : PageBase<TDocument, HtmlControl>
 		where TDocument : class
 	{
-		#region Fields
-
-		private readonly TDocument page;
-
-		#endregion
-
 		#region Constructors and Destructors
 
 		/// <summary>
@@ -38,22 +33,11 @@ namespace SpecBind.CodedUI
 		/// The page.
 		/// </param>
 		public CodedUIPage(TDocument page)
-			: base(page.GetType())
+			: base(page.GetType(), page)
 		{
-			this.page = page;
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Gets the native page.
-		/// </summary>
-		/// <typeparam name="TPage">The type of the page.</typeparam>
-		/// <returns>The wrapped page object.</returns>
-		public override TPage GetNativePage<TPage>()
-		{
-			return this.page as TPage;
-		}
 
 		/// <summary>
 		/// Highlights this instance.
@@ -71,6 +55,31 @@ namespace SpecBind.CodedUI
 	    {
 	        element.DrawHighlight();
 	    }
+
+        /// <summary>
+        /// Waits for element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="waitCondition">The wait condition.</param>
+        /// <param name="timeout">The timeout to wait before failing.</param>
+        /// <returns><c>true</c> if the condition is met, <c>false</c> otherwise.</returns>
+	    public override bool WaitForElement(HtmlControl element, WaitConditions waitCondition, TimeSpan? timeout)
+        {
+            var milliseconds = (int)timeout.GetValueOrDefault(TimeSpan.FromMilliseconds(500)).TotalMilliseconds;
+            switch (waitCondition)
+            {
+                case WaitConditions.Exists:
+                    return element.WaitForControlExist(milliseconds);
+                case WaitConditions.NotExists:
+                    return element.WaitForControlNotExist(milliseconds);
+                case WaitConditions.Enabled:
+                    return element.WaitForControlCondition(e => e.Enabled, milliseconds);
+                case WaitConditions.NotEnabled:
+                    return element.WaitForControlCondition(e => !e.Enabled, milliseconds);
+            }
+
+            return true;
+        }
 
 	    /// <summary>
 		/// Elements the enabled check.
@@ -248,7 +257,11 @@ namespace SpecBind.CodedUI
 
 			if (propertyType == typeof(HtmlFileInput))
 			{
-				return EnterFileInput;
+				return (control, s) =>
+				    {
+				        var inputControl = (HtmlFileInput)control;
+				        FileUploadHelper.UploadFile(s, path => inputControl.FileName = path);
+				    };
 			}
 
             if (propertyType == typeof(HtmlCustom))
@@ -257,48 +270,6 @@ namespace SpecBind.CodedUI
             }
 
 			return null;
-		}
-
-		/// <summary>
-		/// Enters the file input.
-		/// </summary>
-		/// <param name="control">The control.</param>
-		/// <param name="data">The data.</param>
-		private static void EnterFileInput(HtmlControl control, string data)
-		{
-			var locatorName = Path.GetFileNameWithoutExtension(data);
-			var fileBytes = ResourceLocator.GetResource(locatorName);
-			if (fileBytes == null)
-			{
-				throw new ElementExecuteException(
-					"Could not locate file resource: '{0}'. Registered Resources: '{1}'. Make sure your resource file is public and it is a binary resource.",
-					locatorName,
-					ResourceLocator.GetResourceNames());
-			}
-
-			//Create a temporary path for it.
-			var path = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString(), data);
-
-			try
-			{
-				File.WriteAllBytes(path, fileBytes);
-
-				var inputControl = (HtmlFileInput)control;
-				inputControl.FileName = path;
-			}
-			finally
-			{
-				if (File.Exists(path))
-				{
-					File.Delete(path);
-					
-					var parent = Path.GetDirectoryName(path);
-					if (parent != null)
-					{
-						Directory.Delete(parent);
-					}
-				}
-			}
 		}
 	}
 }

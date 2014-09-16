@@ -4,8 +4,10 @@
 namespace SpecBind.Configuration
 {
 	using System.Configuration;
+	using System.IO;
+	using System.Xml;
 
-	/// <summary>
+    /// <summary>
 	/// Handles the SpecBind configuration section to obtain settings.
 	/// </summary>
 	public class ConfigurationSectionHandler : ConfigurationSection
@@ -48,5 +50,26 @@ namespace SpecBind.Configuration
 				this[BrowserFactoryElementName] = value;
 			}
 		}
+
+        /// <summary>
+        /// Creates the configuration node from XML.
+        /// </summary>
+        /// <param name="xmlContent">Content of the XML.</param>
+        /// <returns>The created configuration section.</returns>
+        public static ConfigurationSectionHandler CreateFromXml(string xmlContent)
+        {
+            var section = new ConfigurationSectionHandler();
+            section.Init();
+
+            // ReSharper disable once AssignNullToNotNullAttribute
+            section.Reset(null);
+            
+            using (var reader = new XmlTextReader(new StringReader(xmlContent.Trim())))
+            {
+                section.DeserializeSection(reader);
+            }
+            section.ResetModified();
+            return section;
+        }
 	}
 }

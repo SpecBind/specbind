@@ -6,7 +6,9 @@ namespace SpecBind.Pages
 {
 	using System.Collections.Generic;
 
-	/// <summary>
+	using SpecBind.Validation;
+
+    /// <summary>
 	/// Represents an individual item's validation results.
 	/// </summary>
 	public class ValidationItemResult

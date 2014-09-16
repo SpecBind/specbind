@@ -178,55 +178,6 @@ namespace SpecBind.Tests
         }
 
         /// <summary>
-		///     Tests the get Navigate To method.
-		/// </summary>
-		[TestMethod]
-		public void TestNavigateTo()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
-			browser.Setup(b => b.GoTo(It.Is<Uri>(u => u.ToString() == "http://localhost:2222/subpath/1")));
-
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			browser.Object.NavigateTo("subpath/1");
-			
-			browser.VerifyAll();
-		}
-
-		/// <summary>
-		///     Tests the get Navigate To method with a given type.
-		/// </summary>
-		[TestMethod]
-		public void TestNavigateToWithType()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
-			browser.Setup(b => b.GoTo(It.Is<Uri>(u => u.ToString() == "http://localhost:2222/root")));
-
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			var path = browser.Object.NavigateTo<NavigationAttributePage>();
-
-			Assert.AreEqual("http://localhost:2222/root", path);
-
-			browser.VerifyAll();
-		}
-
-		/// <summary>
-		///     Tests the get Navigate To method with a given type in non-generic form.
-		/// </summary>
-		[TestMethod]
-		public void TestNavigateToWithNonGenericType()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
-			browser.Setup(b => b.GoTo(It.Is<Uri>(u => u.ToString() == "http://localhost:2222/root")));
-
-            UriHelper.BaseUri = new Uri("http://localhost:2222/"); 
-            var path = browser.Object.NavigateTo(typeof(NavigationAttributePage));
-
-			Assert.AreEqual("http://localhost:2222/root", path);
-
-			browser.VerifyAll();
-		}
-
-		/// <summary>
 		///     Tests the get page URI method.
 		/// </summary>
 		[TestMethod]
@@ -234,9 +185,10 @@ namespace SpecBind.Tests
 		{
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
+            UriHelper.BaseUri = new Uri("http://localhost:2222/");
             var url = UriHelper.GetPageUri(browser.Object, typeof(NavigationAttributePage));
 
-			Assert.AreEqual(url, "/root");
+            Assert.AreEqual("/root", url);
 
 			browser.VerifyAll();
 		}
@@ -253,6 +205,7 @@ namespace SpecBind.Tests
 
 			try
 			{
+                UriHelper.BaseUri = new Uri("http://localhost:2222/");
 				UriHelper.GetPageUri(browser.Object, typeof(InvalidPage));
 			}
 			catch (PageNavigationException ex)
@@ -272,10 +225,11 @@ namespace SpecBind.Tests
 		{
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
+            UriHelper.BaseUri = new Uri("http://localhost:2222/");
 			var url = UriHelper.FillPageUri(
 				browser.Object, typeof(NavigationAttributePage), new Dictionary<string, string> { { "Id", "1" } });
 
-			Assert.AreEqual("/root/1", url);
+            Assert.AreEqual("http://localhost:2222/root/1", url);
 
 			browser.VerifyAll();
 		}
@@ -288,10 +242,11 @@ namespace SpecBind.Tests
 		{
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
+            UriHelper.BaseUri = new Uri("http://localhost:2222/");
 			var url = UriHelper.FillPageUri(
 				browser.Object, typeof(NavigationAttributePage), null);
 
-			Assert.AreEqual("/root/{id}", url);
+            Assert.AreEqual("http://localhost:2222/root/{id}", url);
 
 			browser.VerifyAll();
 		}
@@ -305,10 +260,11 @@ namespace SpecBind.Tests
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			browser.Setup(b => b.GetUriForPageType(typeof(InvalidPage))).Returns("/testpage");
 
+            UriHelper.BaseUri = new Uri("http://localhost:2222/");
 			var url = UriHelper.FillPageUri(
 				browser.Object, typeof(InvalidPage), null);
 
-			Assert.AreEqual("/testpage", url);
+            Assert.AreEqual("http://localhost:2222/testpage", url);
 
 			browser.VerifyAll();
 		}

@@ -19,7 +19,7 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
         /// Gets or sets the password.
         /// </summary>
         /// <value>The password.</value>
-        [ElementLocator(Id = "Password", Type = "PASSWORD")]
+        [ElementLocator(Id = "Password")]
         [FindsBy(How = How.Id, Using = "Password")]
         public IWebElement Password { get; set; }
     }

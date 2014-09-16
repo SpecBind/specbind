@@ -36,6 +36,13 @@ namespace SpecBind.BrowserSupport
         public abstract void Close();
 
         /// <summary>
+        /// Dismisses the alert.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="text">The text to enter.</param>
+        public abstract void DismissAlert(AlertBoxAction action, string text);
+        
+        /// <summary>
         /// Navigates the browser to the given <paramref name="url" />.
         /// </summary>
         /// <param name="url">The URL specified as a well formed Uri.</param>
@@ -45,7 +52,7 @@ namespace SpecBind.BrowserSupport
         /// Ensures the page is current in the browser window.
         /// </summary>
         /// <param name="page">The page.</param>
-        public virtual void EnsureOnPage(IPage page)
+        public void EnsureOnPage(IPage page)
         {
             string actualPath;
             string expectedPath;
@@ -54,6 +61,14 @@ namespace SpecBind.BrowserSupport
                 throw new PageNavigationException(page.PageType, expectedPath, actualPath);
             }
         }
+
+        /// <summary>
+        /// Executes the script.
+        /// </summary>
+        /// <param name="script">The script to execute.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>The result of the script if needed.</returns>
+        public abstract object ExecuteScript(string script, params object[] args);
 
         /// <summary>
         /// Gets the URI for the page if supported by the browser.
@@ -75,24 +90,17 @@ namespace SpecBind.BrowserSupport
         /// <returns>
         /// The page object when navigated to.
         /// </returns>
-        public virtual IPage GoToPage(Type pageType, IDictionary<string, string> parameters)
+        public IPage GoToPage(Type pageType, IDictionary<string, string> parameters)
         {
-            string actualPath;
-            string expectedPath;
-            if (!this.CheckIsOnPage(pageType, null, out actualPath, out expectedPath))
+            var filledUri = UriHelper.FillPageUri(this, pageType, parameters);
+            try
             {
-                var filledUri = UriHelper.FillPageUri(this, pageType, parameters);
-                try
-                {
-                    var qualifiedUri = UriHelper.GetQualifiedPageUri(filledUri);
-                    System.Diagnostics.Debug.WriteLine("Navigating to URL: {0}", qualifiedUri);
-
-                    this.GoTo(qualifiedUri);
-                }
-                catch (Exception ex)
-                {
-                    throw new PageNavigationException("Could not navigate to URI: {0}. Details: {1}", filledUri, ex.Message);
-                }
+                System.Diagnostics.Debug.WriteLine("Navigating to URL: {0}", filledUri);
+                this.GoTo(new Uri(filledUri));
+            }
+            catch (Exception ex)
+            {
+                throw new PageNavigationException("Could not navigate to URI: {0}. Details: {1}", filledUri, ex.Message);
             }
 
             return this.CreateNativePage(pageType, true);
@@ -129,6 +137,14 @@ namespace SpecBind.BrowserSupport
         public abstract string TakeScreenshot(string imageFolder, string fileNameBase);
 
         /// <summary>
+        /// Save the html from the native browser.
+        /// </summary>
+        /// <param name="destinationFolder">The destination folder.</param>
+        /// <param name="fileNameBase">The file name base.</param>
+        /// <returns>The complete file path if created; otherwise <c>null</c>.</returns>
+        public abstract string SaveHtml(string destinationFolder, string fileNameBase);
+
+        /// <summary>
         /// Checks wither the page matches the current browser URL.
         /// </summary>
         /// <param name="pageType">Type of the page.</param>
@@ -136,7 +152,7 @@ namespace SpecBind.BrowserSupport
         /// <param name="actualPath">The actual path.</param>
         /// <param name="expectedPath">The expected path.</param>
         /// <returns><c>true</c> if it is a match.</returns>
-        protected virtual bool CheckIsOnPage(Type pageType, IPage page, out string actualPath, out string expectedPath)
+        protected bool CheckIsOnPage(Type pageType, IPage page, out string actualPath, out string expectedPath)
         {
             var validateRegex = UriHelper.GetQualifiedPageUriRegex(this, pageType);
 

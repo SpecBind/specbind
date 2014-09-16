@@ -9,11 +9,12 @@ namespace SpecBind.ActionPipeline
 	/// </summary>
 	public interface IPostAction
 	{
-		/// <summary>
-		/// Performs the post-execute action.
-		/// </summary>
-		/// <param name="action">The action.</param>
-		/// <param name="result">The result.</param>
-		void PerformPostAction(IAction action, ActionResult result);
+        /// <summary>
+        /// Performs the post-execute action.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="context">The action context.</param>
+        /// <param name="result">The result.</param>
+	    void PerformPostAction(IAction action, ActionContext context, ActionResult result);
 	}
 }

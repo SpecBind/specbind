@@ -7,7 +7,10 @@ namespace SpecBind.Pages
 	using System.Collections.Generic;
 	using System.Linq;
 
-	/// <summary>
+	using SpecBind.Actions;
+	using SpecBind.Validation;
+
+    /// <summary>
 	/// The property data for a given property.
 	/// </summary>
 	/// <typeparam name="TElement">The propertyValue of the element.</typeparam>
@@ -70,6 +73,13 @@ namespace SpecBind.Pages
 		/// </value>
 		internal Func<IPage, Func<object, bool>, bool> Action { private get; set; }
 
+
+        /// <summary>
+        /// Gets or sets the set action.
+        /// </summary>
+        /// <value>The set action.</value>
+        internal Action<IPage, object> SetAction { get; set; }
+
 		/// <summary>
 		///     Gets or sets the element action.
 		/// </summary>
@@ -78,7 +88,7 @@ namespace SpecBind.Pages
 		/// </value>
 		internal Func<IPage, Func<TElement, bool>, bool> ElementAction { private get; set; }
 
-		#endregion
+        #endregion
 
 		#region Public Methods
 
@@ -120,6 +130,21 @@ namespace SpecBind.Pages
 		/// <param name="data">The data.</param>
 		public void FillData(string data)
 		{
+            // Support only string property filling for now
+		    if (!this.IsElement)
+		    {
+		        if (typeof(string).IsAssignableFrom(this.PropertyType) && this.SetAction != null)
+		        {
+		            this.SetAction(this.elementHandler, data);
+		        }
+		        else
+		        {
+		            throw new ElementExecuteException("Only string properties are supported today. Property Type: {0}", this.PropertyType);
+		        }
+
+		        return;
+		    }
+
 			this.ThrowIfElementDoesNotExist();
 
 			var fillMethod = this.elementHandler.GetPageFillMethod(this.PropertyType);
@@ -218,6 +243,28 @@ namespace SpecBind.Pages
 		}
 
         /// <summary>
+        /// Validates the list.
+        /// </summary>
+        /// <param name="validations">The validations.</param>
+        /// <returns>The validation result including checks performed.</returns>
+        public Tuple<IPage, ValidationResult> FindItemInList(ICollection<ItemValidation> validations)
+        {
+            var validationResult = new ValidationResult(validations);
+
+            var item = default(TElement);
+            this.Action(this.elementHandler,
+                propertyValue =>
+                    {
+                        var list = ((IEnumerable<TElement>)propertyValue).ToList();
+                        item = list.FirstOrDefault(i => this.CheckItem(i, validations, validationResult));
+                        return true;
+                    });
+
+            var page = !Equals(item, default(TElement)) ? this.elementHandler.GetPageFromElement(item) : null;
+            return new Tuple<IPage, ValidationResult>(page, validationResult);
+        }
+
+        /// <summary>
         /// Highlights this instance.
         /// </summary>
 	    public void Highlight()
@@ -245,7 +292,20 @@ namespace SpecBind.Pages
 			var compareWrapper = new Func<TElement, bool>(
 					e =>
 					{
-						var text = this.elementHandler.GetElementText(e);
+                        string text = null;
+
+					    if (validation.RequiresFieldValue)
+					    {
+                            text = this.elementHandler.GetElementText(e);
+
+                            // Trim whitespace from text since the tables in SpecFlow will anyway.
+					        if (text != null)
+					        {
+                                text = text.Trim();
+					            text = text.Replace(Environment.NewLine, " ");
+					        }
+					    }
+
 						realValue = text;
 						return validation.Compare(this, text);
 					});
@@ -253,7 +313,11 @@ namespace SpecBind.Pages
 			bool result;
 			if (this.IsElement)
 			{
-				this.ThrowIfElementDoesNotExist();
+                if (validation.CheckElementExistence)
+			    {
+                    this.ThrowIfElementDoesNotExist();    
+			    }
+
 				result = this.ElementAction(this.elementHandler, compareWrapper);
 			}
 			else if (this.IsList)
@@ -292,13 +356,20 @@ namespace SpecBind.Pages
 			return validationResult;
 		}
 
-		#endregion
+        /// <summary>
+        /// Waits for the element condition to be met.
+        /// </summary>
+        /// <param name="waitCondition">The wait condition.</param>
+        /// <param name="timeout">The timeout to wait before failing.</param>
+        /// <returns><c>true</c> if the condition is met, <c>false</c> otherwise.</returns>
+        public bool WaitForElementCondition(WaitConditions waitCondition, TimeSpan? timeout)
+        {
+            return this.ElementAction(this.elementHandler, o => this.elementHandler.WaitForElement(o, waitCondition, timeout));
+        }
 
-		#region Methods
+        #endregion
 
-		#endregion
-
-		/// <summary>
+        /// <summary>
 		/// Compares the property value.
 		/// </summary>
 		/// <param name="propertyValue">The property value.</param>

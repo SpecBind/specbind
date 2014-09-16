@@ -6,7 +6,10 @@ namespace SpecBind.Pages
 	using System;
 	using System.Collections.Generic;
 
-	/// <summary>
+	using SpecBind.Actions;
+	using SpecBind.Validation;
+
+    /// <summary>
 	/// The property data interface for interaction.
 	/// </summary>
 	public interface IPropertyData
@@ -111,5 +114,20 @@ namespace SpecBind.Pages
 		/// <param name="validations">The validations.</param>
 		/// <returns>The validation result including checks performed.</returns>
 		ValidationResult ValidateList(ComparisonType compareType, ICollection<ItemValidation> validations);
+
+        /// <summary>
+        /// Waits for element condition.
+        /// </summary>
+        /// <param name="waitCondition">The wait condition.</param>
+        /// <param name="timeout">The timeout to wait before failing.</param>
+        /// <returns><c>true</c> if the condition is met, <c>false</c> otherwise.</returns>
+        bool WaitForElementCondition(WaitConditions waitCondition, TimeSpan? timeout);
+
+        /// <summary>
+        /// Validates the list.
+        /// </summary>
+        /// <param name="validations">The validations.</param>
+        /// <returns>The validation result including checks performed.</returns>
+        Tuple<IPage, ValidationResult> FindItemInList(ICollection<ItemValidation> validations);
 	}
 }

@@ -5,6 +5,7 @@ namespace SpecBind.Tests.Support
 {
 	using System;
 
+	using SpecBind.Actions;
 	using SpecBind.Pages;
 
 	/// <summary>
@@ -12,13 +13,11 @@ namespace SpecBind.Tests.Support
 	/// </summary>
 	public class TestBase : PageBase<BasePageClass, BaseElement>
 	{
-		private readonly InheritedClass item;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TestBase" /> class.
 		/// </summary>
 		public TestBase()
-			: base(typeof(InheritedClass))
+			: this(null)
 		{
 		}
 
@@ -27,19 +26,8 @@ namespace SpecBind.Tests.Support
 		/// </summary>
 		/// <param name="item">The item.</param>
 		public TestBase(InheritedClass item)
-			: this()
+            : base(typeof(InheritedClass), item)
 		{
-			this.item = item;
-		}
-
-		/// <summary>
-		/// Gets the native page.
-		/// </summary>
-		/// <typeparam name="TPage">The type of the page.</typeparam>
-		/// <returns>The native page object.</returns>
-		public override TPage GetNativePage<TPage>()
-		{
-			return this.item as TPage;
 		}
 
 		/// <summary>
@@ -101,5 +89,17 @@ namespace SpecBind.Tests.Support
 		{
 			return null;
 		}
+
+        /// <summary>
+        /// Waits for element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="waitCondition">The wait condition.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns><c>true</c> if the condition is met, <c>false</c> otherwise.</returns>
+	    public override bool WaitForElement(BaseElement element, WaitConditions waitCondition, TimeSpan? timeout)
+	    {
+	        return false;
+	    }
 	}
 }

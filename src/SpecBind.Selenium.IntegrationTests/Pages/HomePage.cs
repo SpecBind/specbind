@@ -31,12 +31,26 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
         public IWebElement Courses { get; set; }
 
         /// <summary>
+        /// Gets or sets the instructors link button.
+        /// </summary>
+        /// <value>The instructors link button.</value>
+        [ElementLocator(Id = "instructorsLink")]
+        public IWebElement Instructors { get; set; }
+
+        /// <summary>
         /// Gets or sets the login link button.
         /// </summary>
         /// <value>The login link button.</value>
         [ElementLocator(Id = "loginLink")]
         [FindsBy(How = How.Id, Using = "loginLink")]
         public IWebElement LogOn { get; set; }
+
+        /// <summary>
+        /// Gets or sets the new information link button.
+        /// </summary>
+        /// <value>The new information link button.</value>
+        [ElementLocator(Id = "newInfoLink")]
+        public IWebElement NewInformation { get; set; }
 
         /// <summary>
         /// Gets or sets the students link button.
