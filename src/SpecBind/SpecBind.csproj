@@ -66,6 +66,8 @@
     <Compile Include="Actions\GetListItemByCriteriaAction.cs" />
     <Compile Include="Actions\GetListItemByIndexAction.cs" />
     <Compile Include="Actions\ILogger.cs" />
+    <Compile Include="Actions\NavigationPostAction.cs" />
+    <Compile Include="Actions\PageNavigationAction.cs" />
     <Compile Include="Actions\SetTokenFromValueAction.cs" />
     <Compile Include="Actions\HighlightLocatorAction.cs" />
     <Compile Include="Actions\ValidateElementEnabledAction.cs" />

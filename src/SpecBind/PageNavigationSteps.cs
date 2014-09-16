@@ -10,7 +10,6 @@ namespace SpecBind
 
 	using SpecBind.ActionPipeline;
 	using SpecBind.Actions;
-	using SpecBind.BrowserSupport;
 	using SpecBind.Helpers;
 	using SpecBind.Pages;
 	
@@ -38,22 +37,16 @@ namespace SpecBind
         private const string GivedWaitForPageStepRegex = @"I waited for the (.+) page";
         private const string GivenWaitForPageWithTimeoutStepRegex = @"I waited (\d+) seconds? for the (.+) page";
 		
-		private readonly IBrowser browser;
-		private readonly IPageMapper pageMapper;
 	    private readonly IActionPipelineService actionPipelineService;
 
 	    /// <summary>
 	    /// Initializes a new instance of the <see cref="PageNavigationSteps" /> class.
 	    /// </summary>
-	    /// <param name="browser">The browser.</param>
-	    /// <param name="pageMapper">The page mapper.</param>
 	    /// <param name="scenarioContext">The scenario context.</param>
 	    /// <param name="actionPipelineService">The action pipeline service.</param>
-	    public PageNavigationSteps(IBrowser browser, IPageMapper pageMapper, IScenarioContextHelper scenarioContext, IActionPipelineService actionPipelineService)
+	    public PageNavigationSteps(IScenarioContextHelper scenarioContext, IActionPipelineService actionPipelineService)
             : base(scenarioContext)
 		{
-			this.browser = browser;
-			this.pageMapper = pageMapper;
 			this.actionPipelineService = actionPipelineService;
 		}
 
@@ -66,10 +59,9 @@ namespace SpecBind
 		[Then(EnsureOnPageStepRegex)]
 		public void GivenEnsureOnPageStep(string pageName)
 		{
-			var type = this.GetPageType(pageName);
-
-			IPage page;
-			this.browser.EnsureOnPage(type, out page);
+			var context = new PageNavigationAction.PageNavigationActionContext(pageName, PageNavigationAction.PageAction.EnsureOnPage);
+            var page = this.actionPipelineService.PerformAction<PageNavigationAction>(null, context)
+                                                 .CheckResult<IPage>();
 
             this.UpdatePageContext(page);
 		}
@@ -114,8 +106,6 @@ namespace SpecBind
         [Then(NavigateToPageWithParamsStepRegex)]
 		public void GivenNavigateToPageWithArgumentsStep(string pageName, Table pageArguments)
 		{
-			var type = this.GetPageType(pageName);
-
 			Dictionary<string, string> args = null;
 			if (pageArguments != null && pageArguments.RowCount > 0)
 			{
@@ -127,7 +117,10 @@ namespace SpecBind
 				}
 			}
 
-			var page = this.browser.GoToPage(type, args);
+            var context = new PageNavigationAction.PageNavigationActionContext(pageName, PageNavigationAction.PageAction.NavigateToPage, args);
+            var page = this.actionPipelineService.PerformAction<PageNavigationAction>(null, context)
+                                                 .CheckResult<IPage>();
+
             this.UpdatePageContext(page);
 		}
 
@@ -156,25 +149,6 @@ namespace SpecBind
             var timeout = seconds > 0 ? TimeSpan.FromSeconds(seconds) : (TimeSpan?)null;
             this.CallWaitForPageAction(pageName, timeout);
         }
-
-		/// <summary>
-		/// Gets the type of the page.
-		/// </summary>
-		/// <param name="pageName">Name of the page.</param>
-		/// <returns>The page type.</returns>
-		/// <exception cref="PageNavigationException">Thrown if the page type cannot be found.</exception>
-		private Type GetPageType(string pageName)
-		{
-			var type = this.pageMapper.GetTypeFromName(pageName);
-
-			if (type == null)
-			{
-				throw new PageNavigationException(
-					"Cannot locate a page for name: {0}. Check page aliases in the test assembly.", pageName);
-			}
-
-			return type;
-		}
 
         /// <summary>
         /// Calls the wait for page action.

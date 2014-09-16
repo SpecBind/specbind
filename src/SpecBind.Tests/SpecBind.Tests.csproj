@@ -67,6 +67,8 @@
     <Compile Include="Actions\GetElementAsPageActionFixture.cs" />
     <Compile Include="Actions\GetListItemByCriteriaActionFixture.cs" />
     <Compile Include="Actions\GetListItemByIndexActionFixture.cs" />
+    <Compile Include="Actions\NavigationPostActionFixture.cs" />
+    <Compile Include="Actions\PageNavigationActionFixture.cs" />
     <Compile Include="Actions\SetTokenFromValueActionFixture.cs" />
     <Compile Include="Actions\HighlightLocatorActionFixture.cs" />
     <Compile Include="Actions\ValidateElementEnabledActionFixture.cs" />
