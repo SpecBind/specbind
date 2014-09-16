@@ -143,6 +143,22 @@ this.ScenarioSetup(scenarioInfo);
 #line hidden
             this.ScenarioCleanup();
         }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Navigate to an initial screen with a post-navigate hook")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Regression tests to ensure navigation functions correctly")]
+        public virtual void NavigateToAnInitialScreenWithAPost_NavigateHook()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Navigate to an initial screen with a post-navigate hook", ((string[])(null)));
+#line 22
+this.ScenarioSetup(scenarioInfo);
+#line 23
+   testRunner.Given("I navigated to the Home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 24
+    testRunner.Then("I ensure token NavigatedPageSuccess matches rule equals with value HomePage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore

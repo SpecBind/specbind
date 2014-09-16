@@ -18,3 +18,7 @@ Scenario: Navigate to Google
    Then I see
          | Field      | Rule       | Value |
          | Search Box | Is Enabled | True  |
+
+Scenario: Navigate to an initial screen with a post-navigate hook
+   Given I navigated to the Home page
+    Then I ensure token NavigatedPageSuccess matches rule equals with value HomePage

@@ -3,8 +3,6 @@
 // </copyright>
 namespace SpecBind.Actions
 {
-    using System;
-    
     using SpecBind.ActionPipeline;
     using SpecBind.Pages;
     using SpecBind.Validation;
@@ -29,38 +27,28 @@ namespace SpecBind.Actions
         /// <returns>The result of the action.</returns>
         protected override ActionResult Execute(ValidateItemContext context)
         {
-            var itemResult = new ValidationItemResult();
-            var result = new ValidationResult(context.ValidationTable.Validations) { IsValid = true };
-            result.CheckedItems.Add(itemResult);
+            return ValidateTableHelpers.PerformValidation(context.ValidationTable.Validations, this.ValidateProperty);
+        }
 
-            foreach (var validation in context.ValidationTable.Validations)
+        /// <summary>
+        /// Validates the property.
+        /// </summary>
+        /// <param name="validation">The validation.</param>
+        /// <param name="itemResult">The item result.</param>
+        /// <returns><c>true</c> if the validation is successful, <c>false</c> otherwise.</returns>
+        private bool ValidateProperty(ItemValidation validation, ValidationItemResult itemResult)
+        {
+            IPropertyData propertyData;
+            if (!this.ElementLocator.TryGetProperty(validation.FieldName, out propertyData))
             {
-                IPropertyData propertyData;
-                if (!this.ElementLocator.TryGetProperty(validation.FieldName, out propertyData))
-                {
-                    itemResult.NoteMissingProperty(validation);
-                    result.IsValid = false;
-                    continue;
-                }
-
-                string actualValue;
-                var successful = propertyData.ValidateItem(validation, out actualValue);
-                itemResult.NoteValidationResult(validation, successful, actualValue);
-                if (!successful)
-                {
-                    result.IsValid = false;
-                }
+                itemResult.NoteMissingProperty(validation);
+                return false;
             }
 
-            if (!result.IsValid)
-            {
-                return ActionResult.Failure(new ElementExecuteException(
-                    "Value comparison(s) failed. See details for validation results.{0}{1}",
-                    Environment.NewLine,
-                    result.GetComparisonTableByRule()));
-            }
-
-            return ActionResult.Successful();
+            string actualValue;
+            var successful = propertyData.ValidateItem(validation, out actualValue);
+            itemResult.NoteValidationResult(validation, successful, actualValue);
+            return successful;
         }
 
         /// <summary>

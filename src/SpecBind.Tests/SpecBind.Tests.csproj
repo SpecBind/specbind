@@ -75,6 +75,7 @@
     <Compile Include="Actions\ValidateElementExistsActionFixture.cs" />
     <Compile Include="Actions\ValidateItemActionFixture.cs" />
     <Compile Include="Actions\ValidateListActionFixture.cs" />
+    <Compile Include="Actions\ValidateTokenActionFixture.cs" />
     <Compile Include="Actions\WaitForElementActionFixture.cs" />
     <Compile Include="Actions\WaitForListItemsActionFixture.cs" />
     <Compile Include="Actions\WaitForPageActionFixture.cs" />

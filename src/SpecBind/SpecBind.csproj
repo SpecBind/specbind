@@ -74,6 +74,7 @@
     <Compile Include="Actions\ValidateElementExistsAction.cs" />
     <Compile Include="Actions\ValidateItemAction.cs" />
     <Compile Include="Actions\ValidateListAction.cs" />
+    <Compile Include="Actions\ValidateTokenAction.cs" />
     <Compile Include="Actions\ValidationCheckContext.cs" />
     <Compile Include="Actions\WaitConditions.cs" />
     <Compile Include="Actions\WaitForElementAction.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="Validation\LessThanEqualsComparer.cs" />
     <Compile Include="Validation\NotEqualsComparer.cs" />
     <Compile Include="Validation\StartsWithComparer.cs" />
+    <Compile Include="Validation\ValidateTableHelpers.cs" />
     <Compile Include="Validation\ValidationComparerBase.cs" />
     <Compile Include="Validation\ValueComparerBase.cs" />
     <Compile Include="Validation\ValidationTable.cs" />

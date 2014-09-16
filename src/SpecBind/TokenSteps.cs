@@ -17,6 +17,7 @@ namespace SpecBind
     {
         // Step definition text constants
         private const string SetTokenFromFieldRegex = @"I set token (.+) with the value of (.+)";
+        private const string ValidateTokenValueRegex = @"I ensure token (.+) matches rule (.+) with value (.+)";
 
         private readonly IActionPipelineService actionPipelineService;
 
@@ -47,6 +48,24 @@ namespace SpecBind
 
             this.actionPipelineService
                 .PerformAction<SetTokenFromValueAction>(page, context)
+                .CheckResult();
+        }
+
+        /// <summary>
+        /// A step that validates a given token value.
+        /// </summary>
+        /// <param name="tokenName">Name of the token.</param>
+        /// <param name="rule">The rule.</param>
+        /// <param name="value">The value.</param>
+        [Given(ValidateTokenValueRegex)]
+        [When(ValidateTokenValueRegex)]
+        [Then(ValidateTokenValueRegex)]
+        public void ValidateTokenValueStep(string tokenName, string rule, string value)
+        {
+            var context = new ValidateTokenAction.ValidateTokenActionContext(tokenName, rule, value);
+
+            this.actionPipelineService
+                .PerformAction<ValidateTokenAction>(null, context)
                 .CheckResult();
         }
     }
