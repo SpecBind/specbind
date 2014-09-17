@@ -41,6 +41,24 @@ namespace SpecBind.Selenium.Tests
         }
 
         /// <summary>
+        /// Tests the getting of the Url property returns the value from the window.
+        /// </summary>
+        [TestMethod]
+        public void TestGetUrlReturnsBrowserUrl()
+        {
+            const string BrowserUrl = "http://www.mysite.com/home";
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            driver.SetupGet(d => d.Url).Returns(BrowserUrl);
+
+            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object));
+
+            var result = browser.Url;
+
+            Assert.AreEqual(BrowserUrl, result);
+            driver.VerifyAll();
+        }
+
+        /// <summary>
         /// Tests the getting of the goto page calls the appropriate driver method.
         /// </summary>
         [TestMethod]
