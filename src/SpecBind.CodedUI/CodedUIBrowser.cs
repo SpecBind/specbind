@@ -63,7 +63,21 @@ namespace SpecBind.CodedUI
 			}
 		}
 
-		/// <summary>
+	    /// <summary>
+        /// Gets the url of the current page.
+        /// </summary>
+        /// <value>
+        /// The url of the base page.
+        /// </value>
+        public override string Url
+	    {
+	        get
+	        {
+	            return this.window.Value.Uri.ToString();
+	        }
+	    }
+
+	    /// <summary>
 		/// Closes this instance.
 		/// </summary>
         public override void Close()

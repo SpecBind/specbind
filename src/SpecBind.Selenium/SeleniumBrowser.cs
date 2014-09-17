@@ -59,6 +59,20 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Gets the url of the current page.
+        /// </summary>
+        /// <value>
+        /// The url of the base page.
+        /// </value>
+        public override string Url
+        {
+            get
+            {
+                return this.driver.Value.Url;
+            }
+        }
+
+        /// <summary>
         /// Closes this instance.
         /// </summary>
         public override void Close()

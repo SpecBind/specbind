@@ -23,6 +23,14 @@ namespace SpecBind.BrowserSupport
         public abstract Type BasePageType { get; }
 
         /// <summary>
+        /// Gets the url of the current page.
+        /// </summary>
+        /// <value>
+        /// The url of the base page.
+        /// </value>
+        public abstract string Url { get; }
+
+        /// <summary>
         /// Closes this instance.
         /// </summary>
         public abstract void Close();
