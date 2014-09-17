@@ -21,6 +21,7 @@ namespace SpecBind.Selenium
     using OpenQA.Selenium.Remote;
     using OpenQA.Selenium.Safari;
 
+    using SpecBind.Actions;
     using SpecBind.BrowserSupport;
     using SpecBind.Configuration;
 
@@ -113,14 +114,15 @@ namespace SpecBind.Selenium
         /// </summary>
         /// <param name="browserType">Type of the browser.</param>
         /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
+        /// <param name="logger">The logger.</param>
         /// <returns>A browser object.</returns>
         /// <exception cref="System.InvalidOperationException">Thrown if the browser type is not supported.</exception>
-        protected override IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration)
+        protected override IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration, ILogger logger)
         {
             var launchAction = new Func<IWebDriver>(() => CreateWebDriver(browserType, browserFactoryConfiguration));
             
             var browser = new Lazy<IWebDriver>(launchAction, LazyThreadSafetyMode.None);
-            return new SeleniumBrowser(browser);
+            return new SeleniumBrowser(browser, logger);
         }
 
         /// <summary>

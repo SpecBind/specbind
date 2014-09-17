@@ -12,8 +12,8 @@ namespace SpecBind.CodedUI
 	using Microsoft.VisualStudio.TestTools.UITest.Extension;
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
-	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+	using SpecBind.Actions;
 	using SpecBind.BrowserSupport;
 	using SpecBind.Helpers;
 	using SpecBind.Pages;
@@ -30,11 +30,12 @@ namespace SpecBind.CodedUI
 		
 		private bool disposed;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="CodedUIBrowser" /> class.
-		/// </summary>
-		/// <param name="browserWindow">The browser window.</param>
-		public CodedUIBrowser(Lazy<BrowserWindow> browserWindow)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CodedUIBrowser" /> class.
+        /// </summary>
+        /// <param name="browserWindow">The browser window.</param>
+        /// <param name="logger">The logger.</param>
+		public CodedUIBrowser(Lazy<BrowserWindow> browserWindow, ILogger logger) : base(logger)
 		{
 			this.frameCache = new Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>>(GetFrameCache);
 			this.window = browserWindow;

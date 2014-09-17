@@ -29,7 +29,7 @@ namespace SpecBind.Helpers
 				          ? parsedUri
 				          : new Uri("http://localhost");
 
-			System.Diagnostics.Debug.WriteLine("Application Base URI: {0}", BaseUri);
+			Console.WriteLine("Application Base URI: {0}", BaseUri);
 		}
 
         /// <summary>

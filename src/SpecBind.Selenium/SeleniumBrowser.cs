@@ -11,7 +11,8 @@ namespace SpecBind.Selenium
     using System.IO;
 
     using OpenQA.Selenium;
-    
+
+    using SpecBind.Actions;
     using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
     using SpecBind.Pages;
@@ -29,10 +30,11 @@ namespace SpecBind.Selenium
         private bool switchedContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SeleniumBrowser"/> class.
+        /// Initializes a new instance of the <see cref="SeleniumBrowser" /> class.
         /// </summary>
         /// <param name="driver">The browser driver as a lazy object.</param>
-        public SeleniumBrowser(Lazy<IWebDriver> driver)
+        /// <param name="logger">The logger.</param>
+        public SeleniumBrowser(Lazy<IWebDriver> driver, ILogger logger) : base(logger)
         {
             this.driver = driver;
 

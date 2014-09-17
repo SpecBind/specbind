@@ -9,6 +9,7 @@ namespace SpecBind.CodedUI
 	using Microsoft.VisualStudio.TestTools.UITest.Extension;
 	using Microsoft.VisualStudio.TestTools.UITesting;
 
+	using SpecBind.Actions;
 	using SpecBind.BrowserSupport;
 	using SpecBind.Configuration;
 
@@ -33,9 +34,10 @@ namespace SpecBind.CodedUI
         /// </summary>
         /// <param name="browserType">Type of the browser.</param>
         /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
+        /// <param name="logger">The logger.</param>
         /// <returns>A browser object.</returns>
         /// <exception cref="System.InvalidOperationException">Thrown if the browser type is not supported.</exception>
-        protected override IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration)
+        protected override IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration, ILogger logger)
 		{
 			string browserKey = null;
 			switch (browserType)
@@ -76,7 +78,7 @@ namespace SpecBind.CodedUI
 				});
 
 			var browser = new Lazy<BrowserWindow>(launchAction, LazyThreadSafetyMode.None);
-			return new CodedUIBrowser(browser);
+			return new CodedUIBrowser(browser, logger);
 		}
     }
 }

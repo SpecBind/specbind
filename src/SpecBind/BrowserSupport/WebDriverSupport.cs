@@ -25,8 +25,8 @@ namespace SpecBind.BrowserSupport
 	[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 	public class WebDriverSupport
 	{
-		private readonly IObjectContainer objectContainer;
-
+        private readonly IObjectContainer objectContainer;
+        
 		/// <summary>
 		/// Initializes a new instance of the <see cref="WebDriverSupport" /> class.
 		/// </summary>
@@ -42,7 +42,7 @@ namespace SpecBind.BrowserSupport
         [BeforeTestRun]
         public static void CheckForDriver()
         {
-            var factory = BrowserFactory.GetBrowserFactory();
+            var factory = BrowserFactory.GetBrowserFactory(new NullLogger());
             factory.ValidateDriverSetup();
         }
 
@@ -52,7 +52,10 @@ namespace SpecBind.BrowserSupport
 		[BeforeScenario]
 		public void InitializeDriver()
 		{
-			var factory = BrowserFactory.GetBrowserFactory();
+            this.objectContainer.RegisterTypeAs<ProxyLogger, ILogger>();
+		    var logger = this.objectContainer.Resolve<ILogger>();
+
+            var factory = BrowserFactory.GetBrowserFactory(logger);
 			var browser = factory.GetBrowser();
 			this.objectContainer.RegisterInstanceAs(browser);
 
@@ -68,8 +71,7 @@ namespace SpecBind.BrowserSupport
 		    var repository = new ActionRepository(this.objectContainer);
 			this.objectContainer.RegisterInstanceAs<IActionRepository>(repository);
 			this.objectContainer.RegisterTypeAs<ActionPipelineService, IActionPipelineService>();
-            this.objectContainer.RegisterTypeAs<ProxyLogger, ILogger>();
-
+            
             // Initialize the repository
             repository.Initialize();
 		}

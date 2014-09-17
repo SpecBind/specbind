@@ -8,6 +8,7 @@ namespace SpecBind.BrowserSupport
 	using System.Linq;
 	using System.Reflection;
 
+	using SpecBind.Actions;
 	using SpecBind.Configuration;
 	using SpecBind.Helpers;
 
@@ -28,6 +29,12 @@ namespace SpecBind.BrowserSupport
 	        this.driverNeedsValidation = driverNeedsValidation;
 	    }
 
+        /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
+        /// <value>The logger.</value>
+        private ILogger Logger { get; set; }
+
 	    /// <summary>
 		/// Gets the browser for the test run.
 		/// </summary>
@@ -37,11 +44,15 @@ namespace SpecBind.BrowserSupport
 	        return this.LoadConfigurationAndCreateBrowser(this.CreateBrowser);
 		}
 
-		/// <summary>
-		/// Gets the browser factory.
-		/// </summary>
-		/// <returns>A created browser factory.</returns>
-		internal static BrowserFactory GetBrowserFactory()
+        /// <summary>
+        /// Gets the browser factory.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        /// <returns>A created browser factory.</returns>
+        /// <exception cref="System.InvalidOperationException">
+        /// The specBind config section must have a browser factor with a provider configured.
+        /// </exception>
+	    internal static BrowserFactory GetBrowserFactory(ILogger logger)
 		{
 			var configSection = SettingHelper.GetConfigurationSection();
 			if (configSection == null || configSection.BrowserFactory == null || string.IsNullOrWhiteSpace(configSection.BrowserFactory.Provider))
@@ -55,7 +66,10 @@ namespace SpecBind.BrowserSupport
 				throw new InvalidOperationException(string.Format("Could not load factory type: {0}. Make sure this is fully qualified and the assembly exists. Also ensure the base type is BrowserFactory", configSection.BrowserFactory.Provider));
 			}
 
-			return (BrowserFactory)Activator.CreateInstance(type);
+            var factory = (BrowserFactory)Activator.CreateInstance(type);
+            factory.Logger = logger;
+
+            return factory;
 		}
 
         /// <summary>
@@ -70,20 +84,21 @@ namespace SpecBind.BrowserSupport
             }
 
             this.LoadConfigurationAndCreateBrowser(
-                (browserType, config) =>
+                (browserType, config, logger) =>
                     {
                         this.ValidateDriverSetup(browserType, config);
                         return null;
                     });
         }
 
-	    /// <summary>
-	    /// Creates the browser.
-	    /// </summary>
-	    /// <param name="browserType">Type of the browser.</param>
-	    /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-	    /// <returns>A browser object.</returns>
-	    protected abstract IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration);
+        /// <summary>
+        /// Creates the browser.
+        /// </summary>
+        /// <param name="browserType">Type of the browser.</param>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
+        /// <param name="logger">The logger.</param>
+        /// <returns>A browser object.</returns>
+	    protected abstract IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration, ILogger logger);
 
 	    /// <summary>
 	    /// Gets the type of the browser to leverage.
@@ -116,7 +131,7 @@ namespace SpecBind.BrowserSupport
         /// </summary>
         /// <param name="createMethod">The create method.</param>
         /// <returns>The <see cref="IBrowser"/> object.</returns>
-        private IBrowser LoadConfigurationAndCreateBrowser(Func<BrowserType, BrowserFactoryConfigurationElement, IBrowser> createMethod)
+        private IBrowser LoadConfigurationAndCreateBrowser(Func<BrowserType, BrowserFactoryConfigurationElement, ILogger, IBrowser> createMethod)
 	    {
             var configSection = SettingHelper.GetConfigurationSection();
 
@@ -134,7 +149,7 @@ namespace SpecBind.BrowserSupport
             }
 
             var browserType = this.GetBrowserType(browserFactoryConfiguration);
-            return createMethod(browserType, browserFactoryConfiguration);
+            return createMethod(browserType, browserFactoryConfiguration, this.Logger);
 	    }
 
 		/// <summary>
@@ -154,6 +169,7 @@ namespace SpecBind.BrowserSupport
 		            return assembly;
 		        }
 		    }
+		    // ReSharper disable once EmptyGeneralCatchClause
 		    catch
 		    {
 		        //Ignore and resume as previous.

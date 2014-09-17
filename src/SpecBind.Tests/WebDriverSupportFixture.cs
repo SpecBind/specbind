@@ -33,6 +33,8 @@ namespace SpecBind.Tests
         [TestMethod]
         public void TestInitializeTests()
         {
+            var logger = new Mock<ILogger>();
+
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.RegisterInstanceAs(It.IsAny<IBrowser>(), null));
             container.Setup(c => c.RegisterInstanceAs<ISettingHelper>(It.IsAny<WrappedSettingHelper>(), null));
@@ -42,6 +44,7 @@ namespace SpecBind.Tests
             container.Setup(c => c.RegisterInstanceAs(It.IsAny<IActionRepository>(), null));
             container.Setup(c => c.RegisterTypeAs<ActionPipelineService, IActionPipelineService>(null));
             container.Setup(c => c.RegisterTypeAs<ProxyLogger, ILogger>(null));
+            container.Setup(c => c.Resolve<ILogger>()).Returns(logger.Object);
 
             container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(ILocatorAction).IsAssignableFrom(t)), null)).Returns(new Mock<ILocatorAction>().Object);
             container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IPreAction).IsAssignableFrom(t)), null)).Returns(new Mock<IPreAction>().Object);

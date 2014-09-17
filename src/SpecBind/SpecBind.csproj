@@ -87,6 +87,7 @@
     <Compile Include="BrowserSupport\BrowserFactory.cs" />
     <Compile Include="BrowserSupport\BrowserType.cs" />
     <Compile Include="BrowserSupport\IBrowser.cs" />
+    <Compile Include="BrowserSupport\NullLogger.cs" />
     <Compile Include="Configuration\ApplicationConfigurationElement.cs" />
     <Compile Include="Configuration\BrowserFactoryConfigurationElement.cs" />
     <Compile Include="Configuration\ConfigurationSectionHandler.cs" />

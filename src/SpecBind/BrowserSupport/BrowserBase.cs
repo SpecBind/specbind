@@ -7,7 +7,8 @@ namespace SpecBind.BrowserSupport
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    
+
+    using SpecBind.Actions;
     using SpecBind.Pages;
     using UriHelper = Helpers.UriHelper;
 
@@ -16,6 +17,17 @@ namespace SpecBind.BrowserSupport
     /// </summary>
     public abstract class BrowserBase : IBrowser
     {
+        private readonly ILogger logger;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BrowserBase"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        protected BrowserBase(ILogger logger)
+        {
+            this.logger = logger;
+        }
+
         /// <summary>
         /// Gets the type of the base page.
         /// </summary>
@@ -95,7 +107,7 @@ namespace SpecBind.BrowserSupport
             var filledUri = UriHelper.FillPageUri(this, pageType, parameters);
             try
             {
-                System.Diagnostics.Debug.WriteLine("Navigating to URL: {0}", filledUri);
+                this.logger.Debug("Navigating to URL: {0}", filledUri);
                 this.GoTo(new Uri(filledUri));
             }
             catch (Exception ex)

@@ -11,6 +11,7 @@ namespace SpecBind.Tests
     using Moq;
     using Moq.Protected;
 
+    using SpecBind.Actions;
     using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
     using SpecBind.Pages;
@@ -28,7 +29,9 @@ namespace SpecBind.Tests
         public void TestGetPageAsInterfaceMethodCreatesFromNativePage()
         {
             var testPage = new Mock<IPage>();
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict);
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
             browser.Protected().Setup<IPage>("CreateNativePage", typeof(TestPage), false).Returns(testPage.Object);
 
             var result = browser.Object.Page<TestPage>();
@@ -47,7 +50,9 @@ namespace SpecBind.Tests
         public void TestGetPageMethodCreatesFromNativePage()
         {
             var testPage = new Mock<IPage>();
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict);
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
             browser.Protected().Setup<IPage>("CreateNativePage", typeof(TestPage), false).Returns(testPage.Object);
 
             var result = browser.Object.Page(typeof(TestPage));
@@ -66,7 +71,9 @@ namespace SpecBind.Tests
         public void TestGetUriForPageTypeReturnsNullInBaseClass()
         {
             var testPage = new Mock<IPage>();
-            var browser = new Mock<BrowserBase> { CallBase = true };
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+
+            var browser = new Mock<BrowserBase>(logger.Object) { CallBase = true };
 
             var result = browser.Object.GetUriForPageType(typeof(TestPage));
 
@@ -84,8 +91,10 @@ namespace SpecBind.Tests
         {
             var testPage = new Mock<IPage>();
             testPage.SetupGet(p => p.PageType).Returns(typeof(TestPage));
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict);
+
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
             browser.Protected().Setup<IList<string>>("GetNativePageLocation", testPage.Object).Returns(new[] { "http://localhost:2222/foo" });
             
             browser.Object.EnsureOnPage(testPage.Object);
@@ -104,8 +113,10 @@ namespace SpecBind.Tests
             UriHelper.BaseUri = new Uri("http://localhost:2222");
             var testPage = new Mock<IPage>();
             testPage.SetupGet(p => p.PageType).Returns(typeof(TestPage));
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict);
+
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
             browser.Protected().Setup<IList<string>>("GetNativePageLocation", testPage.Object).Returns(new[] { "http://localhost:2222/" });
 
             ExceptionHelper.SetupForException<PageNavigationException>(
@@ -124,7 +135,10 @@ namespace SpecBind.Tests
         public void TestGoToPageWhenUrlIsNotOnPageReturnsNativeClassAfterNavigating()
         {
             var testPage = new Mock<IPage>();
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict);
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
+            logger.Setup(l => l.Debug("Navigating to URL: {0}", "http://localhost:2222/foo"));
+
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
             browser.Protected().Setup<IPage>("CreateNativePage", typeof(TestPage), true).Returns(testPage.Object);
             browser.Setup(b => b.GoTo(new Uri("http://localhost:2222/foo")));
 
@@ -135,6 +149,7 @@ namespace SpecBind.Tests
 
             browser.VerifyAll();
             testPage.VerifyAll();
+            logger.VerifyAll();
         }
 
         /// <summary>
@@ -146,7 +161,10 @@ namespace SpecBind.Tests
         {
             UriHelper.BaseUri = new Uri("http://localhost:2222");
             var testPage = new Mock<IPage>();
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict);
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
+            logger.Setup(l => l.Debug("Navigating to URL: {0}", "http://localhost:2222/foo"));
+
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
             browser.Setup(b => b.GoTo(new Uri("http://localhost:2222/foo"))).Throws<InvalidOperationException>();
 
             // ReSharper disable once ImplicitlyCapturedClosure
@@ -158,6 +176,7 @@ namespace SpecBind.Tests
 
                         browser.VerifyAll();
                         testPage.VerifyAll();
+                        logger.VerifyAll();
                     });
         }
 
