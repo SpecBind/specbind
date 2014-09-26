@@ -29,6 +29,14 @@ namespace SpecBind.Pages
 		/// </returns>
 		bool ElementExistsCheck(TElement element);
 
+        /// <summary>
+        /// Gets the element attribute value.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="attributeName">Name of the attribute.</param>
+        /// <returns>The attribute's value.</returns>
+        string GetElementAttributeValue(TElement element, string attributeName);
+
 		/// <summary>
 		/// Gets the element text.
 		/// </summary>

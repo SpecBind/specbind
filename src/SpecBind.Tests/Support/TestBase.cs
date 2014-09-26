@@ -50,7 +50,18 @@ namespace SpecBind.Tests.Support
 			return true;
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Gets the element attribute value.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="attributeName">Name of the attribute.</param>
+        /// <returns>The attribute value.</returns>
+	    public override string GetElementAttributeValue(BaseElement element, string attributeName)
+	    {
+	        return string.Empty;
+	    }
+
+	    /// <summary>
 		/// Gets the element text.
 		/// </summary>
 		/// <param name="element">The element.</param>

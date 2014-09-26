@@ -35,6 +35,7 @@ namespace SpecBind.CodedUI.IntegrationTests.Pages
         /// </summary>
         /// <value>The courses link button.</value>
         [ElementLocator(Id = "coursesLink")]
+        [VirtualProperty(Name = "CoursesLink", Attribute = "Href")]
         public HtmlHyperlink Courses { get; set; }
 
         /// <summary>

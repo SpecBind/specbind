@@ -108,7 +108,19 @@ namespace SpecBind.CodedUI
 			return true;
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Gets the element attribute value.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="attributeName">Name of the attribute.</param>
+        /// <returns>The element attribute value.</returns>
+	    public override string GetElementAttributeValue(HtmlControl element, string attributeName)
+        {
+            var value = element.GetProperty(attributeName);
+            return value != null ? value.ToString() : string.Empty;
+        }
+
+	    /// <summary>
 		/// Gets the element text.
 		/// </summary>
 		/// <param name="element">The element.</param>
@@ -158,7 +170,7 @@ namespace SpecBind.CodedUI
 			{
 				element.EnsureClickable();
 			}
-
+            
 			Mouse.Click(element);
 			return true;
 		}

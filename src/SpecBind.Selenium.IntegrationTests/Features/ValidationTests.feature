@@ -20,6 +20,12 @@ Scenario: Validate Field Equality For a Text Field
 		   | Course Title | Starts With      | C           |
 		   | Course Title | Ends With        | se          |
 
+Scenario: Validate Field Virtual Property
+	 Given I navigated to the Home page
+	  Then I see
+		   | Field        | Rule      | Value                     |
+		   | Courses Link | Ends With | /ContosoUniversity/Course |
+
 Scenario: Validate Field Existence and Enabled
 	 Given I navigated to the Home page
        And I chose Courses

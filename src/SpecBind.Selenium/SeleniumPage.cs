@@ -48,6 +48,17 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Gets the element attribute value.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="attributeName">Name of the attribute.</param>
+        /// <returns>The attribute value.</returns>
+        public override string GetElementAttributeValue(IWebElement element, string attributeName)
+        {
+            return element.GetAttribute(attributeName);
+        }
+
+        /// <summary>
         /// Gets the element text.
         /// </summary>
         /// <param name="element">The element.</param>

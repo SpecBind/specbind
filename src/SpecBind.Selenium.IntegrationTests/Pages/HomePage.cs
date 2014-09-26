@@ -27,6 +27,7 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
         /// </summary>
         /// <value>The courses link button.</value>
         [ElementLocator(Id = "coursesLink")]
+        [VirtualProperty(Name = "CoursesLink", Attribute = "href")]
         [FindsBy(How = How.Id, Using = "coursesLink")]
         public IWebElement Courses { get; set; }
 

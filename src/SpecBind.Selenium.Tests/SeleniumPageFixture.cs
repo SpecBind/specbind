@@ -605,6 +605,25 @@ namespace SpecBind.Selenium.Tests
             element.VerifyAll();
         }
 
+        /// <summary>
+        /// Tests the get element attribute value.
+        /// </summary>
+        [TestMethod]
+        public void TestGetElementAttributeValueWithValidAttribute()
+        {
+            var element = new Mock<IWebElement>(MockBehavior.Strict);
+            element.Setup(e => e.GetAttribute("href")).Returns("http://myurl.com/page");
+
+            var nativePage = new NativePage();
+            var page = new SeleniumPage(nativePage);
+
+            var result = page.GetElementAttributeValue(element.Object, "href");
+
+            Assert.AreEqual("http://myurl.com/page", result);
+
+            element.VerifyAll();
+        }
+
         #region Test Class - Native Page
         /// <summary>
         /// A test class for the native page.

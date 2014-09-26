@@ -86,9 +86,14 @@
     <Compile Include="Helpers\AttributeExtensionsFixture.cs" />
     <Compile Include="Helpers\TableFormatterFixture.cs" />
     <Compile Include="Helpers\ValidationTableExtensionsFixture.cs" />
+    <Compile Include="PropertyHandlers\PagePropertyDataFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PageMapperFixture.cs" />
     <Compile Include="PageExtensionsFixture.cs" />
+    <Compile Include="PropertyHandlers\ElementPropertyDataFixture.cs" />
+    <Compile Include="PropertyHandlers\PropertyTestHelper.cs" />
+    <Compile Include="PropertyHandlers\ListPropertyDataFixture.cs" />
+    <Compile Include="PropertyHandlers\VirtualPropertyDataFixture.cs" />
     <Compile Include="StringLookupExtensionsFixture.cs" />
     <Compile Include="PageNavigationStepsFixture.cs" />
     <Compile Include="Support\BaseElement.cs" />
@@ -98,7 +103,6 @@
     <Compile Include="Support\TestBase.cs" />
     <Compile Include="PageBaseFixture.cs" />
     <Compile Include="TokenManagerFixture.cs" />
-    <Compile Include="PropertyDataFixture.cs" />
     <Compile Include="AlertBoxStepsFixture.cs" />
     <Compile Include="ConfigurationFixture.cs" />
     <Compile Include="PageBuilderContextFixture.cs" />
