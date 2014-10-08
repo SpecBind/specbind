@@ -71,7 +71,7 @@ namespace SpecBind.Helpers
 	    public static Regex GetQualifiedPageUriRegex(IBrowser browser, Type pageType)
 	    {
 	        var detailPath = GetPageUriInternal(browser, pageType);
-            return new Regex(CreateCompleteUri(detailPath, true));
+            return new Regex(CreateCompleteUri(detailPath, true).Replace("?", "[?]"));
 	    }
 
 		/// <summary>
@@ -145,7 +145,7 @@ namespace SpecBind.Helpers
             
             var seperator = subPath.StartsWith("/") ? string.Empty : "/";
 
-            return string.Concat(basePath, seperator, subPath).Replace("?", "[?]");
+            return string.Concat(basePath, seperator, subPath);
         }
 
         /// <summary>
