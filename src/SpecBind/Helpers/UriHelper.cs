@@ -145,7 +145,7 @@ namespace SpecBind.Helpers
             
             var seperator = subPath.StartsWith("/") ? string.Empty : "/";
 
-            return string.Concat(basePath, seperator, subPath);
+            return string.Concat(basePath, seperator, subPath).Replace("?", "[?]");
         }
 
         /// <summary>
