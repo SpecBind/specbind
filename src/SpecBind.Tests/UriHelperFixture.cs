@@ -129,6 +129,23 @@ namespace SpecBind.Tests
         }
 
         /// <summary>
+        ///     Tests the get page URI method with parameters
+        /// </summary>
+        [TestMethod]
+        public void TestGetQualifiedPageUriRegexWithParameters()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+
+            UriHelper.BaseUri = new Uri("http://localhost:2222/");
+            var regex = UriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(NavigationWithParamtersPage));
+
+            Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root?q=parameter"));
+
+            browser.VerifyAll();
+        }
+
+
+        /// <summary>
         ///     Tests the get page URI method.
         /// </summary>
         [TestMethod]
@@ -288,6 +305,14 @@ namespace SpecBind.Tests
 		private class NavigationAttributePage : TestBase
 		{
 		}
+
+	    /// <summary>
+	    /// A test class for navigation page with parameters
+	    /// </summary>
+	    [PageNavigation("/root?q=parameter")]
+	    private class NavigationWithParamtersPage : TestBase
+	    {
+	    }
 
         /// <summary>
         /// A test class for navigation page attribute with regex in it configurations.
