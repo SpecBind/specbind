@@ -70,22 +70,29 @@ namespace SpecBind.Selenium
                 {
                     case BrowserType.IE:
                         var explorerOptions = new InternetExplorerOptions { EnsureCleanSession = browserFactoryConfiguration.EnsureCleanSession };
-                        driver = new InternetExplorerDriver(explorerOptions);
+                        var internetExplorerDriverService = InternetExplorerDriverService.CreateDefaultService();
+                        internetExplorerDriverService.HideCommandPromptWindow = true;
+                        driver = new InternetExplorerDriver(internetExplorerDriverService, explorerOptions);
                         break;
                     case BrowserType.FireFox:
                         driver = GetFireFoxDriver(browserFactoryConfiguration);
                         break;
                     case BrowserType.Chrome:
                         var chromeOptions = new ChromeOptions { LeaveBrowserRunning = false };
+                        var chromeDriverService = ChromeDriverService.CreateDefaultService();
+                        chromeDriverService.HideCommandPromptWindow = true;
+
                         if (browserFactoryConfiguration.EnsureCleanSession)
                         {
                             chromeOptions.AddArgument("--incognito");
                         }
 
-                        driver = new ChromeDriver();
+                        driver = new ChromeDriver(chromeDriverService, chromeOptions);
                         break;
                     case BrowserType.PhantomJS:
-                        driver = new PhantomJSDriver();
+                        var phantomJsDriverService = PhantomJSDriverService.CreateDefaultService();
+                        phantomJsDriverService.HideCommandPromptWindow = true;
+                        driver = new PhantomJSDriver(phantomJsDriverService);
                         break;
                     case BrowserType.Safari:
                         driver = new SafariDriver();
