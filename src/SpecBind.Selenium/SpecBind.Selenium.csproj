@@ -73,9 +73,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Deployment\App.config.transform" />
-    <None Include="Deployment\SpecBind.Selenium.nuspec" />
+    <None Include="Deployment\App.config.uninstall.xdt" />
+    <None Include="Deployment\App.config.install.xdt" />
     <None Include="packages.config" />
+    <None Include="SpecBind.Selenium.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

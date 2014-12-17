@@ -67,8 +67,8 @@
   <ItemGroup>
     <None Include="Deployment\App.config.install.xdt" />
     <None Include="Deployment\App.config.uninstall.xdt" />
-    <None Include="Deployment\SpecBind.Plugin.nuspec" />
     <None Include="packages.config" />
+    <None Include="SpecBind.Plugin.nuspec" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

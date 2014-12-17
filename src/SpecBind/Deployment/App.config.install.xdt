@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <configSections>
+    <section name="specBind" type="SpecBind.Configuration.ConfigurationSectionHandler, SpecBind" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
+  </configSections>
+  <specBind xdt:Transform="InsertIfMissing">
+    <!-- For additional details on SpecBind configuration options see the project site. -->
+    <browserFactory provider="" browserType="IE"/>
+  </specBind>
+  <specFlow>
+    <stepAssemblies>
+      <stepAssembly assembly="SpecBind" xdt:Locator="Match(assembly)" xdt:Transform="InsertIfMissing"/>
+    </stepAssemblies>
+  </specFlow>
+</configuration>

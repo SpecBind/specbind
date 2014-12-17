@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <specBind>
-    <browserFactory provider="SpecBind.Selenium.SeleniumBrowserFactory, SpecBind.Selenium" browserType="IE"/>
-  </specBind>
-</configuration>

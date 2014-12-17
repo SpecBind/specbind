@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <configSections>
+    <section name="specBind" type="SpecBind.Configuration.ConfigurationSectionHandler, SpecBind" xdt:Locator="Match(name)" xdt:Transform="Remove"/>
+  </configSections>
+  <specBind xdt:Transform="Remove">
+    <!-- For additional details on SpecBind configuration options see the project site. -->
+  </specBind>
+  <specFlow>
+    <stepAssemblies>
+      <stepAssembly assembly="SpecBind" xdt:Locator="Match(assembly)" xdt:Transform="Remove" />
+    </stepAssemblies>
+  </specFlow>
+</configuration>

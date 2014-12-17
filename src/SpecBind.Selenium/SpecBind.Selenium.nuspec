@@ -25,6 +25,7 @@
   <files>
     <file src="bin\Release\SpecBind.Selenium.dll" target="lib\net45" />
     <file src="bin\Release\SpecBind.Selenium.xml" target="lib\net45" />
-    <file src="Deployment\App.config.transform" target="content" />
+    <file src="Deployment\App.config.install.xdt" target="content" />
+    <file src="Deployment\App.config.uninstall.xdt" target="content" />
   </files>
 </package>
