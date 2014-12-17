@@ -8,7 +8,7 @@
     <browserFactory provider="" browserType="IE"/>
   </specBind>
   <specFlow>
-    <stepAssemblies>
+    <stepAssemblies xdt:Transform="InsertIfMissing">
       <stepAssembly assembly="SpecBind" xdt:Locator="Match(assembly)" xdt:Transform="InsertIfMissing"/>
     </stepAssemblies>
   </specFlow>
