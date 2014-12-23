@@ -53,19 +53,20 @@
   </Choose>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="SpecBind, Version=1.0.0.23, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SpecBind, Version=1.4.1.170, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SpecBind.1.0.0.23\lib\net45\SpecBind.dll</HintPath>
+      <HintPath>..\packages\SpecBind.1.4.1.170\lib\net45\SpecBind.dll</HintPath>
     </Reference>
-    <Reference Include="SpecBind.CodedUI, Version=1.0.0.23, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SpecBind.CodedUI, Version=1.4.1.170, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SpecBind.CodedUI.1.0.0.23\lib\net45\SpecBind.CodedUI.dll</HintPath>
+      <HintPath>..\packages\SpecBind.CodedUI.1.4.1.170\lib\net45\SpecBind.CodedUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="TechTalk.SpecFlow">
+    <Reference Include="TechTalk.SpecFlow, Version=1.9.0.77, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SpecFlow.1.9.0\lib\net35\TechTalk.SpecFlow.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
