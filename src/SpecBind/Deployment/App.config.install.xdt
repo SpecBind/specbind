@@ -5,7 +5,7 @@
   </configSections>
   <specBind xdt:Transform="InsertIfMissing">
     <!-- For additional details on SpecBind configuration options see the project site. -->
-    <browserFactory provider="" browserType="IE"/>
+    <browserFactory provider="" browserType="IE"  xdt:Transform="InsertIfMissing"/>
   </specBind>
   <specFlow>
     <stepAssemblies xdt:Transform="InsertIfMissing">
