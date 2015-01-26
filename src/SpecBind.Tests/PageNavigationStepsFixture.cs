@@ -72,6 +72,7 @@ namespace SpecBind.Tests
             scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), PageStepBase.CurrentPageKey));
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
+            tokenManager.Setup(t => t.GetToken(It.IsAny<string>())).Returns<string>(s => s);
 
             var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
 
