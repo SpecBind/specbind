@@ -40,8 +40,10 @@ namespace SpecBind.Tests
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.SetValue(testPage.Object, PageStepBase.CurrentPageKey));
+            
+            var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
 
             steps.GivenNavigateToPageStep("mypage");
 
@@ -69,7 +71,10 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), PageStepBase.CurrentPageKey));
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object);
+            var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
+            tokenManager.Setup(t => t.GetToken(It.IsAny<string>())).Returns<string>(s => s);
+
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
 
             var table = new Table("Id", "Part");
             table.AddRow("1", "A");
@@ -97,7 +102,9 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.SetValue(testPage.Object, PageStepBase.CurrentPageKey));
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object);
+            var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
+
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
 
             steps.GivenEnsureOnPageStep("mypage");
 
@@ -129,7 +136,9 @@ namespace SpecBind.Tests
             scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(page.Object);
             scenarioContext.Setup(s => s.SetValue(listItem.Object, PageStepBase.CurrentPageKey));
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object);
+            var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
+
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
 
             steps.GivenEnsureOnDialogStep("my property");
 
@@ -156,7 +165,9 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.SetValue(testPage.Object, PageStepBase.CurrentPageKey));
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object);
+            var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
+
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
 
             steps.WaitForPageStep("mypage");
 
@@ -185,7 +196,9 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.SetValue<IPage>(null, PageStepBase.CurrentPageKey));
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object);
+            var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
+
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
 
             ExceptionHelper.SetupForException<PageNavigationException>(() => steps.WaitForPageStep("mypage"),
                 e =>
@@ -217,7 +230,9 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.SetValue(testPage.Object, PageStepBase.CurrentPageKey));
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object);
+            var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
+
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
 
             steps.WaitForPageStepWithTimeout(10, "mypage");
 
@@ -247,7 +262,9 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.SetValue(testPage.Object, PageStepBase.CurrentPageKey));
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object);
+            var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
+
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
 
             steps.WaitForPageStepWithTimeout(0, "mypage");
 
