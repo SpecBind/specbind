@@ -75,6 +75,27 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Adds the cookie to the browser.
+        /// </summary>
+        /// <param name="name">The cookie name.</param>
+        /// <param name="value">The cookie value.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="expireDateTime">The expiration date time.</param>
+        public override void AddCookie(string name, string value, string path, DateTime? expireDateTime)
+        {
+            var localDriver = this.driver.Value;
+            var cookieContainer = localDriver.Manage().Cookies;
+
+            var currentCookie = cookieContainer.GetCookieNamed(name);
+            if (currentCookie != null)
+            {
+                cookieContainer.DeleteCookieNamed(name);
+            }
+
+            cookieContainer.AddCookie(new Cookie(name, value, path, expireDateTime));
+        }
+
+        /// <summary>
         /// Closes this instance.
         /// </summary>
         public override void Close()
@@ -93,7 +114,7 @@ namespace SpecBind.Selenium
         public override void DismissAlert(AlertBoxAction action, string text)
         {
             var alert = this.driver.Value.SwitchTo().Alert();
-
+            
             if (text != null)
             {
                 alert.SendKeys(text);

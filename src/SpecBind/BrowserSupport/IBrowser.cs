@@ -30,6 +30,15 @@ namespace SpecBind.BrowserSupport
         /// </value>
         string Url { get; }
 
+        /// <summary>
+        /// Adds the cookie to the browser.
+        /// </summary>
+        /// <param name="name">The cookie name.</param>
+        /// <param name="value">The cookie value.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="expireDateTime">The expiration date time.</param>
+	    void AddCookie(string name, string value, string path, DateTime? expireDateTime);
+
 		/// <summary>
 		/// Closes this instance.
 		/// </summary>

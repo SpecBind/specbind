@@ -13,6 +13,8 @@ namespace SpecBind.CodedUI
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
 
+	using mshtml;
+
 	using SpecBind.Actions;
 	using SpecBind.BrowserSupport;
 	using SpecBind.Helpers;
@@ -76,6 +78,21 @@ namespace SpecBind.CodedUI
 	        {
 	            return this.window.Value.Uri.ToString();
 	        }
+	    }
+
+        /// <summary>
+        /// Adds the cookie to the browser.
+        /// </summary>
+        /// <param name="name">The cookie name.</param>
+        /// <param name="value">The cookie value.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="expireDateTime">The expiration date time.</param>
+        /// <exception cref="System.NotImplementedException">Currently not implemented.</exception>
+	    public override void AddCookie(string name, string value, string path, DateTime? expireDateTime)
+        {
+            var localWindow = this.window.Value;
+           
+	        throw new NotImplementedException();
 	    }
 
 	    /// <summary>

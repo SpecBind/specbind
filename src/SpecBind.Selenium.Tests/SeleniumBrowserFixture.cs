@@ -87,6 +87,65 @@ namespace SpecBind.Selenium.Tests
         }
 
         /// <summary>
+        /// Tests the add cookie calls driver method.
+        /// </summary>
+        [TestMethod]
+        public void TestAddCookieWhenCookieDoesntExistCallsDriverMethod()
+        {
+            var expireDate = DateTime.Now;
+
+            var cookies = new Mock<ICookieJar>(MockBehavior.Strict);
+            cookies.Setup(c => c.GetCookieNamed("TestCookie")).Returns((Cookie)null);
+            cookies.Setup(c => c.AddCookie(It.Is<Cookie>(ck => ck.Name == "TestCookie" && ck.Value == "TestValue" && ck.Path == "/" && ck.Expiry == expireDate)));
+
+            var options = new Mock<IOptions>(MockBehavior.Strict);
+            options.Setup(o => o.Cookies).Returns(cookies.Object);
+
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            driver.Setup(d => d.Manage()).Returns(options.Object);
+
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+
+            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
+
+            browser.AddCookie("TestCookie", "TestValue", "/", expireDate);
+
+            driver.VerifyAll();
+            options.VerifyAll();
+            cookies.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the add cookie calls driver method.
+        /// </summary>
+        [TestMethod]
+        public void TestAddCookieWhenCookieExistsCallsDriverMethodAndRemovesExistingCookie()
+        {
+            var expireDate = DateTime.Now;
+
+            var cookies = new Mock<ICookieJar>(MockBehavior.Strict);
+            cookies.Setup(c => c.GetCookieNamed("TestCookie")).Returns(new Cookie("TestCookie", "SomeValue"));
+            cookies.Setup(c => c.DeleteCookieNamed("TestCookie"));
+            cookies.Setup(c => c.AddCookie(It.Is<Cookie>(ck => ck.Name == "TestCookie" && ck.Value == "TestValue" && ck.Path == "/" && ck.Expiry == expireDate)));
+
+            var options = new Mock<IOptions>(MockBehavior.Strict);
+            options.Setup(o => o.Cookies).Returns(cookies.Object);
+
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            driver.Setup(d => d.Manage()).Returns(options.Object);
+
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+
+            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
+
+            browser.AddCookie("TestCookie", "TestValue", "/", expireDate);
+
+            driver.VerifyAll();
+            options.VerifyAll();
+            cookies.VerifyAll();
+        }
+
+        /// <summary>
         /// Tests the dismiss alert calls accept when ok is chosen.
         /// </summary>
         [TestMethod]
