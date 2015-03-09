@@ -108,7 +108,7 @@ namespace SpecBind.Selenium.Tests
 
             var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
 
-            browser.AddCookie("TestCookie", "TestValue", "/", expireDate);
+            browser.AddCookie("TestCookie", "TestValue", "/", expireDate, null, false);
 
             driver.VerifyAll();
             options.VerifyAll();
@@ -138,7 +138,7 @@ namespace SpecBind.Selenium.Tests
 
             var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
 
-            browser.AddCookie("TestCookie", "TestValue", "/", expireDate);
+            browser.AddCookie("TestCookie", "TestValue", "/", expireDate, null, false);
 
             driver.VerifyAll();
             options.VerifyAll();

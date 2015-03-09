@@ -81,7 +81,9 @@ namespace SpecBind.Selenium
         /// <param name="value">The cookie value.</param>
         /// <param name="path">The path.</param>
         /// <param name="expireDateTime">The expiration date time.</param>
-        public override void AddCookie(string name, string value, string path, DateTime? expireDateTime)
+        /// <param name="domain">The cookie domain.</param>
+        /// <param name="secure">if set to <c>true</c> the cookie is secure.</param>
+        public override void AddCookie(string name, string value, string path, DateTime? expireDateTime, string domain, bool secure)
         {
             var localDriver = this.driver.Value;
             var cookieContainer = localDriver.Manage().Cookies;
@@ -92,7 +94,7 @@ namespace SpecBind.Selenium
                 cookieContainer.DeleteCookieNamed(name);
             }
 
-            cookieContainer.AddCookie(new Cookie(name, value, path, expireDateTime));
+            cookieContainer.AddCookie(new Cookie(name, value, domain, path, expireDateTime));
         }
 
         /// <summary>

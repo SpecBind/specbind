@@ -49,7 +49,9 @@ namespace SpecBind.BrowserSupport
         /// <param name="value">The cookie value.</param>
         /// <param name="path">The path.</param>
         /// <param name="expireDateTime">The expiration date time.</param>
-        public abstract void AddCookie(string name, string value, string path, DateTime? expireDateTime);
+        /// <param name="domain">The cookie domain.</param>
+        /// <param name="secure">if set to <c>true</c> the cookie is secure.</param>
+        public abstract void AddCookie(string name, string value, string path, DateTime? expireDateTime, string domain, bool secure);
         
         /// <summary>
         /// Closes this instance.

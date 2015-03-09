@@ -8,12 +8,11 @@ namespace SpecBind.CodedUI
 	using System.Drawing.Imaging;
 	using System.IO;
 	using System.Linq;
+	using System.Text;
 
 	using Microsoft.VisualStudio.TestTools.UITest.Extension;
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
-
-	using mshtml;
 
 	using SpecBind.Actions;
 	using SpecBind.BrowserSupport;
@@ -80,20 +79,21 @@ namespace SpecBind.CodedUI
 	        }
 	    }
 
-        /// <summary>
-        /// Adds the cookie to the browser.
-        /// </summary>
-        /// <param name="name">The cookie name.</param>
-        /// <param name="value">The cookie value.</param>
-        /// <param name="path">The path.</param>
-        /// <param name="expireDateTime">The expiration date time.</param>
-        /// <exception cref="System.NotImplementedException">Currently not implemented.</exception>
-	    public override void AddCookie(string name, string value, string path, DateTime? expireDateTime)
+	    /// <summary>
+	    /// Adds the cookie to the browser.
+	    /// </summary>
+	    /// <param name="name">The cookie name.</param>
+	    /// <param name="value">The cookie value.</param>
+	    /// <param name="path">The path.</param>
+	    /// <param name="expireDateTime">The expiration date time.</param>
+        /// <param name="domain">The cookie domain.</param>
+        /// <param name="secure">if set to <c>true</c> the cookie is secure.</param>
+	    /// <exception cref="System.NotImplementedException">Currently not implemented.</exception>
+	    public override void AddCookie(string name, string value, string path, DateTime? expireDateTime, string domain, bool secure)
         {
             var localWindow = this.window.Value;
-           
-	        throw new NotImplementedException();
-	    }
+            localWindow.ExecuteScript(CookieBuilder.CreateCookie(name, value, path, expireDateTime, domain, secure));
+        }
 
 	    /// <summary>
 		/// Closes this instance.

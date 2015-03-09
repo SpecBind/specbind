@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="PageBuilderFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CookieBuilderFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SpecBind.CodedUI\SpecBind.CodedUI.csproj">
