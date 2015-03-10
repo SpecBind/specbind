@@ -34,7 +34,7 @@ namespace SpecBind.Pages
         /// Set to <see cref="DateTime.MinValue"/> to remove the cookie, or <see cref="DateTime.MaxValue"/> for a non-expiring cookie.
         /// </summary>
         /// <value>The expiration date and time.</value>
-        public DateTime? Expires { get; set; }
+        public string Expires { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the cookie is secure.

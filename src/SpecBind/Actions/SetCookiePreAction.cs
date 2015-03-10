@@ -3,6 +3,8 @@
 // </copyright>
 namespace SpecBind.Actions
 {
+    using System;
+
     using SpecBind.ActionPipeline;
     using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
@@ -37,6 +39,13 @@ namespace SpecBind.Actions
         /// <param name="context">The action context.</param>
         public void PerformPreAction(IAction action, ActionContext context)
         {
+            if (!(action is PageNavigationAction))
+            {
+                return;
+            }
+
+            this.logger.Debug("Navigation action detected, checking for cookie...");
+
             var propertyName = context.PropertyName;
             var type = this.pageMapper.GetTypeFromName(propertyName);
 
@@ -46,12 +55,49 @@ namespace SpecBind.Actions
                 return;
             }
 
+            // Convert the date attribute
+            DateTime? expires = null;
+
+            var expireString = attribute.Expires;
+            if (!string.IsNullOrWhiteSpace(expireString))
+            {
+                if (string.Equals("DateTime.MinValue", expireString, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    this.logger.Debug("Setting cookie expiration to minimum value");
+                    expires = DateTime.MinValue;
+                }
+                else if (string.Equals("DateTime.MaxValue", expireString, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    this.logger.Debug("Setting cookie expiration to maximum value");
+                    expires = DateTime.MaxValue;
+                }
+                else
+                {
+                    DateTime expireParse;
+                    int numericParse;
+                    if (DateTime.TryParse(expireString, out expireParse))
+                    {
+                        this.logger.Debug("Setting cookie expiration to: {0}", expireParse);
+                        expires = expireParse;
+                    }
+                    else if (int.TryParse(expireString, out numericParse))
+                    {
+                        expires = DateTime.Now.AddSeconds(numericParse);
+                        this.logger.Debug("Setting cooking expiration to now plus {0} seconds. Date: {1}", numericParse, expires);
+                    }
+                    else
+                    {
+                        this.logger.Info("Cannot parse cookie date: {0}", expireString);
+                    }
+                }
+            }
+
             this.logger.Debug("Setting Cookie: {0}", attribute);
             this.browser.AddCookie(
                 attribute.Name,
                 attribute.Value,
                 attribute.Path,
-                attribute.Expires,
+                expires,
                 attribute.Domain,
                 attribute.IsSecure);
         }
