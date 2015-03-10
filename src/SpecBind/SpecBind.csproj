@@ -68,6 +68,7 @@
     <Compile Include="Actions\ILogger.cs" />
     <Compile Include="Actions\NavigationPostAction.cs" />
     <Compile Include="Actions\PageNavigationAction.cs" />
+    <Compile Include="Actions\SetCookiePreAction.cs" />
     <Compile Include="Actions\SetTokenFromValueAction.cs" />
     <Compile Include="Actions\HighlightLocatorAction.cs" />
     <Compile Include="Actions\ValidateElementEnabledAction.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Pages\PageMapper.cs" />
     <Compile Include="Pages\PageNavigationAttribute.cs" />
     <Compile Include="Pages\PageNavigationException.cs" />
+    <Compile Include="Pages\SetCookieAttribute.cs" />
     <Compile Include="Pages\TableElement.cs" />
     <Compile Include="Pages\TagConstants.cs" />
     <Compile Include="Pages\TypeExtensions.cs" />
