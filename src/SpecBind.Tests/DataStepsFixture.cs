@@ -440,6 +440,31 @@ namespace SpecBind.Tests
         }
 
         /// <summary>
+        /// Tests the row count step with expected parameters.
+        /// </summary>
+        [TestMethod]
+        public void TestThenISeeAListRowCountStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<ValidateListRowCountAction>(testPage.Object,
+                 It.Is<ValidateListRowCountAction.ValidateListRowCountContext>(
+                        c => c.PropertyName == "myfield" && c.CompareType == NumericComparisonType.Equals && c.RowCount == 1)))
+                            .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+
+            steps.ThenISeeAListRowCountStep("myfield", 1);
+
+            scenarioContext.VerifyAll();
+            pipelineService.VerifyAll();
+        }
+
+        /// <summary>
         /// Runs the step list scenario.
         /// </summary>
         /// <param name="rule">The rule.</param>

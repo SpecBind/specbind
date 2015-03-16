@@ -448,6 +448,31 @@ namespace SpecBind.Tests.PropertyHandlers
         }
 
         /// <summary>
+        /// Tests the ValidateListRowCount with an equality check that is successful.
+        /// </summary>
+        [TestMethod]
+        public void TestValidateListRowCountEqualsSuccess()
+        {
+            var element = new BaseElement();
+            var listElement = new BaseElement();
+            var propData = new Mock<IPropertyData>();
+            var page = new Mock<IPage>(MockBehavior.Strict);
+
+            var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
+
+            var propertyData = CreatePropertyData(pageBase, element, (p, f) => f(new List<BaseElement> { listElement }));
+
+            var result = propertyData.ValidateListRowCount(NumericComparisonType.Equals, 1);
+
+            Assert.AreEqual(true, result.Item1);
+            Assert.AreEqual(1, result.Item2);
+
+            pageBase.VerifyAll();
+            page.VerifyAll();
+            propData.VerifyAll();
+        }
+
+        /// <summary>
         /// Creates the property data.
         /// </summary>
         /// <typeparam name="TElement">The type of the element.</typeparam>

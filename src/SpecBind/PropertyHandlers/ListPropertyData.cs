@@ -128,6 +128,33 @@ namespace SpecBind.PropertyHandlers
             return validationResult;
         }
 
+        /// <summary>
+        /// Validates the list row count.
+        /// </summary>
+        /// <param name="comparisonType">Type of the comparison.</param>
+        /// <param name="expectedRowCount">The expected row count.</param>
+        /// <returns>A tuple indicating if the results were successful and the actual row count.</returns>
+        public override Tuple<bool, int> ValidateListRowCount(NumericComparisonType comparisonType, int expectedRowCount)
+        {
+            var actualRowCount = 0;
+            var isValid = this.action(this.ElementHandler,
+                e =>
+                    {
+                        var rowCount = ((IEnumerable<TElement>)e).Count();
+                        actualRowCount = rowCount;
+
+                        switch (comparisonType)
+                        {
+                            case NumericComparisonType.Equals:
+                                return rowCount == expectedRowCount;
+                            default:
+                                return false;
+                        }
+                    });
+
+            return new Tuple<bool, int>(isValid, actualRowCount);
+        }
+
         #endregion
 
         /// <summary>

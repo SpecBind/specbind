@@ -37,6 +37,7 @@ namespace SpecBind.Tests.PropertyHandlers
             propertyData.TestForNotSupportedException(p => p.GetItemAtIndex(1), "Getting an item at a given index");
             propertyData.TestForNotSupportedException(p => p.FindItemInList(null), "Finding an item in a list");
             propertyData.TestForNotSupportedException(p => p.ValidateList(ComparisonType.Contains, null), "Validating a list");
+            propertyData.TestForNotSupportedException(p => p.ValidateListRowCount(NumericComparisonType.Equals, 0), "Validating a list row count");
 
             pageBase.VerifyAll();
         }

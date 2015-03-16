@@ -116,6 +116,14 @@ namespace SpecBind.Pages
 		ValidationResult ValidateList(ComparisonType compareType, ICollection<ItemValidation> validations);
 
         /// <summary>
+        /// Validates the list row count.
+        /// </summary>
+        /// <param name="comparisonType">Type of the comparison.</param>
+        /// <param name="expectedRowCount">The expected row count.</param>
+        /// <returns>A tuple indicating if the results were successful and the actual row count.</returns>
+        Tuple<bool, int> ValidateListRowCount(NumericComparisonType comparisonType, int expectedRowCount);
+
+        /// <summary>
         /// Waits for element condition.
         /// </summary>
         /// <param name="waitCondition">The wait condition.</param>

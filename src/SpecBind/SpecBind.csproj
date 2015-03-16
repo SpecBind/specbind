@@ -75,6 +75,7 @@
     <Compile Include="Actions\ValidateElementExistsAction.cs" />
     <Compile Include="Actions\ValidateItemAction.cs" />
     <Compile Include="Actions\ValidateListAction.cs" />
+    <Compile Include="Actions\ValidateListRowCountAction.cs" />
     <Compile Include="Actions\ValidateTokenAction.cs" />
     <Compile Include="Actions\ValidationCheckContext.cs" />
     <Compile Include="Actions\WaitConditions.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="Pages\IPageElementHandler.cs" />
     <Compile Include="Pages\IPropertyData.cs" />
     <Compile Include="Pages\ListElementWrapper.cs" />
+    <Compile Include="Pages\NumericComparisonType.cs" />
     <Compile Include="Pages\PageBase.cs" />
     <Compile Include="PageNavigationSteps.cs" />
     <Compile Include="Helpers\IScenarioContextHelper.cs" />

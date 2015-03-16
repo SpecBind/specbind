@@ -24,11 +24,13 @@ namespace SpecBind
         private const string EnterDataInFieldsStepRegex = @"I enter data";
         private const string ObserveDataStepRegex = @"I see";
         private const string ObserveListDataStepRegex = @"I see (.+) list ([A-Za-z ]+)";
+        private const string ObserveListRowCountRegex = @"I see (.+) contains ([0-9]+) items?";
 
         // The following Regex items are for the given "past tense" form
         private const string GivenEnterDataInFieldsStepRegex = @"I entered data";
         private const string GivenObserveDataStepRegex = @"I saw";
         private const string GivenObserveListDataStepRegex = @"I saw (.+) list ([A-Za-z ]+)";
+        private const string GivenObserveListRowCountRegex = @"I saw (.+) contains ([0-9]+) items?";
         
         private readonly IActionPipelineService actionPipelineService;
 
@@ -145,6 +147,21 @@ namespace SpecBind
 
             var context = new ValidateListAction.ValidateListContext(fieldName.ToLookupKey(), comparisonType, validations);
             this.actionPipelineService.PerformAction<ValidateListAction>(page, context).CheckResult();
+        }
+
+        /// <summary>
+        /// A step that validates a list contains a specified number of rows.
+        /// </summary>
+        /// <param name="fieldName">The name of the field.</param>
+        /// <param name="resultCount">The result count to validate.</param>
+        [Given(GivenObserveListRowCountRegex)]
+        [Then(ObserveListRowCountRegex)]
+        public void ThenISeeAListRowCountStep(string fieldName, int resultCount)
+        {
+            var page = this.GetPageFromContext();
+
+            var context = new ValidateListRowCountAction.ValidateListRowCountContext(fieldName.ToLookupKey(), NumericComparisonType.Equals, resultCount);
+            this.actionPipelineService.PerformAction<ValidateListRowCountAction>(page, context).CheckResult();
         }
     }
 }
