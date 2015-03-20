@@ -105,3 +105,9 @@ Scenario: Validate List "Does Not Contain" Validator
 		   | First Name | Equals | Bob    |
 		   | Last Name  | Equals | Smitty |
 		  
+Scenario: Validate List Count Step
+	 Given I navigated to the Home page
+       And I chose Students
+	   And I was on the Students Search page
+	  When I choose Search
+	  Then I see results grid contains 10 items

@@ -147,6 +147,10 @@ namespace SpecBind.PropertyHandlers
                         {
                             case NumericComparisonType.Equals:
                                 return rowCount == expectedRowCount;
+                            case NumericComparisonType.GreaterThanEquals:
+                                return rowCount >= expectedRowCount;
+                            case NumericComparisonType.LessThanEquals:
+                                return rowCount <= expectedRowCount;
                             default:
                                 return false;
                         }

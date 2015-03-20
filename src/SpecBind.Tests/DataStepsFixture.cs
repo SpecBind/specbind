@@ -443,7 +443,7 @@ namespace SpecBind.Tests
         /// Tests the row count step with expected parameters.
         /// </summary>
         [TestMethod]
-        public void TestThenISeeAListRowCountStep()
+        public void TestThenISeeAListRowCountStepWithExactlyComparison()
         {
             var testPage = new Mock<IPage>();
 
@@ -458,7 +458,57 @@ namespace SpecBind.Tests
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
-            steps.ThenISeeAListRowCountStep("myfield", 1);
+            steps.ThenISeeAListRowCountStep("myfield", "exactly", 1);
+
+            scenarioContext.VerifyAll();
+            pipelineService.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the row count step with at most comparison parameter.
+        /// </summary>
+        [TestMethod]
+        public void TestThenISeeAListRowCountStepWithAtMostEvaluation()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<ValidateListRowCountAction>(testPage.Object,
+                 It.Is<ValidateListRowCountAction.ValidateListRowCountContext>(
+                        c => c.PropertyName == "myfield" && c.CompareType == NumericComparisonType.LessThanEquals && c.RowCount == 1)))
+                            .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+
+            steps.ThenISeeAListRowCountStep("myfield", "at most", 1);
+
+            scenarioContext.VerifyAll();
+            pipelineService.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the row count step with at least comparison parameter.
+        /// </summary>
+        [TestMethod]
+        public void TestThenISeeAListRowCountStepWithAtLeastEvaluation()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<ValidateListRowCountAction>(testPage.Object,
+                 It.Is<ValidateListRowCountAction.ValidateListRowCountContext>(
+                        c => c.PropertyName == "myfield" && c.CompareType == NumericComparisonType.GreaterThanEquals && c.RowCount == 1)))
+                            .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+
+            steps.ThenISeeAListRowCountStep("myfield", "at least", 1);
 
             scenarioContext.VerifyAll();
             pipelineService.VerifyAll();
