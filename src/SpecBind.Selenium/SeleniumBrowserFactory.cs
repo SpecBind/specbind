@@ -187,13 +187,13 @@ namespace SpecBind.Selenium
         /// </summary>
         private static void DownloadPhantomJsDriver()
         {
-            const string FileName = "phantomjs-1.9.7-windows.zip";
+            const string FileName = "phantomjs-2.0.0-windows.zip";
 
             DownloadAndExtractZip("https://bitbucket.org/ariya/phantomjs/downloads", FileName);
 
             // Move the phantomjs.exe out of the unzipped folder
-            var unzippedFolder = Path.Combine(SeleniumDriverPath, Path.GetFileNameWithoutExtension(FileName)); 
-            File.Move(Path.Combine(unzippedFolder, PhantomjsExe), Path.Combine(SeleniumDriverPath, PhantomjsExe));            
+            var unzippedFolder = Path.Combine(SeleniumDriverPath, Path.GetFileNameWithoutExtension(FileName), "bin"); 
+            File.Move(Path.Combine(unzippedFolder, PhantomjsExe), Path.Combine(SeleniumDriverPath, PhantomjsExe));
             Directory.Delete(unzippedFolder, true);
         }
 
