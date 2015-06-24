@@ -15,9 +15,6 @@ branches:
 #    environment configuration    #
 #---------------------------------#
 
-# Operating system (build VM template)
-os: Windows Server 2012 R2
-
 # this is how to allow failing jobs in the matrix
 # matrix:
   # fast_finish: true     # set this flag to immediately finish build once one of the jobs fails.
