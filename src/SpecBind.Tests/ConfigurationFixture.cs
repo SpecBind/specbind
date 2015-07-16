@@ -5,6 +5,8 @@
 namespace SpecBind.Tests
 {
     using System;
+    using System.Configuration;
+    using System.Linq;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -48,6 +50,20 @@ namespace SpecBind.Tests
             Assert.AreEqual(TimeSpan.FromSeconds(15), section.BrowserFactory.PageLoadTimeout);
             Assert.AreEqual(true, section.BrowserFactory.EnsureCleanSession);
             Assert.IsNotNull(section.BrowserFactory.Settings);
+            Assert.AreEqual(0, section.Application.ExcludedAssemblies.Cast<AssemblyElement>().ToList().Count);
+        }
+
+        [TestMethod]
+        public void TestLoadingExcludedAssemblies()
+        {
+            var fileMap = new ConfigurationFileMap("WithExcludedAssemblyConfig.config");
+            var config = ConfigurationManager.OpenMappedMachineConfiguration(fileMap);
+            var section = config.GetSection("specBind") as ConfigurationSectionHandler;
+
+            Assert.IsNotNull(section);
+            var assemblies = section.Application.ExcludedAssemblies.Cast<AssemblyElement>().ToList();
+            Assert.AreEqual(1, assemblies.Count);
+            Assert.AreEqual("MyCoolApp, Version=1.2.3.0, Culture=neutral, PublicKeyToken=null", assemblies[0].Name);
         }
     }
 }

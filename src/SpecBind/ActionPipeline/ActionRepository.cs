@@ -10,6 +10,8 @@ namespace SpecBind.ActionPipeline
 
     using BoDi;
 
+    using SpecBind.Configuration;
+    using SpecBind.Helpers;
     using SpecBind.Validation;
 
     /// <summary>
@@ -90,8 +92,10 @@ namespace SpecBind.ActionPipeline
         /// </summary>
 	    public void Initialize()
         {
+            var configSection = SettingHelper.GetConfigurationSection();
+            var excludedAssemblies = configSection.Application.ExcludedAssemblies.Cast<AssemblyElement>().Select(a => a.Name);
             // Get all items from the current assemblies
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic && !a.GlobalAssemblyCache);
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic && !a.GlobalAssemblyCache && !excludedAssemblies.Contains(a.FullName));
             foreach (var asmType in assemblies.SelectMany(a => a.GetExportedTypes()).Where(t => !t.IsAbstract && !t.IsInterface))
             {
                 this.RegisterType(asmType);

@@ -135,6 +135,9 @@
     <Compile Include="UriHelperFixture.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="WithExcludedAssemblyConfig.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>

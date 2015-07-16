@@ -11,6 +11,7 @@ namespace SpecBind.Configuration
 	public class ApplicationConfigurationElement : ConfigurationElement
 	{
 		private const string StartUrlElement = @"startUrl";
+		private const string ExcludedAssembliesElement = @"excludedAssemblies";
 
 		/// <summary>
 		/// Gets or sets the application's start URL setting.
@@ -28,6 +29,17 @@ namespace SpecBind.Configuration
 			{
 				this[StartUrlElement] = value;
 			}
+		}
+
+		/// <summary>
+		/// Gets the list of excluded assemblies, if any are supplied.
+		/// </summary>
+		/// <value>The list of excluded assemblies.</value>
+		[ConfigurationProperty(ExcludedAssembliesElement, IsRequired = false)]
+		[ConfigurationCollection(typeof(AssemblyElement))]
+		public AssemblyCollection ExcludedAssemblies
+		{
+			get { return (AssemblyCollection)base[ExcludedAssembliesElement]; }
 		}
 	}
 }
