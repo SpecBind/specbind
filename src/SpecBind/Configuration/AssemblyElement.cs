@@ -1,4 +1,7 @@
-﻿namespace SpecBind.Configuration
+﻿// <copyright file="AssemblyElement.cs">
+//    Copyright © 2015 Dan Piessens.  All rights reserved.
+// </copyright>
+namespace SpecBind.Configuration
 {
 	using System.Configuration;
 
@@ -20,6 +23,7 @@
 			{
 				return (string)this[NameKey];
 			}
+
 			set
 			{
 				this[NameKey] = value;
