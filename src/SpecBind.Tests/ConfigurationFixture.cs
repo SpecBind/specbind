@@ -53,6 +53,9 @@ namespace SpecBind.Tests
             Assert.AreEqual(0, section.Application.ExcludedAssemblies.Cast<AssemblyElement>().ToList().Count);
         }
 
+        /// <summary>
+        /// Tests that the ExcludedAssemblies property is populated if it is in the config file.
+        /// </summary>
         [TestMethod]
         public void TestLoadingExcludedAssemblies()
         {
