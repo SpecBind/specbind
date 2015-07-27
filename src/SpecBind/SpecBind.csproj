@@ -91,6 +91,8 @@
     <Compile Include="BrowserSupport\IBrowser.cs" />
     <Compile Include="BrowserSupport\NullLogger.cs" />
     <Compile Include="Configuration\ApplicationConfigurationElement.cs" />
+    <Compile Include="Configuration\AssemblyCollection.cs" />
+    <Compile Include="Configuration\AssemblyElement.cs" />
     <Compile Include="Configuration\BrowserFactoryConfigurationElement.cs" />
     <Compile Include="Configuration\ConfigurationSectionHandler.cs" />
     <Compile Include="ActionPipeline\ActionPipelineService.cs" />

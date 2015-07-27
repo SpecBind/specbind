@@ -51,6 +51,12 @@
     <Compile Include="..\SpecBind\Configuration\ApplicationConfigurationElement.cs">
       <Link>Configuration\ApplicationConfigurationElement.cs</Link>
     </Compile>
+    <Compile Include="..\SpecBind\Configuration\AssemblyCollection.cs">
+      <Link>Configuration\AssemblyCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\SpecBind\Configuration\AssemblyElement.cs">
+      <Link>Configuration\AssemblyElement.cs</Link>
+    </Compile>
     <Compile Include="..\SpecBind\Configuration\BrowserFactoryConfigurationElement.cs">
       <Link>Configuration\BrowserFactoryConfigurationElement.cs</Link>
     </Compile>
