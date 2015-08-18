@@ -286,7 +286,25 @@ namespace SpecBind.Tests
 			browser.VerifyAll();
 		}
 
+		/// <summary>
+		///     Tests the FillPageUri method when a template is specified and AbsoluteUri is true.
+		///     When these conditions are met, the base Uri should be ignored.
+		/// </summary>
+		[TestMethod]
+		public void TestFillPageUriWithTemplateAndAbsoluteUri()
+		{
+			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
+			// Setting base uri here should not matter as it will get ignored since AbsoluteUri = true for this test
+			UriHelper.BaseUri = new Uri("http://localhost:2222/");
+			
+			var url = UriHelper.FillPageUri(
+				browser.Object, typeof(NavigationWithTemplateAndAbsoluteUri), new Dictionary<string, string> { { "param", "1" } });
+
+			Assert.AreEqual("http://root?q=1", url);
+
+			browser.VerifyAll();
+		}
 
 
         // ReSharper disable ClassNeverInstantiated.Local
@@ -303,6 +321,11 @@ namespace SpecBind.Tests
 		/// </summary>
 		[PageNavigation("/root", UrlTemplate = "/root/{id}")]
 		private class NavigationAttributePage : TestBase
+		{
+		}
+
+		[PageNavigation("http://root", UrlTemplate = "http://root?q={param}", IsAbsoluteUrl = true)]
+		private class NavigationWithTemplateAndAbsoluteUri : TestBase
 		{
 		}
 
