@@ -62,6 +62,7 @@
     <Compile Include="ActionPipeline\ActionRepositoryFixture.cs" />
     <Compile Include="ActionPipeline\ActionResultExtensionsFixture.cs" />
     <Compile Include="Actions\ButtonClickActionFixture.cs" />
+    <Compile Include="Actions\ClearDataActionFixture.cs" />
     <Compile Include="Actions\DismissDialogActionFixture.cs" />
     <Compile Include="Actions\EnterDataActionFixture.cs" />
     <Compile Include="Actions\GetElementAsPageActionFixture.cs" />

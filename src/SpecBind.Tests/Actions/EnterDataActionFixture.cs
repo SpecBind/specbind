@@ -16,7 +16,7 @@ namespace SpecBind.Tests.Actions
     using SpecBind.Pages;
 
     /// <summary>
-    /// A test fixture for a button click action
+    /// A test fixture for the data entry action
     /// </summary>
     [TestClass]
     public class EnterDataActionFixture
