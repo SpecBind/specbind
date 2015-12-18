@@ -59,6 +59,7 @@
     <Compile Include="Actions\ActionBase.cs" />
     <Compile Include="Actions\BasicValidationChecksActionBase.cs" />
     <Compile Include="Actions\ButtonClickAction.cs" />
+    <Compile Include="Actions\ClearDataAction.cs" />
     <Compile Include="Actions\ContextActionBase.cs" />
     <Compile Include="Actions\DismissDialogAction.cs" />
     <Compile Include="Actions\EnterDataAction.cs" />

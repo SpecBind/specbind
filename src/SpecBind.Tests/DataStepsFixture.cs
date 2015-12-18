@@ -180,6 +180,132 @@ namespace SpecBind.Tests
         }
 
         /// <summary>
+        /// Tests the WhenIClearDataInFieldsStep method with a null table.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ElementExecuteException))]
+        public void TestWhenIClearDataInFieldsStepNullTable()
+        {
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+
+            ExceptionHelper.SetupForException<ElementExecuteException>(
+                () => steps.WhenIClearDataInFieldsStep(null),
+                e =>
+                {
+                    StringAssert.Contains(e.Message, "A table must be specified for this step");
+
+                    scenarioContext.VerifyAll();
+                    pipelineService.VerifyAll();
+                });
+        }
+
+        /// <summary>
+        /// Tests the WhenIClearDataInFieldsStep method with a table that has no field column.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ElementExecuteException))]
+        public void TestWhenIClearDataInFieldsStepMissingFieldColumn()
+        {
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+
+            var table = new Table("Notes");
+
+            ExceptionHelper.SetupForException<ElementExecuteException>(
+                () => steps.WhenIClearDataInFieldsStep(table),
+                e =>
+                {
+                    StringAssert.Contains(e.Message, "A table must be specified for this step");
+
+                    scenarioContext.VerifyAll();
+                    pipelineService.VerifyAll();
+                });
+        }
+
+        /// <summary>
+        /// Tests the WhenIClearDataInFieldsStep method with a successful result.
+        /// </summary>
+        [TestMethod]
+        public void TestWhenIClearDataInFieldsStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(
+                p => p.PerformAction<ClearDataAction>(testPage.Object, It.Is<ClearDataAction.ClearDataContext>(c => c.PropertyName == "myfield")))
+                            .Returns(ActionResult.Successful());
+
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+
+            var table = new Table("Field");
+            table.AddRow(new Dictionary<string, string>
+                             {
+                                 { "Field", "My Field" }
+                             });
+
+            steps.WhenIClearDataInFieldsStep(table);
+
+            scenarioContext.VerifyAll();
+            pipelineService.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the WhenIClearDataInFieldsStep method with a successful result.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ElementExecuteException))]
+        public void TestWhenIClearDataInFieldsStepMultipleEntriesWithFailure()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(
+                p => p.PerformAction<ClearDataAction>(testPage.Object, It.Is<ClearDataAction.ClearDataContext>(c => c.PropertyName == "myfield")))
+                            .Returns(ActionResult.Successful());
+            pipelineService.Setup(
+                p => p.PerformAction<ClearDataAction>(testPage.Object, It.Is<ClearDataAction.ClearDataContext>(c => c.PropertyName == "mysecondfield")))
+                            .Returns(ActionResult.Failure(new ElementExecuteException("Could Not Find Field: mysecondfield")));
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+
+            var table = new Table("Field");
+            table.AddRow(new Dictionary<string, string>
+                             {
+                                 { "Field", "My Second Field" }
+                             });
+
+            table.AddRow(new Dictionary<string, string>
+                             {
+                                 { "Field", "My Field" }
+                             });
+
+            try
+            {
+                steps.WhenIClearDataInFieldsStep(table);
+            }
+            catch (ElementExecuteException ex)
+            {
+                StringAssert.Contains(ex.Message, "Could Not Find Field: mysecondfield");
+
+                scenarioContext.VerifyAll();
+                pipelineService.VerifyAll();
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Tests the ThenISeeStep method with a null table.
         /// </summary>
         [TestMethod]

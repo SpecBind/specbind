@@ -91,6 +91,11 @@ namespace SpecBind.Tests.Support
 			return true;
 		}
 
+		public override Action<BaseElement> GetClearMethod(Type propertyType)
+		{
+			return null;
+		}
+
 		/// <summary>
 		/// Gets the page fill method.
 		/// </summary>
