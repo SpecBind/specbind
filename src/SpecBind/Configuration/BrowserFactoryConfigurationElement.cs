@@ -6,36 +6,38 @@ namespace SpecBind.Configuration
     using System;
     using System.Configuration;
 
-	/// <summary>
-	/// A configuration element for the browser factory.
-	/// </summary>
-	public class BrowserFactoryConfigurationElement : ConfigurationElement
-	{
-	    private const string ElementLocateTimeoutElementName = "elementLocateTimeout";
+    /// <summary>
+    /// A configuration element for the browser factory.
+    /// </summary>
+    public class BrowserFactoryConfigurationElement : ConfigurationElement
+    {
+        private const string ElementLocateTimeoutElementName = "elementLocateTimeout";
         private const string EnsureCleanSessionElementName = "ensureCleanSession";
-	    private const string PageLoadTimeoutElementName = "pageLoadTimeout";
-		private const string ProviderElementName = "provider";
-		private const string BrowserTypeElementName = "browserType";
+        private const string PageLoadTimeoutElementName = "pageLoadTimeout";
+        private const string ProviderElementName = "provider";
+        private const string BrowserTypeElementName = "browserType";
         private const string SettingsElementName = "settings";
+        private const string ReuseBrowserElementName = "reuseBrowser";
+        private const string ValidateWebDriverElementName = "validateWebDriver";
 
 
-		/// <summary>
-		/// Gets or sets the type of the browser to use for testing.
-		/// </summary>
-		/// <value>The type of the browser to use for testing.</value>
-		[ConfigurationProperty(BrowserTypeElementName, DefaultValue = "IE", IsRequired = false)]
-		public string BrowserType
-		{
-			get
-			{
-				return (string)this[BrowserTypeElementName];
-			}
+        /// <summary>
+        /// Gets or sets the type of the browser to use for testing.
+        /// </summary>
+        /// <value>The type of the browser to use for testing.</value>
+        [ConfigurationProperty(BrowserTypeElementName, DefaultValue = "IE", IsRequired = false)]
+        public string BrowserType
+        {
+            get
+            {
+                return (string)this[BrowserTypeElementName];
+            }
 
-			set
-			{
-				this[BrowserTypeElementName] = value;
-			}
-		}
+            set
+            {
+                this[BrowserTypeElementName] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the timeout for waiting to locate an element.
@@ -73,23 +75,23 @@ namespace SpecBind.Configuration
             }
         }
 
-		/// <summary>
-		/// Gets or sets the provider for the element.
-		/// </summary>
-		/// <value>The provider.</value>
-		[ConfigurationProperty(ProviderElementName, DefaultValue = null, IsRequired = true)]
-		public string Provider
-		{
-			get
-			{
-				return (string)this[ProviderElementName];
-			}
+        /// <summary>
+        /// Gets or sets the provider for the element.
+        /// </summary>
+        /// <value>The provider.</value>
+        [ConfigurationProperty(ProviderElementName, DefaultValue = null, IsRequired = true)]
+        public string Provider
+        {
+            get
+            {
+                return (string)this[ProviderElementName];
+            }
 
-			set
-			{
-				this[ProviderElementName] = value;
-			}
-		}
+            set
+            {
+                this[ProviderElementName] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the timeout for waiting for a page to load.
@@ -121,5 +123,37 @@ namespace SpecBind.Configuration
                 return this[SettingsElementName] as NameValueConfigurationCollection ?? new NameValueConfigurationCollection();
             }
         }
-	}
+
+        /// <summary>
+        /// Gets or sets the whether or not the same Browser should be reused during tests
+        /// </summary>
+        [ConfigurationProperty(ReuseBrowserElementName, DefaultValue = false, IsRequired = false)]
+        public bool ReuseBrowser
+        {
+            get
+            {
+                return (bool)this[ReuseBrowserElementName];
+            }
+            set
+            {
+                this[ReuseBrowserElementName] = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the application's setting to validate whether or not the web driver exists
+        /// </summary>
+        [ConfigurationProperty(ValidateWebDriverElementName, DefaultValue = true, IsRequired = false)]
+        public bool ValidateWebDriver
+        {
+            get
+            {
+                return (bool)this[ValidateWebDriverElementName];
+            }
+            set
+            {
+                this[ValidateWebDriverElementName] = value;
+            }
+        }
+    }
 }

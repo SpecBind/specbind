@@ -281,7 +281,7 @@ namespace SpecBind.Selenium.Tests
         public void TestGetNativePageLocationReturnsUrl()
         {
             var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.SetupGet(d => d.Url).Returns("http://localhost/MyPage");
+            driver.SetupGet(d => d.Url).Returns("http://localhost:2222/MyPage");
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 

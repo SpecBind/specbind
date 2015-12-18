@@ -44,12 +44,12 @@ namespace SpecBind.Selenium
 
         /// <summary>
         /// Finalizes an instance of the <see cref="SeleniumBrowser" /> class.
-		/// </summary>
+        /// </summary>
         [ExcludeFromCodeCoverage]
         ~SeleniumBrowser()
-		{
-			this.Dispose(false);
-		}
+        {
+            this.Dispose(false);
+        }
 
         /// <summary>
         /// Gets the type of the base page.
@@ -171,7 +171,8 @@ namespace SpecBind.Selenium
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
+            var configSection = SettingHelper.GetConfigurationSection();
+            this.Dispose(!configSection.BrowserFactory.ReuseBrowser);
             GC.SuppressFinalize(this);
         }
 
