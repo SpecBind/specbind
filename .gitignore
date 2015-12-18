@@ -110,3 +110,5 @@ UpgradeLog*.XML
 /examples/FullDemo/ContosoUniversity.sln.GhostDoc.xml
 /src/SpecBind.sln.GhostDoc.xml
 /src/lib
+src/SpecBind.sln.DotSettings
+examples/FullDemo/ContosoUniversity/App_Data/School.sdf

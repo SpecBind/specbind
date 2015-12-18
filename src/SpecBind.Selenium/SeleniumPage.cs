@@ -106,6 +106,18 @@ namespace SpecBind.Selenium
             return true;
         }
 
+	    /// <summary>
+	    /// Gets the clears method.
+	    /// </summary>
+	    /// <param name="propertyType">Type of the property.</param>
+	    /// <returns>
+	    ///  The function used to clear the data.
+	    /// </returns>
+	    public override Action<IWebElement> GetClearMethod(Type propertyType)
+        {
+            return ClearPage;
+        }
+
         /// <summary>
         /// Gets the page fill method.
         /// </summary>
@@ -265,6 +277,15 @@ namespace SpecBind.Selenium
                     element.SendKeys(data);
                     break;
             }
+        }
+
+        /// <summary>
+        /// Clears the page.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        private static void ClearPage(IWebElement element)
+        {
+            element.Clear();
         }
     }
 }

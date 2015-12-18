@@ -74,6 +74,14 @@ namespace SpecBind.PropertyHandlers
         }
 
         /// <summary>
+        /// Clears the data for the element that this property represents.
+        /// </summary>
+        public virtual void ClearData()
+        {
+            throw this.CreateNotSupportedException("Clearing an element");
+        }
+
+        /// <summary>
         /// Clicks the element that this property represents.
         /// </summary>
         public virtual void ClickElement()

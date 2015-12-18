@@ -25,12 +25,14 @@ namespace SpecBind
         private const string ObserveDataStepRegex = @"I see";
         private const string ObserveListDataStepRegex = @"I see (.+) list ([A-Za-z ]+)";
         private const string ObserveListRowCountRegex = @"I see (.+) list contains (exactly|at least|at most) ([0-9]+) items?";
+        private const string ClearDataInFieldsStepRegex = @"I clear data";
 
         // The following Regex items are for the given "past tense" form
         private const string GivenEnterDataInFieldsStepRegex = @"I entered data";
         private const string GivenObserveDataStepRegex = @"I saw";
         private const string GivenObserveListDataStepRegex = @"I saw (.+) list ([A-Za-z ]+)";
         private const string GivenObserveListRowCountRegex = @"I saw (.+) list contains (exactly|at least|at most) ([0-9]+) items?";
+        private const string GivenClearDataInFieldsSetpRegex = @"I cleared data";
         
         private readonly IActionPipelineService actionPipelineService;
 
@@ -81,6 +83,42 @@ namespace SpecBind
             {
                 var errors = string.Join("; ", results.Where(r => r.Exception != null).Select(r => r.Exception.Message));
                 throw new ElementExecuteException("Errors occurred while entering data. Details: {0}", errors);
+            }
+        }
+
+        /// <summary>
+        /// A When step for entering data into fields.
+        /// </summary>
+        /// <param name="data">The field data.</param>
+        [Given(GivenClearDataInFieldsSetpRegex)]
+        [When(ClearDataInFieldsStepRegex)]
+        [Then(ClearDataInFieldsStepRegex)]
+        public void WhenIClearDataInFieldsStep(Table data)
+        {
+            string fieldHeader = null;
+
+            if (data != null)
+            {
+                fieldHeader = data.Header.FirstOrDefault(h => h.NormalizedEquals("Field"));
+            }
+
+            if (fieldHeader == null)
+            {
+                throw new ElementExecuteException("A table must be specified for this step with the columns 'Field'");
+            }
+
+            var page = this.GetPageFromContext();
+
+            var results = new List<ActionResult>(data.RowCount);
+            results.AddRange(from tableRow in data.Rows
+                             let fieldName = tableRow[fieldHeader]
+                             select new ClearDataAction.ClearDataContext(fieldName.ToLookupKey()) into context
+                             select this.actionPipelineService.PerformAction<ClearDataAction>(page, context));
+
+            if (results.Any(r => !r.Success))
+            {
+                var errors = string.Join("; ", results.Where(r => r.Exception != null).Select(r => r.Exception.Message));
+                throw new ElementExecuteException("Errors occurred while clearing data. Details: {0}", errors);
             }
         }
 

@@ -130,7 +130,7 @@ namespace SpecBind.Validation
         /// <returns><c>true</c> always.</returns>
         private static bool StringParse(string s, out string value)
         {
-            value = s;
+            value = s ?? string.Empty;
             return true;
         }
 
