@@ -44,12 +44,12 @@ namespace SpecBind.Selenium
 
         /// <summary>
         /// Finalizes an instance of the <see cref="SeleniumBrowser" /> class.
-		/// </summary>
+        /// </summary>
         [ExcludeFromCodeCoverage]
         ~SeleniumBrowser()
-		{
-			this.Dispose(false);
-		}
+        {
+            this.Dispose(false);
+        }
 
         /// <summary>
         /// Gets the type of the base page.
@@ -95,6 +95,15 @@ namespace SpecBind.Selenium
             }
 
             cookieContainer.AddCookie(new Cookie(name, value, domain, path, expireDateTime));
+        }
+
+        /// <summary>
+        /// Clear all browser cookies
+        /// </summary>
+        public override void ClearCookies()
+        {
+            var localDriver = this.driver.Value;
+            localDriver.Manage().Cookies.DeleteAllCookies();
         }
 
         /// <summary>
@@ -171,7 +180,8 @@ namespace SpecBind.Selenium
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
+            var configSection = SettingHelper.GetConfigurationSection();
+            this.Dispose(!configSection.BrowserFactory.ReuseBrowser);
             GC.SuppressFinalize(this);
         }
 

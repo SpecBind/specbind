@@ -4,37 +4,37 @@
 
 namespace SpecBind.BrowserSupport
 {
-	using System;
-	using System.Diagnostics;
-	using System.IO;
+    using System;
+    using System.IO;
 
-	using BoDi;
+    using BoDi;
 
-	using SpecBind.ActionPipeline;
-	using SpecBind.Actions;
-	using SpecBind.Helpers;
-	using SpecBind.Pages;
+    using SpecBind.ActionPipeline;
+    using SpecBind.Actions;
+    using SpecBind.Helpers;
+    using SpecBind.Pages;
 
-	using TechTalk.SpecFlow;
-	using TechTalk.SpecFlow.Tracing;
+    using TechTalk.SpecFlow;
+    using TechTalk.SpecFlow.Tracing;
 
     /// <summary>
-	/// A hooks support class for the web driver.
-	/// </summary>
-	[Binding]
-	[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-	public class WebDriverSupport
-	{
+    /// A hooks support class for the web driver.
+    /// </summary>
+    [Binding]
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public class WebDriverSupport
+    {
+        internal static IBrowser Browser;
         private readonly IObjectContainer objectContainer;
-        
-		/// <summary>
-		/// Initializes a new instance of the <see cref="WebDriverSupport" /> class.
-		/// </summary>
-		/// <param name="objectContainer">The object container.</param>
-		public WebDriverSupport(IObjectContainer objectContainer)
-		{
-			this.objectContainer = objectContainer;
-		}
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebDriverSupport" /> class.
+        /// </summary>
+        /// <param name="objectContainer">The object container.</param>
+        public WebDriverSupport(IObjectContainer objectContainer)
+        {
+            this.objectContainer = objectContainer;
+        }
 
         /// <summary>
         /// Checks the browser factory for any necessary drivers.
@@ -45,64 +45,64 @@ namespace SpecBind.BrowserSupport
             var factory = BrowserFactory.GetBrowserFactory(new NullLogger());
             factory.ValidateDriverSetup();
         }
-
-		/// <summary>
-		/// Initializes the page mapper at the start of the test run.
-		/// </summary>
-		[BeforeScenario]
-		public void InitializeDriver()
-		{
-            this.objectContainer.RegisterTypeAs<ProxyLogger, ILogger>();
-		    var logger = this.objectContainer.Resolve<ILogger>();
+             
+        /// <summary>
+        /// Initializes the page mapper at the start of the test run.
+        /// </summary>
+        [BeforeScenario]
+        public void InitializeDriver()
+        {
+             this.objectContainer.RegisterTypeAs<ProxyLogger, ILogger>();
+             var logger = this.objectContainer.Resolve<ILogger>();
 
             var factory = BrowserFactory.GetBrowserFactory(logger);
-			var browser = factory.GetBrowser();
-			this.objectContainer.RegisterInstanceAs(browser);
+            var configSection = SettingHelper.GetConfigurationSection();
+
+            if (!configSection.BrowserFactory.ReuseBrowser || Browser == null) Browser = factory.GetBrowser();
+            if (configSection.BrowserFactory.EnsureCleanSession) Browser.ClearCookies();
+            this.objectContainer.RegisterInstanceAs(Browser);
 
             this.objectContainer.RegisterInstanceAs<ISettingHelper>(new WrappedSettingHelper());
 
-			var mapper = new PageMapper();
-			mapper.Initialize(browser.BasePageType);
-			this.objectContainer.RegisterInstanceAs<IPageMapper>(mapper);
+            var mapper = new PageMapper();
+            mapper.Initialize(Browser.BasePageType);
+            this.objectContainer.RegisterInstanceAs<IPageMapper>(mapper);
 
-			this.objectContainer.RegisterInstanceAs<IScenarioContextHelper>(new ScenarioContextHelper());
-			this.objectContainer.RegisterInstanceAs(TokenManager.Current);
+            this.objectContainer.RegisterInstanceAs<IScenarioContextHelper>(new ScenarioContextHelper());
+            this.objectContainer.RegisterInstanceAs(TokenManager.Current);
 
-		    var repository = new ActionRepository(this.objectContainer);
-			this.objectContainer.RegisterInstanceAs<IActionRepository>(repository);
-			this.objectContainer.RegisterTypeAs<ActionPipelineService, IActionPipelineService>();
+            var repository = new ActionRepository(this.objectContainer);
+            this.objectContainer.RegisterInstanceAs<IActionRepository>(repository);
+            this.objectContainer.RegisterTypeAs<ActionPipelineService, IActionPipelineService>();
             
             // Initialize the repository
             repository.Initialize();
-		}
+        }
 
-		/// <summary>
-		/// Tears down the web driver.
-		/// </summary>
-		[AfterScenario]
-		public void TearDownWebDriver()
-		{
-            var browser = this.objectContainer.Resolve<IBrowser>();
+        /// <summary>
+        /// Tears down the web driver.
+        /// </summary>
+        [AfterTestRun]
+        public static void TearDownWebDriver()
+        {
+            if (Browser == null) return;
 
-            // Check for an error and capture a screenshot
-            this.CheckForScreenshot(browser);
+            Browser.Close();
 
-			browser.Close();
-
-// ReSharper disable SuspiciousTypeConversion.Global
-			var dispoable = browser as IDisposable;
-// ReSharper restore SuspiciousTypeConversion.Global
-			if (dispoable != null)
-			{
-				dispoable.Dispose();
-			}
-		}
+            // ReSharper disable SuspiciousTypeConversion.Global
+            var dispoable = Browser as IDisposable;
+            // ReSharper restore SuspiciousTypeConversion.Global
+            if (dispoable != null)
+            {
+                dispoable.Dispose();
+            }
+        }
 
         /// <summary>
         /// Checks for screenshot.
         /// </summary>
-        /// <param name="browser">The browser.</param>
-        private void CheckForScreenshot(IBrowser browser)
+        [AfterScenario]
+        public void CheckForScreenshot()
         {
             var scenarioHelper = this.objectContainer.Resolve<IScenarioContextHelper>();
             if (scenarioHelper.GetError() == null)
@@ -112,8 +112,8 @@ namespace SpecBind.BrowserSupport
             
             var fileName = scenarioHelper.GetStepFileName();
             var basePath = Directory.GetCurrentDirectory();
-            var fullPath = browser.TakeScreenshot(basePath, fileName);
-            browser.SaveHtml(basePath, fileName);
+            var fullPath = Browser.TakeScreenshot(basePath, fileName);
+            Browser.SaveHtml(basePath, fileName);
 
             var traceListener = this.objectContainer.Resolve<ITraceListener>();
             if (fullPath != null && traceListener != null)
@@ -121,5 +121,5 @@ namespace SpecBind.BrowserSupport
                 traceListener.WriteTestOutput("Created Error Screenshot: {0}", fullPath);       
             }
         }
-	}
+    }
 }

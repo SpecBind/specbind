@@ -24,6 +24,7 @@ namespace SpecBind.Selenium
     using SpecBind.Actions;
     using SpecBind.BrowserSupport;
     using SpecBind.Configuration;
+    using SpecBind.Helpers;
 
     /// <summary>
     /// A browser factory class for Selenium tests.
@@ -50,7 +51,7 @@ namespace SpecBind.Selenium
         /// Initializes a new instance of the <see cref="SeleniumBrowserFactory"/> class.
         /// </summary>
         public SeleniumBrowserFactory()
-            : base(true)
+            : base(ValidateWebDriver())
         {
         }
 
@@ -81,11 +82,6 @@ namespace SpecBind.Selenium
                         var chromeOptions = new ChromeOptions { LeaveBrowserRunning = false };
                         var chromeDriverService = ChromeDriverService.CreateDefaultService();
                         chromeDriverService.HideCommandPromptWindow = true;
-
-                        if (browserFactoryConfiguration.EnsureCleanSession)
-                        {
-                            chromeOptions.AddArgument("--incognito");
-                        }
 
                         driver = new ChromeDriver(chromeDriverService, chromeOptions);
                         break;
@@ -416,6 +412,16 @@ namespace SpecBind.Selenium
             }
 
             return path;
+        }
+
+        /// <summary>
+        /// Determines whether or not to perform web driver validation
+        /// </summary>
+        /// <returns><c>true</c> if the webdriver should be validated; otherwise <c>false</c></returns>
+        private static bool ValidateWebDriver()
+        {
+            var configSection = SettingHelper.GetConfigurationSection();
+            return configSection.BrowserFactory.ValidateWebDriver;
         }
     }
 }
