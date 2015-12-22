@@ -96,6 +96,15 @@ namespace SpecBind.CodedUI
         }
 
         /// <summary>
+        /// Clear all browser cookies
+        /// </summary>
+        public override void ClearCookies()
+        {
+            BrowserWindow.ClearCookies();
+            BrowserWindow.ClearCache();
+        }
+
+        /// <summary>
         /// Closes this instance.
         /// </summary>
         public override void Close()

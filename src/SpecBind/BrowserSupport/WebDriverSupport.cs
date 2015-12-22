@@ -59,6 +59,7 @@ namespace SpecBind.BrowserSupport
             var configSection = SettingHelper.GetConfigurationSection();
 
             if (!configSection.BrowserFactory.ReuseBrowser || Browser == null) Browser = factory.GetBrowser();
+            if (configSection.BrowserFactory.EnsureCleanSession) Browser.ClearCookies();
             this.objectContainer.RegisterInstanceAs(Browser);
 
             this.objectContainer.RegisterInstanceAs<ISettingHelper>(new WrappedSettingHelper());
@@ -84,6 +85,8 @@ namespace SpecBind.BrowserSupport
         [AfterTestRun]
         public static void TearDownWebDriver()
         {
+            if (Browser == null) return;
+
             Browser.Close();
 
             // ReSharper disable SuspiciousTypeConversion.Global

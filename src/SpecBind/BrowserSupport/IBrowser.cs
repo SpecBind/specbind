@@ -42,6 +42,11 @@ namespace SpecBind.BrowserSupport
 	    void AddCookie(string name, string value, string path, DateTime? expireDateTime, string domain, bool secure);
 
 		/// <summary>
+		/// Clear all browser cookies
+		/// </summary>
+		void ClearCookies();
+
+		/// <summary>
 		/// Closes this instance.
 		/// </summary>
 		void Close();

@@ -98,6 +98,15 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Clear all browser cookies
+        /// </summary>
+        public override void ClearCookies()
+        {
+            var localDriver = this.driver.Value;
+            localDriver.Manage().Cookies.DeleteAllCookies();
+        }
+
+        /// <summary>
         /// Closes this instance.
         /// </summary>
         public override void Close()

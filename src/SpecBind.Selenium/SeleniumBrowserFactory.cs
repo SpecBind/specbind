@@ -83,11 +83,6 @@ namespace SpecBind.Selenium
                         var chromeDriverService = ChromeDriverService.CreateDefaultService();
                         chromeDriverService.HideCommandPromptWindow = true;
 
-                        if (browserFactoryConfiguration.EnsureCleanSession)
-                        {
-                            chromeOptions.AddArgument("--incognito");
-                        }
-
                         driver = new ChromeDriver(chromeDriverService, chromeOptions);
                         break;
                     case BrowserType.PhantomJS:
