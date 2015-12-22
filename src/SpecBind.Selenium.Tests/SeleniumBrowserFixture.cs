@@ -145,6 +145,29 @@ namespace SpecBind.Selenium.Tests
             cookies.VerifyAll();
         }
 
+        [TestMethod]
+        public void TestClearCookies()
+        {
+            var cookies = new Mock<ICookieJar>(MockBehavior.Strict);
+            cookies.Setup(c => c.DeleteAllCookies());
+
+            var options = new Mock<IOptions>(MockBehavior.Strict);
+            options.Setup(o => o.Cookies).Returns(cookies.Object);
+
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            driver.Setup(d => d.Manage()).Returns(options.Object);
+
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+
+            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
+
+            browser.ClearCookies();
+
+            driver.VerifyAll();
+            options.VerifyAll();
+            cookies.VerifyAll();
+        }
+
         /// <summary>
         /// Tests the dismiss alert calls accept when ok is chosen.
         /// </summary>
