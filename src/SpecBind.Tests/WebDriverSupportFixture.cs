@@ -8,6 +8,7 @@ namespace SpecBind.Tests
 
     using BoDi;
 
+    using Microsoft.QualityTools.Testing.Fakes;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
@@ -15,7 +16,9 @@ namespace SpecBind.Tests
     using SpecBind.ActionPipeline;
     using SpecBind.Actions;
     using SpecBind.BrowserSupport;
+    using SpecBind.Configuration;
     using SpecBind.Helpers;
+    using SpecBind.Helpers.Fakes;
     using SpecBind.Pages;
     using SpecBind.Validation;
 
@@ -166,15 +169,72 @@ namespace SpecBind.Tests
         }
 
         [TestMethod]
-        public void TestTearDownWebDriver()
+        public void TestTearDownAfterTestRun()
         {
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
-            browser.Setup(b => b.Close());
+            browser.Setup(b => b.Close(true));
             WebDriverSupport.Browser = browser.Object;
 
-            WebDriverSupport.TearDownWebDriver();
+            WebDriverSupport.TearDownAfterTestRun();
 
             browser.VerifyAll();
+        }
+
+        [TestMethod]
+        public void TestTearDownAfterScenarioWhenReuseBrowserIsTrue()
+        {
+            using (ShimsContext.Create())
+            {
+                // arrange
+                var config = new ConfigurationSectionHandler
+                {
+                    BrowserFactory =
+                        new BrowserFactoryConfigurationElement
+                        {
+                            ReuseBrowser = true
+                        }
+                };
+
+                var browser = new Mock<IBrowser>(MockBehavior.Loose);
+                WebDriverSupport.Browser = browser.Object;
+
+                ShimSettingHelper.GetConfigurationSection = () => config;
+
+                // act
+                WebDriverSupport.TearDownAfterScenario();
+
+                // assert
+                browser.Verify(b => b.Close(true), Times.Never());
+            }
+        }
+
+        [TestMethod]
+        public void TestTearDownAfterScenarioWhenReuseBrowserIsFalse()
+        {
+            using (ShimsContext.Create())
+            {
+                // arrange
+                var config = new ConfigurationSectionHandler
+                {
+                    BrowserFactory =
+                        new BrowserFactoryConfigurationElement
+                        {
+                            ReuseBrowser = false
+                        }
+                };
+
+                var browser = new Mock<IBrowser>(MockBehavior.Strict);
+                browser.Setup(b => b.Close(true));
+                WebDriverSupport.Browser = browser.Object;
+
+                ShimSettingHelper.GetConfigurationSection = () => config;
+
+                // act
+                WebDriverSupport.TearDownAfterScenario();
+
+                // assert
+                browser.VerifyAll();
+            }
         }
     }
 }

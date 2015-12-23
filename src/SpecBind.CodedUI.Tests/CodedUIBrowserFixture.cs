@@ -38,5 +38,29 @@
 				Assert.IsTrue(clearCacheCalled);
 			}
 		}
+
+		[TestMethod]
+		public void TestCloseWhenDisposeIsTrue()
+		{
+			var logger = new Mock<ILogger>(MockBehavior.Loose);
+			var browserWindow = new Mock<BrowserWindow>(MockBehavior.Strict);
+			var browser = new Mock<CodedUIBrowser>(new Lazy<BrowserWindow>(() => browserWindow.Object), logger.Object){CallBase = true};
+
+			browser.Object.Close(true);
+
+			browser.Verify(b => b.Dispose());
+		}
+
+		[TestMethod]
+		public void TestCloseWhenDisposeIsFalse()
+		{
+			var logger = new Mock<ILogger>(MockBehavior.Loose);
+			var browserWindow = new Mock<BrowserWindow>(MockBehavior.Strict);
+			var browser = new Mock<CodedUIBrowser>(new Lazy<BrowserWindow>(() => browserWindow.Object), logger.Object) { CallBase = true };
+
+			browser.Object.Close(false);
+
+			browser.Verify(b => b.Dispose(), Times.Never());
+		}
 	}
 }

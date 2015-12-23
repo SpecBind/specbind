@@ -23,7 +23,7 @@ namespace SpecBind.CodedUI
     /// An IBrowser implementation for Coded UI.
     /// </summary>
     // ReSharper disable once InconsistentNaming
-    public class CodedUIBrowser : BrowserBase, IDisposable
+    public class CodedUIBrowser : BrowserBase
     {
         private readonly Dictionary<Type, Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument>> pageCache;
         private readonly Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>> frameCache;
@@ -116,6 +116,16 @@ namespace SpecBind.CodedUI
         }
 
         /// <summary>
+        /// Closes the instance and optionally dispose of all resources
+        /// </summary>
+        /// <param name="dispose">Whether or not resources should get disposed</param>
+        public override void Close(bool dispose)
+        {
+            this.Close();
+            if (dispose) this.Dispose();
+        }
+
+        /// <summary>
         /// Navigates the browser to the given <paramref name="url" />.
         /// </summary>
         /// <param name="url">The URL specified as a well formed Uri.</param>
@@ -172,10 +182,9 @@ namespace SpecBind.CodedUI
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
-            var configSection = SettingHelper.GetConfigurationSection();
-            this.Dispose(!configSection.BrowserFactory.ReuseBrowser);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 

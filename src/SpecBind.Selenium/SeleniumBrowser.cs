@@ -20,7 +20,7 @@ namespace SpecBind.Selenium
     /// <summary>
     /// A web browser level wrapper for selenium
     /// </summary>
-    public class SeleniumBrowser : BrowserBase, IDisposable
+    public class SeleniumBrowser : BrowserBase
     {
         private readonly Lazy<IWebDriver> driver;
         private readonly SeleniumPageBuilder pageBuilder;
@@ -118,6 +118,16 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Closes the instance and optionally dispose of all resources
+        /// </summary>
+        /// <param name="dispose">Whether or not resources should get disposed</param>
+        public override void Close(bool dispose)
+        {
+            this.Close();
+            if (dispose) this.Dispose();
+        }
+
+        /// <summary>
         /// Dismisses the alert.
         /// </summary>
         /// <param name="action">The action.</param>
@@ -178,10 +188,9 @@ namespace SpecBind.Selenium
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
-            var configSection = SettingHelper.GetConfigurationSection();
-            this.Dispose(!configSection.BrowserFactory.ReuseBrowser);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 

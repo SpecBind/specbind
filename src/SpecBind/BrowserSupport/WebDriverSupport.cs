@@ -52,8 +52,8 @@ namespace SpecBind.BrowserSupport
         [BeforeScenario]
         public void InitializeDriver()
         {
-             this.objectContainer.RegisterTypeAs<ProxyLogger, ILogger>();
-             var logger = this.objectContainer.Resolve<ILogger>();
+            this.objectContainer.RegisterTypeAs<ProxyLogger, ILogger>();
+            var logger = this.objectContainer.Resolve<ILogger>();
 
             var factory = BrowserFactory.GetBrowserFactory(logger);
             var configSection = SettingHelper.GetConfigurationSection();
@@ -80,22 +80,30 @@ namespace SpecBind.BrowserSupport
         }
 
         /// <summary>
-        /// Tears down the web driver.
+        /// Tears down the web driver
         /// </summary>
         [AfterTestRun]
-        public static void TearDownWebDriver()
+        public static void TearDownAfterTestRun()
+        {
+            if (Browser == null) return;
+            Browser.Close(dispose: true);
+        }
+
+        /// <summary>
+        /// Tear down the web driver after scenario, if applicable
+        /// </summary>
+        [AfterScenario]
+        public static void TearDownAfterScenario()
         {
             if (Browser == null) return;
 
-            Browser.Close();
-
-            // ReSharper disable SuspiciousTypeConversion.Global
-            var dispoable = Browser as IDisposable;
-            // ReSharper restore SuspiciousTypeConversion.Global
-            if (dispoable != null)
+            var configSection = SettingHelper.GetConfigurationSection();
+            if (!configSection.BrowserFactory.ReuseBrowser)
             {
-                dispoable.Dispose();
+                Browser.Close(dispose: true);
+                Browser = null;
             }
+
         }
 
         /// <summary>

@@ -53,15 +53,21 @@ namespace SpecBind.BrowserSupport
         /// <param name="secure">if set to <c>true</c> the cookie is secure.</param>
         public abstract void AddCookie(string name, string value, string path, DateTime? expireDateTime, string domain, bool secure);
 
-		/// <summary>
-		/// Clear all browser cookies
-		/// </summary>
-	    public abstract void ClearCookies();
+        /// <summary>
+        /// Clear all browser cookies
+        /// </summary>
+        public abstract void ClearCookies();
 
         /// <summary>
         /// Closes this instance.
         /// </summary>
         public abstract void Close();
+
+        /// <summary>
+        /// Closes the instance and optionally dispose of all resources
+        /// </summary>
+        /// <param name="dispose">Whether or not resources should get disposed</param>
+        public abstract void Close(bool dispose);
 
         /// <summary>
         /// Dismisses the alert.

@@ -297,6 +297,30 @@ namespace SpecBind.Selenium.Tests
             driver.VerifyAll();
         }
 
+        [TestMethod]
+        public void TestCloseWhenDisposeIsTrue()
+        {
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+            var browser = new Mock<SeleniumBrowser>(new Lazy<IWebDriver>(() => driver.Object), logger.Object) { CallBase = true };
+
+            browser.Object.Close(true);
+
+            browser.Verify(b => b.Dispose());
+        }
+
+        [TestMethod]
+        public void TestCloseWhenDisposeIsFalse()
+        {
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+            var browser = new Mock<SeleniumBrowser>(new Lazy<IWebDriver>(() => driver.Object), logger.Object) { CallBase = true };
+
+            browser.Object.Close(false);
+
+            browser.Verify(b => b.Dispose(), Times.Never());
+        }
+
         /// <summary>
         /// Tests the getting the page location returns the url value.
         /// </summary>
