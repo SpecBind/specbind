@@ -118,7 +118,7 @@ namespace SpecBind.Helpers
 		                return pageArguments.ContainsKey(groupName) ? pageArguments[groupName] : m.Value;
 		            });
 
-		    return CreateCompleteUri(new UriStructure(filledPage, false), false);
+		    return CreateCompleteUri(new UriStructure(filledPage, uriStructure.IsAbsolute), false);
 		}
 
 		/// <summary>

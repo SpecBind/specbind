@@ -247,6 +247,22 @@ namespace SpecBind.Selenium.Tests
             element.VerifyAll();
         }
 
+
+        [TestMethod]
+        public void TestElementEnabledCheckWhenStaleElementReferenceReturnsFalse()
+        {
+            var element = new Mock<IWebElement>(MockBehavior.Strict);
+            element.SetupGet(e => e.Displayed).Throws<StaleElementReferenceException>();
+
+            var nativePage = new NativePage();
+            var page = new SeleniumPage(nativePage);
+
+            var result = page.ElementEnabledCheck(element.Object);
+
+            Assert.IsFalse(result);
+            element.VerifyAll();
+        }
+        
         /// <summary>
         /// Tests the get element text method when the control is a standard control.
         /// </summary>

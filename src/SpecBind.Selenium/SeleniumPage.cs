@@ -212,6 +212,10 @@ namespace SpecBind.Selenium
             {
                 return false;
             }
+            catch (StaleElementReferenceException)
+            {
+                return false;
+            }
         }
 
         /// <summary>
