@@ -208,7 +208,12 @@ namespace SpecBind.CodedUI
 			return true;
 		}
 
-		public override Action<HtmlControl> GetClearMethod(Type propertyType)
+        /// <summary>
+        /// Gets the page clear method.
+        /// </summary>
+        /// <param name="propertyType">Type of the property.</param>
+        /// <returns>The action used to clear the page field.</returns>
+        public override Action<HtmlControl> GetClearMethod(Type propertyType)
 		{
 			var fillMethod = this.GetPageFillMethod(propertyType);
 			return c => fillMethod(c, string.Empty);
