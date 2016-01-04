@@ -72,3 +72,35 @@ Scenario: Test Successful Password Input
 	  When I enter data
 	       | Field    | Value    |
 	       | Password | I'm Cool |
+
+Scenario: Test Clearing Text Input
+	 Given I navigated to the Home page
+	  And I chose Courses
+	  And I was on the Courses page
+	  And I chose Create New
+	  And I was on the Create a Course page
+	  And I entered data
+	      | Field        | Value     |
+	      | Course Title | My Course |
+	 When I clear data
+	      | Field        |
+	      | Course Title |
+	 Then I see
+	      | Field        | Rule   | Value |
+	      | Course Title | Equals |       |
+
+Scenario: Test Clearing Text Area Input
+	 Given I navigated to the Home page
+	   And I chose Courses
+	   And I was on the Courses page
+	   And I chose Create New
+	   And I was on the Create a Course page
+	   And I entered data
+	       | Field       | Value                                               |
+	       | Description | This is a really long description of what's needed. |
+	  When I clear data
+	       | Field       |
+	       | Description |
+	  Then I see
+	       | Field       | Rule   | Value |
+	       | Description | Equals |       |

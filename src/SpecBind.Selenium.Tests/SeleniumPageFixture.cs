@@ -407,6 +407,24 @@ namespace SpecBind.Selenium.Tests
         }
 
         /// <summary>
+        /// Tests the get clear method.
+        /// </summary>
+        [TestMethod]
+        public void TestGetClearMethod()
+        {
+            var element = new Mock<IWebElement>(MockBehavior.Strict);
+            element.Setup(e => e.Clear());
+
+            var nativePage = new NativePage();
+            var page = new SeleniumPage(nativePage);
+
+            var clearMethod = page.GetClearMethod(null);
+            clearMethod(element.Object);
+
+            element.VerifyAll();
+        }
+
+        /// <summary>
         /// Tests the get page fill method for a standard control.
         /// </summary>
         [TestMethod]

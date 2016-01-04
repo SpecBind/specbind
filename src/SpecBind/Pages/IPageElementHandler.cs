@@ -62,13 +62,22 @@ namespace SpecBind.Pages
 		IPage GetPageFromElement(TElement element);
 
 		/// <summary>
-		/// Gets the click element.
+		/// Clicks the element.
 		/// </summary>
 		/// <param name="element">The element.</param>
 		/// <returns>
 		/// True if the click is successful.
 		/// </returns>
 		bool ClickElement(TElement element);
+
+		/// <summary>
+		/// Gets the clears method.
+		/// </summary>
+		/// <param name="propertyType">Type of the property.</param>
+		/// <returns>
+		///  The function used to clear the data.
+		/// </returns>
+		Action<TElement> GetClearMethod(Type propertyType);
 
 		/// <summary>
 		/// Gets the page fill method.

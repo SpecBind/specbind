@@ -51,6 +51,11 @@ namespace SpecBind.Pages
 		#endregion
 
 		/// <summary>
+		/// Clears the data on the element.
+		/// </summary>
+		void ClearData();
+
+		/// <summary>
 		/// Clicks the element that this property represents.
 		/// </summary>
 		void ClickElement();

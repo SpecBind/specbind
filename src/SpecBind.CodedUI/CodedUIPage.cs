@@ -208,6 +208,12 @@ namespace SpecBind.CodedUI
 			return true;
 		}
 
+		public override Action<HtmlControl> GetClearMethod(Type propertyType)
+		{
+			var fillMethod = this.GetPageFillMethod(propertyType);
+			return c => fillMethod(c, string.Empty);
+		}
+
 		/// <summary>
 		/// Gets the page fill method.
 		/// </summary>
@@ -244,6 +250,8 @@ namespace SpecBind.CodedUI
 						{
 							editControl.Text = string.Empty;
 						}
+
+						if (string.IsNullOrEmpty(s)) return;
 
 						try
 						{

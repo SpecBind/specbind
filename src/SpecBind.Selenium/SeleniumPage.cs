@@ -87,6 +87,28 @@ namespace SpecBind.Selenium
 		}
 
 		/// <summary>
+		/// Gets the clears method.
+		/// </summary>
+		/// <param name="propertyType">Type of the property.</param>
+		/// <returns>
+		///  The function used to clear the data.
+		/// </returns>
+		public override Action<IWebElement> GetClearMethod(Type propertyType)
+		{
+			return ClearPage;
+		}
+
+		/// <summary>
+		/// Gets the page fill method.
+		/// </summary>
+		/// <param name="propertyType">Type of the property.</param>
+		/// <returns>The action to fill the page.</returns>
+		public override Action<IWebElement, string> GetPageFillMethod(Type propertyType)
+		{
+			return FillPage;
+		}
+
+		/// <summary>
 		/// Gets the element text.
 		/// </summary>
 		/// <param name="element">The element.</param>
@@ -152,22 +174,12 @@ namespace SpecBind.Selenium
 		{
 			if (times < 1) return true;
 
-		    if (!this.WaitForElement(element, WaitConditions.NotMoving, timeout: null)) return false;
-		    if (!this.WaitForElement(element, WaitConditions.BecomesEnabled, timeout: null)) return false;
+			if (!this.WaitForElement(element, WaitConditions.NotMoving, timeout: null)) return false;
+			if (!this.WaitForElement(element, WaitConditions.BecomesEnabled, timeout: null)) return false;
 
-            // TODO: consider waiting between clicks, so that it's not interpreted as a double-click
+			// TODO: consider waiting between clicks, so that it's not interpreted as a double-click
 			for (var i = 0; i < times; i++) element.Click();
 			return true;
-		}
-
-		/// <summary>
-		/// Gets the page fill method.
-		/// </summary>
-		/// <param name="propertyType">Type of the property.</param>
-		/// <returns>The action to fill the page.</returns>
-		public override Action<IWebElement, string> GetPageFillMethod(Type propertyType)
-		{
-			return FillPage;
 		}
 
 		/// <summary>
@@ -379,6 +391,15 @@ namespace SpecBind.Selenium
 					element.SendKeys(data);
 					break;
 			}
+		}
+
+		/// <summary>
+		/// Clears the page.
+		/// </summary>
+		/// <param name="element">The element.</param>
+		private static void ClearPage(IWebElement element)
+		{
+			element.Clear();
 		}
 	}
 }

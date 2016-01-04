@@ -64,6 +64,32 @@ namespace SpecBind.PropertyHandlers
             return this.elementAction(this.ElementHandler, this.ElementHandler.ElementExistsCheck);
         }
 
+	    /// <summary>
+	    /// Clears the data for the element that this property represents.
+	    /// </summary>
+	    public override void ClearData()
+        {
+            this.ThrowIfElementDoesNotExist();
+
+            var clearMethod = this.ElementHandler.GetClearMethod(this.PropertyType);
+            if (clearMethod == null)
+            {
+                throw new ElementExecuteException(
+                    "Cannot find input handler for property '{0}' on page {1}. Element propertyValue was: {2}",
+                    this.Name,
+                    this.ElementHandler.PageType.Name,
+                    this.PropertyType.Name);
+            }
+
+            this.elementAction(
+                this.ElementHandler, 
+                e =>
+                    {
+                        clearMethod(e);
+                        return true;
+                    });
+        }
+
         /// <summary>
         /// Checks to see if the element does not exist.
         /// Unlike ElementExistsCheck() this, doesn't let the web driver wait first for the element to exist.
