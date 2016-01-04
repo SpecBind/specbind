@@ -4,8 +4,10 @@
 namespace SpecBind.CodedUI
 {
 	using System;
+	using System.CodeDom;
 	using System.Drawing;
 	using System.Linq;
+    using System.Threading;
 	using System.Windows.Input;
 
 	using Microsoft.VisualStudio.TestTools.UITest.Extension;
@@ -65,7 +67,7 @@ namespace SpecBind.CodedUI
         /// <returns><c>true</c> if the condition is met, <c>false</c> otherwise.</returns>
 	    public override bool WaitForElement(HtmlControl element, WaitConditions waitCondition, TimeSpan? timeout)
         {
-            var milliseconds = (int)timeout.GetValueOrDefault(TimeSpan.FromMilliseconds(500)).TotalMilliseconds;
+            var milliseconds = (int)timeout.GetValueOrDefault(TimeSpan.FromSeconds(10)).TotalMilliseconds;
             switch (waitCondition)
             {
                 case WaitConditions.Exists:
@@ -76,14 +78,33 @@ namespace SpecBind.CodedUI
                     return element.WaitForControlCondition(e => e.Enabled, milliseconds);
                 case WaitConditions.NotEnabled:
                     return element.WaitForControlCondition(e => !e.Enabled, milliseconds);
+                case WaitConditions.NotMoving:
+                    element.WaitForControlExist(milliseconds);
+                    return element.WaitForControlCondition(e => !Moving(e), milliseconds);
             }
 
             return true;
         }
 
+        /// <summary>
+        /// Determines if an element is currently moving (e.g. due to animation).
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns><c>true</c> if the element's Location is changing, <c>false</c> otherwise.</returns>
+        protected virtual bool Moving(UITestControl element)
+        {
+            var firstLeft = element.Left;
+            var firstTop = element.Top;
+            Thread.Sleep(200);
+            var secondLeft = element.Left;
+            var secondTop = element.Top;
+            var moved = !(secondLeft.Equals(firstLeft) && secondTop.Equals(firstTop));
+            return moved;
+        }
+
 	    /// <summary>
-		/// Elements the enabled check.
-		/// </summary>
+        /// Checks to see if the element is enabled.
+        /// </summary>
 		/// <param name="element">The element.</param>
 		/// <returns><c>true</c> if the element is enabled; otherwise <c>false</c></returns>
 		public override bool ElementEnabledCheck(HtmlControl element)
@@ -92,21 +113,31 @@ namespace SpecBind.CodedUI
 		}
 
 		/// <summary>
-		/// Elements the exists check.
+        /// Checks to see if the element exists.
+        /// Waits the appropriate timeout if necessary.
 		/// </summary>
 		/// <param name="element">The element.</param>
 		/// <returns><c>true</c> if the element exists; otherwise <c>false</c></returns>
 		public override bool ElementExistsCheck(HtmlControl element)
 		{
-			var exists = element.Exists;
-			if (exists)
-			{
-				return true;
-			}
+		    if (element.Exists) return true;
 
 			element.Find();
 			return true;
 		}
+
+        /// <summary>
+        /// Checks to see if the element doesn't exist.
+        /// Unlike ELementExistsCheck, this doesn't let the web driver wait first for the element to exist.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns><c>true</c> if the element doesn't exist; otherwise <c>false</c></returns>
+        public override bool ElementNotExistsCheck(HtmlControl element)
+        {
+            if (element == null) return true;
+
+            return !element.Exists;
+        }
 
         /// <summary>
         /// Gets the element attribute value.
@@ -165,6 +196,8 @@ namespace SpecBind.CodedUI
 		/// <returns><c>true</c> unless there is an error.</returns>
 		public override bool ClickElement(HtmlControl element)
 		{
+		    this.WaitForElement(element, WaitConditions.NotMoving, timeout: null);
+
 			Point point;
 			if (element.TryGetClickablePoint(out point))
 			{

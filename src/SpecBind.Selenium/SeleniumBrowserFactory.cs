@@ -110,6 +110,10 @@ namespace SpecBind.Selenium
                 .ImplicitlyWait(browserFactoryConfiguration.ElementLocateTimeout)
                 .SetPageLoadTimeout(browserFactoryConfiguration.PageLoadTimeout);
 
+            WaitForElementAction.DefaultTimeout = browserFactoryConfiguration.ElementLocateTimeout;
+            WaitForListItemsAction.DefaultTimeout = browserFactoryConfiguration.ElementLocateTimeout;
+            WaitForPageAction.DefaultTimeout = browserFactoryConfiguration.PageLoadTimeout;
+
             // Maximize window
             managementSettings.Window.Maximize();
 
