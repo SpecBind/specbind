@@ -91,6 +91,13 @@ namespace SpecBind.Tests.Support
 			return true;
 		}
 
+        /// <summary>
+        /// Gets the clear field method.
+        /// </summary>
+        /// <param name="propertyType">Type of the property.</param>
+        /// <returns>
+        /// The function used to clear the data.
+        /// </returns>
 		public override Action<BaseElement> GetClearMethod(Type propertyType)
 		{
 			return null;

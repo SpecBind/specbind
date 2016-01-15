@@ -248,6 +248,9 @@ namespace SpecBind.Selenium.Tests
         }
 
 
+        /// <summary>
+        /// Tests the element enabled check when stale element reference returns false.
+        /// </summary>
         [TestMethod]
         public void TestElementEnabledCheckWhenStaleElementReferenceReturnsFalse()
         {

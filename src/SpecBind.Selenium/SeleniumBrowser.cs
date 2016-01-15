@@ -20,7 +20,7 @@ namespace SpecBind.Selenium
     /// <summary>
     /// A web browser level wrapper for selenium
     /// </summary>
-    public class SeleniumBrowser : BrowserBase, IDisposable
+    public class SeleniumBrowser : BrowserBase
     {
         private readonly Lazy<IWebDriver> driver;
         private readonly SeleniumPageBuilder pageBuilder;
@@ -44,12 +44,12 @@ namespace SpecBind.Selenium
 
         /// <summary>
         /// Finalizes an instance of the <see cref="SeleniumBrowser" /> class.
-		/// </summary>
+        /// </summary>
         [ExcludeFromCodeCoverage]
         ~SeleniumBrowser()
-		{
-			this.Dispose(false);
-		}
+        {
+            this.Dispose(false);
+        }
 
         /// <summary>
         /// Gets the type of the base page.
@@ -98,6 +98,15 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Clear all browser cookies
+        /// </summary>
+        public override void ClearCookies()
+        {
+            var localDriver = this.driver.Value;
+            localDriver.Manage().Cookies.DeleteAllCookies();
+        }
+
+        /// <summary>
         /// Closes this instance.
         /// </summary>
         public override void Close()
@@ -105,6 +114,19 @@ namespace SpecBind.Selenium
             if (this.driver.IsValueCreated)
             {
                 this.driver.Value.Close();
+            }
+        }
+
+        /// <summary>
+        /// Closes the instance and optionally dispose of all resources
+        /// </summary>
+        /// <param name="dispose">Whether or not resources should get disposed</param>
+        public override void Close(bool dispose)
+        {
+            this.Close();
+            if (dispose)
+            {
+                this.Dispose();
             }
         }
 
@@ -169,7 +191,7 @@ namespace SpecBind.Selenium
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);

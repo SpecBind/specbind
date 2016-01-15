@@ -23,16 +23,5 @@ namespace SpecBind.Selenium
             : base(remoteAddress, desiredCapabilities)
         {
         }
-
-        /// <summary>
-        /// Gets a <see cref="T:OpenQA.Selenium.Screenshot" /> object representing the image of the page on the screen.
-        /// </summary>
-        /// <returns>A <see cref="T:OpenQA.Selenium.Screenshot" /> object containing the image.</returns>
-        public Screenshot GetScreenshot()
-        {
-            var screenshotResponse = this.Execute(DriverCommand.Screenshot, null);
-            var base64 = screenshotResponse.Value.ToString();
-            return new Screenshot(base64);
-        }
     }
 }
