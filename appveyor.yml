@@ -63,9 +63,6 @@ build:
   verbosity: normal
   parallel: true
 
-init:
-- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-
 # scripts to run before build
 before_build:
   - ps: If (Test-Path "$env:package_dir") { Remove-Item "$env:package_dir" -Recurse -Force -ErrorAction SilentlyContinue }
@@ -108,7 +105,3 @@ artifacts:
 #     deployment configuration    #
 #---------------------------------#
 deploy: off
-
-# Adding debug to figure out CodedUI dll issues.
-on_finish:
-- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
