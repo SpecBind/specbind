@@ -9,6 +9,7 @@ namespace SpecBind.Selenium
     using System.Diagnostics.CodeAnalysis;
     using System.Drawing.Imaging;
     using System.IO;
+    using System.Threading;
 
     using OpenQA.Selenium;
 
@@ -36,6 +37,7 @@ namespace SpecBind.Selenium
         /// <param name="logger">The logger.</param>
         public SeleniumBrowser(Lazy<IWebDriver> driver, ILogger logger) : base(logger)
         {
+            // TODO: create timeouts structure, pass it through this constructor, so we know what the default timeouts are.
             this.driver = driver;
 
             this.pageBuilder = new SeleniumPageBuilder();
@@ -305,7 +307,43 @@ namespace SpecBind.Selenium
 
             var nativePage = pageBuildMethod(webDriver, this, null);
 
-            return new SeleniumPage(nativePage);
+            return new SeleniumPage(nativePage)
+               {
+                   ExecuteWithElementLocateTimeout = this.ExecuteWithElementLocateTimeout,
+                   EvaluateWithElementLocateTimeout =  this.EvaluateWithElementLocateTimeout
+               };
+        }
+
+        private void ExecuteWithElementLocateTimeout(TimeSpan timeout, Action work)
+        {
+            TimeSpan originalTimeout = WaitForElementAction.DefaultTimeout;
+            var timeoutManager = this.driver.Value.Manage().Timeouts();
+
+            try
+            {
+                timeoutManager.ImplicitlyWait(timeout);
+                work();
+            }
+            finally
+            {
+                timeoutManager.ImplicitlyWait(originalTimeout);
+            }
+        }
+
+        private bool EvaluateWithElementLocateTimeout(TimeSpan timeout, Func<bool> work)
+        {
+            TimeSpan originalTimeout = WaitForElementAction.DefaultTimeout;
+            var timeoutManager = this.driver.Value.Manage().Timeouts();
+
+            try
+            {
+                timeoutManager.ImplicitlyWait(timeout);
+                return work();
+            }
+            finally
+            {
+                timeoutManager.ImplicitlyWait(originalTimeout);
+            }
         }
 
         /// <summary>

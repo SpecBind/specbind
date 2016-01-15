@@ -41,6 +41,12 @@ namespace SpecBind.Actions
             IPropertyData propertyData;
             if (!this.ElementLocator.TryGetProperty(validation.FieldName, out propertyData))
             {
+                if (validation.Comparer is DoesNotExistComparer)
+                {
+                    itemResult.NoteValidationResult(validation, successful: true, actualValue: null);
+                    return true;
+                }
+
                 itemResult.NoteMissingProperty(validation);
                 return false;
             }

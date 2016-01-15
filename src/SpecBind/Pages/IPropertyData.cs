@@ -72,7 +72,14 @@ namespace SpecBind.Pages
 		/// <returns><c>true</c> if the element exists.</returns>
 		bool CheckElementExists();
 
-		/// <summary>
+        /// <summary>
+        /// Checks to see if the element doesn't exist.
+        /// Unlike ELementExistsCheck, this doesn't let the web driver wait first for the element to exist.
+        /// </summary>
+        /// <returns><c>true</c> if the element does not exist.</returns>
+        bool CheckElementNotExists();
+
+        /// <summary>
 		/// Fills the data on the element.
 		/// </summary>
 		/// <param name="data">The data.</param>

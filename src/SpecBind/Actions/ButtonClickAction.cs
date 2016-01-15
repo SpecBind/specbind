@@ -27,6 +27,8 @@ namespace SpecBind.Actions
 	    public override ActionResult Execute(ActionContext actionContext)
 		{
 			var propertyData = this.ElementLocator.GetElement(actionContext.PropertyName);
+            propertyData.WaitForElementCondition(WaitConditions.NotMoving, timeout: null);
+            propertyData.WaitForElementCondition(WaitConditions.BecomesEnabled, timeout: null);
 			propertyData.ClickElement();
 
 			return ActionResult.Successful();

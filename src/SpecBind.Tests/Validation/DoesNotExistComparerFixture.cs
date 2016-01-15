@@ -48,7 +48,7 @@ namespace SpecBind.Tests.Validation
         public void TestCompareWithNonBoolValueCase()
         {
             var propertyData = new Mock<IPropertyData>(MockBehavior.Strict);
-            propertyData.Setup(p => p.CheckElementExists()).Returns(false);
+            propertyData.Setup(p => p.CheckElementNotExists()).Returns(true);
 
             RunItemCompareTest("foo", null, true, propertyData);
         }
@@ -60,7 +60,7 @@ namespace SpecBind.Tests.Validation
         public void TestCompareExistsCase()
         {
             var propertyData = new Mock<IPropertyData>(MockBehavior.Strict);
-            propertyData.Setup(p => p.CheckElementExists()).Returns(false);
+            propertyData.Setup(p => p.CheckElementNotExists()).Returns(true);
 
             RunItemCompareTest("True", null, true, propertyData);
         }
@@ -72,7 +72,7 @@ namespace SpecBind.Tests.Validation
         public void TestCompareNotExistsCase()
         {
             var propertyData = new Mock<IPropertyData>(MockBehavior.Strict);
-            propertyData.Setup(p => p.CheckElementExists()).Returns(true);
+            propertyData.Setup(p => p.CheckElementNotExists()).Returns(false);
 
             RunItemCompareTest("False", null, true, propertyData);
         }

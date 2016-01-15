@@ -57,6 +57,8 @@ namespace SpecBind.Tests.Actions
 		public void TestClickItemSuccess()
 		{
 			var propData = new Mock<IPropertyData>(MockBehavior.Strict);
+            propData.Setup(p => p.WaitForElementCondition(WaitConditions.NotMoving, null)).Returns(true);
+            propData.Setup(p => p.WaitForElementCondition(WaitConditions.BecomesEnabled, null)).Returns(true);
 			propData.Setup(p => p.ClickElement());
 
 			var locator = new Mock<IElementLocator>(MockBehavior.Strict);

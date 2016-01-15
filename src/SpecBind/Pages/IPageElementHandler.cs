@@ -30,6 +30,16 @@ namespace SpecBind.Pages
 		bool ElementExistsCheck(TElement element);
 
         /// <summary>
+        /// Gets the element not-exists check function.
+        /// Unlike ELementExistsCheck, this doesn't let the web driver wait first for the element to exist.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>
+        /// True if the element doesn't exist; otherwise false.
+        /// </returns>
+        bool ElementNotExistsCheck(TElement element);
+
+        /// <summary>
         /// Gets the element attribute value.
         /// </summary>
         /// <param name="element">The element.</param>
