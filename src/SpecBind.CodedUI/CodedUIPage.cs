@@ -175,6 +175,13 @@ namespace SpecBind.CodedUI
 			return true;
 		}
 
+        /// <summary>
+        /// Gets the clear method for the control.
+        /// </summary>
+        /// <param name="propertyType">Type of the property.</param>
+        /// <returns>
+        /// The function used to clear the data.
+        /// </returns>
 		public override Action<HtmlControl> GetClearMethod(Type propertyType)
 		{
 			var fillMethod = this.GetPageFillMethod(propertyType);
@@ -218,7 +225,10 @@ namespace SpecBind.CodedUI
 							editControl.Text = string.Empty;
 						}
 
-						if (string.IsNullOrEmpty(s)) return;
+                        if (string.IsNullOrEmpty(s))
+                        {
+                            return;
+                        }
 
 						try
 						{

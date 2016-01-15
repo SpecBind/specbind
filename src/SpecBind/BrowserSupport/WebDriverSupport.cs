@@ -11,6 +11,7 @@ namespace SpecBind.BrowserSupport
 
     using SpecBind.ActionPipeline;
     using SpecBind.Actions;
+    using SpecBind.Configuration;
     using SpecBind.Helpers;
     using SpecBind.Pages;
 
@@ -24,9 +25,10 @@ namespace SpecBind.BrowserSupport
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class WebDriverSupport
     {
-        internal static IBrowser Browser;
+        private static IBrowser browser;
+        private static Lazy<ConfigurationSectionHandler> configurationHandler = new Lazy<ConfigurationSectionHandler>(SettingHelper.GetConfigurationSection);
         private readonly IObjectContainer objectContainer;
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="WebDriverSupport" /> class.
         /// </summary>
@@ -34,6 +36,39 @@ namespace SpecBind.BrowserSupport
         public WebDriverSupport(IObjectContainer objectContainer)
         {
             this.objectContainer = objectContainer;
+        }
+
+        /// <summary>
+        /// Gets or sets the web browser for the session.
+        /// </summary>
+        /// <value>
+        /// The web browser.
+        /// </value>
+        internal static IBrowser Browser
+        {
+            get
+            {
+                return browser;
+            }
+            
+            set
+            {
+                browser = value;
+            }
+        }
+
+        /// <summary>
+        /// Sets the configuration method for testing.
+        /// </summary>
+        /// <value>
+        /// The configuration method factory.
+        /// </value>
+        internal static Lazy<ConfigurationSectionHandler> ConfigurationMethod
+        {
+            set
+            {
+                configurationHandler = value;
+            }
         }
 
         /// <summary>
@@ -56,16 +91,24 @@ namespace SpecBind.BrowserSupport
             var logger = this.objectContainer.Resolve<ILogger>();
 
             var factory = BrowserFactory.GetBrowserFactory(logger);
-            var configSection = SettingHelper.GetConfigurationSection();
+            var configSection = configurationHandler.Value;
 
-            if (!configSection.BrowserFactory.ReuseBrowser || Browser == null) Browser = factory.GetBrowser();
-            if (configSection.BrowserFactory.EnsureCleanSession) Browser.ClearCookies();
-            this.objectContainer.RegisterInstanceAs(Browser);
+            if (!configSection.BrowserFactory.ReuseBrowser || browser == null) 
+            { 
+                browser = factory.GetBrowser();
+            }
+
+            if (configSection.BrowserFactory.EnsureCleanSession)
+            {
+                browser.ClearCookies();
+            }
+
+            this.objectContainer.RegisterInstanceAs(browser);
 
             this.objectContainer.RegisterInstanceAs<ISettingHelper>(new WrappedSettingHelper());
 
             var mapper = new PageMapper();
-            mapper.Initialize(Browser.BasePageType);
+            mapper.Initialize(browser.BasePageType);
             this.objectContainer.RegisterInstanceAs<IPageMapper>(mapper);
 
             this.objectContainer.RegisterInstanceAs<IScenarioContextHelper>(new ScenarioContextHelper());
@@ -85,8 +128,12 @@ namespace SpecBind.BrowserSupport
         [AfterTestRun]
         public static void TearDownAfterTestRun()
         {
-            if (Browser == null) return;
-            Browser.Close(dispose: true);
+            if (browser == null)
+            {
+                return;
+            }
+
+            browser.Close(dispose: true);
         }
 
         /// <summary>
@@ -95,15 +142,17 @@ namespace SpecBind.BrowserSupport
         [AfterScenario]
         public static void TearDownAfterScenario()
         {
-            if (Browser == null) return;
-
-            var configSection = SettingHelper.GetConfigurationSection();
-            if (!configSection.BrowserFactory.ReuseBrowser)
+            if (browser == null)
             {
-                Browser.Close(dispose: true);
-                Browser = null;
+                return;
             }
 
+            var configSection = configurationHandler.Value;
+            if (!configSection.BrowserFactory.ReuseBrowser)
+            {
+                browser.Close(dispose: true);
+                browser = null;
+            }
         }
 
         /// <summary>
@@ -120,8 +169,8 @@ namespace SpecBind.BrowserSupport
             
             var fileName = scenarioHelper.GetStepFileName();
             var basePath = Directory.GetCurrentDirectory();
-            var fullPath = Browser.TakeScreenshot(basePath, fileName);
-            Browser.SaveHtml(basePath, fileName);
+            var fullPath = browser.TakeScreenshot(basePath, fileName);
+            browser.SaveHtml(basePath, fileName);
 
             var traceListener = this.objectContainer.Resolve<ITraceListener>();
             if (fullPath != null && traceListener != null)

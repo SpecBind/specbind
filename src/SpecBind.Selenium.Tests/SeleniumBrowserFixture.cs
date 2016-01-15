@@ -145,6 +145,9 @@ namespace SpecBind.Selenium.Tests
             cookies.VerifyAll();
         }
 
+        /// <summary>
+        /// Tests the clear cookies method.
+        /// </summary>
         [TestMethod]
         public void TestClearCookies()
         {
@@ -297,6 +300,9 @@ namespace SpecBind.Selenium.Tests
             driver.VerifyAll();
         }
 
+        /// <summary>
+        /// Tests the close method when dispose is true.
+        /// </summary>
         [TestMethod]
         public void TestCloseWhenDisposeIsTrue()
         {
@@ -309,6 +315,9 @@ namespace SpecBind.Selenium.Tests
             browser.Verify(b => b.Dispose());
         }
 
+        /// <summary>
+        /// Tests the close method when dispose is false.
+        /// </summary>
         [TestMethod]
         public void TestCloseWhenDisposeIsFalse()
         {

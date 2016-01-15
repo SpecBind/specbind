@@ -124,7 +124,10 @@ namespace SpecBind.Selenium
         public override void Close(bool dispose)
         {
             this.Close();
-            if (dispose) this.Dispose();
+            if (dispose)
+            {
+                this.Dispose();
+            }
         }
 
         /// <summary>

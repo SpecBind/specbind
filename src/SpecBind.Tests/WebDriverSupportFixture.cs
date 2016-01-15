@@ -8,7 +8,6 @@ namespace SpecBind.Tests
 
     using BoDi;
 
-    using Microsoft.QualityTools.Testing.Fakes;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
@@ -18,7 +17,6 @@ namespace SpecBind.Tests
     using SpecBind.BrowserSupport;
     using SpecBind.Configuration;
     using SpecBind.Helpers;
-    using SpecBind.Helpers.Fakes;
     using SpecBind.Pages;
     using SpecBind.Validation;
 
@@ -60,6 +58,9 @@ namespace SpecBind.Tests
             container.VerifyAll();
         }
 
+        /// <summary>
+        /// Tests the check for screen shot no error.
+        /// </summary>
         [TestMethod]
         public void TestCheckForScreenShotNoError()
         {
@@ -168,6 +169,9 @@ namespace SpecBind.Tests
             scenarioContext.VerifyAll();
         }
 
+        /// <summary>
+        /// Tests the tear down after test run.
+        /// </summary>
         [TestMethod]
         public void TestTearDownAfterTestRun()
         {
@@ -180,61 +184,60 @@ namespace SpecBind.Tests
             browser.VerifyAll();
         }
 
+        /// <summary>
+        /// Tests the tear down after scenario when reuse browser is true.
+        /// </summary>
         [TestMethod]
         public void TestTearDownAfterScenarioWhenReuseBrowserIsTrue()
         {
-            using (ShimsContext.Create())
+            
+            // arrange
+            var config = new ConfigurationSectionHandler
             {
-                // arrange
-                var config = new ConfigurationSectionHandler
-                {
-                    BrowserFactory =
-                        new BrowserFactoryConfigurationElement
-                        {
-                            ReuseBrowser = true
-                        }
-                };
+                BrowserFactory =
+                    new BrowserFactoryConfigurationElement
+                    {
+                        ReuseBrowser = true
+                    }
+            };
 
-                var browser = new Mock<IBrowser>(MockBehavior.Loose);
-                WebDriverSupport.Browser = browser.Object;
+            var browser = new Mock<IBrowser>(MockBehavior.Loose);
+            WebDriverSupport.Browser = browser.Object;
+            WebDriverSupport.ConfigurationMethod = new Lazy<ConfigurationSectionHandler>(() => config);
 
-                ShimSettingHelper.GetConfigurationSection = () => config;
+            // act
+            WebDriverSupport.TearDownAfterScenario();
 
-                // act
-                WebDriverSupport.TearDownAfterScenario();
-
-                // assert
-                browser.Verify(b => b.Close(true), Times.Never());
-            }
+            // assert
+            browser.Verify(b => b.Close(true), Times.Never());
         }
 
+        /// <summary>
+        /// Tests the tear down after scenario when reuse browser is false.
+        /// </summary>
         [TestMethod]
         public void TestTearDownAfterScenarioWhenReuseBrowserIsFalse()
         {
-            using (ShimsContext.Create())
+            // arrange
+            var config = new ConfigurationSectionHandler
             {
-                // arrange
-                var config = new ConfigurationSectionHandler
-                {
-                    BrowserFactory =
-                        new BrowserFactoryConfigurationElement
-                        {
-                            ReuseBrowser = false
-                        }
-                };
+                BrowserFactory =
+                    new BrowserFactoryConfigurationElement
+                    {
+                        ReuseBrowser = false
+                    }
+            };
 
-                var browser = new Mock<IBrowser>(MockBehavior.Strict);
-                browser.Setup(b => b.Close(true));
-                WebDriverSupport.Browser = browser.Object;
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(b => b.Close(true));
+            WebDriverSupport.Browser = browser.Object;
+            WebDriverSupport.ConfigurationMethod = new Lazy<ConfigurationSectionHandler>(() => config);
 
-                ShimSettingHelper.GetConfigurationSection = () => config;
+            // act
+            WebDriverSupport.TearDownAfterScenario();
 
-                // act
-                WebDriverSupport.TearDownAfterScenario();
-
-                // assert
-                browser.VerifyAll();
-            }
+            // assert
+            browser.VerifyAll();
         }
     }
 }

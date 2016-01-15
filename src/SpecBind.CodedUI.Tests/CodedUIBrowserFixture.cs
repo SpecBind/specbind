@@ -1,10 +1,11 @@
-﻿namespace SpecBind.CodedUI.Tests
+﻿// <copyright file="CodedUIBrowserFixture.cs">
+//    Copyright © 2016 Dan Piessens.  All rights reserved.
+// </copyright>
+namespace SpecBind.CodedUI.Tests
 {
 	using System;
 
-	using Microsoft.QualityTools.Testing.Fakes;
 	using Microsoft.VisualStudio.TestTools.UITesting;
-	using Microsoft.VisualStudio.TestTools.UITesting.Fakes;
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 	using Moq;
@@ -17,40 +18,24 @@
 	[TestClass]
 	public class CodedUIBrowserFixture
 	{
-		[TestMethod]
-		public void TestClearCookies()
-		{
-			var logger = new Mock<ILogger>(MockBehavior.Loose);
-			var browserWindow = new Mock<BrowserWindow>(MockBehavior.Strict);
-			var browser = new CodedUIBrowser(new Lazy<BrowserWindow>(() => browserWindow.Object), logger.Object);
-
-			using (ShimsContext.Create())
-			{
-				var clearCookiesCalled = false;
-				var clearCacheCalled = false;
-
-				ShimBrowserWindow.ClearCookies = () => clearCookiesCalled = true;
-				ShimBrowserWindow.ClearCache = () => clearCacheCalled = true;
-
-				browser.ClearCookies();
-
-				Assert.IsTrue(clearCookiesCalled);
-				Assert.IsTrue(clearCacheCalled);
-			}
-		}
-
+        /// <summary>
+        /// Tests the close method when dispose is true.
+        /// </summary>
 		[TestMethod]
 		public void TestCloseWhenDisposeIsTrue()
 		{
 			var logger = new Mock<ILogger>(MockBehavior.Loose);
 			var browserWindow = new Mock<BrowserWindow>(MockBehavior.Strict);
-			var browser = new Mock<CodedUIBrowser>(new Lazy<BrowserWindow>(() => browserWindow.Object), logger.Object){CallBase = true};
+			var browser = new Mock<CodedUIBrowser>(new Lazy<BrowserWindow>(() => browserWindow.Object), logger.Object) { CallBase = true };
 
 			browser.Object.Close(true);
 
 			browser.Verify(b => b.Dispose());
 		}
 
+        /// <summary>
+        /// Tests the close method when dispose is false.
+        /// </summary>
 		[TestMethod]
 		public void TestCloseWhenDisposeIsFalse()
 		{

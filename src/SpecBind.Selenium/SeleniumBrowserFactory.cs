@@ -417,7 +417,7 @@ namespace SpecBind.Selenium
         /// <summary>
         /// Determines whether or not to perform web driver validation
         /// </summary>
-        /// <returns><c>true</c> if the webdriver should be validated; otherwise <c>false</c></returns>
+        /// <returns><c>true</c> if the web driver should be validated; otherwise <c>false</c></returns>
         private static bool ValidateWebDriver()
         {
             var configSection = SettingHelper.GetConfigurationSection();

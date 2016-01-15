@@ -125,7 +125,7 @@ namespace SpecBind.Configuration
         }
 
         /// <summary>
-        /// Gets or sets the whether or not the same Browser should be reused during tests
+        /// Gets or sets a value indicating whether or not the same Browser should be reused during tests
         /// </summary>
         [ConfigurationProperty(ReuseBrowserElementName, DefaultValue = false, IsRequired = false)]
         public bool ReuseBrowser
@@ -134,6 +134,7 @@ namespace SpecBind.Configuration
             {
                 return (bool)this[ReuseBrowserElementName];
             }
+
             set
             {
                 this[ReuseBrowserElementName] = value;
@@ -141,7 +142,7 @@ namespace SpecBind.Configuration
         }
 
         /// <summary>
-        /// Gets or sets the application's setting to validate whether or not the web driver exists
+        /// Gets or sets a value indicating whether the application's setting to validate whether or not the web driver exists
         /// </summary>
         [ConfigurationProperty(ValidateWebDriverElementName, DefaultValue = true, IsRequired = false)]
         public bool ValidateWebDriver
@@ -150,6 +151,7 @@ namespace SpecBind.Configuration
             {
                 return (bool)this[ValidateWebDriverElementName];
             }
+
             set
             {
                 this[ValidateWebDriverElementName] = value;

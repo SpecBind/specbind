@@ -324,6 +324,9 @@ namespace SpecBind.Tests
 		{
 		}
 
+        /// <summary>
+        /// A test class for navigation with a URL template and fixed URL.
+        /// </summary>
 		[PageNavigation("http://root", UrlTemplate = "http://root?q={param}", IsAbsoluteUrl = true)]
 		private class NavigationWithTemplateAndAbsoluteUri : TestBase
 		{

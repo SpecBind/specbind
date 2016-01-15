@@ -98,6 +98,8 @@ namespace SpecBind.CodedUI
         /// <summary>
         /// Clear all browser cookies
         /// </summary>
+        /// <remarks>Excluded from coverage because of simple static calls.</remarks>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public override void ClearCookies()
         {
             BrowserWindow.ClearCookies();
@@ -122,7 +124,10 @@ namespace SpecBind.CodedUI
         public override void Close(bool dispose)
         {
             this.Close();
-            if (dispose) this.Dispose();
+            if (dispose)
+            {
+                this.Dispose();
+            }
         }
 
         /// <summary>
