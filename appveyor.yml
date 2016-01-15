@@ -27,6 +27,7 @@ branches:
 # environment variables
 environment:
   package_dir: NuGet_Packages
+  VisualStudioVersion: 12.0
 
 install:
   - cinst stylecop
@@ -58,6 +59,7 @@ build:
 
   # MSBuild verbosity level quiet|minimal|normal|detailed
   verbosity: normal
+  parallel: true
 
 # scripts to run before build
 before_build:
