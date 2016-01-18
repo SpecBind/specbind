@@ -108,6 +108,15 @@ namespace SpecBind.PropertyHandlers
         }
 
         /// <summary>
+        /// Checks to see if the element does not exist.
+        /// </summary>
+        /// <returns><c>true</c> if the element exists.</returns>
+        public virtual bool CheckElementNotExists()
+        {
+            throw this.CreateNotSupportedException("Checking for an element not existing");
+        }
+
+        /// <summary>
         /// Fills the data.
         /// </summary>
         /// <param name="data">The data.</param>

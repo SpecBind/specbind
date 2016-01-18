@@ -53,8 +53,8 @@ namespace SpecBind.Validation
         {
             bool parsedValue;
             return (expectedValue != null && bool.TryParse(expectedValue, out parsedValue) && !parsedValue)
-                       ? property.CheckElementExists()
-                       : !property.CheckElementExists();
+                       ? !property.CheckElementNotExists()
+                       : property.CheckElementNotExists();
         }
     }
 }

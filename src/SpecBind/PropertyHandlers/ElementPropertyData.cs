@@ -91,6 +91,16 @@ namespace SpecBind.PropertyHandlers
         }
 
         /// <summary>
+        /// Checks to see if the element does not exist.
+        /// Unlike ElementExistsCheck() this, doesn't let the web driver wait first for the element to exist.
+        /// </summary>
+        /// <returns><c>true</c> if the element exists.</returns>
+        public override bool CheckElementNotExists()
+        {
+            return this.elementAction(this.ElementHandler, this.ElementHandler.ElementNotExistsCheck);
+        }
+
+        /// <summary>
         /// Fills the data.
         /// </summary>
         /// <param name="data">The data.</param>

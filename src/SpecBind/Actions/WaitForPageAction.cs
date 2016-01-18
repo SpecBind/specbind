@@ -22,6 +22,14 @@ namespace SpecBind.Actions
         private readonly IPageMapper pageMapper;
 
         /// <summary>
+        /// Initializes the <see cref="WaitForPageAction"/> class.
+        /// </summary>
+        static WaitForPageAction()
+        {
+            DefaultTimeout = TimeSpan.FromSeconds(30); 
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="WaitForPageAction" /> class.
         /// </summary>
         /// <param name="pageMapper">The page mapper.</param>
@@ -34,6 +42,14 @@ namespace SpecBind.Actions
             this.browser = browser;
             this.logger = logger;
         }
+
+        /// <summary>
+        /// Gets or sets the default timeout to wait, if none is specified.
+        /// </summary>
+        /// <value>
+        /// The default timeout, 30 seconds.
+        /// </value>
+        public static TimeSpan DefaultTimeout { get; set; }
 
         /// <summary>
         /// Executes this instance action.
@@ -50,7 +66,7 @@ namespace SpecBind.Actions
                     "Cannot locate a page for name: {0}. Check page aliases in the test assembly.", actionContext.PropertyName));
             }
 
-            var timeout = actionContext.Timeout.GetValueOrDefault(TimeSpan.FromSeconds(20));
+            var timeout = actionContext.Timeout.GetValueOrDefault(DefaultTimeout);
             var cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.CancelAfter(timeout);
             var token = cancellationTokenSource.Token;
@@ -88,7 +104,7 @@ namespace SpecBind.Actions
                 catch (PageNavigationException ex)
                 {
                     this.logger.Debug("Browser is not on page. Details: {0}", ex.Message);
-                    token.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(500));
+                    token.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(200));
                     token.ThrowIfCancellationRequested();
                 }
             }

@@ -3,8 +3,10 @@
 // </copyright>
 namespace SpecBind.Selenium.Tests
 {
+    using System;
     using System.Collections.ObjectModel;
-    
+    using System.Drawing;
+
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
@@ -380,7 +382,7 @@ namespace SpecBind.Selenium.Tests
         public void TestGetClickElement()
         {
             var element = new Mock<IWebElement>(MockBehavior.Strict);
-            element.Setup(e => e.Click());
+            this.SetupClick(element);
             
             var nativePage = new NativePage();
             var page = new SeleniumPage(nativePage);
@@ -458,7 +460,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.TagName).Returns("input");
             element.Setup(e => e.GetAttribute("type")).Returns("checkbox");
             element.SetupGet(e => e.Selected).Returns(false);
-            element.Setup(e => e.Click());
+            this.SetupClick(element);
 
             var nativePage = new NativePage();
             var page = new SeleniumPage(nativePage);
@@ -478,7 +480,7 @@ namespace SpecBind.Selenium.Tests
             var element = new Mock<IWebElement>(MockBehavior.Strict);
             element.SetupGet(e => e.TagName).Returns("input");
             element.Setup(e => e.GetAttribute("type")).Returns("radio");
-            element.Setup(e => e.Click());
+            this.SetupClick(element);
 
             var nativePage = new NativePage();
             var page = new SeleniumPage(nativePage);
@@ -498,7 +500,7 @@ namespace SpecBind.Selenium.Tests
         {
             var option = new Mock<IWebElement>(MockBehavior.Strict);
             option.SetupGet(o => o.Selected).Returns(false);
-            option.Setup(o => o.Click());
+            this.SetupClick(option);
 
             var element = new Mock<IWebElement>(MockBehavior.Strict);
             element.SetupGet(e => e.TagName).Returns("select");
@@ -525,7 +527,7 @@ namespace SpecBind.Selenium.Tests
         {
             var option = new Mock<IWebElement>(MockBehavior.Strict);
             option.SetupGet(o => o.Selected).Returns(false);
-            option.Setup(o => o.Click());
+            this.SetupClick(option);
 
             var element = new Mock<IWebElement>(MockBehavior.Strict);
             element.SetupGet(e => e.TagName).Returns("select");
@@ -596,6 +598,7 @@ namespace SpecBind.Selenium.Tests
 
             var nativePage = new NativePage();
             var page = new SeleniumPage(nativePage);
+            this.SetupToWaitForElement(page);
 
             var result = page.WaitForElement(element.Object, WaitConditions.NotExists, null);
 
@@ -659,6 +662,30 @@ namespace SpecBind.Selenium.Tests
             Assert.AreEqual("http://myurl.com/page", result);
 
             element.VerifyAll();
+        }
+
+        /// <summary>
+        /// Sets up the click handler.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        protected void SetupClick(Mock<IWebElement> element)
+        {
+            element.SetupGet(e => e.Displayed).Returns(true);
+            element.SetupGet(e => e.Location).Returns(new Point(100, 100)); // Initial element position
+            element.SetupGet(e => e.Location).Returns(new Point(105, 105)); // Element has moved
+            element.SetupGet(e => e.Location).Returns(new Point(105, 105)); // Element has stopped moving
+            element.SetupGet(e => e.Enabled).Returns(true);
+            element.Setup(e => e.Click());
+        }
+
+        /// <summary>
+        /// Sets up the wait for element.
+        /// </summary>
+        /// <param name="seleniumPage">The selenium page.</param>
+        protected void SetupToWaitForElement(SeleniumPage seleniumPage)
+        {
+            seleniumPage.ExecuteWithElementLocateTimeout = (TimeSpan t, Action work) => work();
+            seleniumPage.EvaluateWithElementLocateTimeout = (TimeSpan t, Func<bool> work) => { return work(); };
         }
 
         #region Test Class - Native Page

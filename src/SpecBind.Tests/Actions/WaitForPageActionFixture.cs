@@ -75,7 +75,7 @@ namespace SpecBind.Tests.Actions
             var logger = new Mock<ILogger>();
 
             var action = new WaitForPageAction(pageMapper.Object, browser.Object, logger.Object);
-            var context = new WaitForPageAction.WaitForPageActionContext("SamplePage", TimeSpan.FromSeconds(3));
+            var context = new WaitForPageAction.WaitForPageActionContext("SamplePage", TimeSpan.FromSeconds(1));
 
             var result = action.Execute(context);
 
@@ -115,7 +115,7 @@ namespace SpecBind.Tests.Actions
             logger.Setup(l => l.Debug("Browser is not on page. Details: {0}", "Cannot find URL"));
             
             var action = new WaitForPageAction(pageMapper.Object, browser.Object, logger.Object);
-            var context = new WaitForPageAction.WaitForPageActionContext("SamplePage", TimeSpan.FromSeconds(3));
+            var context = new WaitForPageAction.WaitForPageActionContext("SamplePage", TimeSpan.FromSeconds(1));
 
             var result = action.Execute(context);
 

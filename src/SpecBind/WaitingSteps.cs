@@ -20,12 +20,22 @@ namespace SpecBind
         // Step regex values - in constants because they are shared.
         private const string WaitToSeeElementRegex = @"I wait to see (.+)";
         private const string WaitToSeeElementWithTimeoutRegex = @"I wait for (\d+) seconds? to see (.+)";
+        private const string WaitToStillSeeElementRegex = @"I wait to still see (.+)";
+        private const string WaitToStillSeeElementWithTimeoutRegex = @"I wait for (\d+) seconds? to still see (.+)";
         private const string WaitToNotSeeElementRegex = @"I wait to not see (.+)";
         private const string WaitToNotSeeElementWithTimeoutRegex = @"I wait for (\d+) seconds? to not see (.+)";
+        private const string WaitToStillNotSeeElementRegex = @"I wait to still not see (.+)";
+        private const string WaitToStillNotSeeElementWithTimeoutRegex = @"I wait for (\d+) seconds? to still not see (.+)";
         private const string WaitForElementEnabledRegex = @"I wait for (.+) to become enabled";
         private const string WaitForElementEnabledWithTimeoutRegex = @"I wait (\d+) seconds? for (.+) to become enabled";
+        private const string WaitForElementStillEnabledRegex = @"I wait for (.+) to remain enabled";
+        private const string WaitForElementStillEnabledWithTimeoutRegex = @"I wait (\d+) seconds? for (.+) to remain enabled";
         private const string WaitForElementNotEnabledRegex = @"I wait for (.+) to become disabled";
         private const string WaitForElementNotEnabledWithTimeoutRegex = @"I wait (\d+) seconds? for (.+) to become disabled";
+        private const string WaitForElementStillNotEnabledRegex = @"I wait for (.+) to remain disabled";
+        private const string WaitForElementStillNotEnabledWithTimeoutRegex = @"I wait (\d+) seconds? for (.+) to remain disabled";
+        private const string WaitForElementNotMovingRegex = @"I wait for (.+) to stop moving";
+        private const string WaitForElementNotMovingWithTimeoutRegex = @"I wait (\d+) seconds? for (.+) to stop moving";
         private const string WaitForListElementToContainItemsRegex = @"I wait for (.+) to contain items";
         private const string WaitForListElementToContainItemsWithTimeoutRegex = @"I wait (\d+) seconds? for (.+) to contain items";
         private const string WaitForActiveViewRegex = @"I wait for the view to become active";
@@ -39,6 +49,8 @@ namespace SpecBind
         private const string GivenWaitForElementEnabledWithTimeoutRegex = @"I waited (\d+) seconds? for (.+) to become enabled";
         private const string GivenWaitForElementNotEnabledRegex = @"I waited for (.+) to become disabled";
         private const string GivenWaitForElementNotEnabledWithTimeoutRegex = @"I waited (\d+) seconds? for (.+) to become disabled";
+        private const string GivenWaitForElementNotMovingRegex = @"I waited for (.+) to stop moving";
+        private const string GivenWaitForElementNotMovingWithTimeoutRegex = @"I waited (\d+) seconds? for (.+) to stop moving";
         private const string GivenWaitForListElementToContainItemsRegex = @"I waited for (.+) to contain items";
         private const string GivenWaitForListElementToContainItemsWithTimeoutRegex = @"I waited (\d+) seconds? for (.+) to contain items";
         private const string GivenWaitForActiveViewRegex = @"I waited for the view to become active";
@@ -57,6 +69,20 @@ namespace SpecBind
         }
 
         /// <summary>
+        /// Gets the default timeout to wait, if none is specified.
+        /// </summary>
+        /// <value>
+        /// The default wait, 30 seconds.
+        /// </value>
+        public static TimeSpan DefaultWait
+        {
+            get
+            {
+                return TimeSpan.FromSeconds(30);
+            }
+        }
+
+        /// <summary>
         /// A step that waits to see an element.
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
@@ -65,7 +91,7 @@ namespace SpecBind
         [Then(WaitToSeeElementRegex)]
         public void WaitToSeeElement(string propertyName)
         {
-            this.CallPipelineAction(propertyName, WaitConditions.Exists, null);
+            this.CallPipelineAction(propertyName, WaitConditions.BecomesExistent, null);
         }
 
         /// <summary>
@@ -78,7 +104,30 @@ namespace SpecBind
         [Then(WaitToSeeElementWithTimeoutRegex)]
         public void WaitToSeeElementWithTimeout(int timeout, string propertyName)
         {
-            this.CallPipelineAction(propertyName, WaitConditions.Exists, GetTimeSpan(timeout));
+            this.CallPipelineAction(propertyName, WaitConditions.BecomesExistent, GetTimeSpan(timeout));
+        }
+
+        /// <summary>
+        /// A step that waits to still see an element.
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        [When(WaitToStillSeeElementRegex)]
+        [Then(WaitToStillSeeElementRegex)]
+        public void WaitToStillSeeElement(string propertyName)
+        {
+            this.CallPipelineAction(propertyName, WaitConditions.RemainsExistent, null);
+        }
+
+        /// <summary>
+        /// A step that waits to still see an element.
+        /// </summary>
+        /// <param name="timeout">The timeout for waiting.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        [When(WaitToStillSeeElementWithTimeoutRegex)]
+        [Then(WaitToStillSeeElementWithTimeoutRegex)]
+        public void WaitToStillSeeElementWithTimeout(int timeout, string propertyName)
+        {
+            this.CallPipelineAction(propertyName, WaitConditions.RemainsExistent, GetTimeSpan(timeout));
         }
 
         /// <summary>
@@ -90,7 +139,7 @@ namespace SpecBind
         [Then(WaitToNotSeeElementRegex)]
         public void WaitToNotSeeElement(string propertyName)
         {
-            this.CallPipelineAction(propertyName, WaitConditions.NotExists, null);
+            this.CallPipelineAction(propertyName, WaitConditions.BecomesNonExistent, null);
         }
 
         /// <summary>
@@ -103,11 +152,34 @@ namespace SpecBind
         [Then(WaitToNotSeeElementWithTimeoutRegex)]
         public void WaitToNotSeeElementWithTimeout(int timeout, string propertyName)
         {
-            this.CallPipelineAction(propertyName, WaitConditions.NotExists, GetTimeSpan(timeout));
+            this.CallPipelineAction(propertyName, WaitConditions.BecomesNonExistent, GetTimeSpan(timeout));
         }
 
         /// <summary>
-        /// A step that waits for an element to be enabled.
+        /// A step that waits to still not see an element.
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        [When(WaitToStillNotSeeElementRegex)]
+        [Then(WaitToStillNotSeeElementRegex)]
+        public void WaitToStillNotSeeElement(string propertyName)
+        {
+            this.CallPipelineAction(propertyName, WaitConditions.RemainsNonExistent, null);
+        }
+
+        /// <summary>
+        /// A step that waits to still not see an element.
+        /// </summary>
+        /// <param name="timeout">The timeout for waiting.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        [When(WaitToStillNotSeeElementWithTimeoutRegex)]
+        [Then(WaitToStillNotSeeElementWithTimeoutRegex)]
+        public void WaitToStillNotSeeElementWithTimeout(int timeout, string propertyName)
+        {
+            this.CallPipelineAction(propertyName, WaitConditions.RemainsNonExistent, GetTimeSpan(timeout));
+        }
+
+        /// <summary>
+        /// A step that waits for an element to become enabled.
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         [Given(GivenWaitForElementEnabledRegex)]
@@ -119,7 +191,7 @@ namespace SpecBind
         }
 
         /// <summary>
-        /// A step that waits for an element to be enabled.
+        /// A step that waits for an element to become enabled.
         /// </summary>
         /// <param name="timeout">The timeout for waiting.</param>
         /// <param name="propertyName">Name of the property.</param>
@@ -132,7 +204,30 @@ namespace SpecBind
         }
 
         /// <summary>
-        /// A step that waits for an element to be not enabled.
+        /// A step that waits for an element to remain enabled.
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        [When(WaitForElementStillEnabledRegex)]
+        [Then(WaitForElementStillEnabledRegex)]
+        public void WaitForElementStillEnabled(string propertyName)
+        {
+            this.CallPipelineAction(propertyName, WaitConditions.RemainsEnabled, null);
+        }
+
+        /// <summary>
+        /// A step that waits for an element to remain enabled.
+        /// </summary>
+        /// <param name="timeout">The timeout for waiting.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        [When(WaitForElementStillEnabledWithTimeoutRegex)]
+        [Then(WaitForElementStillEnabledWithTimeoutRegex)]
+        public void WaitForElementStillEnabledWithTimeout(int timeout, string propertyName)
+        {
+            this.CallPipelineAction(propertyName, WaitConditions.RemainsEnabled, GetTimeSpan(timeout));
+        }
+
+        /// <summary>
+        /// A step that waits for an element to become disabled.
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         [Given(GivenWaitForElementNotEnabledRegex)]
@@ -140,11 +235,11 @@ namespace SpecBind
         [Then(WaitForElementNotEnabledRegex)]
         public void WaitForElementNotEnabled(string propertyName)
         {
-            this.CallPipelineAction(propertyName, WaitConditions.NotEnabled, null);
+            this.CallPipelineAction(propertyName, WaitConditions.BecomesDisabled, null);
         }
 
         /// <summary>
-        /// A step that waits for an element to be not enabled.
+        /// A step that waits for an element to become disabled.
         /// </summary>
         /// <param name="timeout">The timeout for waiting.</param>
         /// <param name="propertyName">Name of the property.</param>
@@ -153,7 +248,55 @@ namespace SpecBind
         [Then(WaitForElementNotEnabledWithTimeoutRegex)]
         public void WaitForElementNotEnabledWithTimeout(int timeout, string propertyName)
         {
-            this.CallPipelineAction(propertyName, WaitConditions.NotEnabled, GetTimeSpan(timeout));
+            this.CallPipelineAction(propertyName, WaitConditions.BecomesDisabled, GetTimeSpan(timeout));
+        }
+
+        /// <summary>
+        /// A step that waits for an element to remain disabled.
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        [When(WaitForElementStillNotEnabledRegex)]
+        [Then(WaitForElementStillNotEnabledRegex)]
+        public void WaitForElementStillNotEnabled(string propertyName)
+        {
+            this.CallPipelineAction(propertyName, WaitConditions.RemainsDisabled, null);
+        }
+
+        /// <summary>
+        /// A step that waits for an element to remain disabled.
+        /// </summary>
+        /// <param name="timeout">The timeout for waiting.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        [When(WaitForElementStillNotEnabledWithTimeoutRegex)]
+        [Then(WaitForElementStillNotEnabledWithTimeoutRegex)]
+        public void WaitForElementStillNotEnabledWithTimeout(int timeout, string propertyName)
+        {
+            this.CallPipelineAction(propertyName, WaitConditions.RemainsDisabled, GetTimeSpan(timeout));
+        }
+
+        /// <summary>
+        /// A step that waits for an element to stop moving.
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        [Given(GivenWaitForElementNotMovingRegex)]
+        [When(WaitForElementNotMovingRegex)]
+        [Then(WaitForElementNotMovingRegex)]
+        public void WaitForElementNotMoving(string propertyName)
+        {
+            this.CallPipelineAction(propertyName, WaitConditions.NotMoving, null);
+        }
+
+        /// <summary>
+        /// A step that waits for an element to stop moving.
+        /// </summary>
+        /// <param name="timeout">The timeout for waiting.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        [Given(GivenWaitForElementNotMovingWithTimeoutRegex)]
+        [When(WaitForElementNotMovingWithTimeoutRegex)]
+        [Then(WaitForElementNotMovingWithTimeoutRegex)]
+        public void WaitForElementNotMovingWithTimeout(int timeout, string propertyName)
+        {
+            this.CallPipelineAction(propertyName, WaitConditions.NotMoving, GetTimeSpan(timeout));
         }
 
         /// <summary>

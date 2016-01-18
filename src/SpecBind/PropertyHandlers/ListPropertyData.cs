@@ -210,7 +210,7 @@ namespace SpecBind.PropertyHandlers
         private bool CheckItem(TElement element, IEnumerable<ItemValidation> validations, ValidationResult validationResult)
         {
             var page = this.ElementHandler.GetPageFromElement(element);
-			
+            
             var validationItemResult = new ValidationItemResult();
             validationResult.CheckedItems.Add(validationItemResult);
 
@@ -220,6 +220,13 @@ namespace SpecBind.PropertyHandlers
                 IPropertyData property;
                 if (!page.TryGetProperty(itemValidation.FieldName, out property))
                 {
+                    if (itemValidation.Comparer is DoesNotContainComparer)
+                    {
+                        result = true;
+                        validationItemResult.NoteValidationResult(itemValidation, successful: true, actualValue: null);
+                        continue;
+                    }
+
                     validationItemResult.NoteMissingProperty(itemValidation);
                     result = false;
                     continue;
