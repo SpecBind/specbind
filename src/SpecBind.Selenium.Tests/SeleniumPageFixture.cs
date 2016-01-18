@@ -3,6 +3,7 @@
 // </copyright>
 namespace SpecBind.Selenium.Tests
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.Drawing;
 
@@ -14,7 +15,6 @@ namespace SpecBind.Selenium.Tests
 
     using SpecBind.Actions;
     using SpecBind.Pages;
-    using System;
 
     /// <summary>
     /// A test fixture for the <see cref="SeleniumPage"/> class.
@@ -22,22 +22,6 @@ namespace SpecBind.Selenium.Tests
     [TestClass]
     public class SeleniumPageFixture
     {
-        protected void SetupClick(Mock<IWebElement> element)
-        {
-            element.SetupGet(e => e.Displayed).Returns(true);
-            element.SetupGet(e => e.Location).Returns(new Point(100, 100)); // Initial element position
-            element.SetupGet(e => e.Location).Returns(new Point(105, 105)); // Element has moved
-            element.SetupGet(e => e.Location).Returns(new Point(105, 105)); // Element has stopped moving
-            element.SetupGet(e => e.Enabled).Returns(true);
-            element.Setup(e => e.Click());
-        }
-
-        protected void SetupToWaitForElement(SeleniumPage seleniumPage)
-        {
-            seleniumPage.ExecuteWithElementLocateTimeout = (TimeSpan t, Action work) => work();
-            seleniumPage.EvaluateWithElementLocateTimeout = (TimeSpan t, Func<bool> work) => { return work(); };
-        }
-
         /// <summary>
         /// Tests the get native page method.
         /// </summary>
@@ -614,7 +598,7 @@ namespace SpecBind.Selenium.Tests
 
             var nativePage = new NativePage();
             var page = new SeleniumPage(nativePage);
-            SetupToWaitForElement(page);
+            this.SetupToWaitForElement(page);
 
             var result = page.WaitForElement(element.Object, WaitConditions.NotExists, null);
 
@@ -678,6 +662,30 @@ namespace SpecBind.Selenium.Tests
             Assert.AreEqual("http://myurl.com/page", result);
 
             element.VerifyAll();
+        }
+
+        /// <summary>
+        /// Sets up the click handler.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        protected void SetupClick(Mock<IWebElement> element)
+        {
+            element.SetupGet(e => e.Displayed).Returns(true);
+            element.SetupGet(e => e.Location).Returns(new Point(100, 100)); // Initial element position
+            element.SetupGet(e => e.Location).Returns(new Point(105, 105)); // Element has moved
+            element.SetupGet(e => e.Location).Returns(new Point(105, 105)); // Element has stopped moving
+            element.SetupGet(e => e.Enabled).Returns(true);
+            element.Setup(e => e.Click());
+        }
+
+        /// <summary>
+        /// Sets up the wait for element.
+        /// </summary>
+        /// <param name="seleniumPage">The selenium page.</param>
+        protected void SetupToWaitForElement(SeleniumPage seleniumPage)
+        {
+            seleniumPage.ExecuteWithElementLocateTimeout = (TimeSpan t, Action work) => work();
+            seleniumPage.EvaluateWithElementLocateTimeout = (TimeSpan t, Func<bool> work) => { return work(); };
         }
 
         #region Test Class - Native Page

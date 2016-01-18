@@ -22,9 +22,12 @@ namespace SpecBind.Actions
         private readonly IPageMapper pageMapper;
 
         /// <summary>
-        /// The default timeout to wait, if none is specified.
+        /// Initializes the <see cref="WaitForPageAction"/> class.
         /// </summary>
-        public static TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
+        static WaitForPageAction()
+        {
+            DefaultTimeout = TimeSpan.FromSeconds(30); 
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WaitForPageAction" /> class.
@@ -39,6 +42,14 @@ namespace SpecBind.Actions
             this.browser = browser;
             this.logger = logger;
         }
+
+        /// <summary>
+        /// Gets or sets the default timeout to wait, if none is specified.
+        /// </summary>
+        /// <value>
+        /// The default timeout, 30 seconds.
+        /// </value>
+        public static TimeSpan DefaultTimeout { get; set; }
 
         /// <summary>
         /// Executes this instance action.

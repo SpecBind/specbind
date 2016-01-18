@@ -87,22 +87,6 @@ namespace SpecBind.CodedUI
         }
 
 	    /// <summary>
-        /// Determines if an element is currently moving (e.g. due to animation).
-		/// </summary>
-		/// <param name="element">The element.</param>
-        /// <returns><c>true</c> if the element's Location is changing, <c>false</c> otherwise.</returns>
-        protected virtual bool Moving(UITestControl element)
-        {
-            var firstLeft = element.Left;
-            var firstTop = element.Top;
-            Thread.Sleep(200);
-            var secondLeft = element.Left;
-            var secondTop = element.Top;
-            var moved = !(secondLeft.Equals(firstLeft) && secondTop.Equals(firstTop));
-            return moved;
-        }
-
-	    /// <summary>
         /// Checks to see if the element is enabled.
         /// </summary>
 		/// <param name="element">The element.</param>
@@ -118,23 +102,29 @@ namespace SpecBind.CodedUI
 		/// </summary>
 		/// <param name="element">The element.</param>
 		/// <returns><c>true</c> if the element exists; otherwise <c>false</c></returns>
-		public override bool ElementExistsCheck(HtmlControl element)
-		{
-		    if (element.Exists) return true;
+        public override bool ElementExistsCheck(HtmlControl element)
+        {
+            if (element.Exists)
+            {
+                return true;
+            }
 
-			element.Find();
-				return true;
-			}
+            element.Find();
+            return true;
+        }
 
         /// <summary>
         /// Checks to see if the element doesn't exist.
-        /// Unlike ELementExistsCheck, this doesn't let the web driver wait first for the element to exist.
+        /// Unlike ElementExistsCheck, this doesn't let the web driver wait first for the element to exist.
         /// </summary>
         /// <param name="element">The element.</param>
         /// <returns><c>true</c> if the element doesn't exist; otherwise <c>false</c></returns>
         public override bool ElementNotExistsCheck(HtmlControl element)
         {
-            if (element == null) return true;
+            if (element == null)
+            {
+                return true;
+            }
 
             return !element.Exists;
 		}
@@ -334,5 +324,21 @@ namespace SpecBind.CodedUI
 
 			return null;
 		}
+
+        /// <summary>
+        /// Determines if an element is currently moving (e.g. due to animation).
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns><c>true</c> if the element's Location is changing, <c>false</c> otherwise.</returns>
+        protected virtual bool Moving(UITestControl element)
+        {
+            var firstLeft = element.Left;
+            var firstTop = element.Top;
+            Thread.Sleep(200);
+            var secondLeft = element.Left;
+            var secondTop = element.Top;
+            var moved = !(secondLeft.Equals(firstLeft) && secondTop.Equals(firstTop));
+            return moved;
+        }
 	}
 }

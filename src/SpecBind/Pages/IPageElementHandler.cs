@@ -31,7 +31,7 @@ namespace SpecBind.Pages
 
         /// <summary>
         /// Gets the element not-exists check function.
-        /// Unlike ELementExistsCheck, this doesn't let the web driver wait first for the element to exist.
+        /// Unlike ElementExistsCheck, this doesn't let the web driver wait first for the element to exist.
         /// </summary>
         /// <param name="element">The element.</param>
         /// <returns>

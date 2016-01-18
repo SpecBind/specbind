@@ -32,13 +32,19 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
-        /// A delegate to set the ElementLocateTimeout.
+        /// Gets or sets a delegate to set the ElementLocateTimeout.
         /// </summary>
+        /// <value>
+        /// A delegate to set the ElementLocateTimeout.
+        /// </value>
         public Action<TimeSpan, Action> ExecuteWithElementLocateTimeout { get; set; }
-
+        
         /// <summary>
-        /// A delegate to set the ElementLocateTimeout.
+        /// Gets or sets a delegate to set the ElementLocateTimeout.
         /// </summary>
+        /// <value>
+        /// A delegate to set the ElementLocateTimeout.
+        /// </value>
         public Func<TimeSpan, Func<bool>, bool> EvaluateWithElementLocateTimeout { get; set; }
 
         /// <summary>
@@ -68,7 +74,10 @@ namespace SpecBind.Selenium
         /// <returns><c>true</c> if the element exists, <c>false</c> otherwise.</returns>
         public override bool ElementNotExistsCheck(IWebElement element)
         {
-            if (element == null) return true;
+            if (element == null)
+            {
+                return true;
+            }
 
             return this.EvaluateWithElementLocateTimeout(
                 new TimeSpan(),
@@ -145,15 +154,6 @@ namespace SpecBind.Selenium
             return CreatePageFromElement(element);
         }
 
-        private SeleniumPage CreatePageFromElement(IWebElement element)
-        {
-            return new SeleniumPage(element)
-               {
-                   ExecuteWithElementLocateTimeout = this.ExecuteWithElementLocateTimeout,
-                   EvaluateWithElementLocateTimeout = this.EvaluateWithElementLocateTimeout
-               };
-        }
-
         /// <summary>
         /// Clicks the element.
         /// </summary>
@@ -162,24 +162,6 @@ namespace SpecBind.Selenium
         public override bool ClickElement(IWebElement element)
         {
             return this.ClickElement(element, times: 1);
-        }
-
-        /// <summary>
-        /// Clicks the element a given number of times.
-        /// </summary>
-        /// <param name="element">The element.</param>
-        /// <param name="times">The number of times to click.</param>
-        /// <returns><c>true</c> if the element is clicked, <c>false</c> otherwise.</returns>
-        protected virtual bool ClickElement(IWebElement element, int times)
-        {
-            if (times < 1) return true;
-
-            if (!this.WaitForElement(element, WaitConditions.NotMoving, timeout: null)) return false;
-            if (!this.WaitForElement(element, WaitConditions.BecomesEnabled, timeout: null)) return false;
-
-            // TODO: consider waiting between clicks, so that it's not interpreted as a double-click
-            for (var i = 0; i < times; i++) element.Click();
-            return true;
         }
 
         /// <summary>
@@ -207,10 +189,22 @@ namespace SpecBind.Selenium
                                 {
                                     waiter.Until(e => !e.Displayed);
                                 }
-                                catch (NoSuchElementException) { return; }
-                                catch (NotFoundException) { return; }
-                                catch (ElementNotVisibleException) { return; }
-                                catch (StaleElementReferenceException) { return; }
+                                catch (NoSuchElementException)
+                                {
+                                    return;
+                                }
+                                catch (NotFoundException)
+                                {
+                                    return;
+                                }
+                                catch (ElementNotVisibleException)
+                                {
+                                    return;
+                                }
+                                catch (StaleElementReferenceException)
+                                {
+                                    return;
+                                }
                             });
                         break;
                     case WaitConditions.RemainsNonExistent:
@@ -222,10 +216,22 @@ namespace SpecBind.Selenium
                                 {
                                     return this.DoesFullTimeoutElapse(waiter, e => e.Displayed);
                                 }
-                                catch (NoSuchElementException) { return true; }
-                                catch (NotFoundException) { return true; }
-                                catch (ElementNotVisibleException) { return true; }
-                                catch (StaleElementReferenceException) { return true; }
+                                catch (NoSuchElementException)
+                                {
+                                    return true;
+                                }
+                                catch (NotFoundException)
+                                {
+                                    return true;
+                                }
+                                catch (ElementNotVisibleException)
+                                {
+                                    return true;
+                                }
+                                catch (StaleElementReferenceException)
+                                {
+                                    return true;
+                                }
                             });
                     case WaitConditions.BecomesEnabled: // AKA Enabled
                         waiter.IgnoreExceptionTypes(typeof(ElementNotVisibleException), typeof(NotFoundException));
@@ -260,12 +266,36 @@ namespace SpecBind.Selenium
             return true;
         }
 
-        private bool DoesFullTimeoutElapse(DefaultWait<IWebElement> waiter, Func<IWebElement, bool> condition)
+        /// <summary>
+        /// Clicks the element a given number of times.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="times">The number of times to click.</param>
+        /// <returns><c>true</c> if the element is clicked, <c>false</c> otherwise.</returns>
+        protected virtual bool ClickElement(IWebElement element, int times)
         {
-            var startTime = DateTime.Now;
-            waiter.Until(condition);
-            var elapsed = DateTime.Now - startTime;
-            return elapsed >= waiter.Timeout;
+            if (times < 1)
+            {
+                return true;
+            }
+
+            if (!this.WaitForElement(element, WaitConditions.NotMoving, timeout: null))
+            {
+                return false;
+            }
+
+            if (!this.WaitForElement(element, WaitConditions.BecomesEnabled, timeout: null))
+            {
+                return false;
+            }
+
+            // TODO: consider waiting between clicks, so that it's not interpreted as a double-click
+            for (var i = 0; i < times; i++)
+            {
+                element.Click();
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -400,6 +430,34 @@ namespace SpecBind.Selenium
         private static void ClearPage(IWebElement element)
         {
             element.Clear();
+        }
+
+        /// <summary>
+        /// Creates the page from the given element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>The appropriate page object.</returns>
+        private SeleniumPage CreatePageFromElement(IWebElement element)
+        {
+            return new SeleniumPage(element)
+            {
+                ExecuteWithElementLocateTimeout = this.ExecuteWithElementLocateTimeout,
+                EvaluateWithElementLocateTimeout = this.EvaluateWithElementLocateTimeout
+            };
+        }
+
+        /// <summary>
+        /// Checks for the full timeout to have elapsed.
+        /// </summary>
+        /// <param name="waiter">The waiter.</param>
+        /// <param name="condition">The condition.</param>
+        /// <returns><c>true</c> if complete; otherwise <c>false</c></returns>
+        private bool DoesFullTimeoutElapse(DefaultWait<IWebElement> waiter, Func<IWebElement, bool> condition)
+        {
+            var startTime = DateTime.Now;
+            waiter.Until(condition);
+            var elapsed = DateTime.Now - startTime;
+            return elapsed >= waiter.Timeout;
         }
     }
 }

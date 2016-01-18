@@ -19,9 +19,12 @@ namespace SpecBind.Actions
         private readonly ILogger logger;
 
         /// <summary>
-        /// The default timeout to wait, if none is specified.
+        /// Initializes the <see cref="WaitForListItemsAction"/> class.
         /// </summary>
-        public static TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
+        static WaitForListItemsAction()
+        {
+            DefaultTimeout = TimeSpan.FromSeconds(30);
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WaitForListItemsAction" /> class.
@@ -32,6 +35,14 @@ namespace SpecBind.Actions
         {
             this.logger = logger;
         }
+
+        /// <summary>
+        /// Gets or sets the default timeout to wait, if none is specified.
+        /// </summary>
+        /// <value>
+        /// The default timeout, 30 seconds.
+        /// </value>
+        public static TimeSpan DefaultTimeout { get; set; }
 
         /// <summary>
         /// Executes this instance action.
@@ -91,7 +102,9 @@ namespace SpecBind.Actions
             {
                 IPropertyData property;
                 if (this.ElementLocator.TryGetProperty(propertyName, out property))
+                {
                     return property;
+                }
 
                 System.Threading.Thread.Sleep(200);
             }

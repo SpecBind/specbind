@@ -14,6 +14,14 @@ namespace SpecBind.Actions
     public class WaitForElementAction : ContextActionBase<WaitForElementAction.WaitForElementContext>
     {
         /// <summary>
+        /// Initializes the <see cref="WaitForElementAction"/> class.
+        /// </summary>
+        static WaitForElementAction()
+        {
+            DefaultTimeout = TimeSpan.FromSeconds(30);
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="WaitForElementAction"/> class.
         /// </summary>
         public WaitForElementAction()
@@ -22,9 +30,12 @@ namespace SpecBind.Actions
         }
 
         /// <summary>
-        /// The default timeout to wait, if none is specified.
+        /// Gets or sets the default timeout to wait, if none is specified.
         /// </summary>
-        public static TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
+        /// <value>
+        /// The default timeout, 30 seconds.
+        /// </value>
+        public static TimeSpan DefaultTimeout { get; set; }
 
         /// <summary>
         /// Executes the specified context.
@@ -37,7 +48,7 @@ namespace SpecBind.Actions
 
             var waitStartTime = DateTime.Now;
             var property = this.GetElement(context.PropertyName, timeout);
-            var remainingTimeout = (timeout - (DateTime.Now - waitStartTime));
+            var remainingTimeout = timeout - (DateTime.Now - waitStartTime);
 
             var result = property.WaitForElementCondition(context.Condition, remainingTimeout);
 
@@ -66,7 +77,9 @@ namespace SpecBind.Actions
             {
                 IPropertyData element;
                 if (this.ElementLocator.TryGetElement(propertyName, out element))
+                {
                     return element;
+                }
 
                 System.Threading.Thread.Sleep(200);
             }

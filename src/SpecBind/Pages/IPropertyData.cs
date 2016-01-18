@@ -74,7 +74,7 @@ namespace SpecBind.Pages
 
         /// <summary>
         /// Checks to see if the element doesn't exist.
-        /// Unlike ELementExistsCheck, this doesn't let the web driver wait first for the element to exist.
+        /// Unlike ElementExistsCheck, this doesn't let the web driver wait first for the element to exist.
         /// </summary>
         /// <returns><c>true</c> if the element does not exist.</returns>
         bool CheckElementNotExists();

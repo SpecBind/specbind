@@ -314,38 +314,6 @@ namespace SpecBind.Selenium
                };
         }
 
-        private void ExecuteWithElementLocateTimeout(TimeSpan timeout, Action work)
-        {
-            TimeSpan originalTimeout = WaitForElementAction.DefaultTimeout;
-            var timeoutManager = this.driver.Value.Manage().Timeouts();
-
-            try
-            {
-                timeoutManager.ImplicitlyWait(timeout);
-                work();
-            }
-            finally
-            {
-                timeoutManager.ImplicitlyWait(originalTimeout);
-            }
-        }
-
-        private bool EvaluateWithElementLocateTimeout(TimeSpan timeout, Func<bool> work)
-        {
-            TimeSpan originalTimeout = WaitForElementAction.DefaultTimeout;
-            var timeoutManager = this.driver.Value.Manage().Timeouts();
-
-            try
-            {
-                timeoutManager.ImplicitlyWait(timeout);
-                return work();
-            }
-            finally
-            {
-                timeoutManager.ImplicitlyWait(originalTimeout);
-            }
-        }
-
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
@@ -364,6 +332,49 @@ namespace SpecBind.Selenium
                 localDriver.Dispose();
             }
             this.disposed = true;
+        }
+
+        /// <summary>
+        /// Evaluates the with element locate timeout.
+        /// </summary>
+        /// <param name="timeout">The timeout.</param>
+        /// <param name="work">The work.</param>
+        /// <returns><c>true</c> if the element is located; otherwise <c>false</c>.</returns>
+        private bool EvaluateWithElementLocateTimeout(TimeSpan timeout, Func<bool> work)
+        {
+            TimeSpan originalTimeout = WaitForElementAction.DefaultTimeout;
+            var timeoutManager = this.driver.Value.Manage().Timeouts();
+
+            try
+            {
+                timeoutManager.ImplicitlyWait(timeout);
+                return work();
+            }
+            finally
+            {
+                timeoutManager.ImplicitlyWait(originalTimeout);
+            }
+        }
+
+        /// <summary>
+        /// Executes the with element locate timeout.
+        /// </summary>
+        /// <param name="timeout">The timeout.</param>
+        /// <param name="work">The work.</param>
+        private void ExecuteWithElementLocateTimeout(TimeSpan timeout, Action work)
+        {
+            TimeSpan originalTimeout = WaitForElementAction.DefaultTimeout;
+            var timeoutManager = this.driver.Value.Manage().Timeouts();
+
+            try
+            {
+                timeoutManager.ImplicitlyWait(timeout);
+                work();
+            }
+            finally
+            {
+                timeoutManager.ImplicitlyWait(originalTimeout);
+            }
         }
     }
 }

@@ -108,7 +108,7 @@ namespace SpecBind.PropertyHandlers
         }
 
         /// <summary>
-        /// Checks to see if the element doest not exist.
+        /// Checks to see if the element does not exist.
         /// </summary>
         /// <returns><c>true</c> if the element exists.</returns>
         public virtual bool CheckElementNotExists()

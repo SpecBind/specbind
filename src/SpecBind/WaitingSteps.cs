@@ -17,11 +17,6 @@ namespace SpecBind
     [Binding]
     public class WaitingSteps : PageStepBase
     {
-        /// <summary>
-        /// The default timeout to wait, if none is specified.
-        /// </summary>
-        public static TimeSpan DefaultWait = TimeSpan.FromSeconds(30);
-
         // Step regex values - in constants because they are shared.
         private const string WaitToSeeElementRegex = @"I wait to see (.+)";
         private const string WaitToSeeElementWithTimeoutRegex = @"I wait for (\d+) seconds? to see (.+)";
@@ -71,6 +66,20 @@ namespace SpecBind
             : base(scenarioContext)
         {
             this.actionPipelineService = actionPipelineService;
+        }
+
+        /// <summary>
+        /// Gets the default timeout to wait, if none is specified.
+        /// </summary>
+        /// <value>
+        /// The default wait, 30 seconds.
+        /// </value>
+        public static TimeSpan DefaultWait
+        {
+            get
+            {
+                return TimeSpan.FromSeconds(30);
+            }
         }
 
         /// <summary>
