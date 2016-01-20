@@ -1,5 +1,7 @@
 ## What is SpecBind?
 
+[![Join the chat at https://gitter.im/dpiessens/specbind](https://badges.gitter.im/dpiessens/specbind.svg)](https://gitter.im/dpiessens/specbind?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 SpecBind is an extension to SpecFlow that uses common language steps to allow a user to define interaction with an application. Unlike conventional SpecFlow where the user needs to define how each step definition interacts with the host system, SpecBind uses conventions and a thin page model to minimize coding efforts and maximize flexibility when defining the link between specifications and working sites.
 
 ## Initial Setup
