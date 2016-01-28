@@ -60,6 +60,7 @@
     <Compile Include="ActionPipeline\ActionResultExtensions.cs" />
     <Compile Include="Actions\ActionBase.cs" />
     <Compile Include="Actions\BasicValidationChecksActionBase.cs" />
+    <Compile Include="Actions\HoverOverElementAction.cs" />
     <Compile Include="Actions\ButtonClickAction.cs" />
     <Compile Include="Actions\ClearDataAction.cs" />
     <Compile Include="Actions\ContextActionBase.cs" />

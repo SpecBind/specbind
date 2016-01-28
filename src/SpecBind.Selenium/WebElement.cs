@@ -4,6 +4,7 @@
 
 namespace SpecBind.Selenium
 {
+	using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Diagnostics.CodeAnalysis;
@@ -30,7 +31,7 @@ namespace SpecBind.Selenium
         protected internal WebElement(ISearchContext searchContext)
         {
             this.searchContext = searchContext;
-
+            
             this.bys = new List<By>();
             this.Cache = true;
         }
@@ -311,7 +312,25 @@ namespace SpecBind.Selenium
         /// <see cref="T:OpenQA.Selenium.Keys" />.</remarks>
         public virtual void SendKeys(string text)
         {
+			// HACK: The Selenium IE driver (or something even deeper) will intermittently shift digits.
+			// E.g. "3" will end up as "#", "4" as "$".
+			// Also, in rare cases, when read back, the full text sent is not in the element.
+			// These problems have been known for at least 3 years, but have never been fixed.
+			// To deal with these issues, read the value back and retry a few times if it doesn't match.
+
+			string actual = null;
+			for (int tries = 0; tries < 3; tries++)
+			{
+				this.WrappedElement.Clear();
             this.WrappedElement.SendKeys(text);
+
+				actual = this.WrappedElement.GetAttribute("value");
+				if (string.Equals(text, actual, StringComparison.InvariantCultureIgnoreCase)) return;
+
+				System.Threading.Thread.Sleep(500);
+			}
+
+			throw new WebDriverException(string.Format("SendKeys('{0}') put text '{1}' into element", text, actual));
         }
 
         /// <summary>
