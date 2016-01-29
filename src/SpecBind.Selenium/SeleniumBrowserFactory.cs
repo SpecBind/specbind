@@ -222,10 +222,10 @@ namespace SpecBind.Selenium
 		{
 			// Determine bit-wise of OS
 			// HACK: Only use 32-bit driver; SendKeys is unusably slow with 64-bit driver
-			var fileName = string.Format("IEDriverServer_{0}_2.50.0.zip", /* Environment.Is64BitOperatingSystem ? "x64" : */ "Win32");
+			var fileName = string.Format("IEDriverServer_{0}_2.50.1.zip", /* Environment.Is64BitOperatingSystem ? "x64" : */ "Win32");
 
 			// Download - this is set to a single version for now
-			DownloadAndExtractZip("http://selenium-release.storage.googleapis.com/2.50", fileName);
+			DownloadAndExtractZip("http://selenium-release.storage.googleapis.com/2.50.1", fileName);
 		}
 
 		/// <summary>
