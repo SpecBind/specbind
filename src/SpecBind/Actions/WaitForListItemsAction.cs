@@ -65,7 +65,7 @@ namespace SpecBind.Actions
 
                 return ActionResult.Failure(exception);
             }
-
+            
             // Setup timeout items
             var timeout = actionContext.Timeout.GetValueOrDefault(DefaultTimeout);
             var cancellationTokenSource = new CancellationTokenSource();
@@ -81,7 +81,7 @@ namespace SpecBind.Actions
             }
             catch (OperationCanceledException)
             {
-                var exception = new PageNavigationException("List '{0}' did not contain elements after {1}", propertyName, timeout);
+				var exception = new ElementExecuteException("List '{0}' did not contain elements after {1}", propertyName, timeout);
                 return ActionResult.Failure(exception);
             }
         }
