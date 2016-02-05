@@ -19,12 +19,14 @@ namespace SpecBind
     {
         // Step regex values - in constants because they are shared.
         private const string ChooseALinkStepRegex = @"I choose (.+)";
+		private const string HoverOverAnElementStepRegex = @"I hover over (.+)";
         private const string EnsureOnListItemRegex = @"I am on list (.+) item ([0-9]+)";
         private const string GoToListItemWithCriteriaRegex = @"I am on (.+) list item matching criteria";
         
         // The following Regex items are for the given "past tense" form
         private const string GivenChooseALinkStepRegex = @"I chose (.+)";
-        private const string GivenEnsureOnListItemRegex = @"I was on list (.+) item ([0-9]+)";
+		private const string GivenHoverOverAnElementStepRegex = @"I hovered over (.+)";
+		private const string GivenEnsureOnListItemRegex = @"I was on list (.+) item ([0-9]+)";
         private const string GivenGoToListItemWithCriteriaRegex = @"I was on (.+) list item matching criteria";
 
         private readonly IActionPipelineService actionPipelineService;
@@ -57,7 +59,24 @@ namespace SpecBind
                     .CheckResult();
         }
 
-        /// <summary>
+		/// <summary>
+		/// A When step indicating a link click should occur.
+		/// </summary>
+		/// <param name="elementName">Name of the element.</param>
+		[Given(GivenHoverOverAnElementStepRegex)]
+		[When(HoverOverAnElementStepRegex)]
+		public void WhenIHoverOverAnElementStep(string elementName)
+		{
+			var page = this.GetPageFromContext();
+
+			var context = new ActionContext(elementName.ToLookupKey());
+
+			this.actionPipelineService
+					.PerformAction<HoverOverElementAction>(page, context)
+					.CheckResult();
+		}
+
+		/// <summary>
         /// A Given step for ensuring the browser is on the list item with the specified name and index.
         /// </summary>
         /// <param name="listName">Name of the list.</param>

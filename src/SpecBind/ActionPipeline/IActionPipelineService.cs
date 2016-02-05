@@ -11,6 +11,11 @@ namespace SpecBind.ActionPipeline
 	/// </summary>
 	public interface IActionPipelineService
 	{
+		/// <summary>
+		/// Gets or sets the number of times to retry a failed action.
+		/// </summary>
+		int ActionRetryLimit { get; set; }
+
         /// <summary>
         /// Performs the action.
         /// </summary>
