@@ -1,0 +1,68 @@
+﻿@model IEnumerable<ContosoUniversity.Models.Student>
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Students and Their Courses</h2>
+
+<ul id="studentList">
+    @foreach (var student in Model)
+    {
+        <li name="studentCourseItem">
+            <div name="studentFullName">@student.FullName</div>
+            <div>
+                <ul name="courseList">
+                    @foreach (var enrollment in student.Enrollments)
+                    {
+                        <li name="courseItem">
+                            <span name="courseTitle">@enrollment.Course.Title</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </li>
+    }
+</ul>
+
+@*<fieldset>*@
+@*    <legend>Student</legend>*@
+@**@
+@*    <div class="display-label">Last Name</div>*@
+@*    <div id="lastName" class="display-field">@Html.DisplayFor(model => model.LastName)</div>*@
+@**@
+@*    <div class="display-label">First Name</div>*@
+@*    <div id="firstName" class="display-field">@Html.DisplayFor(model => model.FirstMidName)</div>*@
+@**@
+@*    <div class="display-label">Enrollment Date</div>*@
+@*    <div class="display-field">*@
+@*        @Html.DisplayFor(model => model.EnrollmentDate)*@
+@*    </div>*@
+@**@
+@*    <div class="display-label">*@
+@*        @Html.LabelFor(model => model.Enrollments)*@
+@*    </div>*@
+@*    <div class="display-field">*@
+@*        <table>*@
+@*            <tr>*@
+@*                <th>Course Title</th>*@
+@*                <th>Grade</th>*@
+@*            </tr>*@
+@*            @foreach (var item in Model.Enrollments)*@
+@*            {*@
+@*                <tr>*@
+@*                    <td>*@
+@*                        @Html.DisplayFor(modelItem => item.Course.Title)*@
+@*                    </td>*@
+@*                    <td>*@
+@*                        @Html.DisplayFor(modelItem => item.Grade)*@
+@*                    </td>*@
+@*                </tr>*@
+@*            }*@
+@*        </table>*@
+@*    </div>*@
+@*</fieldset>*@
+@*<p>*@
+@*    @Html.ActionLink("Edit", "Edit", new { id=Model.PersonID }) |*@
+@*    @Html.ActionLink("Back to List", "Index")*@
+@*</p>*@
