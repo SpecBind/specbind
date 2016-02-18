@@ -74,6 +74,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>InputTests.feature</DependentUpon>
     </Compile>
+    <Compile Include="Features\ListTests.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ListTests.feature</DependentUpon>
+    </Compile>
     <Compile Include="Features\NavigationTests.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -103,6 +108,7 @@
     <Compile Include="Pages\InstructorSearchPage.cs" />
     <Compile Include="Pages\JQueryClickingPage.cs" />
     <Compile Include="Pages\LogOnPage.cs" />
+    <Compile Include="Pages\StudentCoursesPage.cs" />
     <Compile Include="Pages\StudentsSearchPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\ErrorCheckSteps.cs" />
@@ -111,7 +117,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Features\AlertTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>AlertTests.feature.cs</LastGenOutput>
@@ -119,6 +127,10 @@
     <None Include="Features\InputTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>InputTests.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\ListTests.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ListTests.feature.cs</LastGenOutput>
     </None>
     <None Include="Features\NavigationTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
