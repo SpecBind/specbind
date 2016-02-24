@@ -34,3 +34,23 @@ Scenario: Long Lists By Criteria
 		| Field             | Rule   | Value            |
 		| Student Full Name | Equals | Olivetto, Nino   |
 	Then I see Courses list contains exactly 0 items
+
+Scenario: Verifying List Count
+	Given I navigated to the Student Courses page
+	Then I see Student Courses list contains 8 items
+
+Scenario: Selecting Items By Index
+	Given I navigated to the Student Courses page
+	When I am on list Student Courses item 3
+	Then I see
+		| Field             | Rule   | Value         |
+		| Student Full Name | Equals | Anand, Arturo |
+
+Scenario: Selecting Items By Criteria
+	Given I navigated to the Student Courses page
+	When I am on Student Courses list item matching criteria
+		| Field             | Rule   | Value   |
+		| Student Full Name | Equals | Li, Yan |
+	Then I see
+		| Field             | Rule   | Value   |
+		| Student Full Name | Equals | Li, Yan |
