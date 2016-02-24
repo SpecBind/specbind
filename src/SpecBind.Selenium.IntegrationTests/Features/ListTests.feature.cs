@@ -200,6 +200,85 @@ this.ScenarioSetup(scenarioInfo);
 #line hidden
             this.ScenarioCleanup();
         }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Verifying List Count")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Integration tests for the list features of SpecBind")]
+        public virtual void VerifyingListCount()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verifying List Count", ((string[])(null)));
+#line 38
+this.ScenarioSetup(scenarioInfo);
+#line 39
+ testRunner.Given("I navigated to the Student Courses page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 40
+ testRunner.Then("I see Student Courses list contains 8 items", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Selecting Items By Index")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Integration tests for the list features of SpecBind")]
+        public virtual void SelectingItemsByIndex()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Selecting Items By Index", ((string[])(null)));
+#line 42
+this.ScenarioSetup(scenarioInfo);
+#line 43
+ testRunner.Given("I navigated to the Student Courses page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 44
+ testRunner.When("I am on list Student Courses item 3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Field",
+                        "Rule",
+                        "Value"});
+            table7.AddRow(new string[] {
+                        "Student Full Name",
+                        "Equals",
+                        "Anand, Arturo"});
+#line 45
+ testRunner.Then("I see", ((string)(null)), table7, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Selecting Items By Criteria")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Integration tests for the list features of SpecBind")]
+        public virtual void SelectingItemsByCriteria()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Selecting Items By Criteria", ((string[])(null)));
+#line 49
+this.ScenarioSetup(scenarioInfo);
+#line 50
+ testRunner.Given("I navigated to the Student Courses page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Field",
+                        "Rule",
+                        "Value"});
+            table8.AddRow(new string[] {
+                        "Student Full Name",
+                        "Equals",
+                        "Li, Yan"});
+#line 51
+ testRunner.When("I am on Student Courses list item matching criteria", ((string)(null)), table8, "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Field",
+                        "Rule",
+                        "Value"});
+            table9.AddRow(new string[] {
+                        "Student Full Name",
+                        "Equals",
+                        "Li, Yan"});
+#line 54
+ testRunner.Then("I see", ((string)(null)), table9, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore
