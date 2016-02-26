@@ -21,7 +21,7 @@ namespace SpecBind.Selenium
     /// <summary>
     /// A web browser level wrapper for selenium
     /// </summary>
-    public class SeleniumBrowser : BrowserBase
+    public class SeleniumBrowser : BrowserBase, IDisposable
     {
         private readonly Lazy<IWebDriver> driver;
         private readonly SeleniumPageBuilder pageBuilder;
