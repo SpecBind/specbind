@@ -94,7 +94,7 @@ namespace SpecBind.Selenium
         /// <returns>The created child element.</returns>
         protected virtual TChildElement CreateChildElement(IBrowser browser, TElement parentElement, IWebElement element)
         {
-            var childElement = (TChildElement)this.builderFunc.Value(parentElement, browser, null);
+            var childElement = (TChildElement)this.builderFunc.Value(element, browser, null);
 
             var webElement = childElement as WebElement;
             if (webElement != null)

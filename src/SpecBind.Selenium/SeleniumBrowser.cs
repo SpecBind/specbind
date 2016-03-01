@@ -9,6 +9,7 @@ namespace SpecBind.Selenium
     using System.Diagnostics.CodeAnalysis;
     using System.Drawing.Imaging;
     using System.IO;
+    using System.Threading;
 
     using OpenQA.Selenium;
 
@@ -36,6 +37,7 @@ namespace SpecBind.Selenium
         /// <param name="logger">The logger.</param>
         public SeleniumBrowser(Lazy<IWebDriver> driver, ILogger logger) : base(logger)
         {
+            // TODO: create timeouts structure, pass it through this constructor, so we know what the default timeouts are.
             this.driver = driver;
 
             this.pageBuilder = new SeleniumPageBuilder();
@@ -44,12 +46,12 @@ namespace SpecBind.Selenium
 
         /// <summary>
         /// Finalizes an instance of the <see cref="SeleniumBrowser" /> class.
-		/// </summary>
+        /// </summary>
         [ExcludeFromCodeCoverage]
         ~SeleniumBrowser()
-		{
-			this.Dispose(false);
-		}
+        {
+            this.Dispose(false);
+        }
 
         /// <summary>
         /// Gets the type of the base page.
@@ -98,6 +100,15 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Clear all browser cookies
+        /// </summary>
+        public override void ClearCookies()
+        {
+            var localDriver = this.driver.Value;
+            localDriver.Manage().Cookies.DeleteAllCookies();
+        }
+
+        /// <summary>
         /// Closes this instance.
         /// </summary>
         public override void Close()
@@ -105,6 +116,19 @@ namespace SpecBind.Selenium
             if (this.driver.IsValueCreated)
             {
                 this.driver.Value.Close();
+            }
+        }
+
+        /// <summary>
+        /// Closes the instance and optionally dispose of all resources
+        /// </summary>
+        /// <param name="dispose">Whether or not resources should get disposed</param>
+        public override void Close(bool dispose)
+        {
+            this.Close();
+            if (dispose)
+            {
+                this.Dispose();
             }
         }
 
@@ -169,7 +193,7 @@ namespace SpecBind.Selenium
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);
@@ -283,7 +307,11 @@ namespace SpecBind.Selenium
 
             var nativePage = pageBuildMethod(webDriver, this, null);
 
-            return new SeleniumPage(nativePage);
+            return new SeleniumPage(nativePage)
+               {
+                   ExecuteWithElementLocateTimeout = this.ExecuteWithElementLocateTimeout,
+                   EvaluateWithElementLocateTimeout =  this.EvaluateWithElementLocateTimeout
+               };
         }
 
         /// <summary>
@@ -304,6 +332,49 @@ namespace SpecBind.Selenium
                 localDriver.Dispose();
             }
             this.disposed = true;
+        }
+
+        /// <summary>
+        /// Evaluates the with element locate timeout.
+        /// </summary>
+        /// <param name="timeout">The timeout.</param>
+        /// <param name="work">The work.</param>
+        /// <returns><c>true</c> if the element is located; otherwise <c>false</c>.</returns>
+        private bool EvaluateWithElementLocateTimeout(TimeSpan timeout, Func<bool> work)
+        {
+            TimeSpan originalTimeout = WaitForElementAction.DefaultTimeout;
+            var timeoutManager = this.driver.Value.Manage().Timeouts();
+
+            try
+            {
+                timeoutManager.ImplicitlyWait(timeout);
+                return work();
+            }
+            finally
+            {
+                timeoutManager.ImplicitlyWait(originalTimeout);
+            }
+        }
+
+        /// <summary>
+        /// Executes the with element locate timeout.
+        /// </summary>
+        /// <param name="timeout">The timeout.</param>
+        /// <param name="work">The work.</param>
+        private void ExecuteWithElementLocateTimeout(TimeSpan timeout, Action work)
+        {
+            TimeSpan originalTimeout = WaitForElementAction.DefaultTimeout;
+            var timeoutManager = this.driver.Value.Manage().Timeouts();
+
+            try
+            {
+                timeoutManager.ImplicitlyWait(timeout);
+                work();
+            }
+            finally
+            {
+                timeoutManager.ImplicitlyWait(originalTimeout);
+            }
         }
     }
 }

@@ -110,4 +110,4 @@ Scenario: Validate List Count Step
        And I chose Students
 	   And I was on the Students Search page
 	  When I choose Search
-	  Then I see results grid contains 10 items
+	  Then I see results grid list contains exactly 3 items

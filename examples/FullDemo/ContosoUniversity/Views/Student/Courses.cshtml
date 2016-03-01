@@ -1,0 +1,26 @@
+﻿@model IEnumerable<ContosoUniversity.Models.Student>
+
+@{
+    ViewBag.Title = "Student Courses";
+}
+
+<h2>Students and Their Courses</h2>
+
+<ul id="studentList">
+    @foreach (var student in Model)
+    {
+        <li name="studentCourseItem">
+            <div name="studentFullName">@student.FullName</div>
+            <div>
+                <ul name="courseList">
+                    @foreach (var enrollment in student.Enrollments)
+                    {
+                        <li name="courseItem">
+                            <span name="courseTitle">@enrollment.Course.Title</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </li>
+    }
+</ul>

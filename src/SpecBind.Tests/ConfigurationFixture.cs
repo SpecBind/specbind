@@ -37,6 +37,8 @@ namespace SpecBind.Tests
                                                           EnsureCleanSession = true,
                                                           ElementLocateTimeout = TimeSpan.FromSeconds(10),
                                                           PageLoadTimeout = TimeSpan.FromSeconds(15),
+                                                          ValidateWebDriver = true,
+                                                          ReuseBrowser = true
                                                       }
                               };
 
@@ -51,6 +53,8 @@ namespace SpecBind.Tests
             Assert.AreEqual(true, section.BrowserFactory.EnsureCleanSession);
             Assert.IsNotNull(section.BrowserFactory.Settings);
             Assert.AreEqual(0, section.Application.ExcludedAssemblies.Cast<AssemblyElement>().ToList().Count);
+            Assert.AreEqual(true, section.BrowserFactory.ValidateWebDriver);
+            Assert.AreEqual(true, section.BrowserFactory.ReuseBrowser);
         }
 
         /// <summary>

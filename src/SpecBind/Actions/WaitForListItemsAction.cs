@@ -19,6 +19,14 @@ namespace SpecBind.Actions
         private readonly ILogger logger;
 
         /// <summary>
+        /// Initializes the <see cref="WaitForListItemsAction"/> class.
+        /// </summary>
+        static WaitForListItemsAction()
+        {
+            DefaultTimeout = TimeSpan.FromSeconds(30);
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="WaitForListItemsAction" /> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
@@ -29,6 +37,14 @@ namespace SpecBind.Actions
         }
 
         /// <summary>
+        /// Gets or sets the default timeout to wait, if none is specified.
+        /// </summary>
+        /// <value>
+        /// The default timeout, 30 seconds.
+        /// </value>
+        public static TimeSpan DefaultTimeout { get; set; }
+
+        /// <summary>
         /// Executes this instance action.
         /// </summary>
         /// <param name="actionContext">The action context.</param>
@@ -37,7 +53,7 @@ namespace SpecBind.Actions
         {
             // Get the element
             var propertyName = actionContext.PropertyName;
-            var element = this.ElementLocator.GetProperty(propertyName);
+            var element = this.GetProperty(propertyName);
 
             // Make sure the element is a list
             if (!element.IsList)
@@ -51,7 +67,7 @@ namespace SpecBind.Actions
             }
             
             // Setup timeout items
-            var timeout = actionContext.Timeout.GetValueOrDefault(TimeSpan.FromSeconds(20));
+            var timeout = actionContext.Timeout.GetValueOrDefault(DefaultTimeout);
             var cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.CancelAfter(timeout);
             var token = cancellationTokenSource.Token;
@@ -65,9 +81,37 @@ namespace SpecBind.Actions
             }
             catch (OperationCanceledException)
             {
-                var exception = new PageNavigationException("List '{0}' did not contain elements after {1}", propertyName, timeout);
+				var exception = new ElementExecuteException("List '{0}' did not contain elements after {1}", propertyName, timeout);
                 return ActionResult.Failure(exception);
             }
+        }
+
+        /// <summary>
+        /// Gets a property within a specified timeout.
+        /// </summary>
+        /// <param name="propertyName">The property to locate.</param>
+        /// <param name="timeout">The duration to keep trying.</param>
+        /// <returns>The located property.</returns>
+        protected IPropertyData GetProperty(string propertyName, TimeSpan? timeout = null)
+        {
+            timeout = timeout.GetValueOrDefault(DefaultTimeout);
+
+            var getStartTime = DateTime.Now;
+
+            do
+            {
+                IPropertyData property;
+                if (this.ElementLocator.TryGetProperty(propertyName, out property))
+                {
+                    return property;
+                }
+
+                System.Threading.Thread.Sleep(200);
+            }
+            while (DateTime.Now - getStartTime < timeout);
+
+            // This will throw the appropriate exception if still not found
+            return this.ElementLocator.GetProperty(propertyName);
         }
 
         /// <summary>
@@ -86,7 +130,7 @@ namespace SpecBind.Actions
                 }
 
                 this.logger.Debug("List did not contain any elements, waiting...");
-                token.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(500));
+                token.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(200));
                 token.ThrowIfCancellationRequested();
             }
         }

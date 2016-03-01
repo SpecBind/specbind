@@ -124,6 +124,8 @@ namespace SpecBind.Tests.ActionPipeline
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(ILocatorAction).IsAssignableFrom(t)), null)).Returns(new Mock<ILocatorAction>().Object);
             container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IPreAction).IsAssignableFrom(t)), null)).Returns(new Mock<IPreAction>().Object);
+            // No post actions to test at present.
+            //container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IPostAction).IsAssignableFrom(t)), null)).Returns(new Mock<IPostAction>().Object);
             container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IValidationComparer).IsAssignableFrom(t)), null)).Returns(new Mock<IValidationComparer>().Object);
             
             var repository = new ActionRepository(container.Object);

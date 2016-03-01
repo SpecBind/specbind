@@ -31,7 +31,7 @@ namespace SpecBind.Tests.Support
 		}
 
 		/// <summary>
-		/// Elements the enabled check.
+		/// Checks if the element is enabled.
 		/// </summary>
 		/// <param name="element">The element.</param>
 		/// <returns>Success of the call.</returns>
@@ -41,7 +41,7 @@ namespace SpecBind.Tests.Support
 		}
 
 		/// <summary>
-		/// Elements the exists check.
+		/// Checks if the element exists.
 		/// </summary>
 		/// <param name="element">The element.</param>
 		/// <returns>Success of the call.</returns>
@@ -49,6 +49,16 @@ namespace SpecBind.Tests.Support
 		{
 			return true;
 		}
+
+        /// <summary>
+        /// Checks if the element does not exist.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>Success of the call.</returns>
+        public override bool ElementNotExistsCheck(BaseElement element)
+        {
+            return true;
+        }
 
         /// <summary>
         /// Gets the element attribute value.
@@ -91,6 +101,13 @@ namespace SpecBind.Tests.Support
 			return true;
 		}
 
+        /// <summary>
+        /// Gets the clear field method.
+        /// </summary>
+        /// <param name="propertyType">Type of the property.</param>
+        /// <returns>
+        /// The function used to clear the data.
+        /// </returns>
 		public override Action<BaseElement> GetClearMethod(Type propertyType)
 		{
 			return null;

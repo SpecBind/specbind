@@ -184,6 +184,15 @@ namespace ContosoUniversity.Controllers
             return RedirectToAction("Index");
         }
 
+        //
+        // GET: /Student/Courses
+
+        public ActionResult Courses()
+        {
+            var students = studentRepository.GetStudents();
+            return View(students);
+        }
+
         protected override void Dispose(bool disposing)
         {
             studentRepository.Dispose();

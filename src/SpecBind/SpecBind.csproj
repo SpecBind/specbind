@@ -58,6 +58,7 @@
     <Compile Include="ActionPipeline\ActionResultExtensions.cs" />
     <Compile Include="Actions\ActionBase.cs" />
     <Compile Include="Actions\BasicValidationChecksActionBase.cs" />
+    <Compile Include="Actions\HoverOverElementAction.cs" />
     <Compile Include="Actions\ButtonClickAction.cs" />
     <Compile Include="Actions\ClearDataAction.cs" />
     <Compile Include="Actions\ContextActionBase.cs" />
@@ -187,10 +188,6 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.targets" Condition="Exists('$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.targets')" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

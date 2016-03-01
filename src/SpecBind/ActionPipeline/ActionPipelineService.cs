@@ -6,6 +6,7 @@ namespace SpecBind.ActionPipeline
 {
 	using System;
     
+	using SpecBind.Helpers;
     using SpecBind.Pages;
 
 	/// <summary>
@@ -23,6 +24,16 @@ namespace SpecBind.ActionPipeline
 	{
 		private readonly IActionRepository actionRepository;
 
+		protected internal static int ConfiguredActionRetryLimit { get; set; }
+
+		static ActionPipelineService()
+		{
+			var configSection = SettingHelper.GetConfigurationSection();
+			ConfiguredActionRetryLimit = configSection.Application.ActionRetryLimit;
+		}
+
+		public int ActionRetryLimit { get; set; }
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ActionPipelineService"/> class.
 		/// </summary>
@@ -30,6 +41,7 @@ namespace SpecBind.ActionPipeline
 		public ActionPipelineService(IActionRepository actionRepository)
 		{
 			this.actionRepository = actionRepository;
+			this.ActionRetryLimit = ConfiguredActionRetryLimit;
 		}
 
         /// <summary>
@@ -60,15 +72,27 @@ namespace SpecBind.ActionPipeline
 
 			this.PerformPreAction(action, context);
 
-			ActionResult result;
-			try
+			ActionResult result = null;
+
+			int tries = 0;
+			do
 			{
-				result = action.Execute(context);
+				if (tries++ > 0)
+				{
+					System.Threading.Thread.Sleep(1000);
+				}
+
+				try
+				{
+					result = action.Execute(context);
+					if (result.Success) break;
+				}
+				catch (Exception ex)
+				{
+					result = ActionResult.Failure(ex);
+				}
 			}
-			catch (Exception ex)
-			{
-				result = ActionResult.Failure(ex);
-			}
+			while (tries <= ActionRetryLimit);
 
             this.PerformPostAction(action, context, result);
 
