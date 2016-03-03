@@ -76,6 +76,17 @@ namespace SpecBind.Selenium
             }
         }
 
+		/// <summary>
+		/// Gets the current driver to enable the user to do custom steps if necessary
+		/// </summary>
+		public IWebDriver Driver
+		{
+			get
+			{
+				return this.driver.Value;
+			}
+		}
+
         /// <summary>
         /// Adds the cookie to the browser.
         /// </summary>
