@@ -22,7 +22,8 @@ Scenario: Find Peggy Justice by part of her last name
 	  And I chose Students
 	  And I was on the students search page
 	 When I enter data
-		  | Field        | Value |		  | Find by name | Jus |
+		  | Field        | Value |
+		  | Find by name | Jus   |
 	  And I choose Search
 	 Then I see results grid list starts with
 		  | Field           | Rule   | Value    |
