@@ -55,5 +55,12 @@ namespace SpecBind.BrowserSupport
         /// </summary>
         // ReSharper disable once InconsistentNaming
         PhantomJS = 9,
+
+		/// <summary>
+		/// Microsoft Edge Browser
+		/// </summary>
+		// ReSharper disable once InconsistentNaming
+		Edge = 10,
+
 	}
 }
