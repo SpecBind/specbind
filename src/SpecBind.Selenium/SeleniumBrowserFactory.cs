@@ -375,6 +375,9 @@ namespace SpecBind.Selenium
 				case BrowserType.PhantomJS:
 					capability = DesiredCapabilities.PhantomJS();
 					break;
+				case BrowserType.Edge:
+					capability = DesiredCapabilities.Edge();
+					break;
 				default:
 					throw new InvalidOperationException(string.Format("Browser Type '{0}' is not supported as a remote driver.", browserType));
 			}
