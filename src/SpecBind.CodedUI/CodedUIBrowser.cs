@@ -8,7 +8,6 @@ namespace SpecBind.CodedUI
     using System.Drawing.Imaging;
     using System.IO;
     using System.Linq;
-    using System.Text;
 
     using Microsoft.VisualStudio.TestTools.UITest.Extension;
     using Microsoft.VisualStudio.TestTools.UITesting;
@@ -185,15 +184,6 @@ namespace SpecBind.CodedUI
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public virtual void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
         /// Executes the script.
         /// </summary>
         /// <param name="script">The script to execute.</param>
@@ -260,7 +250,7 @@ namespace SpecBind.CodedUI
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (!disposing || this.disposed)
             {

@@ -10,7 +10,6 @@ namespace SpecBind.Plugin
     using TechTalk.SpecFlow.Generator.Configuration;
     using TechTalk.SpecFlow.Generator.Plugins;
     using TechTalk.SpecFlow.Generator.UnitTestProvider;
-    using TechTalk.SpecFlow.UnitTestProvider;
 
     /// <summary>
     /// The main plugin class for generating SpecBind needed attributes

@@ -9,7 +9,6 @@ namespace SpecBind.Selenium
     using System.Diagnostics.CodeAnalysis;
     using System.Drawing.Imaging;
     using System.IO;
-    using System.Threading;
 
     using OpenQA.Selenium;
 
@@ -21,7 +20,7 @@ namespace SpecBind.Selenium
     /// <summary>
     /// A web browser level wrapper for selenium
     /// </summary>
-    public class SeleniumBrowser : BrowserBase, IDisposable
+    public class SeleniumBrowser : BrowserBase
     {
         private readonly Lazy<IWebDriver> driver;
         private readonly SeleniumPageBuilder pageBuilder;
@@ -76,16 +75,16 @@ namespace SpecBind.Selenium
             }
         }
 
-		/// <summary>
-		/// Gets the current driver to enable the user to do custom steps if necessary
-		/// </summary>
-		public IWebDriver Driver
-		{
-			get
-			{
-				return this.driver.Value;
-			}
-		}
+        /// <summary>
+        /// Gets the current driver to enable the user to do custom steps if necessary
+        /// </summary>
+        public IWebDriver Driver
+        {
+            get
+            {
+                return this.driver.Value;
+            }
+        }
 
         /// <summary>
         /// Adds the cookie to the browser.
@@ -199,15 +198,6 @@ namespace SpecBind.Selenium
             var proxy = new WebElement(webElement);
             proxy.CloneNativeElement(webElement);
             return proxy;
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public virtual void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -329,7 +319,7 @@ namespace SpecBind.Selenium
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (!disposing || this.disposed)
             {
