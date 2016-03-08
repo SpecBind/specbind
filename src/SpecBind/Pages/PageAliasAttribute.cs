@@ -27,6 +27,6 @@ namespace SpecBind.Pages
 		/// <value>
 		/// The name.
 		/// </value>
-		public string Name { get; private set; } 
+		public string Name { get; private set; }
 	}
 }

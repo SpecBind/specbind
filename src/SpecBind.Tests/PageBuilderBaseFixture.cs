@@ -31,7 +31,7 @@ namespace SpecBind.Tests
         public interface ITestElement
         {
         }
-   
+
         /// <summary>
         /// Test set property is discovered and can be set correctly.
         /// </summary>
@@ -41,7 +41,7 @@ namespace SpecBind.Tests
             var parent = new Mock<IParentContext>(MockBehavior.Strict);
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            
+
             var pageFunc = new PageBuilderTestProxy().CreatePage(typeof(PropertyPage));
 
             var pageObject = pageFunc(parent.Object, browser.Object, null);

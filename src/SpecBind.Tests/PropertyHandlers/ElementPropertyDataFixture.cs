@@ -155,7 +155,7 @@ namespace SpecBind.Tests.PropertyHandlers
                 e => pageBase.VerifyAll());
         }
 
-        
+
 
         /// <summary>
         /// Tests the FillData method where the element does not exist.
@@ -228,7 +228,7 @@ namespace SpecBind.Tests.PropertyHandlers
             pageBase.Setup(p => p.ElementExistsCheck(element)).Returns(false);
 
             var propertyData = CreatePropertyData(pageBase, element);
-            
+
             string actualValue;
             ExceptionHelper.SetupForException<ElementExecuteException>(
                 () => propertyData.ValidateItem(ItemValidationHelper.Create("MyField", "My Data"), out actualValue),
@@ -246,7 +246,7 @@ namespace SpecBind.Tests.PropertyHandlers
             pageBase.Setup(p => p.ElementExistsCheck(element)).Returns(false);
 
             var propertyData = CreatePropertyData(pageBase, element);
-            
+
             var validation = ItemValidationHelper.Create("MyProperty", "false", new ExistsComparer());
 
             string actualValue;
@@ -270,7 +270,7 @@ namespace SpecBind.Tests.PropertyHandlers
             pageBase.Setup(p => p.GetElementText(element)).Returns("My Data");
 
             var propertyData = CreatePropertyData(pageBase, element);
-            
+
             string actualValue;
             var result = propertyData.ValidateItem(ItemValidationHelper.Create("MyProperty", "My Data"), out actualValue);
 
@@ -318,7 +318,7 @@ namespace SpecBind.Tests.PropertyHandlers
             pageBase.Setup(p => p.GetElementText(element)).Returns("My Value");
 
             var propertyData = CreatePropertyData(pageBase, element);
-            
+
             var result = propertyData.GetCurrentValue();
 
             Assert.AreEqual("My Value", result);

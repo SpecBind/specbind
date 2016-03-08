@@ -116,7 +116,7 @@ namespace SpecBind.Tests.Actions
             var result = getItemAction.Execute(context);
 
             Assert.AreEqual(true, result.Success);
-            
+
             locator.VerifyAll();
             propData.VerifyAll();
             tokenManager.VerifyAll();

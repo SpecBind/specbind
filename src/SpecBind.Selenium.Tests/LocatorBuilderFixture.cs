@@ -30,7 +30,7 @@ namespace SpecBind.Selenium.Tests
 
             Assert.AreEqual(1, resultList.Count);
             var item = resultList.First();
-            Assert.AreEqual(By.Id("MyId"), item);            
+            Assert.AreEqual(By.Id("MyId"), item);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace SpecBind.Selenium.Tests
 
             Assert.AreEqual(1, resultList.Count);
             var item = resultList.First();
-            Assert.AreEqual(By.CssSelector("div#MyId"), item);    
+            Assert.AreEqual(By.CssSelector("div#MyId"), item);
         }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace SpecBind.Selenium.Tests
             var resultList = LocatorBuilder.GetElementLocators(attribute);
 
             Assert.AreEqual(2, resultList.Count);
-            
+
             var item = resultList.First();
             Assert.AreEqual(By.Id("MyId"), item);
 

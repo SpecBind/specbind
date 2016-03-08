@@ -104,7 +104,7 @@ namespace SpecBind.Tests.Actions
 
             Assert.AreEqual(false, result.Success);
             Assert.AreEqual("List count validation of field 'MyProperty' failed. Expected Items: 1, Actual Items: 2", result.Exception.Message);
-            
+
             locator.VerifyAll();
             propData.VerifyAll();
         }
@@ -132,7 +132,7 @@ namespace SpecBind.Tests.Actions
             var result = rowCountAction.Execute(context);
 
             Assert.AreEqual(true, result.Success);
-            
+
             locator.VerifyAll();
             propData.VerifyAll();
         }

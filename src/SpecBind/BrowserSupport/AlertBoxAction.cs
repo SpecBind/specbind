@@ -18,12 +18,12 @@ namespace SpecBind.BrowserSupport
         /// An action that represents clicking Close.
         /// </summary>
         Close = 2,
-        
+
         /// <summary>
         /// An action that represents clicking Ignore.
         /// </summary>
         Ignore = 3,
-        
+
         /// <summary>
         /// An action that represents clicking No.
         /// </summary>
@@ -33,12 +33,12 @@ namespace SpecBind.BrowserSupport
         /// An action that represents clicking OK.
         /// </summary>
         Ok = 5,
-        
+
         /// <summary>
         /// An action that represents clicking Retry.
         /// </summary>
         Retry = 6,
-        
+
         /// <summary>
         /// An action that represents clicking Yes.
         /// </summary>

@@ -19,7 +19,7 @@ namespace SpecBind
         // Step regex values - in constants because they are shared.
         private const string SeeAlertAndSelectButtonRegex = @"I see an alert box and select (.+)";
         private const string SeeAlertEnterTextAndSelectButtonRegex = @"I see an alert box, enter ""(.+)"" and select (.+)";
-       
+
         // The following Regex items are for the given "past tense" form
         private const string GivenSeeAlertAndSelectButtonRegex = @"I saw an alert box and selected (.+)";
         private const string GivenSeeAlertEnterTextAndSelectButtonRegex = @"I saw an alert box, entered ""(.+)"" and selected (.+)";

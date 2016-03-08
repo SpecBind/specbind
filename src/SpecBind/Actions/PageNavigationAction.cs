@@ -75,7 +75,7 @@ namespace SpecBind.Actions
                     var args = context.PageArguments;
                     if (args != null)
                     {
-                        logger.Debug("Page Arguments: {0}", string.Join(", ", args.Select(a => string.Format("{0}={1}", a.Key, a.Value))));
+                        this.logger.Debug("Page Arguments: {0}", string.Join(", ", args.Select(a => string.Format("{0}={1}", a.Key, a.Value))));
                     }
 
                     page = this.browser.GoToPage(type, args);

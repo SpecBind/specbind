@@ -243,7 +243,7 @@ namespace SpecBind.Pages
             }
 
             var actionParameter = Expression.Parameter(typeof(Action<TOutput>), "action");
-           
+
 
             //Spin though properties and make an initializer for anything we can set that has an attribute
             var pageMethodInfo = new Action<TOutput, Action<TOutput>>(this.AssignPageAttributes).GetMethodInfo();
@@ -257,8 +257,8 @@ namespace SpecBind.Pages
 						                  actionParameter)
 				                  };
 
-           
-            
+
+
 
             this.MapObjectProperties(expressions, elementType, context);
             expressions.Add(docVariable);
@@ -327,7 +327,6 @@ namespace SpecBind.Pages
             // ReSharper disable LoopCanBeConvertedToQuery
             foreach (var propertyInfo in objectType.GetProperties().Where(p =>
                 p.SetMethod != null && p.CanWrite && p.PropertyType.IsSupportedPropertyType(typeof(TElement))))
-            // ReSharper restore LoopCanBeConvertedToQuery
             {
                 var propertyType = propertyInfo.PropertyType;
                 var attribute = propertyInfo.GetCustomAttributes(typeof(ElementLocatorAttribute), false).FirstOrDefault() as ElementLocatorAttribute;
@@ -359,7 +358,7 @@ namespace SpecBind.Pages
                     //Normal path starts here
                     //New up property and then check if for inner properties.
                     var childContext = context.CreateChildContext(context.CurrentElement);
-                    
+
                     propertyExpressions.AddRange(this.CreateHtmlObject(childContext, attribute, customAttributes));
                     this.MapObjectProperties(propertyExpressions, propertyType, childContext);
                 }
@@ -426,7 +425,7 @@ namespace SpecBind.Pages
         /// <param name="customAttributes">The custom attributes.</param>
         private void BindTableElementProperty(
             PropertyInfo propertyInfo,
-            PageBuilderContext context, 
+            PageBuilderContext context,
             ICollection<ParameterExpression> variableList,
             List<Expression> propertyExpressions,
             ElementLocatorAttribute attribute,
@@ -440,7 +439,7 @@ namespace SpecBind.Pages
 
             // Create any variables and other experssions
             var driverVariable = Expression.Variable(enumeratorType, "driver");
-            variableList.Add(driverVariable);           
+            variableList.Add(driverVariable);
             var driverExpression = this.CreateElementListItem(context, this.GetTableDriverType(), variableList, propertyExpressions, attribute, customAttributes);
 
             // Add any necessary property expressions
@@ -476,7 +475,7 @@ namespace SpecBind.Pages
             return new[]
 				       {
 					       (Expression)Expression.Assign(itemVariable, Expression.New(propConstructor.Item1, propConstructor.Item2)),
-						   Expression.Call(Expression.Constant(this), 
+						   Expression.Call(Expression.Constant(this),
                                            this.assignMethodInfo,
                                            Expression.Convert(itemVariable, typeof(TElement)),
                                            Expression.Constant(attribute, typeof(ElementLocatorAttribute)),

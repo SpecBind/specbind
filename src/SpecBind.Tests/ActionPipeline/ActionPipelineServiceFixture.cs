@@ -33,7 +33,7 @@ namespace SpecBind.Tests.ActionPipeline
 			var action = new Mock<IAction>(MockBehavior.Strict);
 			action.SetupSet(a => a.ElementLocator = It.IsAny<IElementLocator>());
             action.Setup(a => a.Execute(context)).Returns(actionResult);
-			
+
 			var page = new Mock<IPage>(MockBehavior.Strict);
 
 			var preAction = new Mock<IPreAction>(MockBehavior.Strict);
@@ -54,7 +54,7 @@ namespace SpecBind.Tests.ActionPipeline
 			Assert.IsNotNull(result);
 			Assert.AreEqual(true, result.Success);
 			Assert.AreSame(actionResult, result);
-			
+
 			repository.VerifyAll();
 			action.VerifyAll();
 			page.VerifyAll();
@@ -110,7 +110,7 @@ namespace SpecBind.Tests.ActionPipeline
         public void TestPipelineCallCreatesActionAndInvokesAllPipelineStepsAndDoesNotFail()
         {
             var context = new ActionContext("MyProperty");
-            
+
             var page = new Mock<IPage>(MockBehavior.Strict);
 
             var preAction = new Mock<IPreAction>(MockBehavior.Strict);
@@ -131,7 +131,7 @@ namespace SpecBind.Tests.ActionPipeline
 
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.Success);
-            
+
             repository.VerifyAll();
             page.VerifyAll();
             preAction.VerifyAll();

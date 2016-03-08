@@ -53,11 +53,11 @@ namespace SpecBind.CodedUI
                 default:
                     throw new InvalidOperationException(string.Format("Browser type '{0}' is not supported in Coded UI.", browserType));
 			}
-            
+
             Playback.PlaybackSettings.SmartMatchOptions = SmartMatchOptions.Control;
             Playback.PlaybackSettings.SearchTimeout = (int)browserFactoryConfiguration.ElementLocateTimeout.TotalMilliseconds;
             Playback.PlaybackSettings.WaitForReadyTimeout = (int)browserFactoryConfiguration.PageLoadTimeout.TotalMilliseconds;
-           
+
 			var launchAction = new Func<BrowserWindow>(() =>
 				{
 					//Switch key if needed.

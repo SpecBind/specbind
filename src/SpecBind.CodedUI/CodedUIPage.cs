@@ -80,7 +80,7 @@ namespace SpecBind.CodedUI
                     return element.WaitForControlCondition(e => !e.Enabled, milliseconds);
                 case WaitConditions.NotMoving:
                     element.WaitForControlExist(milliseconds);
-                    return element.WaitForControlCondition(e => !Moving(e), milliseconds);
+                    return element.WaitForControlCondition(e => !this.Moving(e), milliseconds);
             }
 
             return true;
@@ -165,7 +165,7 @@ namespace SpecBind.CodedUI
             {
                 return inputElement.Text;
             }
-            
+
 			return element.InnerText;
 		}
 
@@ -193,7 +193,7 @@ namespace SpecBind.CodedUI
 			{
 				element.EnsureClickable();
 			}
-            
+
 			Mouse.Click(element);
 			return true;
 		}

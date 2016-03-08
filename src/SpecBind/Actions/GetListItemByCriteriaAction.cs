@@ -22,7 +22,7 @@ namespace SpecBind.Actions
             : base(typeof(GetListItemByCriteriaAction).Name)
         {
         }
-        
+
         /// <summary>
         /// Executes the specified context.
         /// </summary>

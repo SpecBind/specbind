@@ -21,7 +21,7 @@ namespace SpecBind
         private const string ChooseALinkStepRegex = @"I choose (.+)";
         private const string EnsureOnListItemRegex = @"I am on list (.+) item ([0-9]+)";
         private const string GoToListItemWithCriteriaRegex = @"I am on (.+) list item matching criteria";
-        
+
         // The following Regex items are for the given "past tense" form
         private const string GivenChooseALinkStepRegex = @"I chose (.+)";
         private const string GivenEnsureOnListItemRegex = @"I was on list (.+) item ([0-9]+)";

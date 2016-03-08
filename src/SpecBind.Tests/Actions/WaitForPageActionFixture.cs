@@ -81,7 +81,7 @@ namespace SpecBind.Tests.Actions
 
             Assert.AreEqual(true, result.Success);
             Assert.AreSame(page.Object, result.Result);
-            
+
             pageMapper.VerifyAll();
             browser.VerifyAll();
             page.VerifyAll();
@@ -113,7 +113,7 @@ namespace SpecBind.Tests.Actions
 
             var logger = new Mock<ILogger>(MockBehavior.Strict);
             logger.Setup(l => l.Debug("Browser is not on page. Details: {0}", "Cannot find URL"));
-            
+
             var action = new WaitForPageAction(pageMapper.Object, browser.Object, logger.Object);
             var context = new WaitForPageAction.WaitForPageActionContext("SamplePage", TimeSpan.FromSeconds(1));
 
@@ -151,11 +151,11 @@ namespace SpecBind.Tests.Actions
             var context = new WaitForPageAction.WaitForPageActionContext("SamplePage", TimeSpan.FromSeconds(1));
 
             var result = action.Execute(context);
-            
+
             Assert.AreEqual(false, result.Success);
             Assert.IsNotNull(result.Exception);
             Assert.AreEqual("Browser did not resolve to the 'SamplePage' page in 00:00:01", result.Exception.Message);
-            
+
             pageMapper.VerifyAll();
             browser.VerifyAll();
             page.VerifyAll();

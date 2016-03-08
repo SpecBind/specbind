@@ -39,7 +39,7 @@ namespace SpecBind.Configuration
 		[ConfigurationCollection(typeof(AssemblyElement))]
 		public AssemblyCollection ExcludedAssemblies
 		{
-			get { return (AssemblyCollection)base[ExcludedAssembliesElement]; }
+			get { return (AssemblyCollection)this[ExcludedAssembliesElement]; }
 		}
 	}
 }

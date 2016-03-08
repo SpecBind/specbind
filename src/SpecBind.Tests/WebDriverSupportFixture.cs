@@ -50,7 +50,7 @@ namespace SpecBind.Tests
             container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(ILocatorAction).IsAssignableFrom(t)), null)).Returns(new Mock<ILocatorAction>().Object);
             container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IPreAction).IsAssignableFrom(t)), null)).Returns(new Mock<IPreAction>().Object);
             container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IValidationComparer).IsAssignableFrom(t)), null)).Returns(new Mock<IValidationComparer>().Object);
-            
+
             var driverSupport = new WebDriverSupport(container.Object);
 
             driverSupport.InitializeDriver();
@@ -117,7 +117,7 @@ namespace SpecBind.Tests
         public void TestCheckForScreenshotWithErrorAttemptsScreenshotButFails()
         {
             var listener = new Mock<ITraceListener>(MockBehavior.Strict);
-            
+
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetError()).Returns(new InvalidOperationException());
             scenarioContext.Setup(s => s.GetStepFileName()).Returns("TestFileName");
@@ -190,7 +190,7 @@ namespace SpecBind.Tests
         [TestMethod]
         public void TestTearDownAfterScenarioWhenReuseBrowserIsTrue()
         {
-            
+
             // arrange
             var config = new ConfigurationSectionHandler
             {

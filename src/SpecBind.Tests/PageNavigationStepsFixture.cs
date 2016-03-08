@@ -40,7 +40,7 @@ namespace SpecBind.Tests
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.SetValue(testPage.Object, PageStepBase.CurrentPageKey));
-            
+
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
             var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
@@ -63,8 +63,8 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             pipelineService.Setup(p => p.PerformAction<PageNavigationAction>(
                 null,
-                It.Is<PageNavigationAction.PageNavigationActionContext>(c => c.PropertyName == "mypage" && 
-                    c.PageAction == PageNavigationAction.PageAction.NavigateToPage && 
+                It.Is<PageNavigationAction.PageNavigationActionContext>(c => c.PropertyName == "mypage" &&
+                    c.PageAction == PageNavigationAction.PageAction.NavigateToPage &&
                     c.PageArguments != null && c.PageArguments.Count == 2)))
                 .Returns(ActionResult.Successful(testPage.Object));
 
@@ -127,7 +127,7 @@ namespace SpecBind.Tests
                 page.Object, It.Is<ActionContext>(a => a.PropertyName == "myproperty")))
                            .Returns(ActionResult.Successful(listItem.Object));
 
-            
+
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
 
@@ -145,7 +145,7 @@ namespace SpecBind.Tests
             browser.VerifyAll();
             pageMapper.VerifyAll();
             scenarioContext.VerifyAll();
-            
+
         }
 
         /// <summary>

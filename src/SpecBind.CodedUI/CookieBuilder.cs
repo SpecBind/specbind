@@ -32,7 +32,7 @@ namespace SpecBind.CodedUI
 
             // Start with the assignment
             var builder = new StringBuilder(@"document.cookie = """);
-            
+
             // Create the base cookie value
             builder.AppendFormat("{0}={1}", name, Uri.EscapeUriString(value));
 
@@ -40,7 +40,7 @@ namespace SpecBind.CodedUI
             if (expireDateTime.HasValue)
             {
                 var dateValue = expireDateTime.Value;
-                
+
                 string dateString;
                 if (dateValue == DateTime.MinValue)
                 {

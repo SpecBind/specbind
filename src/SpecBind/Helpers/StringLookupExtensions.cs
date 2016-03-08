@@ -62,10 +62,10 @@ namespace SpecBind.Helpers
 
 			// replace any "A"
 			source = SingularRegex.Replace(source, string.Empty);
-			
+
 			// replace any "the"
 			source = StartRegex.Replace(source, string.Empty);
-			
+
 			return new string(source.Where(char.IsLetterOrDigit).ToArray());
 		}
 	}

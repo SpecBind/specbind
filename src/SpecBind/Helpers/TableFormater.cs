@@ -105,7 +105,7 @@ namespace SpecBind.Helpers
 		/// or
 		/// valueSelector</exception>
 		public TableFormater<TItem> AddColumn<TField>(
-													string header, 
+													string header,
 													Func<TItem, TField> cellSelector,
 													Func<TField, string> valueSelector,
 													Func<TField, Tuple<bool, string>> validationSelector = null,
@@ -165,9 +165,9 @@ namespace SpecBind.Helpers
 
 				stringBuilder.Append(this.PrintTableItem(TableItemType.RowEnd, isHeader));
 			}
-			
+
 			stringBuilder.Append(this.PrintTableItem(TableItemType.TableEnd, false));
-			
+
 			return stringBuilder.ToString();
 		}
 
@@ -260,7 +260,7 @@ namespace SpecBind.Helpers
 		private class ColumnInformation<TField> : IColumnInformation
 		{
 			private readonly List<string> cells;
-			private readonly Lazy<int> maxLength; 
+			private readonly Lazy<int> maxLength;
 
 			/// <summary>
 			/// Initializes a new instance of the <see cref="ColumnInformation{TField}"/> class.
@@ -272,7 +272,7 @@ namespace SpecBind.Helpers
 			}
 
 			/// <summary>
-			/// Gets or sets the cell selector.
+			/// Sets the cell selector.
 			/// </summary>
 			/// <value>The cell selector.</value>
 			public Func<TItem, TField> CellSelector { private get; set; }
@@ -302,13 +302,13 @@ namespace SpecBind.Helpers
 			}
 
 			/// <summary>
-			/// Gets or sets the validation selector.
+			/// Sets the validation selector.
 			/// </summary>
 			/// <value>The validation selector.</value>
 			public Func<TField, Tuple<bool, string>> ValidationSelector { private get; set; }
 
 			/// <summary>
-			/// Gets or sets the value selector.
+			/// Sets the value selector.
 			/// </summary>
 			/// <value>The value selector.</value>
 			public Func<TField, string> ValueSelector { private get; set; }
@@ -351,7 +351,7 @@ namespace SpecBind.Helpers
 				{
 					return this.Header;
 				}
-				
+
 				return rowIndex < this.cells.Count ? this.cells[rowIndex] : null;
 			}
 
@@ -365,7 +365,7 @@ namespace SpecBind.Helpers
 				return Math.Max(headerLength, this.cells.Count > 0 ? this.cells.Max(cell => cell != null ? cell.Length : 0) : 0);
 			}
 		}
-		
+
 		#endregion
 	}
 }

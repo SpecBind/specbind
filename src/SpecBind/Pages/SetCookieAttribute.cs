@@ -30,7 +30,7 @@ namespace SpecBind.Pages
         public string Domain { get; set; }
 
         /// <summary>
-        /// Gets or sets the expiration date and time. 
+        /// Gets or sets the expiration date and time.
         /// Set to <see cref="DateTime.MinValue"/> to remove the cookie, or <see cref="DateTime.MaxValue"/> for a non-expiring cookie.
         /// </summary>
         /// <value>The expiration date and time.</value>
@@ -61,9 +61,9 @@ namespace SpecBind.Pages
         public string Value { get; private set; }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// Returns a <see cref="string" /> that represents this instance.
         /// </summary>
-        /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
+        /// <returns>A <see cref="string" /> that represents this instance.</returns>
         public override string ToString()
         {
             return string.Format(

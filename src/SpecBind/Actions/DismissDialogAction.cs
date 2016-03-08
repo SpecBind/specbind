@@ -48,7 +48,7 @@ namespace SpecBind.Actions
             }
 
             this.browser.DismissAlert(action.Value, text);
-            
+
             return ActionResult.Successful();
         }
 
@@ -102,7 +102,7 @@ namespace SpecBind.Actions
             /// </summary>
             /// <value><c>true</c> if this instance is text entered; otherwise, <c>false</c>.</value>
             public bool IsTextEntered { get; private set; }
-            
+
             /// <summary>
             /// Gets the name of the button to choose.
             /// </summary>

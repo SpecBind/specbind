@@ -44,7 +44,7 @@ namespace SpecBind.Tests.ActionPipeline
         {
             var resultItem = new object();
             var result = ActionResult.Successful(resultItem);
-            
+
             var item = result.CheckResult<object>();
 
             Assert.AreSame(resultItem, item);

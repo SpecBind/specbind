@@ -11,7 +11,7 @@ namespace SpecBind.Tests.PropertyHandlers
     /// <summary>
     /// A test class base that helps check a property for a not supported exception.
     /// </summary>
-    internal static class PropertyTestHelper 
+    internal static class PropertyTestHelper
     {
         /// <summary>
         /// Tests the specified action for a not supported exception.

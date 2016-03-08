@@ -16,7 +16,7 @@ namespace SpecBind.PropertyHandlers
     {
         private readonly string attributeName;
         private readonly Func<IPage, Func<TElement, bool>, bool> handler;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="VirtualPropertyData{TElement}" /> class.
         /// </summary>

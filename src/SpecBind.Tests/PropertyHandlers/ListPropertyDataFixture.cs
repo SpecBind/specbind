@@ -32,7 +32,7 @@ namespace SpecBind.Tests.PropertyHandlers
         {
             var element = new BaseElement();
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
-            
+
             var propertyData = CreatePropertyData(pageBase, element);
 
             propertyData.TestForNotSupportedException(p => p.ClickElement(), "Clicking an element");
@@ -43,7 +43,7 @@ namespace SpecBind.Tests.PropertyHandlers
             propertyData.TestForNotSupportedException(p => p.GetItemAsPage(), "Getting a property as a page item");
             propertyData.TestForNotSupportedException(p => p.Highlight(), "Highlighting an item");
             propertyData.TestForNotSupportedException(p => p.WaitForElementCondition(WaitConditions.Exists, TimeSpan.Zero), "Waiting for an element");
-            
+
             pageBase.VerifyAll();
         }
 
@@ -63,7 +63,7 @@ namespace SpecBind.Tests.PropertyHandlers
             pageBase.Setup(p => p.GetElementText(parentElement)).Returns("My Data");
 
             var propertyData = CreatePropertyData(pageBase, element, (p, f) => f(listMock.Object));
-            
+
             string actualValue;
             var result = propertyData.ValidateItem(ItemValidationHelper.Create("MyProperty", "My Data"), out actualValue);
 
@@ -87,7 +87,7 @@ namespace SpecBind.Tests.PropertyHandlers
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
 
             var propertyData = CreatePropertyData(pageBase, element);
-            
+
             ExceptionHelper.SetupForException<NotSupportedException>(
                 () => propertyData.GetCurrentValue(),
                 v =>
@@ -123,7 +123,7 @@ namespace SpecBind.Tests.PropertyHandlers
             pageBase.Setup(p => p.GetPageFromElement(listElement)).Returns(page.Object);
 
             var propertyData = CreatePropertyData(pageBase, element, (p, f) => f(new List<BaseElement> { listElement }));
-            
+
             var result = propertyData.ValidateList(ComparisonType.Contains, validations);
 
             Assert.IsTrue(result.IsValid);
@@ -194,7 +194,7 @@ namespace SpecBind.Tests.PropertyHandlers
             pageBase.Setup(p => p.GetPageFromElement(listElement)).Returns(page.Object);
 
             var propertyData = CreatePropertyData(pageBase, element, (p, f) => f(new List<BaseElement> { listElement }));
-            
+
             var result = propertyData.ValidateList(ComparisonType.Equals, validations);
 
             Assert.IsTrue(result.IsValid);
@@ -229,7 +229,7 @@ namespace SpecBind.Tests.PropertyHandlers
             pageBase.Setup(p => p.GetPageFromElement(listElement)).Returns(page.Object);
 
             var propertyData = CreatePropertyData(pageBase, element, (p, f) => f(new List<BaseElement> { listElement }));
-            
+
             var result = propertyData.ValidateList(ComparisonType.EndsWith, validations);
 
             Assert.IsTrue(result.IsValid);
@@ -264,7 +264,7 @@ namespace SpecBind.Tests.PropertyHandlers
             pageBase.Setup(p => p.GetPageFromElement(listElement)).Returns(page.Object);
 
             var propertyData = CreatePropertyData(pageBase, element, (p, f) => f(new List<BaseElement> { listElement }));
-            
+
             var result = propertyData.ValidateList(ComparisonType.DoesNotContain, validations);
 
             Assert.IsTrue(result.IsValid);
@@ -299,7 +299,7 @@ namespace SpecBind.Tests.PropertyHandlers
             pageBase.Setup(p => p.GetPageFromElement(listElement)).Returns(page.Object);
 
             var propertyData = CreatePropertyData(pageBase, element, (p, f) => f(new List<BaseElement> { listElement }));
-            
+
             var result = propertyData.ValidateList(ComparisonType.DoesNotEqual, validations);
 
             Assert.IsTrue(result.IsValid);
@@ -322,7 +322,7 @@ namespace SpecBind.Tests.PropertyHandlers
 
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
             var propertyData = CreatePropertyData(pageBase, element, (p, f) => f(new List<BaseElement> { listElement }));
-            
+
             var result = propertyData.ValidateList(ComparisonType.Enabled, validations);
 
             Assert.IsFalse(result.IsValid);
@@ -387,7 +387,7 @@ namespace SpecBind.Tests.PropertyHandlers
             pageBase.Setup(p => p.GetPageFromElement(listElement)).Returns(page.Object);
 
             var propertyData = CreatePropertyData(pageBase, element, (p, f) => f(new List<BaseElement> { listElement }));
-            
+
             var result = propertyData.ValidateList(ComparisonType.Contains, validations);
 
             Assert.IsFalse(result.IsValid);
@@ -411,7 +411,7 @@ namespace SpecBind.Tests.PropertyHandlers
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
 
             var propertyData = CreatePropertyData(pageBase, element, (p, f) => f(new List<BaseElement>()));
-            
+
             var result = propertyData.GetItemAtIndex(0);
 
             Assert.IsNull(result);
@@ -437,7 +437,7 @@ namespace SpecBind.Tests.PropertyHandlers
             pageBase.Setup(p => p.GetPageFromElement(listElement)).Returns(listPage.Object);
 
             var propertyData = CreatePropertyData(pageBase, element, (p, f) => f(new List<BaseElement> { listElement }));
-            
+
             var result = propertyData.GetItemAtIndex(0);
 
             Assert.AreSame(listPage.Object, result);

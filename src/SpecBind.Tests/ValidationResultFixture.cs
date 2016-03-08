@@ -10,7 +10,7 @@ namespace SpecBind.Tests
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
 	using SpecBind.Pages;
 	using SpecBind.Tests.Validation;
-	
+
     /// <summary>
 	/// A test fixture for the ValidationResult class.
 	/// </summary>
@@ -25,7 +25,7 @@ namespace SpecBind.Tests
 		public void TestGetComparisonTableByRuleWhenMultipleResultsThrowsException()
 		{
 			var validations = new[] { ItemValidationHelper.Create("MyField", "Something") };
-			
+
 			var validationResult = new ValidationResult(validations);
 			validationResult.CheckedItems.Add(new ValidationItemResult());
 			validationResult.CheckedItems.Add(new ValidationItemResult());
@@ -44,9 +44,9 @@ namespace SpecBind.Tests
 
 			var itemResult = new ValidationItemResult();
 			itemResult.NoteValidationResult(validation, true, null);
-			
+
 			validationResult.CheckedItems.Add(itemResult);
-			
+
 			var result = validationResult.GetComparisonTableByRule();
 
 			var expectedTable = new StringBuilder()

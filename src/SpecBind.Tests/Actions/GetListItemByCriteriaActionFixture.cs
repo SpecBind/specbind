@@ -91,7 +91,7 @@ namespace SpecBind.Tests.Actions
         {
             var table = new ValidationTable();
             table.AddValidation("name", "Hello", "equals");
-            
+
             var itemResult = new ValidationItemResult();
             itemResult.NoteValidationResult(table.Validations.First(), false, "World");
 

@@ -33,7 +33,7 @@ namespace SpecBind
         private const string GivenObserveListDataStepRegex = @"I saw (.+) list ([A-Za-z ]+)";
         private const string GivenObserveListRowCountRegex = @"I saw (.+) list contains (exactly|at least|at most) ([0-9]+) items?";
         private const string GivenClearDataInFieldsSetpRegex = @"I cleared data";
-        
+
         private readonly IActionPipelineService actionPipelineService;
 
         /// <summary>

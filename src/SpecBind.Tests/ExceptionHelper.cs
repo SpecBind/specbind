@@ -31,6 +31,7 @@ namespace SpecBind.Tests
 				{
 					validationCheck(ex);
 				}
+
 				throw;
 			}
 		}

@@ -38,7 +38,7 @@ namespace SpecBind.Selenium
         /// A delegate to set the ElementLocateTimeout.
         /// </value>
         public Action<TimeSpan, Action> ExecuteWithElementLocateTimeout { get; set; }
-        
+
         /// <summary>
         /// Gets or sets a delegate to set the ElementLocateTimeout.
         /// </summary>
@@ -151,7 +151,7 @@ namespace SpecBind.Selenium
         /// <returns>The child page as a scope.</returns>
         public override IPage GetPageFromElement(IWebElement element)
         {
-            return CreatePageFromElement(element);
+            return this.CreatePageFromElement(element);
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace SpecBind.Selenium
                 {
                     case WaitConditions.BecomesNonExistent: // AKA NotExists
                         this.ExecuteWithElementLocateTimeout(
-                            new TimeSpan(), 
+                            new TimeSpan(),
                             () =>
                             {
                                 try
@@ -248,7 +248,7 @@ namespace SpecBind.Selenium
                     case WaitConditions.NotMoving:
                         waiter.IgnoreExceptionTypes(typeof(ElementNotVisibleException), typeof(NotFoundException));
                         waiter.Until(e => e.Displayed);
-                        waiter.Until(e => !Moving(e));
+                        waiter.Until(e => !this.Moving(e));
                         break;
                     case WaitConditions.RemainsEnabled:
                         return this.DoesFullTimeoutElapse(waiter, e => !e.Enabled);
@@ -262,7 +262,7 @@ namespace SpecBind.Selenium
             {
                 return false;
             }
-            
+
             return true;
         }
 
@@ -386,9 +386,9 @@ namespace SpecBind.Selenium
                     var selectElement = new SelectElement(element);
                     if (selectElement.IsMultiple)
                     {
-                        selectElement.DeselectAll();    
+                        selectElement.DeselectAll();
                     }
-                    
+
                     selectElement.SelectByText(data);
                     break;
                 case "input":
@@ -401,6 +401,7 @@ namespace SpecBind.Selenium
                         {
                             new SeleniumPage(element).ClickElement(element);
                         }
+
                         return;
                     }
 
@@ -410,12 +411,13 @@ namespace SpecBind.Selenium
                         new SeleniumPage(element).ClickElement(element, times: 2);
                         return;
                     }
-                    
+
                     if (string.Equals("file", inputType, StringComparison.OrdinalIgnoreCase))
                     {
                         FileUploadHelper.UploadFile(data, element.SendKeys);
                         return;
                     }
+
                     goto default;
                 default:
                     element.SendKeys(data);

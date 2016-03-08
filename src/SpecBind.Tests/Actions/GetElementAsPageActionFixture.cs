@@ -72,7 +72,7 @@ namespace SpecBind.Tests.Actions
             var result = buttonClickAction.Execute(context);
 
             Assert.AreEqual(false, result.Success);
-            
+
             Assert.IsNotNull(result.Exception);
             StringAssert.Contains(result.Exception.Message, "MyProperty");
 

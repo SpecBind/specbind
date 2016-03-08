@@ -5,7 +5,7 @@
 namespace SpecBind.Tests.BrowserSuport
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    
+
     using Moq;
 
     using SpecBind.BrowserSupport;

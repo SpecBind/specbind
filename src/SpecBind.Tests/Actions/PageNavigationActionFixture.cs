@@ -50,11 +50,11 @@ namespace SpecBind.Tests.Actions
             var context = new PageNavigationAction.PageNavigationActionContext("doesnotexist", PageNavigationAction.PageAction.EnsureOnPage);
 
             var result = navigationAction.Execute(context);
-            
+
             Assert.AreEqual(false, result.Success);
             Assert.IsNotNull(result.Exception);
             Assert.AreEqual("Cannot locate a page for name: doesnotexist. Check page aliases in the test assembly.", result.Exception.Message);
-            
+
             pageMapper.VerifyAll();
             browser.VerifyAll();
         }
@@ -134,7 +134,7 @@ namespace SpecBind.Tests.Actions
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.Page(typeof(TestBase))).Returns(testPage.Object);
             browser.Setup(b => b.EnsureOnPage(testPage.Object));
-            
+
             var navigationAction = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
 
             var context = new PageNavigationAction.PageNavigationActionContext("MyPage", PageNavigationAction.PageAction.EnsureOnPage);

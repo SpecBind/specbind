@@ -4,7 +4,7 @@
 namespace SpecBind.Validation
 {
     using System;
-    
+
     using SpecBind.Pages;
 
     /// <summary>

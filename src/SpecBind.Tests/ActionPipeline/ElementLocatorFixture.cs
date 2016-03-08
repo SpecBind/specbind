@@ -127,7 +127,7 @@ namespace SpecBind.Tests.ActionPipeline
 
 			Assert.IsFalse(result);
 			Assert.IsNull(propertyData);
-			
+
 			page.VerifyAll();
 			locatorAction.VerifyAll();
 		}

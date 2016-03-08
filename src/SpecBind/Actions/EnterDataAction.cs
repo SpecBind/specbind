@@ -42,7 +42,7 @@ namespace SpecBind.Actions
             var fieldValue = this.tokenManager.SetToken(context.Data);
 
             item.FillData(fieldValue);
-            
+
             return ActionResult.Successful();
         }
 

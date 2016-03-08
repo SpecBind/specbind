@@ -76,7 +76,7 @@ namespace SpecBind.CodedUI
 			{
 				return true;
 			}
-            
+
 		    var rowElement = element as HtmlRow;
 			if (rowElement != null && (!rowElement.Exists || rowElement.RowIndex != expectedIndex))
 			{

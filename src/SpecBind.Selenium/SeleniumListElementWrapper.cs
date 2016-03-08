@@ -19,12 +19,12 @@ namespace SpecBind.Selenium
     /// <typeparam name="TElement">The type of the parent element.</typeparam>
     /// <typeparam name="TChildElement">The type of the child element.</typeparam>
     public class SeleniumListElementWrapper<TElement, TChildElement> : ListElementWrapper<TElement, TChildElement>
-        where TElement : IWebElement 
+        where TElement : IWebElement
         where TChildElement : class
     {
         private readonly Lazy<Func<ISearchContext, IBrowser, Action<object>, object>> builderFunc;
         private readonly Lazy<By> locator;
-        
+
         private ReadOnlyCollection<IWebElement> itemCollection;
 
         /// <summary>

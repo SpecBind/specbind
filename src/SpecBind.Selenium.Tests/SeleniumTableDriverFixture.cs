@@ -32,7 +32,7 @@ namespace SpecBind.Selenium.Tests
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             var parent = new Mock<IWebElement>(MockBehavior.Strict);
             parent.Setup(p => p.FindElements(By.TagName("tr"))).Returns(new List<IWebElement>(0).AsReadOnly());
-            
+
 
             var tableDriver = new SeleniumTableDriver(parent.Object, browser.Object);
 
@@ -126,7 +126,7 @@ namespace SpecBind.Selenium.Tests
             var result = tableDriver.FirstOrDefault();
 
             Assert.IsNull(result);
-            
+
             parent.VerifyAll();
             browser.VerifyAll();
             firstRow.VerifyAll();

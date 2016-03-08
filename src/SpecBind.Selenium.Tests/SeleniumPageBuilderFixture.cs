@@ -52,23 +52,23 @@ namespace SpecBind.Selenium.Tests
             var page = pageObject as BuildPage;
 
             Assert.IsNotNull(page);
-            
+
             Assert.IsNotNull(page.TestButton);
             AssertLocatorValue(page.TestButton, By.Id("MyControl"));
-            
+
             Assert.IsNotNull(page.CombinedControl);
             AssertLocatorValue(page.CombinedControl, new ByChained(By.Id("Field1"), By.LinkText("The Button")));
 
             Assert.IsNotNull(page.UserName);
             AssertLocatorValue(page.UserName, By.Name("UserName"));
-            
+
             // Nesting Test
             Assert.IsNotNull(page.MyDiv);
             AssertLocatorValue(page.MyDiv, By.ClassName("btn"));
-            
+
             Assert.IsNotNull(page.MyDiv.InternalButton);
             AssertLocatorValue(page.MyDiv.InternalButton, By.Id("InternalItem"));
-            
+
             //List Test
             Assert.IsNotNull(page.MyCollection);
             Assert.IsInstanceOfType(page.MyCollection, typeof(SeleniumListElementWrapper<IWebElement, ListItem>));
@@ -76,10 +76,10 @@ namespace SpecBind.Selenium.Tests
             var propertyList = (SeleniumListElementWrapper<IWebElement, ListItem>)page.MyCollection;
             Assert.IsNotNull(propertyList.Parent);
             AssertLocatorValue(propertyList.Parent, By.Id("ListDiv"));
-            
+
             // Test First Element
             var element = propertyList.FirstOrDefault();
-			
+
             Assert.IsNotNull(element);
             Assert.IsNotNull(element.MyTitle);
             AssertLocatorValue(element.MyTitle, By.Id("itemTitle"));
@@ -238,7 +238,7 @@ namespace SpecBind.Selenium.Tests
             // Link Area Url Testing
             Assert.IsNotNull(page.LinkAreaElement);
             AssertLocatorValue(page.LinkAreaElement, By.XPath("//area[@href='/myapp']"));
-            
+
             // Image Alt Testing
             Assert.IsNotNull(page.AltImageElement);
             AssertLocatorValue(page.AltImageElement, By.XPath("//img[@alt='Alt Text']"));
@@ -323,7 +323,7 @@ namespace SpecBind.Selenium.Tests
 
             Assert.IsNotNull(page);
             Assert.IsNotNull(page.Browser);
-            
+
             driver.VerifyAll();
             browser.VerifyAll();
         }
@@ -358,12 +358,12 @@ namespace SpecBind.Selenium.Tests
                     return;
                 }
 
-                var properties = proxy.Locators.Count > 0 
-                    ? string.Join(", ", proxy.Locators) 
+                var properties = proxy.Locators.Count > 0
+                    ? string.Join(", ", proxy.Locators)
                     : "NONE";
                 Assert.Fail(
-                    "Element should have contained property '{0}' but did not. Available Properties: {1}", 
-                    findBy, 
+                    "Element should have contained property '{0}' but did not. Available Properties: {1}",
+                    findBy,
                     properties);
             }
 
@@ -712,7 +712,7 @@ namespace SpecBind.Selenium.Tests
             /// <value>The browser.</value>
             public IBrowser Browser { get; private set; }
         }
-        
+
         #endregion
     }
 }

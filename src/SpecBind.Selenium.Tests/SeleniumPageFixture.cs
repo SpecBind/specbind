@@ -59,10 +59,10 @@ namespace SpecBind.Selenium.Tests
             var nativePage = new NativePage { MyControl = element.Object };
             var page = new SeleniumPage(nativePage);
 
-            
+
             IPropertyData propertyData;
             var result = page.TryGetElement("MyControl", out propertyData);
-            
+
             Assert.IsNotNull(nativePage.MyControl);
             Assert.AreEqual(true, result);
             Assert.IsNotNull(propertyData);
@@ -98,7 +98,7 @@ namespace SpecBind.Selenium.Tests
             var page = new SeleniumPage(nativePage);
 
             var result = page.ElementExistsCheck(element.Object);
-            
+
             Assert.AreEqual(true, result);
             element.VerifyAll();
         }
@@ -267,7 +267,7 @@ namespace SpecBind.Selenium.Tests
             Assert.IsFalse(result);
             element.VerifyAll();
         }
-        
+
         /// <summary>
         /// Tests the get element text method when the control is a standard control.
         /// </summary>
@@ -304,7 +304,7 @@ namespace SpecBind.Selenium.Tests
 
             element.Setup(e => e.FindElements(By.TagName("option")))
                    .Returns(new ReadOnlyCollection<IWebElement>(new[] { option.Object }));
-            
+
             var nativePage = new NativePage();
             var page = new SeleniumPage(nativePage);
 
@@ -383,7 +383,7 @@ namespace SpecBind.Selenium.Tests
         {
             var element = new Mock<IWebElement>(MockBehavior.Strict);
             this.SetupClick(element);
-            
+
             var nativePage = new NativePage();
             var page = new SeleniumPage(nativePage);
 

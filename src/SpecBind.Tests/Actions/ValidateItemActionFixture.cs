@@ -51,7 +51,7 @@ namespace SpecBind.Tests.Actions
             var table = new ValidationTable();
             table.AddValidation("doesnotexist", "My Data", "equals");
             table.Process();
-           
+
             var context = new ValidateItemAction.ValidateItemContext(table);
 
             var result = validateItemAction.Execute(context);

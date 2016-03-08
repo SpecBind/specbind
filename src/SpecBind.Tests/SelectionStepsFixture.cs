@@ -111,7 +111,7 @@ namespace SpecBind.Tests
 
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             pipelineService.Setup(p => p.PerformAction<GetListItemByCriteriaAction>(
-                page.Object, 
+                page.Object,
                 It.Is<GetListItemByCriteriaAction.ListItemByCriteriaContext>(
                     c => c.PropertyName == "myproperty" && c.ValidationTable.ValidationCount == 1)))
                            .Returns(ActionResult.Successful(listItem.Object));

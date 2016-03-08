@@ -5,7 +5,7 @@
 namespace SpecBind.CodedUI.Tests
 {
 	using System;
-	
+
 	using Microsoft.VisualStudio.TestTools.UITesting;
 	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -90,7 +90,7 @@ namespace SpecBind.CodedUI.Tests
 
             var pageObject = pageFunc(window, null, null);
             var page = pageObject as BuildPage;
-            
+
             Assert.IsNotNull(page);
             Assert.IsNotNull(page.MyPopulatedTable);
             Assert.AreEqual(page.MyPopulatedTable.GetHashCode(), page.TableHashCode);
@@ -212,8 +212,8 @@ namespace SpecBind.CodedUI.Tests
 			public BuildPage(UITestControl parent)
 				: base(parent)
 			{
-                MyPopulatedTable = new TableElement<HtmlRow>();
-			    TableHashCode = MyPopulatedTable.GetHashCode();
+                this.MyPopulatedTable = new TableElement<HtmlRow>();
+			    this.TableHashCode = this.MyPopulatedTable.GetHashCode();
 			}
 
 			/// <summary>

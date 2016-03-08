@@ -30,7 +30,7 @@ namespace SpecBind.Selenium
         protected internal WebElement(ISearchContext searchContext)
         {
             this.searchContext = searchContext;
-            
+
             this.bys = new List<By>();
             this.Cache = true;
         }

@@ -5,7 +5,7 @@
 namespace SpecBind.Tests.PropertyHandlers
 {
     using System;
-    
+
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
@@ -59,9 +59,9 @@ namespace SpecBind.Tests.PropertyHandlers
 
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
             pageBase.Setup(p => p.GetElementAttributeValue(element, "href")).Returns("http://mypage.com/page");
-			
+
             var propertyData = CreatePropertyData(pageBase, element);
-            
+
             var result = propertyData.GetCurrentValue();
 
             Assert.AreEqual("http://mypage.com/page", result);
@@ -83,7 +83,7 @@ namespace SpecBind.Tests.PropertyHandlers
             pageBase.Setup(p => p.GetElementAttributeValue(element, "href")).Returns("http://mypage.com/page");
 
             var propertyData = CreatePropertyData(pageBase, element);
-            
+
             string actualValue;
             var result = propertyData.ValidateItem(ItemValidationHelper.Create("MyProperty", "http://mypage.com/page"), out actualValue);
 

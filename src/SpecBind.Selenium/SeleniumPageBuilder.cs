@@ -123,7 +123,7 @@ namespace SpecBind.Selenium
             {
                 return Expression.Convert(rootLocator.Expression, parameterType);
             }
-            
+
             if (typeof(ISearchContext).IsAssignableFrom(parameterType))
             {
                 // Use a search context second

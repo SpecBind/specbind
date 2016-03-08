@@ -63,7 +63,7 @@ namespace SpecBind.Selenium
                            ? list.Skip(1).ToList().AsReadOnly()
                            : new ReadOnlyCollection<IWebElement>(new List<IWebElement>(0));
             }
-            
+
             return list;
         }
 

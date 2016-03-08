@@ -1,18 +1,21 @@
 ﻿// <copyright file="BrowserType.cs">
 //    Copyright © 2013 Dan Piessens  All rights reserved.
 // </copyright>
+using System.Diagnostics.CodeAnalysis;
+
 namespace SpecBind.BrowserSupport
 {
     /// <summary>
     /// Enumerates the various supported browsers.
     /// </summary>
+    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Reviewed.")]
 	public enum BrowserType
 	{
 		/// <summary>
 		/// Internet Explorer
 		/// </summary>
 		IE = 1,
-		
+
 		/// <summary>
 		/// FireFox browser
 		/// </summary>

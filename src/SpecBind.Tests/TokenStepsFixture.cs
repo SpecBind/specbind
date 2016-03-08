@@ -56,7 +56,7 @@ namespace SpecBind.Tests
                 p => p.PerformAction<ValidateTokenAction>(
                     null,
                     It.Is<ValidateTokenAction.ValidateTokenActionContext>(
-                    c => c.ValidationTable.ValidationCount == 1 && 
+                    c => c.ValidationTable.ValidationCount == 1 &&
                          c.ValidationTable.Validations.First().RawFieldName == "My Token" &&
                          c.ValidationTable.Validations.First().RawComparisonType == "Equals" &&
                          c.ValidationTable.Validations.First().RawComparisonValue == "test")))

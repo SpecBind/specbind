@@ -51,7 +51,7 @@ namespace SpecBind.Actions
 
             var shouldExist = context.ShouldExist;
             var exists = this.CheckElement(propertyData);
-            
+
             if (shouldExist && !exists)
             {
                 return ActionResult.Failure(new ElementExecuteException(this.TrueErrorMessage, propertyData.Name));

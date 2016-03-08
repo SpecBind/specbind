@@ -106,7 +106,7 @@ namespace SpecBind.PropertyHandlers
                         var list = (IElementList<TElement, TElement>)o;
                         return compareWrapper(list.Parent);
                     });
-            
+
             actualValue = realValue;
             return result;
         }
@@ -210,7 +210,7 @@ namespace SpecBind.PropertyHandlers
         private bool CheckItem(TElement element, IEnumerable<ItemValidation> validations, ValidationResult validationResult)
         {
             var page = this.ElementHandler.GetPageFromElement(element);
-            
+
             var validationItemResult = new ValidationItemResult();
             validationResult.CheckedItems.Add(validationItemResult);
 

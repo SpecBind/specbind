@@ -105,7 +105,7 @@ namespace SpecBind.Tests
             Assert.AreSame(child, childContext.Document);
             Assert.AreSame(parentElement, childContext.RootLocator);
             Assert.AreSame(document, childContext.ParentElement);
-            
+
             Assert.IsNull(childContext.CurrentElement);
         }
 
@@ -128,7 +128,7 @@ namespace SpecBind.Tests
 
             Assert.AreSame(document, childContext1.ParentElement);
             Assert.AreSame(parentElement, childContext1.RootLocator);
-            
+
             Assert.AreSame(child1, childContext2.ParentElement);
             Assert.AreSame(parentElement, childContext2.RootLocator);
         }

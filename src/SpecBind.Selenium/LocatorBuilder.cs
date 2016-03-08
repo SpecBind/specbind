@@ -40,10 +40,10 @@ namespace SpecBind.Selenium
             // URL for Image and Hyperlink
             SetAttribute(xpathTag, "src", attribute.Url, () => attribute.NormalizedTagName == "img");
             SetAttribute(xpathTag, "href", attribute.Url, () => attribute.NormalizedTagName == "a" || attribute.NormalizedTagName == "area");
-            
+
             // Value attribute
             SetAttribute(xpathTag, "value", attribute.Value);
-            
+
             // Title attribute
             SetAttribute(xpathTag, "title", attribute.Title);
 
@@ -172,7 +172,7 @@ namespace SpecBind.Selenium
                     builder.Append("(");
                 }
 
-                                    
+
                 // append the base tag
                 builder.AppendFormat("//{0}[", this.TagName ?? "UNKNOWN");
 

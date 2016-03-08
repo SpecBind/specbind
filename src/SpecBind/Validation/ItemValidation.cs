@@ -108,13 +108,13 @@ namespace SpecBind.Validation
 		    return this.Comparer != null && this.Comparer.Compare(propertyData, this.ComparisonValue, actualValue);
 		}
 
-		#endregion
+        #endregion
 
-		/// <summary>
-		/// Returns a <see cref="System.String" /> that represents this instance.
-		/// </summary>
-		/// <returns>A <see cref="System.String" /> that represents this instance.</returns>
-		public override string ToString()
+        /// <summary>
+        /// Returns a <see cref="string" /> that represents this instance.
+        /// </summary>
+        /// <returns>A <see cref="string" /> that represents this instance.</returns>
+        public override string ToString()
 		{
 			return string.Format("{0} {1} {2}", this.RawFieldName, this.RawComparisonType, this.RawComparisonValue ?? "<NULL>");
 		}

@@ -26,7 +26,7 @@ namespace SpecBind.Actions
         /// </summary>
         static WaitForPageAction()
         {
-            DefaultTimeout = TimeSpan.FromSeconds(30); 
+            DefaultTimeout = TimeSpan.FromSeconds(30);
         }
 
         /// <summary>

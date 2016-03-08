@@ -126,12 +126,12 @@ namespace SpecBind.Helpers
 		{
 			var generator = new Random();
 			var randomChars = new char[length];
-			
+
 			for (var i = 0; i < length; i++)
 			{
 				randomChars[i] = Convert.ToChar(generator.Next(32, 127));
 			}
-			
+
 			return new string(randomChars);
 		}
 
@@ -153,7 +153,7 @@ namespace SpecBind.Helpers
 
 			var innerToken = fieldValue.Substring(1, fieldValue.Length - 2).Trim();
 			var parts = innerToken.Split(new[] { ':' }, 2);
-			
+
 			data = new TokenData { Name = parts[0] };
 			if (parts.Length == 2)
 			{
@@ -178,7 +178,7 @@ namespace SpecBind.Helpers
 						break;
 				}
 			}
-			
+
 			return true;
 		}
 

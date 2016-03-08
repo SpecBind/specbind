@@ -52,7 +52,7 @@ namespace SpecBind.CodedUI
             if (rows != null && rows.Count > 0)
             {
                 return rows.Cast<HtmlRow>()
-                           .Where(c => c.ControlType != ControlType.RowHeader && 
+                           .Where(c => c.ControlType != ControlType.RowHeader &&
                                       (c.Cells != null && !c.Cells.Any(f => f is HtmlHeaderCell)))
                            .Select(r =>
                                     {
@@ -90,7 +90,7 @@ namespace SpecBind.CodedUI
             /// <returns>The properties list for the class.</returns>
             public IEnumerable<ElementDescription> GetElements()
             {
-                var cellLookup = GetCellLookup();
+                var cellLookup = this.GetCellLookup();
 
                 foreach (var cell in this.Cells.Cast<HtmlCell>())
                 {

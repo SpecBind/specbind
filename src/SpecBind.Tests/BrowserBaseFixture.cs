@@ -78,7 +78,7 @@ namespace SpecBind.Tests
             var result = browser.Object.GetUriForPageType(typeof(TestPage));
 
             Assert.IsNull(result);
-            
+
             browser.VerifyAll();
             testPage.VerifyAll();
         }
@@ -96,7 +96,7 @@ namespace SpecBind.Tests
 
             var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
             browser.Protected().Setup<IList<string>>("GetNativePageLocation", testPage.Object).Returns(new[] { "http://localhost:2222/foo" });
-            
+
             browser.Object.EnsureOnPage(testPage.Object);
 
             browser.VerifyAll();

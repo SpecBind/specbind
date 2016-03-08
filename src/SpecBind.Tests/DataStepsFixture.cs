@@ -435,7 +435,7 @@ namespace SpecBind.Tests
         public void TestThenISeeStepEqualsComparison()
         {
             var testPage = new Mock<IPage>();
-            
+
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             pipelineService.Setup(p => p.PerformAction<ValidateItemAction>(testPage.Object,
                 It.Is<ValidateItemAction.ValidateItemContext>(
@@ -469,7 +469,7 @@ namespace SpecBind.Tests
         public void TestThenISeeStepMultipleComparisons()
         {
             var testPage = new Mock<IPage>();
-            
+
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             pipelineService.Setup(p => p.PerformAction<ValidateItemAction>(testPage.Object,
                 It.Is<ValidateItemAction.ValidateItemContext>(c =>

@@ -75,7 +75,7 @@ namespace SpecBind.BrowserSupport
         /// <param name="action">The action.</param>
         /// <param name="text">The text to enter.</param>
         public abstract void DismissAlert(AlertBoxAction action, string text);
-        
+
         /// <summary>
         /// Navigates the browser to the given <paramref name="url" />.
         /// </summary>

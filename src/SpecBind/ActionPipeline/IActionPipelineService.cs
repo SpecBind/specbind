@@ -18,7 +18,7 @@ namespace SpecBind.ActionPipeline
         /// <param name="page">The page.</param>
         /// <param name="context">The context.</param>
         /// <returns>The result of the action.</returns>
-        ActionResult PerformAction<TAction>(IPage page, ActionContext context) 
+        ActionResult PerformAction<TAction>(IPage page, ActionContext context)
             where TAction : IAction;
 
         /// <summary>

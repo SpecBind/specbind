@@ -5,7 +5,7 @@
 namespace SpecBind.ActionPipeline
 {
 	using System;
-    
+
     using SpecBind.Pages;
 
 	/// <summary>
@@ -39,7 +39,7 @@ namespace SpecBind.ActionPipeline
         /// <param name="page">The page.</param>
         /// <param name="context">The context.</param>
         /// <returns>The result of the action.</returns>
-	    public ActionResult PerformAction<TAction>(IPage page, ActionContext context) 
+	    public ActionResult PerformAction<TAction>(IPage page, ActionContext context)
             where TAction : IAction
         {
             var action = this.actionRepository.CreateAction<TAction>();

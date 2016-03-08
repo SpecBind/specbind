@@ -66,7 +66,7 @@ namespace SpecBind.Tests
 
 			browser.VerifyAll();
 		}
-        
+
         /// <summary>
         ///     Tests the get page URI method with a page type and a longer hostname.
         /// </summary>
@@ -124,7 +124,7 @@ namespace SpecBind.Tests
 
             Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root"));
             Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root/something123"));
-            
+
             browser.VerifyAll();
         }
 
@@ -158,7 +158,7 @@ namespace SpecBind.Tests
 
             Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root"));
             Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root/something123"));
-            
+
             browser.VerifyAll();
         }
 
@@ -174,7 +174,7 @@ namespace SpecBind.Tests
             var regex = UriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(AbsoluteUriPage));
 
             Assert.AreEqual(true, regex.IsMatch("http://www.atestsite.com/subpath"));
-            
+
             browser.VerifyAll();
         }
 
@@ -190,7 +190,7 @@ namespace SpecBind.Tests
             var regex = UriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(NavigationWithRegexAttributePage));
 
             Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root/223"));
-            
+
             browser.VerifyAll();
         }
 
@@ -297,7 +297,7 @@ namespace SpecBind.Tests
 
 			// Setting base uri here should not matter as it will get ignored since AbsoluteUri = true for this test
 			UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			
+
 			var url = UriHelper.FillPageUri(
 				browser.Object, typeof(NavigationWithTemplateAndAbsoluteUri), new Dictionary<string, string> { { "param", "1" } });
 
@@ -363,6 +363,7 @@ namespace SpecBind.Tests
         private class AbsoluteUriPage : TestBase
         {
         }
+
         // ReSharper restore ClassNeverInstantiated.Local
 	}
 }

@@ -64,7 +64,7 @@ namespace SpecBind.Tests.Actions
             var helper = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             helper.Setup(h => h.ContainsTag(HighlightLocatorAction.HighlightMode)).Returns(false);
             helper.Setup(h => h.FeatureContainsTag(HighlightLocatorAction.HighlightMode)).Returns(false);
-            
+
             var propertyData = new Mock<IPropertyData>(MockBehavior.Strict);
 
             var highlightAction = new HighlightLocatorAction(helper.Object, settingHelper.Object);
@@ -86,7 +86,7 @@ namespace SpecBind.Tests.Actions
             settingHelper.SetupGet(s => s.HighlightModeEnabled).Returns(true);
 
             var helper = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            
+
             var propertyData = new Mock<IPropertyData>(MockBehavior.Strict);
             propertyData.Setup(p => p.Highlight());
 

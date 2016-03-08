@@ -140,7 +140,7 @@ namespace SpecBind.Selenium
         public override void DismissAlert(AlertBoxAction action, string text)
         {
             var alert = this.driver.Value.SwitchTo().Alert();
-            
+
             if (text != null)
             {
                 alert.SendKeys(text);
@@ -178,7 +178,7 @@ namespace SpecBind.Selenium
             }
 
             var result = javascriptExecutor.ExecuteScript(script, args);
-            
+
             var webElement = result as IWebElement;
             if (webElement == null)
             {
@@ -227,7 +227,7 @@ namespace SpecBind.Selenium
             try
             {
                 var fullPath = Path.Combine(imageFolder, string.Format("{0}.jpg", fileNameBase));
-                
+
                 var screenshot = takesScreenshot.GetScreenshot();
                 screenshot.SaveAsFile(fullPath, ImageFormat.Jpeg);
 
@@ -301,7 +301,7 @@ namespace SpecBind.Selenium
             Func<IWebDriver, IBrowser, Action<object>, object> pageBuildMethod;
             if (!this.pageCache.TryGetValue(pageType, out pageBuildMethod))
             {
-                pageBuildMethod = pageBuilder.CreatePage(pageType);
+                pageBuildMethod = this.pageBuilder.CreatePage(pageType);
                 this.pageCache.Add(pageType, pageBuildMethod);
             }
 
@@ -331,6 +331,7 @@ namespace SpecBind.Selenium
                 localDriver.Quit();
                 localDriver.Dispose();
             }
+
             this.disposed = true;
         }
 

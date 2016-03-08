@@ -102,7 +102,7 @@ namespace SpecBind.Tests
 		{
 			var nullResult = ((string)null).NormalizedEquals(null);
 			var emptyResult = string.Empty.NormalizedEquals(string.Empty);
-			
+
 			Assert.AreEqual(true, nullResult);
 			Assert.AreEqual(true, emptyResult);
 		}

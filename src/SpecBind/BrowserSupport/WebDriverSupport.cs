@@ -28,7 +28,7 @@ namespace SpecBind.BrowserSupport
         private static IBrowser browser;
         private static Lazy<ConfigurationSectionHandler> configurationHandler = new Lazy<ConfigurationSectionHandler>(SettingHelper.GetConfigurationSection);
         private readonly IObjectContainer objectContainer;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WebDriverSupport" /> class.
         /// </summary>
@@ -50,7 +50,7 @@ namespace SpecBind.BrowserSupport
             {
                 return browser;
             }
-            
+
             set
             {
                 browser = value;
@@ -80,7 +80,7 @@ namespace SpecBind.BrowserSupport
             var factory = BrowserFactory.GetBrowserFactory(new NullLogger());
             factory.ValidateDriverSetup();
         }
-             
+
         /// <summary>
         /// Initializes the page mapper at the start of the test run.
         /// </summary>
@@ -93,8 +93,8 @@ namespace SpecBind.BrowserSupport
             var factory = BrowserFactory.GetBrowserFactory(logger);
             var configSection = configurationHandler.Value;
 
-            if (!configSection.BrowserFactory.ReuseBrowser || browser == null) 
-            { 
+            if (!configSection.BrowserFactory.ReuseBrowser || browser == null)
+            {
                 browser = factory.GetBrowser();
             }
 
@@ -117,7 +117,7 @@ namespace SpecBind.BrowserSupport
             var repository = new ActionRepository(this.objectContainer);
             this.objectContainer.RegisterInstanceAs<IActionRepository>(repository);
             this.objectContainer.RegisterTypeAs<ActionPipelineService, IActionPipelineService>();
-            
+
             // Initialize the repository
             repository.Initialize();
         }
@@ -166,7 +166,7 @@ namespace SpecBind.BrowserSupport
             {
                 return;
             }
-            
+
             var fileName = scenarioHelper.GetStepFileName();
             var basePath = Directory.GetCurrentDirectory();
             var fullPath = browser.TakeScreenshot(basePath, fileName);
@@ -175,7 +175,7 @@ namespace SpecBind.BrowserSupport
             var traceListener = this.objectContainer.Resolve<ITraceListener>();
             if (fullPath != null && traceListener != null)
             {
-                traceListener.WriteTestOutput("Created Error Screenshot: {0}", fullPath);       
+                traceListener.WriteTestOutput("Created Error Screenshot: {0}", fullPath);
             }
         }
     }

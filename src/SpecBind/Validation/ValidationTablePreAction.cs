@@ -44,16 +44,16 @@ namespace SpecBind.Validation
 
             var ruleLookups = this.GetRuleLookups();
             var validationTable = containsTable.ValidationTable;
-            
+
             // Loop through all the validations to process them
             foreach (var itemValidation in validationTable.Validations)
             {
                 // Lookup a comparison rule based on the input string.
                 var ruleLookupKey = ProcessText(itemValidation.RawComparisonType);
-                
+
                 IValidationComparer comparer;
-                itemValidation.Comparer = ruleLookups.TryGetValue(ruleLookupKey, out comparer) 
-                    ? comparer 
+                itemValidation.Comparer = ruleLookups.TryGetValue(ruleLookupKey, out comparer)
+                    ? comparer
                     : ruleLookups.First(r => r.Value.IsDefault).Value;
 
                 // Process the value for any tokens, then check for any transforms.
@@ -73,7 +73,7 @@ namespace SpecBind.Validation
         {
             var lookups = new Dictionary<string, IValidationComparer>(StringComparer.InvariantCultureIgnoreCase);
             var ruleLookups = this.actionRepository.GetComparisonTypes();
-            
+
             foreach (var lookup in ruleLookups)
             {
                 foreach (var ruleKey in lookup.RuleKeys.Where(ruleKey => !lookups.ContainsKey(ruleKey)))

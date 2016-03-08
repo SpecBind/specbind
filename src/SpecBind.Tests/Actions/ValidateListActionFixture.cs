@@ -116,7 +116,7 @@ namespace SpecBind.Tests.Actions
 
             Assert.AreEqual(false, result.Success);
             Assert.IsNotNull(result.Exception);
-            
+
             locator.VerifyAll();
             propData.VerifyAll();
         }
@@ -153,7 +153,7 @@ namespace SpecBind.Tests.Actions
             var result = buttonClickAction.Execute(context);
 
             Assert.AreEqual(true, result.Success);
-            
+
             locator.VerifyAll();
             propData.VerifyAll();
         }

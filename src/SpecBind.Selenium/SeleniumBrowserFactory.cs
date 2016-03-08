@@ -36,7 +36,7 @@ namespace SpecBind.Selenium
         private const string ChromeUrl = "http://chromedriver.storage.googleapis.com";
         private const string RemoteUrlSetting = "RemoteUrl";
         private const string PhantomjsExe = "phantomjs.exe";
-        
+
         private static readonly string SeleniumDriverPath;
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace SpecBind.Selenium
 
             // Set Driver Settings
             var managementSettings = driver.Manage();
-           
+
             // Set timeouts
             managementSettings.Timeouts()
                 .ImplicitlyWait(browserFactoryConfiguration.ElementLocateTimeout)
@@ -127,7 +127,7 @@ namespace SpecBind.Selenium
         protected override IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration, ILogger logger)
         {
             var launchAction = new Func<IWebDriver>(() => CreateWebDriver(browserType, browserFactoryConfiguration));
-            
+
             var browser = new Lazy<IWebDriver>(launchAction, LazyThreadSafetyMode.None);
             return new SeleniumBrowser(browser, logger);
         }
@@ -192,7 +192,7 @@ namespace SpecBind.Selenium
             DownloadAndExtractZip("https://bitbucket.org/ariya/phantomjs/downloads", FileName);
 
             // Move the phantomjs.exe out of the unzipped folder
-            var unzippedFolder = Path.Combine(SeleniumDriverPath, Path.GetFileNameWithoutExtension(FileName), "bin"); 
+            var unzippedFolder = Path.Combine(SeleniumDriverPath, Path.GetFileNameWithoutExtension(FileName), "bin");
             File.Move(Path.Combine(unzippedFolder, PhantomjsExe), Path.Combine(SeleniumDriverPath, PhantomjsExe));
             Directory.Delete(unzippedFolder, true);
         }
@@ -206,7 +206,7 @@ namespace SpecBind.Selenium
             using (var webClient = new WebClient())
             {
                 // First get the latest version
-                var releaseNumber = webClient.DownloadString(string.Format("{0}/LATEST_RELEASE", ChromeUrl));    
+                var releaseNumber = webClient.DownloadString(string.Format("{0}/LATEST_RELEASE", ChromeUrl));
 
                 // Combine to download
                 url = string.Format("{0}/{1}", ChromeUrl, releaseNumber.Trim());
@@ -397,7 +397,7 @@ namespace SpecBind.Selenium
         private static string SetupDriverFolder()
         {
             var path = Path.Combine(Path.GetTempPath(), "SeleniumDrivers");
-            
+
             try
             {
                 if (!Directory.Exists(path))

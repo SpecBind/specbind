@@ -22,7 +22,7 @@ namespace SpecBind.Helpers
 		static UriHelper()
 		{
 			var configSection = SettingHelper.GetConfigurationSection();
-			
+
 			Uri parsedUri;
 			BaseUri = configSection != null && configSection.Application != null
 			          && Uri.TryCreate(configSection.Application.StartUrl, UriKind.Absolute, out parsedUri)
@@ -142,7 +142,7 @@ namespace SpecBind.Helpers
             {
                 basePath = Regex.Escape(basePath);
             }
-            
+
             var seperator = subPath.StartsWith("/") ? string.Empty : "/";
 
             return string.Concat(basePath, seperator, subPath);
@@ -163,7 +163,7 @@ namespace SpecBind.Helpers
             PageNavigationAttribute pageNavigationAttribute;
             if (pageType.TryGetAttribute(out pageNavigationAttribute))
             {
-                return new UriStructure(pageNavigationAttribute.Url, 
+                return new UriStructure(pageNavigationAttribute.Url,
                                         pageNavigationAttribute.IsAbsoluteUrl,
                                         pageNavigationAttribute.UrlTemplate);
             }

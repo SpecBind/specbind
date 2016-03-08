@@ -57,7 +57,7 @@ namespace SpecBind.Tests.PropertyHandlers
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
 
             var propertyData = CreatePropertyData(pageBase, element, typeof(string));
-            
+
             ExceptionHelper.SetupForException<ElementExecuteException>(
                 () => propertyData.FillData("My Data"),
                 e => pageBase.VerifyAll());
@@ -74,7 +74,7 @@ namespace SpecBind.Tests.PropertyHandlers
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
 
             var propertyData = CreatePropertyData(pageBase, element, typeof(DateTime));
-            
+
             ExceptionHelper.SetupForException<ElementExecuteException>(
                 () => propertyData.FillData("My Data"),
                 e => pageBase.VerifyAll());
@@ -91,9 +91,9 @@ namespace SpecBind.Tests.PropertyHandlers
             var page = new Mock<IPage>(MockBehavior.Strict);
 
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
-			
+
             var propertyData = CreatePropertyData(pageBase, element);
-            
+
             var result = propertyData.GetCurrentValue();
 
             Assert.IsNotNull(result);
@@ -113,7 +113,7 @@ namespace SpecBind.Tests.PropertyHandlers
 
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
             var propertyData = CreatePropertyData(pageBase, element);
-            
+
             string actualValue;
             var result = propertyData.ValidateItem(ItemValidationHelper.Create("MyProperty", typeof(BaseElement).FullName), out actualValue);
 

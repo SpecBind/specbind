@@ -8,6 +8,6 @@ namespace SpecBind.Tests.Support
 	/// </summary>
 	public class BaseElement
 	{
-		 
+
 	}
 }

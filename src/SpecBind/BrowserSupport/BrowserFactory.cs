@@ -169,6 +169,7 @@ namespace SpecBind.BrowserSupport
 		            return assembly;
 		        }
 		    }
+
 		    // ReSharper disable once EmptyGeneralCatchClause
 		    catch
 		    {

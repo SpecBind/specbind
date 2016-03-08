@@ -63,11 +63,12 @@ namespace SpecBind.Configuration
 
             // ReSharper disable once AssignNullToNotNullAttribute
             section.Reset(null);
-            
+
             using (var reader = new XmlTextReader(new StringReader(xmlContent.Trim())))
             {
                 section.DeserializeSection(reader);
             }
+
             section.ResetModified();
             return section;
         }

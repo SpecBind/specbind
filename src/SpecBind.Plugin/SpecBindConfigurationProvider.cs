@@ -80,15 +80,15 @@ namespace SpecBind.Plugin
                 WriteLine(@"Cannot find app.config in directory: {0}", directory.FullName);
                 return null;
             }
-            
+
             WriteLine("Found Configuration File: {0}", file.FullName);
-            
+
             string content;
             using (var streamReader = file.OpenText())
             {
                 content = streamReader.ReadToEnd();
             }
-            
+
             var configDocument = new XmlDocument();
             configDocument.LoadXml(content);
 

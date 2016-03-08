@@ -27,7 +27,7 @@ namespace SpecBind.Actions
         public override ActionResult Execute(ActionContext actionContext)
         {
             var propertyData = this.ElementLocator.GetElement(actionContext.PropertyName);
-            
+
             if (propertyData.IsList)
             {
                 return ActionResult.Failure(

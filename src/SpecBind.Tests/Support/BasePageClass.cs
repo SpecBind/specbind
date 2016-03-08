@@ -14,6 +14,6 @@ namespace SpecBind.Tests.Support
 		/// <value>
 		/// The hidden property.
 		/// </value>
-		public string HiddenProperty { get; set; } 
+		public string HiddenProperty { get; set; }
 	}
 }

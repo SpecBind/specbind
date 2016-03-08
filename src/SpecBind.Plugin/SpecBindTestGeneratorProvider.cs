@@ -60,11 +60,11 @@ namespace SpecBind.Plugin
                 generationContext.TestClass.CustomAttributes.Add(
                     new CodeAttributeDeclaration(new CodeTypeReference(CodedUiTestClassAttribute)));
 	        }
-            
+
             // Add deployment item in each test for the driver.
 			generationContext.TestClass.CustomAttributes.Add(
 				new CodeAttributeDeclaration(
-                    new CodeTypeReference(DeploymentItemAttribute), 
+                    new CodeTypeReference(DeploymentItemAttribute),
                     new CodeAttributeArgument(new CodePrimitiveExpression(providerName))));
 		}
 	}

@@ -36,7 +36,7 @@ namespace SpecBind.Tests.Actions
         public void TestDismissAlertWhenInvalidOptionIsSelectedReturnsAFailure()
         {
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
-            
+
             var buttonClickAction = new DismissDialogAction(browser.Object);
 
             var context = new DismissDialogAction.DismissDialogContext("foo");

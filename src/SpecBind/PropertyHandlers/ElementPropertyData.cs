@@ -82,7 +82,7 @@ namespace SpecBind.PropertyHandlers
             }
 
             this.elementAction(
-                this.ElementHandler, 
+                this.ElementHandler,
                 e =>
                     {
                         clearMethod(e);
@@ -119,7 +119,7 @@ namespace SpecBind.PropertyHandlers
             }
 
             this.elementAction(
-                this.ElementHandler, 
+                this.ElementHandler,
                 e =>
                     {
                         fillMethod(e, data);
@@ -210,7 +210,7 @@ namespace SpecBind.PropertyHandlers
             actualValue = realValue;
             return result;
         }
-        
+
         /// <summary>
         /// Waits for the element condition to be met.
         /// </summary>

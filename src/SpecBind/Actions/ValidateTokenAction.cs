@@ -32,7 +32,7 @@ namespace SpecBind.Actions
         /// <returns>The result of the action.</returns>
         protected override ActionResult Execute(ValidateTokenActionContext context)
         {
-            return ValidateTableHelpers.PerformValidation(context.ValidationTable.Validations, ValidateToken);
+            return ValidateTableHelpers.PerformValidation(context.ValidationTable.Validations, this.ValidateToken);
         }
 
         /// <summary>

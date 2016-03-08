@@ -73,7 +73,7 @@ namespace SpecBind.Tests.Actions
 
             var action = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
             var context = new PageNavigationAction.PageNavigationActionContext("testproperty", PageNavigationAction.PageAction.NavigateToPage);
-            
+
             var postAction = new Mock<NavigationPostAction>(MockBehavior.Strict);
             postAction.Protected().Setup("OnPageNavigate", page.Object, PageNavigationAction.PageAction.NavigateToPage, ItExpr.IsNull<Dictionary<string, string>>());
 

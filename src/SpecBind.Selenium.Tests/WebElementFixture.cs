@@ -344,7 +344,7 @@ namespace SpecBind.Selenium.Tests
         public void TestCallGetHashCodeInvokesWrappedValue()
         {
             var mockElement = new Mock<IWebElement>(MockBehavior.Strict);
-            
+
             var element = CreateBasicWrappedElement(mockElement.Object);
 
             var result = element.GetHashCode();
@@ -395,9 +395,9 @@ namespace SpecBind.Selenium.Tests
             catch (NoSuchElementException ex)
             {
                 Assert.AreEqual("Could not find element by: By.Id: 1234", ex.Message);
-                
+
                 searchContext.VerifyAll();
-                
+
                 throw;
             }
         }

@@ -4,7 +4,6 @@
 namespace SpecBind.Validation
 {
     using System.Collections.Generic;
-    
     using SpecBind.Pages;
 
     /// <summary>
@@ -74,9 +73,9 @@ namespace SpecBind.Validation
         public abstract bool Compare(IPropertyData property, string expectedValue, string actualValue);
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// Returns a <see cref="string" /> that represents this instance.
         /// </summary>
-        /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
+        /// <returns>A <see cref="string" /> that represents this instance.</returns>
         public override string ToString()
         {
             return string.Format("Validation: {0}", string.Join(",", this.RuleKeys));

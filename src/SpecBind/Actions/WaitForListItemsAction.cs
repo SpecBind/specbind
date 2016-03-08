@@ -65,7 +65,7 @@ namespace SpecBind.Actions
 
                 return ActionResult.Failure(exception);
             }
-            
+
             // Setup timeout items
             var timeout = actionContext.Timeout.GetValueOrDefault(DefaultTimeout);
             var cancellationTokenSource = new CancellationTokenSource();

@@ -57,7 +57,7 @@ namespace SpecBind.Tests
 
 			IPropertyData data;
 			var result = target.TryGetElement("NotFound", out data);
-			
+
 			Assert.AreEqual(false, result);
 			Assert.IsNull(data);
 		}
@@ -140,7 +140,7 @@ namespace SpecBind.Tests
 
             // Set the property value via the action
             data.FillData("Dan");
-            
+
             Assert.AreEqual("Dan", page.Name);
         }
 

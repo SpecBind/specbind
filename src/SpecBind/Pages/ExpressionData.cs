@@ -44,9 +44,9 @@ namespace SpecBind.Pages
         public Type Type { get; private set; }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// Returns a <see cref="string" /> that represents this instance.
         /// </summary>
-        /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
+        /// <returns>A <see cref="string" /> that represents this instance.</returns>
         public override string ToString()
         {
             return string.Format("Type: {0}{1}", this.Type.FullName, this.Name != null ? string.Format(", Name: {0}", this.Name) : string.Empty);

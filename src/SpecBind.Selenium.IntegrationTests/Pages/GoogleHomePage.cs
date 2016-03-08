@@ -18,6 +18,6 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
         /// </summary>
         /// <value>The search box.</value>
         [ElementLocator(Name = "q")]
-        public IWebElement SearchBox { get; set; }    
+        public IWebElement SearchBox { get; set; }
     }
 }

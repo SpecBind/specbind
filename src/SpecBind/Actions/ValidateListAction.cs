@@ -79,7 +79,7 @@ namespace SpecBind.Actions
             /// </summary>
             /// <value>The type of the compare.</value>
             public ComparisonType CompareType { get; private set; }
-                
+
             /// <summary>
             /// Gets the validation table.
             /// </summary>

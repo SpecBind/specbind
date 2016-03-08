@@ -12,7 +12,7 @@ namespace SpecBind
 	using SpecBind.Actions;
 	using SpecBind.Helpers;
 	using SpecBind.Pages;
-	
+
 	using TechTalk.SpecFlow;
 
 	/// <summary>
@@ -28,7 +28,7 @@ namespace SpecBind
         private const string NavigateToPageWithParamsStepRegex = @"I navigate to the (.+) page with parameters";
         private const string WaitForPageStepRegex = @"I wait for the (.+) page";
         private const string WaitForPageWithTimeoutStepRegex = @"I wait (\d+) seconds? for the (.+) page";
-		
+
 		// The following Regex items are for the given "past tense" form
 		private const string GivenEnsureOnPageStepRegex = @"I was on the (.+) page";
 		private const string GivenEnsureOnDialogStepRegex = @"I was on the (.+) dialog";
@@ -36,7 +36,7 @@ namespace SpecBind
 		private const string GivenNavigateToPageWithParamsStepRegex = @"I navigated to the (.+) page with parameters";
         private const string GivedWaitForPageStepRegex = @"I waited for the (.+) page";
         private const string GivenWaitForPageWithTimeoutStepRegex = @"I waited (\d+) seconds? for the (.+) page";
-		
+
 	    private readonly IActionPipelineService actionPipelineService;
 	    private readonly ITokenManager tokenManager;
 

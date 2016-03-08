@@ -37,8 +37,8 @@ namespace SpecBind.Tests.Support
         /// <returns>A browser object.</returns>
         protected override IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration, ILogger logger)
         {
-            BrowserMock = new Mock<IBrowser>();
-            return BrowserMock.Object;
+            this.BrowserMock = new Mock<IBrowser>();
+            return this.BrowserMock.Object;
         }
     }
 }

@@ -197,7 +197,7 @@ namespace SpecBind.Selenium.Tests
         {
             TestAlertScenario(AlertBoxAction.Retry, true);
         }
-        
+
         /// <summary>
         /// Tests the dismiss alert calls accept when cancel is chosen.
         /// </summary>
@@ -463,7 +463,7 @@ namespace SpecBind.Selenium.Tests
 
             Assert.IsNotNull(resultObject);
             Assert.IsInstanceOfType(resultObject, typeof(WebElement));
-           
+
             driver.VerifyAll();
             result.VerifyAll();
         }
@@ -475,7 +475,7 @@ namespace SpecBind.Selenium.Tests
         public void TestExecuteScriptWhenDriverDoesNotSupportScriptReturnsNull()
         {
             var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            
+
             var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
 
             Assert.IsNotNull(lazyDriver.Value);
@@ -539,13 +539,13 @@ namespace SpecBind.Selenium.Tests
 
             var basePath = Path.GetTempPath();
             var fileName = Guid.NewGuid().ToString();
-            
+
             Screenshot screenshot;
             using (var ms = new MemoryStream())
             {
                 var image = TestResource.TestImage;
                 image.Save(ms, ImageFormat.Jpeg);
-                
+
                 screenshot = new Screenshot(Convert.ToBase64String(ms.ToArray()));
             }
 
@@ -590,7 +590,7 @@ namespace SpecBind.Selenium.Tests
             {
                 alerter.Setup(a => a.Dismiss());
             }
-            
+
             var locator = new Mock<ITargetLocator>(MockBehavior.Strict);
             locator.Setup(l => l.Alert()).Returns(alerter.Object);
 

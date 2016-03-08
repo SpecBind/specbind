@@ -28,7 +28,7 @@ namespace SpecBind.CodedUI
         private readonly Dictionary<Type, Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument>> pageCache;
         private readonly Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>> frameCache;
         private readonly Lazy<BrowserWindow> window;
-        
+
         private bool disposed;
 
         /// <summary>
@@ -271,6 +271,7 @@ namespace SpecBind.CodedUI
             {
                 this.window.Value.Dispose();
             }
+
             this.disposed = true;
         }
 
@@ -356,7 +357,7 @@ namespace SpecBind.CodedUI
                         pageType.Name);
                 }
 
-                
+
             }
 
             var documentElement = function(parentElement, this, null);

@@ -80,7 +80,7 @@ namespace SpecBind.Tests.Helpers
 			var items = new[]
 			            {
 				            new MyFormatItem { Name = "Bob", Age = 21 },
-							new MyFormatItem { Name = "Alice", Age = 5 } 
+							new MyFormatItem { Name = "Alice", Age = 5 }
 			            };
 
 			var tableFormatter = new TableFormater<MyFormatItem>()
@@ -137,7 +137,7 @@ namespace SpecBind.Tests.Helpers
 			var items = new[]
 			            {
 				            new MyFormatItem { Name = "Bob", Age = 21 },
-							new MyFormatItem { Name = "Alice", Age = 5 } 
+							new MyFormatItem { Name = "Alice", Age = 5 }
 			            };
 
 			var tableFormatter = new TableFormater<MyFormatItem>()
@@ -163,7 +163,7 @@ namespace SpecBind.Tests.Helpers
 			var items = new[]
 			            {
 				            new MyFormatItem { Name = "Bob", Age = 21 },
-							new MyFormatItem { Name = null, Age = 5 } 
+							new MyFormatItem { Name = null, Age = 5 }
 			            };
 
 			var tableFormatter = new TableFormater<MyFormatItem>()
@@ -189,7 +189,7 @@ namespace SpecBind.Tests.Helpers
 			var items = new[]
 			            {
 				            new MyFormatItem { Name = "Bob", Age = 21 },
-							new MyFormatItem { Name = "Alice", Age = 5 } 
+							new MyFormatItem { Name = "Alice", Age = 5 }
 			            };
 
 			var tableFormatter = new TableFormater<MyFormatItem>()
@@ -215,7 +215,7 @@ namespace SpecBind.Tests.Helpers
 			var items = new[]
 			            {
 				            new MyFormatItem { Name = "Bob", Age = 21 },
-							new MyFormatItem { Name = "Alice", Age = 5 } 
+							new MyFormatItem { Name = "Alice", Age = 5 }
 			            };
 
 			var tableFormatter = new TableFormater<MyFormatItem>()

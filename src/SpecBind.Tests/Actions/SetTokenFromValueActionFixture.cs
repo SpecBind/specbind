@@ -68,7 +68,7 @@ namespace SpecBind.Tests.Actions
         {
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);
-            
+
             var getItemAction = new SetTokenFromValueAction(tokenManager.Object)
             {
                 ElementLocator = locator.Object

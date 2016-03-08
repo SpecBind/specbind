@@ -18,7 +18,7 @@ namespace SpecBind.Pages
 	/// <typeparam name="TPageBase">The base type of any given page setup.</typeparam>
 	/// <typeparam name="TElement">The type of the basic element on a page.</typeparam>
 	public abstract class PageBase<TPageBase, TElement> : IPageElementHandler<TElement>
-		where TPageBase : class 
+		where TPageBase : class
 		where TElement : class
 	{
 		#region Fields
@@ -304,11 +304,11 @@ namespace SpecBind.Pages
         {
             var pageArgument = Expression.Parameter(typeof(IPage), "page");
             var actionFunc = Expression.Parameter(typeof(Func<TElement, bool>), "actionFunc");
-            
+
             return
                 Expression.Lambda<Func<IPage, Func<TElement, bool>, bool>>(
                                     Expression.Invoke(actionFunc, Expression.Convert(Expression.Constant(elementDescription.Value, elementDescription.PropertyType), typeof(TElement))),
-                                    pageArgument, 
+                                    pageArgument,
                                     actionFunc)
                           .Compile();
         }
@@ -331,7 +331,7 @@ namespace SpecBind.Pages
 			var getMethodCall = Expression.Block(
 				new[] { nativePageVariable, propertyVariable },
 				Expression.Assign(nativePageVariable, Expression.Call(nativePageFunc.GetMethodInfo(), pageArgument)),
-				Expression.Assign(propertyVariable, Expression.Convert(nativePageVariable, pageType)), 
+				Expression.Assign(propertyVariable, Expression.Convert(nativePageVariable, pageType)),
 				Expression.Invoke(actionFunc, Expression.Property(propertyVariable, propertyInfo)));
 
 			var getExpression = Expression.Lambda<Func<IPage, Func<object, bool>, bool>>(getMethodCall, pageArgument, actionFunc).Compile();
@@ -399,7 +399,7 @@ namespace SpecBind.Pages
 				{
 				    var elementHandler = AddElementProperty(pageType, propertyInfo);
                     var elementPropertyData = new ElementPropertyData<TElement>(this, propertyInfo.Name, propertyInfo.PropertyType, elementHandler);
-                    
+
                     // Check for any alias attributes and attempt to build additional properties
                     this.CheckForVirtualProperties(propertyInfo, elementHandler);
 				    propertyData = elementPropertyData;

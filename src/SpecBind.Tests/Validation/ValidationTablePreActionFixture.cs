@@ -50,10 +50,10 @@ namespace SpecBind.Tests.Validation
         {
             var action = new Mock<IAction>(MockBehavior.Strict);
             var items = new List<IValidationComparer> { new StartsWithComparer() }.AsReadOnly();
-            
+
             var actionRepository = new Mock<IActionRepository>(MockBehavior.Strict);
             actionRepository.Setup(a => a.GetComparisonTypes()).Returns(items);
-            
+
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
             tokenManager.Setup(t => t.GetToken("foo")).Returns("foo");
 

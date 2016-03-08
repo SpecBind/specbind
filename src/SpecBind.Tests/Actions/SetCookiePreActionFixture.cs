@@ -60,7 +60,7 @@ namespace SpecBind.Tests.Actions
             var context = new ActionContext("doesnotexist");
 
             cookiePreAction.PerformPreAction(navigationAction, context);
-           
+
             pageMapper.VerifyAll();
             browser.VerifyAll();
         }
@@ -77,7 +77,7 @@ namespace SpecBind.Tests.Actions
             var logger = new Mock<ILogger>();
 
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
-            
+
             var navigationAction = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
 
             var cookiePreAction = new SetCookiePreAction(browser.Object, logger.Object, pageMapper.Object);

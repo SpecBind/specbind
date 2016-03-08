@@ -28,7 +28,7 @@ namespace SpecBind.Actions
         /// </summary>
         /// <param name="actionContext">The action context.</param>
         /// <returns>The result of the action.</returns>
-        protected override ActionResult Execute(TokenFieldContext actionContext) 
+        protected override ActionResult Execute(TokenFieldContext actionContext)
         {
             var propertyData = this.ElementLocator.GetElement(actionContext.PropertyName);
 

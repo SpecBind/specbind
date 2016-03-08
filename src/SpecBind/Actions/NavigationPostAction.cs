@@ -31,7 +31,7 @@ namespace SpecBind.Actions
             var navigationContext = (PageNavigationAction.PageNavigationActionContext)context;
             var actionType = navigationContext.PageAction;
             var pageArguments = navigationContext.PageArguments;
-            
+
             // ReSharper disable once SuspiciousTypeConversion.Global
             var page = result.Result as IPage;
             this.OnPageNavigate(page, actionType, pageArguments);
