@@ -1,4 +1,8 @@
-﻿namespace SpecBind.Actions
+﻿// <copyright file="HoverOverElementAction.cs">
+//    Copyright © 2013 Dan Piessens  All rights reserved.
+// </copyright>
+
+namespace SpecBind.Actions
 {
 	using System;
 	using SpecBind.ActionPipeline;
@@ -10,6 +14,15 @@
 	internal class HoverOverElementAction : ActionBase
 	{
 		/// <summary>
+        /// Initializes the <see cref="HoverOverElementAction"/> class.
+        /// </summary>
+        static HoverOverElementAction()
+        {
+            var configSection = SettingHelper.GetConfigurationSection();
+            WaitForStillElementBeforeClicking = configSection.Application.WaitForStillElementBeforeClicking;
+        }
+
+        /// <summary>
 		/// Initializes a new instance of the <see cref="HoverOverElementAction" /> class.
 		/// </summary>
 		public HoverOverElementAction()
@@ -17,13 +30,13 @@
 		{
 		}
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to wait for the element before clicking.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if the system should wait for the element before clicking; otherwise, <c>false</c>.
+        /// </value>
 		protected internal static bool WaitForStillElementBeforeClicking { get; set; }
-
-		static HoverOverElementAction()
-		{
-			var configSection = SettingHelper.GetConfigurationSection();
-			WaitForStillElementBeforeClicking = configSection.Application.WaitForStillElementBeforeClicking;
-		}
 
 		/// <summary>
 		/// Executes this instance action.

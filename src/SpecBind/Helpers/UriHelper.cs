@@ -32,18 +32,20 @@ namespace SpecBind.Helpers
 			Console.WriteLine("Application Base URI: {0}", BaseUri);
 		}
 
+        #pragma warning disable SA1623 // PropertySummaryDocumentationMustMatchAccessors
         /// <summary>
-        /// Gets or sets the base URI.
+        /// Sets the base URI.
         /// </summary>
         /// <value>The base URI.</value>
         internal static Uri BaseUri { private get; set; }
+        #pragma warning restore SA1623 // PropertySummaryDocumentationMustMatchAccessors
 
-		/// <summary>
-		/// Gets the fully qualified page URI.
-		/// </summary>
-		/// <param name="subPath">The sub path.</param>
-		/// <returns>The fully qualifies URI.</returns>
-		public static Uri GetQualifiedPageUri(string subPath)
+        /// <summary>
+        /// Gets the fully qualified page URI.
+        /// </summary>
+        /// <param name="subPath">The sub path.</param>
+        /// <returns>The fully qualifies URI.</returns>
+        public static Uri GetQualifiedPageUri(string subPath)
 		{
 		    return new Uri(CreateCompleteUri(new UriStructure(subPath, false), false));
 		}

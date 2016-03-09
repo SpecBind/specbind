@@ -31,7 +31,7 @@ namespace SpecBind.Selenium
         protected internal WebElement(ISearchContext searchContext)
         {
             this.searchContext = searchContext;
-            
+
             this.bys = new List<By>();
             this.Cache = true;
         }
@@ -325,7 +325,10 @@ namespace SpecBind.Selenium
             this.WrappedElement.SendKeys(text);
 
 				actual = this.WrappedElement.GetAttribute("value");
-				if (string.Equals(text, actual, StringComparison.InvariantCultureIgnoreCase)) return;
+                if (string.Equals(text, actual, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return;
+                }
 
 				System.Threading.Thread.Sleep(500);
 			}

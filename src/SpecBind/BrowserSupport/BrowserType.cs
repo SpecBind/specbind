@@ -1,10 +1,11 @@
 ﻿// <copyright file="BrowserType.cs">
 //    Copyright © 2013 Dan Piessens  All rights reserved.
 // </copyright>
-using System.Diagnostics.CodeAnalysis;
 
 namespace SpecBind.BrowserSupport
 {
+    using System.Diagnostics.CodeAnalysis;
+
     /// <summary>
     /// Enumerates the various supported browsers.
     /// </summary>

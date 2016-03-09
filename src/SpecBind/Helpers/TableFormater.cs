@@ -271,11 +271,12 @@ namespace SpecBind.Helpers
 				this.maxLength = new Lazy<int>(this.GetMaxLength);
 			}
 
-			/// <summary>
-			/// Sets the cell selector.
-			/// </summary>
-			/// <value>The cell selector.</value>
-			public Func<TItem, TField> CellSelector { private get; set; }
+            #pragma warning disable SA1623 // PropertySummaryDocumentationMustMatchAccessors - Disable due to Inspector bug
+            /// <summary>
+            /// Sets the cell selector.
+            /// </summary>
+            /// <value>The cell selector.</value>
+            public Func<TItem, TField> CellSelector { private get; set; }
 
 			/// <summary>
 			/// Gets or sets the header.
@@ -301,11 +302,12 @@ namespace SpecBind.Helpers
 				}
 			}
 
-			/// <summary>
-			/// Sets the validation selector.
-			/// </summary>
-			/// <value>The validation selector.</value>
-			public Func<TField, Tuple<bool, string>> ValidationSelector { private get; set; }
+            /// <summary>
+            /// Sets the validation selector.
+            /// </summary>
+            /// <value>The validation selector.</value>
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1623:PropertySummaryDocumentationMustMatchAccessors", Justification = "Bug in instpector.")]
+            public Func<TField, Tuple<bool, string>> ValidationSelector { private get; set; }
 
 			/// <summary>
 			/// Sets the value selector.
@@ -313,12 +315,14 @@ namespace SpecBind.Helpers
 			/// <value>The value selector.</value>
 			public Func<TField, string> ValueSelector { private get; set; }
 
-			/// <summary>
-			/// Adds a cell for column.
-			/// </summary>
-			/// <param name="item">The item.</param>
-			/// <param name="formatter">The function used to format the cell value.</param>
-			public void AddCellForItem(TItem item, Func<string, bool, string, string> formatter)
+            #pragma warning restore SA1623 // PropertySummaryDocumentationMustMatchAccessors
+
+            /// <summary>
+            /// Adds a cell for column.
+            /// </summary>
+            /// <param name="item">The item.</param>
+            /// <param name="formatter">The function used to format the cell value.</param>
+            public void AddCellForItem(TItem item, Func<string, bool, string, string> formatter)
 			{
 				var cellValue = this.CellSelector(item);
 

@@ -31,9 +31,6 @@ environment:
   package_dir: NuGet_Packages
   VisualStudioVersion: 12.0
 
-install:
-  - cinst stylecop
-
 # enable patching of AssemblyInfo.* files
 assembly_info:
   patch: true
@@ -85,6 +82,11 @@ test:
     - src\SpecBind.Tests\bin\**\*.Tests.dll
     - src\SpecBind.Selenium.Tests\bin\**\*.Tests.dll
 
+after_test: 
+   - .\src\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"MSTest.exe" -targetargs:"/noresults /noisolation /testcontainer:"".\MyProject Unit Tests\bin\Debug\MyProject.UnitTests.dll" -filter:"+[SpecBind]*  -[MyProject]MyProject.Properties.*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:.\SpecBind_coverage.xml
+   - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
+   - pip install codecov
+   - codecov -f "SpecBind_coverage.xml"
 # to run tests from different categories as separate jobs in parallel
 #test:
 #  categories:
@@ -100,6 +102,9 @@ artifacts:
   # pushing all *.nupkg files in directory
   - path: 'NuGet_Packages\*.nupkg'
 
+# preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
+cache:
+  - src\packages -> **\packages.config
 
 #---------------------------------#
 #     deployment configuration    #

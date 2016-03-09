@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{355684DD-22AC-4D3A-B93B-6B92D123A044}"
 	ProjectSection(SolutionItems) = preProject
@@ -34,6 +34,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.Selenium.Integrati
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FE3A1D8C-DC30-443E-873A-99F9207267FB}"
 	ProjectSection(SolutionItems) = preProject
+		..\appveyor.yml = ..\appveyor.yml
+		Settings.StyleCop = Settings.StyleCop
+		SpecBind.ruleset = SpecBind.ruleset
 		test.runsettings = test.runsettings
 	EndProjectSection
 EndProject

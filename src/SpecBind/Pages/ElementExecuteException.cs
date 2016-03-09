@@ -9,6 +9,7 @@ namespace SpecBind.Pages
 	/// <summary>
 	/// An exception that indicates a failure occurred while executing a step element.
 	/// </summary>
+    [Serializable]
 	public class ElementExecuteException : ApplicationException
 	{
 		/// <summary>

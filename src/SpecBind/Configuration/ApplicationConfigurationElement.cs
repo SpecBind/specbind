@@ -56,11 +56,11 @@ namespace SpecBind.Configuration
 		}
 
 		/// <summary>
-		/// Gets or sets whether or not to wait for an element to stop moving before clicking on it (defaults to false).
+		/// Gets or sets a value indicating whether or not to wait for an element to stop moving before clicking on it (defaults to false).
 		/// </summary>
 		/// <value>Whether or not to wait.</value>
 		/// <remarks>
-		/// Waits 200ms between element position measures.
+		/// Waits 200 milliseconds between element position measures.
 		/// Resolves issues where animation moves a button for a while, when it first becomes available.
 		/// Without this workaround, the click simply ends up sent to a nearby element or the page, usually doing nothing
 		/// and causing the next step verifying navigation or other click effect to timeout.

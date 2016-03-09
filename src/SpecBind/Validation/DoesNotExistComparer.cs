@@ -31,7 +31,7 @@ namespace SpecBind.Validation
         }
 
         /// <summary>
-        /// Determines wither the element should be checked for existence.
+        /// Gets a value indicating whether the element should be checked for existence.
         /// </summary>
         /// <value><c>true</c> if the element should be checked; otherwise, <c>false</c>.</value>
         public override bool ShouldCheckElementExistence

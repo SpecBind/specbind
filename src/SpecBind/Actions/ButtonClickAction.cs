@@ -12,9 +12,10 @@ namespace SpecBind.Actions
 	/// </summary>
 	internal class ButtonClickAction : ActionBase
 	{
-		protected internal static bool WaitForStillElementBeforeClicking { get; set; }
-
-		static ButtonClickAction()
+        /// <summary>
+        /// Initializes the <see cref="ButtonClickAction"/> class.
+        /// </summary>
+        static ButtonClickAction()
 		{
 			var configSection = SettingHelper.GetConfigurationSection();
 			WaitForStillElementBeforeClicking = configSection.Application.WaitForStillElementBeforeClicking;
@@ -27,6 +28,14 @@ namespace SpecBind.Actions
             : base(typeof(ButtonClickAction).Name)
 		{
 		}
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to wait for the element to exist before clicking.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [wait for still element before clicking]; otherwise, <c>false</c>.
+        /// </value>
+        protected internal static bool WaitForStillElementBeforeClicking { get; set; }
 
         /// <summary>
         /// Executes this instance action.

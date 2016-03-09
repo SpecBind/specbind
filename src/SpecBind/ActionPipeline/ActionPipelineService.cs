@@ -5,7 +5,7 @@
 namespace SpecBind.ActionPipeline
 {
 	using System;
-    
+
 	using SpecBind.Helpers;
     using SpecBind.Pages;
 
@@ -24,34 +24,46 @@ namespace SpecBind.ActionPipeline
 	{
 		private readonly IActionRepository actionRepository;
 
-		protected internal static int ConfiguredActionRetryLimit { get; set; }
-
-		static ActionPipelineService()
+        /// <summary>
+        /// Initializes the <see cref="ActionPipelineService"/> class.
+        /// </summary>
+        static ActionPipelineService()
 		{
 			var configSection = SettingHelper.GetConfigurationSection();
 			ConfiguredActionRetryLimit = configSection.Application.ActionRetryLimit;
 		}
 
-		public int ActionRetryLimit { get; set; }
-
-		/// <summary>
+        /// <summary>
 		/// Initializes a new instance of the <see cref="ActionPipelineService"/> class.
 		/// </summary>
 		/// <param name="actionRepository">The action repository.</param>
 		public ActionPipelineService(IActionRepository actionRepository)
-		{
-			this.actionRepository = actionRepository;
-			this.ActionRetryLimit = ConfiguredActionRetryLimit;
-		}
+        {
+            this.actionRepository = actionRepository;
+            this.ActionRetryLimit = ConfiguredActionRetryLimit;
+        }
 
         /// <summary>
+        /// Gets or sets the number of times to retry a failed action.
+        /// </summary>
+        public int ActionRetryLimit { get; set; }
+
+        /// <summary>
+        /// Gets or sets the configured action retry limit.
+        /// </summary>
+        /// <value>
+        /// The configured action retry limit.
+        /// </value>
+        protected internal static int ConfiguredActionRetryLimit { get; set; }
+
+		/// <summary>
         /// Performs the action.
         /// </summary>
         /// <typeparam name="TAction">The type of the action.</typeparam>
         /// <param name="page">The page.</param>
         /// <param name="context">The context.</param>
         /// <returns>The result of the action.</returns>
-	    public ActionResult PerformAction<TAction>(IPage page, ActionContext context) 
+	    public ActionResult PerformAction<TAction>(IPage page, ActionContext context)
             where TAction : IAction
         {
             var action = this.actionRepository.CreateAction<TAction>();
@@ -82,17 +94,21 @@ namespace SpecBind.ActionPipeline
 					System.Threading.Thread.Sleep(1000);
 				}
 
-			try
-			{
-				result = action.Execute(context);
-					if (result.Success) break;
+			    try
+			    {
+				    result = action.Execute(context);
+                        if (result.Success)
+                        {
+                            break;
+                        }
+
+			    }
+			    catch (Exception ex)
+			    {
+				    result = ActionResult.Failure(ex);
+			    }
 			}
-			catch (Exception ex)
-			{
-				result = ActionResult.Failure(ex);
-			}
-			}
-			while (tries <= ActionRetryLimit);
+			while (tries <= this.ActionRetryLimit);
 
             this.PerformPostAction(action, context, result);
 
