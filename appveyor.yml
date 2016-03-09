@@ -11,7 +11,8 @@ branches:
   only:
     - master
 
-os: Previous Visual Studio 2013
+image: Visual Studio 2015
+
 
 #---------------------------------#
 #    environment configuration    #
@@ -29,7 +30,6 @@ os: Previous Visual Studio 2013
 # environment variables
 environment:
   package_dir: NuGet_Packages
-  VisualStudioVersion: 12.0
 
 # enable patching of AssemblyInfo.* files
 assembly_info:
