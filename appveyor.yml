@@ -77,16 +77,18 @@ after_build:
 #       tests configuration       #
 #---------------------------------#
 
-test:
-  assemblies:
-    - src\SpecBind.Tests\bin\$(configuration)\SpecBind.Tests.dll
-    - src\SpecBind.Selenium.Tests\bin\$(configuration)\SpecBind.Selenium.Tests.dll
+# Don't use built in runner to get coverage at the same time
+#test:
+#  assemblies:
+#    - src\SpecBind.Tests\bin\$(configuration)\SpecBind.Tests.dll
+#    - src\SpecBind.Selenium.Tests\bin\$(configuration)\SpecBind.Selenium.Tests.dll
 
-after_test: 
-   - .\src\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" -targetargs:".\src\SpecBind.Tests\bin\%CONFIGURATION%\SpecBind.Tests.dll .\src\SpecBind.Selenium.Tests\bin\%CONFIGURATION%\SpecBind.Selenium.Tests.dll" -filter:"+[SpecBind]* +[SpecBind.Selenium]* -[SpecBind]SpecBind.Properties.* -[SpecBind.Selenium]SpecBind.Selenium.Properties.*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:.\SpecBind_coverage.xml -mergebyhash
+test_script: 
+   - .\src\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"vstest.console.exe" -targetargs:"/logger:Appveyor .\src\SpecBind.Tests\bin\%CONFIGURATION%\SpecBind.Tests.dll .\src\SpecBind.Selenium.Tests\bin\%CONFIGURATION%\SpecBind.Selenium.Tests.dll" -filter:"+[SpecBind]* +[SpecBind.Selenium]* -[SpecBind]SpecBind.Properties.* -[SpecBind.Selenium]SpecBind.Selenium.Properties.*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:.\SpecBind_coverage.xml -mergebyhash
    - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
    - pip install codecov
    - codecov -f "SpecBind_coverage.xml"
+
 # to run tests from different categories as separate jobs in parallel
 #test:
 #  categories:
