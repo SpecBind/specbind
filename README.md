@@ -2,7 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/qhajavc6p5ut2480)](https://ci.appveyor.com/project/dpiessens/specbind)
 
-[![Coverage Status](https://coveralls.io/repos/github/dpiessens/specbind/badge.svg?branch=master)](https://coveralls.io/github/dpiessens/specbind?branch=master)
+[![Code Coverage](https://codecov.io/github/dpiessens/specbind/coverage.svg?branch=master)](https://codecov.io/github/dpiessens/specbind?branch=master)
 
 ## What is SpecBind?
 
