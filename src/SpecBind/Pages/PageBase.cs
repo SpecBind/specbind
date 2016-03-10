@@ -279,7 +279,7 @@ namespace SpecBind.Pages
         /// <returns>The created element locator function.</returns>
         private static Func<IPage, Func<TElement, bool>, bool> AddElementProperty(Type pageType, PropertyInfo propertyInfo)
 		{
-			var nativePageFunc = new Func<IPage, TPageBase>(p => p.GetNativePage<TPageBase>());
+			Expression<Func<IPage, TPageBase>> nativePageFunc = p => p.GetNativePage<TPageBase>();
 			var pageArgument = Expression.Parameter(typeof(IPage), "page");
 			var actionFunc = Expression.Parameter(typeof(Func<TElement, bool>), "actionFunc");
 
@@ -288,7 +288,7 @@ namespace SpecBind.Pages
 
 			var methodCall = Expression.Block(
 				new[] { nativePageVariable, propertyVariable },
-				Expression.Assign(nativePageVariable, Expression.Call(nativePageFunc.GetMethodInfo(), pageArgument)),
+				Expression.Assign(nativePageVariable, Expression.Invoke(nativePageFunc, pageArgument)),
 				Expression.Assign(propertyVariable, Expression.Convert(nativePageVariable, pageType)),
 				Expression.Invoke(actionFunc, Expression.Property(propertyVariable, propertyInfo)));
 
@@ -321,7 +321,7 @@ namespace SpecBind.Pages
         /// <returns>A tuple containing the get and set expressions.</returns>
         private static Tuple<Func<IPage, Func<object, bool>, bool>, Action<IPage, object>> AddProperty(Type pageType, PropertyInfo propertyInfo)
 		{
-			var nativePageFunc = new Func<IPage, TPageBase>(p => p.GetNativePage<TPageBase>());
+            Expression<Func<IPage, TPageBase>> nativePageFunc = p => p.GetNativePage<TPageBase>();
 			var pageArgument = Expression.Parameter(typeof(IPage), "page");
 			var actionFunc = Expression.Parameter(typeof(Func<object, bool>), "actionFunc");
 
@@ -330,7 +330,7 @@ namespace SpecBind.Pages
 
 			var getMethodCall = Expression.Block(
 				new[] { nativePageVariable, propertyVariable },
-				Expression.Assign(nativePageVariable, Expression.Call(nativePageFunc.GetMethodInfo(), pageArgument)),
+				Expression.Assign(nativePageVariable, Expression.Invoke(nativePageFunc, pageArgument)),
 				Expression.Assign(propertyVariable, Expression.Convert(nativePageVariable, pageType)),
 				Expression.Invoke(actionFunc, Expression.Property(propertyVariable, propertyInfo)));
 
@@ -342,7 +342,7 @@ namespace SpecBind.Pages
 		        var setValue = Expression.Variable(typeof(object));
 		        var setMethodCall = Expression.Block(
 		            new[] { nativePageVariable, propertyVariable },
-		            Expression.Assign(nativePageVariable, Expression.Call(nativePageFunc.GetMethodInfo(), pageArgument)),
+		            Expression.Assign(nativePageVariable, Expression.Invoke(nativePageFunc, pageArgument)),
 		            Expression.Assign(propertyVariable, Expression.Convert(nativePageVariable, pageType)),
 		            Expression.Assign(
 		                Expression.Property(propertyVariable, propertyInfo),
