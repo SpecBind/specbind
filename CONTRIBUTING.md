@@ -24,8 +24,7 @@ If you don't know what a pull request is read this article: https://help.github.
 You might also read these two blogs posts on contributing code: [Open Source Contribution Etiquette](http://tirania.org/blog/archive/2010/Dec-31.html) by Miguel de Icaza and [Don't "Push" Your Pull Requests](http://www.igvita.com/2011/12/19/dont-push-your-pull-requests/) by Ilya Grigorik.
 
 ## Development Tools
-- Visual Studio 2013
-- StyleCop
+- Visual Studio 2015
 
 ## Before submitting a pull request
 
@@ -33,7 +32,7 @@ To avoid delays in pull requests please check the following before submitting:
 - Does the project build?
 - If you added a feature is there an implementation for Selenium and CodedUI?
 - Do all the unit tests pass (Main, CodedUI and Selenium)?
-- Did you run StyleCop? (Right click on solution, select "Run StyleCop", look at build output for errors)
+- Did you look for StyleCop (SA) Warnings? Build failure on this is not currently enabled.
 - Is there documentation for the feature? If so, include in the issue.
 
 The build will be checked by AppVeyor so if it passes, and the request can be merged it will be accepted.
