@@ -117,22 +117,19 @@ namespace SpecBind.ActionPipeline
 		/// <returns>
 		/// The created exception.
 		/// </returns>
-		private static ElementExecuteException GetElementNotFoundException(IPage page, string fieldName, Func<IPropertyData, bool> filter = null)
+		private static ElementExecuteException GetElementNotFoundException(IPage page, string fieldName, Func<IPropertyData, bool> filter)
 		{
 			string availableFields = null;
 
-			if (filter != null)
+			var builder = new System.Text.StringBuilder(" Available Fields: ");
+			builder.AppendLine();
+
+			foreach (var field in page.GetPropertyNames(filter))
 			{
-				var builder = new System.Text.StringBuilder(" Available Fields: ");
-				builder.AppendLine();
-
-				foreach (var field in page.GetPropertyNames(filter))
-				{
-					builder.AppendLine(field);
-				}
-
-				availableFields = builder.ToString();
+				builder.AppendLine(field);
 			}
+
+			availableFields = builder.ToString();
 
 			return new ElementExecuteException("Could not locate property '{0}' on page {1}.{2}", fieldName, page.PageType.Name, availableFields);
 		}

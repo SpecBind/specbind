@@ -38,6 +38,35 @@ namespace SpecBind.Tests.Actions
             propData.Setup(p => p.ClearData());
 
             // ReSharper disable once RedundantAssignment
+            IPropertyData element = propData.Object;
+
+            var locator = new Mock<IElementLocator>(MockBehavior.Strict);
+            locator.Setup(p => p.TryGetElement("myitem", out element)).Returns(true);
+
+            var getItemAction = new ClearDataAction
+            {
+                ElementLocator = locator.Object
+            };
+
+            var context = new ClearDataAction.ClearDataContext("myitem");
+            var result = getItemAction.Execute(context);
+
+            Assert.AreEqual(true, result.Success);
+
+            locator.VerifyAll();
+            propData.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests that Execute will clear the data for the found element.
+        /// </summary>
+        [TestMethod]
+        public void TestExecuteClearsDataIfPropertyIsFound()
+        {
+            var propData = new Mock<IPropertyData>(MockBehavior.Strict);
+            propData.Setup(p => p.ClearData());
+
+            // ReSharper disable once RedundantAssignment
             IPropertyData element = null;
 
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);

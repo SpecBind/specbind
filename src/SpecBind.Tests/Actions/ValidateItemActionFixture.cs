@@ -65,6 +65,34 @@ namespace SpecBind.Tests.Actions
         }
 
         /// <summary>
+        /// Tests the execute method with a property that does not exist but that's the comparer.
+        /// </summary>
+        [TestMethod]
+        public void TestExecuteWhenFieldDoesNotExistAndIsDoesNotExistComparerReturnsSuccess()
+        {
+            IPropertyData propertyData;
+            var locator = new Mock<IElementLocator>(MockBehavior.Strict);
+            locator.Setup(p => p.TryGetProperty("pdoesnotexist", out propertyData)).Returns(false);
+
+            var validateItemAction = new ValidateItemAction
+            {
+                ElementLocator = locator.Object
+            };
+
+            var table = new ValidationTable();
+            table.AddValidation("pdoesnotexist", "My Data", "doesnotexist");
+            table.Process(new DoesNotExistComparer());
+
+            var context = new ValidateItemAction.ValidateItemContext(table);
+
+            var result = validateItemAction.Execute(context);
+
+            Assert.AreEqual(true, result.Success);
+
+            locator.VerifyAll();
+        }
+
+        /// <summary>
         /// Tests the execute method with a property that exists and is valid returns a successful result.
         /// </summary>
         [TestMethod]
