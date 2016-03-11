@@ -77,5 +77,34 @@ namespace SpecBind.Tests.Actions
 			locator.VerifyAll();
 			propData.VerifyAll();
 		}
-	}
+
+        /// <summary>
+		///     Tests the fill field with an element that exists and can be clicked.
+		/// </summary>
+		[TestMethod]
+        public void TestClickItemWhenWaitIsEnabledReturnsSuccess()
+        {
+            var propData = new Mock<IPropertyData>(MockBehavior.Strict);
+            propData.Setup(p => p.ClickElement());
+
+            var locator = new Mock<IElementLocator>(MockBehavior.Strict);
+            locator.Setup(p => p.GetElement("myproperty")).Returns(propData.Object);
+
+            ButtonClickAction.WaitForStillElementBeforeClicking = false;
+            
+            var buttonClickAction = new ButtonClickAction
+            {
+                ElementLocator = locator.Object
+                
+            };
+
+            var context = new ActionContext("myproperty");
+            var result = buttonClickAction.Execute(context);
+
+            Assert.AreEqual(true, result.Success);
+
+            locator.VerifyAll();
+            propData.VerifyAll();
+        }
+    }
 }

@@ -66,7 +66,7 @@ namespace SpecBind.Actions
 					return ActionResult.Successful();
 				}
 
-				throw;
+                return ActionResult.Failure(ex);
 			}
 
 			return ActionResult.Successful();

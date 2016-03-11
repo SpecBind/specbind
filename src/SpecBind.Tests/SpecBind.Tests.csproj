@@ -65,6 +65,7 @@
     <Compile Include="ActionPipeline\ElementLocatorFixture.cs" />
     <Compile Include="ActionPipeline\ActionRepositoryFixture.cs" />
     <Compile Include="ActionPipeline\ActionResultExtensionsFixture.cs" />
+    <Compile Include="Actions\HoverOverElementActionFixture.cs" />
     <Compile Include="Actions\ButtonClickActionFixture.cs" />
     <Compile Include="Actions\ClearDataActionFixture.cs" />
     <Compile Include="Actions\DismissDialogActionFixture.cs" />
