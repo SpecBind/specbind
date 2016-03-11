@@ -181,6 +181,47 @@ namespace SpecBind.Tests
         }
 
         /// <summary>
+        /// Tests the close method when dispose is true.
+        /// </summary>
+        [TestMethod]
+        public void TestCloseWhenDisposeIsTrue()
+        {
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
+            browser.Setup(b => b.Close());
+            browser.Protected().Setup("DisposeWindow");
+
+            var browserInstance = browser.Object;
+            browserInstance.Close(true);
+
+            Assert.IsTrue(browserInstance.IsDisposed);
+
+            browser.Verify(b => b.Close());
+            browser.Protected().Verify("DisposeWindow", Times.Once());
+        }
+
+        /// <summary>
+        /// Tests the close method when dispose is false.
+        /// </summary>
+        [TestMethod]
+        public void TestCloseWhenDisposeIsFalse()
+        {
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
+            browser.Setup(b => b.Close());
+            browser.Protected().Setup("DisposeWindow");
+
+            var browserInstance = browser.Object;
+            browserInstance.Close(false);
+
+            Assert.IsFalse(browserInstance.IsDisposed);
+
+            browser.Verify(b => b.Close());
+            browser.Protected().Verify("DisposeWindow", Times.Never());
+        }
+
+
+        /// <summary>
         /// A test class for the page.
         /// </summary>
         // ReSharper disable once ClassNeverInstantiated.Local

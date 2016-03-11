@@ -18,6 +18,7 @@ namespace SpecBind.BrowserSupport
     public abstract class BrowserBase : IBrowser
     {
         private readonly ILogger logger;
+        private bool disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BrowserBase"/> class.
@@ -41,6 +42,17 @@ namespace SpecBind.BrowserSupport
         /// The url of the base page.
         /// </value>
         public abstract string Url { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is disposed.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance is disposed; otherwise, <c>false</c>.
+        /// </value>
+        internal bool IsDisposed
+        {
+            get { return this.disposed; }
+        }
 
         /// <summary>
         /// Adds the cookie to the browser.
@@ -67,7 +79,14 @@ namespace SpecBind.BrowserSupport
         /// Closes the instance and optionally dispose of all resources
         /// </summary>
         /// <param name="dispose">Whether or not resources should get disposed</param>
-        public abstract void Close(bool dispose);
+        public void Close(bool dispose)
+        {
+            this.Close();
+            if (dispose)
+            {
+                this.Dispose();
+            }
+        }
 
         /// <summary>
         /// Dismisses the alert.
@@ -163,6 +182,15 @@ namespace SpecBind.BrowserSupport
         }
 
         /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
         /// Takes the screenshot from the native browser.
         /// </summary>
         /// <param name="imageFolder">The image folder.</param>
@@ -199,6 +227,22 @@ namespace SpecBind.BrowserSupport
         }
 
         /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected void Dispose(bool disposing)
+        {
+            if (!disposing || this.disposed)
+            {
+                return;
+            }
+
+            this.DisposeWindow();
+
+            this.disposed = true;
+        }
+
+        /// <summary>
         /// Gets the native page location.
         /// </summary>
         /// <param name="page">The page interface.</param>
@@ -214,18 +258,8 @@ namespace SpecBind.BrowserSupport
         protected abstract IPage CreateNativePage(Type pageType, bool verifyPageValidity);
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases windows and driver specific resources. This method is already protected by the base instance.
         /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected abstract void Dispose(bool disposing);
+        protected abstract void DisposeWindow();
     }
 }

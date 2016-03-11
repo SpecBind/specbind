@@ -26,7 +26,6 @@ namespace SpecBind.Selenium
         private readonly SeleniumPageBuilder pageBuilder;
         private readonly Dictionary<Type, Func<IWebDriver, IBrowser, Action<object>, object>> pageCache;
 
-        private bool disposed;
         private bool switchedContext;
 
         /// <summary>
@@ -126,19 +125,6 @@ namespace SpecBind.Selenium
             if (this.driver.IsValueCreated)
             {
                 this.driver.Value.Close();
-            }
-        }
-
-        /// <summary>
-        /// Closes the instance and optionally dispose of all resources
-        /// </summary>
-        /// <param name="dispose">Whether or not resources should get disposed</param>
-        public override void Close(bool dispose)
-        {
-            this.Close();
-            if (dispose)
-            {
-                this.Dispose();
             }
         }
 
@@ -315,25 +301,18 @@ namespace SpecBind.Selenium
                };
         }
 
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (!disposing || this.disposed)
-            {
-                return;
-            }
 
+        /// <summary>
+        /// Releases windows and driver specific resources. This method is already protected by the base instance.
+        /// </summary>
+        protected override void DisposeWindow()
+        {
             if (this.driver.IsValueCreated)
             {
                 var localDriver = this.driver.Value;
                 localDriver.Quit();
                 localDriver.Dispose();
             }
-
-            this.disposed = true;
         }
 
         /// <summary>

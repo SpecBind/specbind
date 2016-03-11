@@ -59,21 +59,12 @@ namespace SpecBind.Plugin
 
                 generationContext.TestClass.CustomAttributes.Add(
                     new CodeAttributeDeclaration(new CodeTypeReference(CodedUiTestClassAttribute)));
-<<<<<<< HEAD
-	        }
-
-            // Add deployment item in each test for the driver.
-			generationContext.TestClass.CustomAttributes.Add(
-				new CodeAttributeDeclaration(
-                    new CodeTypeReference(DeploymentItemAttribute),
-=======
             }
-            
+
             // Add deployment item in each test for the driver.
             generationContext.TestClass.CustomAttributes.Add(
                 new CodeAttributeDeclaration(
-                    new CodeTypeReference(DeploymentItemAttribute), 
->>>>>>> 5ad7ae3... Updated SpecBind to use SpecFlow 2.0.0
+                    new CodeTypeReference(DeploymentItemAttribute),
                     new CodeAttributeArgument(new CodePrimitiveExpression(providerName))));
         }
     }

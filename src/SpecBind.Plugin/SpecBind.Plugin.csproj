@@ -23,11 +23,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-<<<<<<< HEAD
     <CodeAnalysisRuleSet>..\SpecBind.ruleset</CodeAnalysisRuleSet>
-=======
     <Prefer32Bit>false</Prefer32Bit>
->>>>>>> 5ad7ae3... Updated SpecBind to use SpecFlow 2.0.0
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,36 +33,33 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-<<<<<<< HEAD
     <CodeAnalysisRuleSet>..\SpecBind.ruleset</CodeAnalysisRuleSet>
-=======
     <Prefer32Bit>false</Prefer32Bit>
->>>>>>> 5ad7ae3... Updated SpecBind to use SpecFlow 2.0.0
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Gherkin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=86496cfa5b4a5851, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SpecFlow.CustomPlugin.2.0.0\lib\net45\Gherkin.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="TechTalk.SpecFlow, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SpecFlow.2.0.0\lib\net45\TechTalk.SpecFlow.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="TechTalk.SpecFlow.Generator, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SpecFlow.CustomPlugin.2.0.0\lib\net45\TechTalk.SpecFlow.Generator.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="TechTalk.SpecFlow.Parser, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SpecFlow.CustomPlugin.2.0.0\lib\net45\TechTalk.SpecFlow.Parser.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="TechTalk.SpecFlow.Utils, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SpecFlow.CustomPlugin.2.0.0\lib\net45\TechTalk.SpecFlow.Utils.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -27,9 +27,7 @@ namespace SpecBind.CodedUI
         private readonly Dictionary<Type, Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument>> pageCache;
         private readonly Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>> frameCache;
         private readonly Lazy<BrowserWindow> window;
-
-        private bool disposed;
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="CodedUIBrowser" /> class.
         /// </summary>
@@ -113,19 +111,6 @@ namespace SpecBind.CodedUI
             if (this.window.IsValueCreated)
             {
                 this.window.Value.Close();
-            }
-        }
-
-        /// <summary>
-        /// Closes the instance and optionally dispose of all resources
-        /// </summary>
-        /// <param name="dispose">Whether or not resources should get disposed</param>
-        public override void Close(bool dispose)
-        {
-            this.Close();
-            if (dispose)
-            {
-                this.Dispose();
             }
         }
 
@@ -247,22 +232,14 @@ namespace SpecBind.CodedUI
         }
 
         /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
+        /// Releases windows and driver specific resources. This method is already protected by the base instance.
         /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected override void Dispose(bool disposing)
+        protected override void DisposeWindow()
         {
-            if (!disposing || this.disposed)
-            {
-                return;
-            }
-
             if (this.window.IsValueCreated)
             {
                 this.window.Value.Dispose();
             }
-
-            this.disposed = true;
         }
 
         /// <summary>

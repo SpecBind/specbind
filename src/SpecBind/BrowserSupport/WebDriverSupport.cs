@@ -4,8 +4,8 @@
 
 namespace SpecBind.BrowserSupport
 {
-<<<<<<< HEAD
     using System;
+    using System.Collections.Concurrent;
     using System.IO;
 
     using BoDi;
@@ -85,7 +85,7 @@ namespace SpecBind.BrowserSupport
         /// <summary>
         /// Initializes the page mapper at the start of the test run.
         /// </summary>
-        [BeforeScenario]
+        [BeforeScenario(Order = 100)]
         public void InitializeDriver()
         {
             this.objectContainer.RegisterTypeAs<ProxyLogger, ILogger>();
@@ -104,7 +104,7 @@ namespace SpecBind.BrowserSupport
                 browser.ClearCookies();
             }
 
-            this.objectContainer.RegisterInstanceAs(browser);
+            this.objectContainer.RegisterInstanceAs(browser, dispose: true);
 
             this.objectContainer.RegisterInstanceAs<ISettingHelper>(new WrappedSettingHelper());
 
@@ -112,8 +112,8 @@ namespace SpecBind.BrowserSupport
             mapper.Initialize(browser.BasePageType);
             this.objectContainer.RegisterInstanceAs<IPageMapper>(mapper);
 
-            this.objectContainer.RegisterInstanceAs<IScenarioContextHelper>(new ScenarioContextHelper());
-            this.objectContainer.RegisterInstanceAs(TokenManager.Current);
+            this.objectContainer.RegisterTypeAs<ScenarioContextHelper, IScenarioContextHelper>();
+            this.objectContainer.RegisterTypeAs<TokenManager, ITokenManager>();
 
             var repository = new ActionRepository(this.objectContainer);
             this.objectContainer.RegisterInstanceAs<IActionRepository>(repository);
@@ -138,160 +138,24 @@ namespace SpecBind.BrowserSupport
         }
 
         /// <summary>
-=======
-	using System;
-	using System.Collections.Concurrent;
-	using System.IO;
-
-	using BoDi;
-
-	using SpecBind.ActionPipeline;
-	using SpecBind.Actions;
-	using SpecBind.Configuration;
-	using SpecBind.Helpers;
-	using SpecBind.Pages;
-
-	using TechTalk.SpecFlow;
-	using TechTalk.SpecFlow.Tracing;
-
-	/// <summary>
-	/// A hooks support class for the web driver.
-	/// </summary>
-	[Binding]
-	[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-	public class WebDriverSupport
-	{
-		private static IBrowser browser;
-		private static Lazy<ConfigurationSectionHandler> configurationHandler = new Lazy<ConfigurationSectionHandler>(SettingHelper.GetConfigurationSection);
-		private readonly IObjectContainer objectContainer;
-		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="WebDriverSupport" /> class.
-		/// </summary>
-		/// <param name="objectContainer">The object container.</param>
-		public WebDriverSupport(IObjectContainer objectContainer)
-		{
-			this.objectContainer = objectContainer;
-		}
-
-		/// <summary>
-		/// Gets or sets the web browser for the session.
-		/// </summary>
-		/// <value>
-		/// The web browser.
-		/// </value>
-		internal static IBrowser Browser
-		{
-			get
-			{
-				return browser;
-			}
-			
-			set
-			{
-				browser = value;
-			}
-		}
-
-		/// <summary>
-		/// Sets the configuration method for testing.
-		/// </summary>
-		/// <value>
-		/// The configuration method factory.
-		/// </value>
-		internal static Lazy<ConfigurationSectionHandler> ConfigurationMethod
-		{
-			set
-			{
-				configurationHandler = value;
-			}
-		}
-
-		/// <summary>
-		/// Checks the browser factory for any necessary drivers.
-		/// </summary>
-		[BeforeTestRun]
-		public static void CheckForDriver()
-		{
-			var factory = BrowserFactory.GetBrowserFactory(new NullLogger());
-			factory.ValidateDriverSetup();
-		}
-			 
-		/// <summary>
-		/// Initializes the page mapper at the start of the test run.
-		/// </summary>
-		[BeforeScenario(Order = 100)]
-		public void InitializeDriver()
-		{
-			this.objectContainer.RegisterTypeAs<ProxyLogger, ILogger>();
-			var logger = this.objectContainer.Resolve<ILogger>();
-
-			var factory = BrowserFactory.GetBrowserFactory(logger);
-			var configSection = configurationHandler.Value;
-
-			if (!configSection.BrowserFactory.ReuseBrowser || browser == null) 
-			{ 
-				browser = factory.GetBrowser();
-			}
-
-			if (configSection.BrowserFactory.EnsureCleanSession)
-			{
-				browser.ClearCookies();
-			}
-
-			this.objectContainer.RegisterInstanceAs(browser, dispose: true);
-
-			this.objectContainer.RegisterInstanceAs<ISettingHelper>(new WrappedSettingHelper());
-
-			var mapper = new PageMapper();
-			mapper.Initialize(browser.BasePageType);
-			this.objectContainer.RegisterInstanceAs<IPageMapper>(mapper);
-
-			this.objectContainer.RegisterTypeAs<ScenarioContextHelper, IScenarioContextHelper>();
-			this.objectContainer.RegisterTypeAs<TokenManager, ITokenManager>();
-
-			var repository = new ActionRepository(this.objectContainer);
-			this.objectContainer.RegisterInstanceAs<IActionRepository>(repository);
-			this.objectContainer.RegisterTypeAs<ActionPipelineService, IActionPipelineService>();
-			
-			// Initialize the repository
-			repository.Initialize();
-		}
-
-		/// <summary>
-		/// Tears down the web driver
-		/// </summary>
-		[AfterTestRun]
-		public static void TearDownAfterTestRun()
-		{
-			if (browser == null)
-			{
-				return;
-			}
-
-			browser.Close(dispose: true);
-		}
-
-		/// <summary>
->>>>>>> 5ad7ae3... Updated SpecBind to use SpecFlow 2.0.0
-		/// Performs AfterScenario actions in a controlled order.
+        /// Performs AfterScenario actions in a controlled order.
         /// </summary>
         [AfterScenario]
-		public void ExecuteAfterScenario()
-		{
-			try
-			{
-				this.CheckForScreenshot();
-			}
-			finally
-			{
-				TearDownAfterScenario();
-			}
-		}
+        public void ExecuteAfterScenario()
+        {
+            try
+            {
+                this.CheckForScreenshot();
+            }
+            finally
+            {
+                TearDownAfterScenario();
+            }
+        }
 
-		/// <summary>
-		/// Tear down the web driver after scenario, if applicable
-		/// </summary>
+        /// <summary>
+        /// Tear down the web driver after scenario, if applicable
+        /// </summary>
         public static void TearDownAfterScenario()
         {
             if (browser == null)
@@ -302,16 +166,16 @@ namespace SpecBind.BrowserSupport
             var configSection = configurationHandler.Value;
             if (!configSection.BrowserFactory.ReuseBrowser)
             {
-				try
-				{
-                browser.Close(dispose: true);
-				}
-				finally
-				{
-                browser = null;
+                try
+                {
+                    browser.Close(dispose: true);
+                }
+                finally
+                {
+                    browser = null;
+                }
             }
         }
-		}
 
         /// <summary>
         /// Checks for screenshot.
@@ -335,14 +199,14 @@ namespace SpecBind.BrowserSupport
                 traceListener.WriteTestOutput("Created Error Screenshot: {0}", fullPath);
             }
 
-			try
-			{
-				browser.Close(dispose: true);
-			}
-			finally
-			{
-				browser = null;
-			}
+            try
+            {
+                browser.Close(dispose: true);
+            }
+            finally
+            {
+                browser = null;
+            }
         }
     }
 }
