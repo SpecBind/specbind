@@ -11,7 +11,6 @@ namespace SpecBind.Helpers
 	/// </summary>
 	public class TokenManager : ITokenManager
 	{
-		private static readonly TokenManager Manager = new TokenManager(new ScenarioContextHelper());
 		private readonly IScenarioContextHelper context;
 
 		/// <summary>
@@ -21,20 +20,6 @@ namespace SpecBind.Helpers
 		public TokenManager(IScenarioContextHelper context)
 		{
 			this.context = context;
-		}
-
-		/// <summary>
-		/// Gets the current token manager.
-		/// </summary>
-		/// <value>
-		/// The current token manager.
-		/// </value>
-		public static ITokenManager Current
-		{
-			get
-			{
-				return Manager;
-			}
 		}
 
 		/// <summary>

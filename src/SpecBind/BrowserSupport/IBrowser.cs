@@ -12,7 +12,7 @@ namespace SpecBind.BrowserSupport
     /// <summary>
     /// An interface to describe browser methods.
     /// </summary>
-    public interface IBrowser
+    public interface IBrowser : IDisposable
     {
         /// <summary>
         /// Gets the type of the base page.

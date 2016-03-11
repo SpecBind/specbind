@@ -5,6 +5,7 @@
 namespace SpecBind.BrowserSupport
 {
     using System;
+    using System.Collections.Concurrent;
     using System.IO;
 
     using BoDi;
@@ -84,7 +85,7 @@ namespace SpecBind.BrowserSupport
         /// <summary>
         /// Initializes the page mapper at the start of the test run.
         /// </summary>
-        [BeforeScenario]
+        [BeforeScenario(Order = 100)]
         public void InitializeDriver()
         {
             this.objectContainer.RegisterTypeAs<ProxyLogger, ILogger>();
@@ -103,7 +104,7 @@ namespace SpecBind.BrowserSupport
                 browser.ClearCookies();
             }
 
-            this.objectContainer.RegisterInstanceAs(browser);
+            this.objectContainer.RegisterInstanceAs(browser, dispose: true);
 
             this.objectContainer.RegisterInstanceAs<ISettingHelper>(new WrappedSettingHelper());
 
@@ -111,8 +112,8 @@ namespace SpecBind.BrowserSupport
             mapper.Initialize(browser.BasePageType);
             this.objectContainer.RegisterInstanceAs<IPageMapper>(mapper);
 
-            this.objectContainer.RegisterInstanceAs<IScenarioContextHelper>(new ScenarioContextHelper());
-            this.objectContainer.RegisterInstanceAs(TokenManager.Current);
+            this.objectContainer.RegisterTypeAs<ScenarioContextHelper, IScenarioContextHelper>();
+            this.objectContainer.RegisterTypeAs<TokenManager, ITokenManager>();
 
             var repository = new ActionRepository(this.objectContainer);
             this.objectContainer.RegisterInstanceAs<IActionRepository>(repository);
@@ -137,24 +138,24 @@ namespace SpecBind.BrowserSupport
         }
 
         /// <summary>
-		/// Performs AfterScenario actions in a controlled order.
+        /// Performs AfterScenario actions in a controlled order.
         /// </summary>
         [AfterScenario]
-		public void ExecuteAfterScenario()
-		{
-			try
-			{
-				this.CheckForScreenshot();
-			}
-			finally
-			{
-				TearDownAfterScenario();
-			}
-		}
+        public void ExecuteAfterScenario()
+        {
+            try
+            {
+                this.CheckForScreenshot();
+            }
+            finally
+            {
+                TearDownAfterScenario();
+            }
+        }
 
-		/// <summary>
-		/// Tear down the web driver after scenario, if applicable
-		/// </summary>
+        /// <summary>
+        /// Tear down the web driver after scenario, if applicable
+        /// </summary>
         public static void TearDownAfterScenario()
         {
             if (browser == null)
@@ -165,16 +166,16 @@ namespace SpecBind.BrowserSupport
             var configSection = configurationHandler.Value;
             if (!configSection.BrowserFactory.ReuseBrowser)
             {
-				try
-				{
-                browser.Close(dispose: true);
-				}
-				finally
-				{
-                browser = null;
+                try
+                {
+                    browser.Close(dispose: true);
+                }
+                finally
+                {
+                    browser = null;
+                }
             }
         }
-		}
 
         /// <summary>
         /// Checks for screenshot.
@@ -198,14 +199,14 @@ namespace SpecBind.BrowserSupport
                 traceListener.WriteTestOutput("Created Error Screenshot: {0}", fullPath);
             }
 
-			try
-			{
-				browser.Close(dispose: true);
-			}
-			finally
-			{
-				browser = null;
-			}
+            try
+            {
+                browser.Close(dispose: true);
+            }
+            finally
+            {
+                browser = null;
+            }
         }
     }
 }

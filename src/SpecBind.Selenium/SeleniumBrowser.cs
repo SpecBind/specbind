@@ -9,7 +9,6 @@ namespace SpecBind.Selenium
     using System.Diagnostics.CodeAnalysis;
     using System.Drawing.Imaging;
     using System.IO;
-    using System.Threading;
 
     using OpenQA.Selenium;
 
@@ -21,13 +20,12 @@ namespace SpecBind.Selenium
     /// <summary>
     /// A web browser level wrapper for selenium
     /// </summary>
-    public class SeleniumBrowser : BrowserBase, IDisposable
+    public class SeleniumBrowser : BrowserBase
     {
         private readonly Lazy<IWebDriver> driver;
         private readonly SeleniumPageBuilder pageBuilder;
         private readonly Dictionary<Type, Func<IWebDriver, IBrowser, Action<object>, object>> pageCache;
 
-        private bool disposed;
         private bool switchedContext;
 
         /// <summary>
@@ -76,16 +74,16 @@ namespace SpecBind.Selenium
             }
         }
 
-		/// <summary>
-		/// Gets the current driver to enable the user to do custom steps if necessary
-		/// </summary>
-		public IWebDriver Driver
-		{
-			get
-			{
-				return this.driver.Value;
-			}
-		}
+        /// <summary>
+        /// Gets the current driver to enable the user to do custom steps if necessary
+        /// </summary>
+        public IWebDriver Driver
+        {
+            get
+            {
+                return this.driver.Value;
+            }
+        }
 
         /// <summary>
         /// Adds the cookie to the browser.
@@ -127,19 +125,6 @@ namespace SpecBind.Selenium
             if (this.driver.IsValueCreated)
             {
                 this.driver.Value.Close();
-            }
-        }
-
-        /// <summary>
-        /// Closes the instance and optionally dispose of all resources
-        /// </summary>
-        /// <param name="dispose">Whether or not resources should get disposed</param>
-        public override void Close(bool dispose)
-        {
-            this.Close();
-            if (dispose)
-            {
-                this.Dispose();
             }
         }
 
@@ -199,15 +184,6 @@ namespace SpecBind.Selenium
             var proxy = new WebElement(webElement);
             proxy.CloneNativeElement(webElement);
             return proxy;
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public virtual void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -325,25 +301,18 @@ namespace SpecBind.Selenium
                };
         }
 
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing || this.disposed)
-            {
-                return;
-            }
 
+        /// <summary>
+        /// Releases windows and driver specific resources. This method is already protected by the base instance.
+        /// </summary>
+        protected override void DisposeWindow()
+        {
             if (this.driver.IsValueCreated)
             {
                 var localDriver = this.driver.Value;
                 localDriver.Quit();
                 localDriver.Dispose();
             }
-
-            this.disposed = true;
         }
 
         /// <summary>

@@ -301,36 +301,6 @@ namespace SpecBind.Selenium.Tests
         }
 
         /// <summary>
-        /// Tests the close method when dispose is true.
-        /// </summary>
-        [TestMethod]
-        public void TestCloseWhenDisposeIsTrue()
-        {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-            var browser = new Mock<SeleniumBrowser>(new Lazy<IWebDriver>(() => driver.Object), logger.Object) { CallBase = true };
-
-            browser.Object.Close(true);
-
-            browser.Verify(b => b.Dispose());
-        }
-
-        /// <summary>
-        /// Tests the close method when dispose is false.
-        /// </summary>
-        [TestMethod]
-        public void TestCloseWhenDisposeIsFalse()
-        {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-            var browser = new Mock<SeleniumBrowser>(new Lazy<IWebDriver>(() => driver.Object), logger.Object) { CallBase = true };
-
-            browser.Object.Close(false);
-
-            browser.Verify(b => b.Dispose(), Times.Never());
-        }
-
-        /// <summary>
         /// Tests the getting the page location returns the url value.
         /// </summary>
         [TestMethod]

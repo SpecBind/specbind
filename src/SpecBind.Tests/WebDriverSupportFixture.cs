@@ -37,12 +37,12 @@ namespace SpecBind.Tests
             var logger = new Mock<ILogger>();
 
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
-            container.Setup(c => c.RegisterInstanceAs(It.IsAny<IBrowser>(), null));
-            container.Setup(c => c.RegisterInstanceAs<ISettingHelper>(It.IsAny<WrappedSettingHelper>(), null));
-            container.Setup(c => c.RegisterInstanceAs(It.IsAny<IPageMapper>(), null));
-            container.Setup(c => c.RegisterInstanceAs<IScenarioContextHelper>(It.IsAny<ScenarioContextHelper>(), null));
-            container.Setup(c => c.RegisterInstanceAs<ITokenManager>(It.IsAny<TokenManager>(), null));
-            container.Setup(c => c.RegisterInstanceAs(It.IsAny<IActionRepository>(), null));
+            container.Setup(c => c.RegisterInstanceAs(It.IsAny<IBrowser>(), null, true));
+            container.Setup(c => c.RegisterInstanceAs<ISettingHelper>(It.IsAny<WrappedSettingHelper>(), null, false));
+            container.Setup(c => c.RegisterInstanceAs(It.IsAny<IPageMapper>(), null, false));
+            container.Setup(c => c.RegisterTypeAs<ScenarioContextHelper, IScenarioContextHelper>(null));
+            container.Setup(c => c.RegisterTypeAs<TokenManager, ITokenManager>(null));
+            container.Setup(c => c.RegisterInstanceAs(It.IsAny<IActionRepository>(), null, false));
             container.Setup(c => c.RegisterTypeAs<ActionPipelineService, IActionPipelineService>(null));
             container.Setup(c => c.RegisterTypeAs<ProxyLogger, ILogger>(null));
             container.Setup(c => c.Resolve<ILogger>()).Returns(logger.Object);
@@ -94,7 +94,7 @@ namespace SpecBind.Tests
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns("TestFileName.jpg");
             browser.Setup(b => b.SaveHtml(It.IsAny<string>(), "TestFileName")).Returns((string)null);
-			browser.Setup(b => b.Close(true));
+            browser.Setup(b => b.Close(true));
 
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve<IScenarioContextHelper>()).Returns(scenarioContext.Object);
@@ -126,7 +126,7 @@ namespace SpecBind.Tests
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns((string)null);
             browser.Setup(b => b.SaveHtml(It.IsAny<string>(), "TestFileName")).Returns((string)null);
-			browser.Setup(b => b.Close(true));
+            browser.Setup(b => b.Close(true));
 
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve<IScenarioContextHelper>()).Returns(scenarioContext.Object);
@@ -156,7 +156,7 @@ namespace SpecBind.Tests
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns((string)null);
             browser.Setup(b => b.SaveHtml(It.IsAny<string>(), "TestFileName")).Returns((string)null);
-			browser.Setup(b => b.Close(true));
+            browser.Setup(b => b.Close(true));
 
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve<IScenarioContextHelper>()).Returns(scenarioContext.Object);
