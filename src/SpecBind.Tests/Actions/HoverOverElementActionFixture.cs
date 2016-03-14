@@ -12,6 +12,7 @@ namespace SpecBind.Tests.Actions
     using SpecBind.Actions;
     using SpecBind.Pages;
     using System;
+
     /// <summary>
     /// A test fixture for hovering over an element
     /// </summary>

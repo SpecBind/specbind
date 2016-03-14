@@ -511,8 +511,10 @@ namespace SpecBind.Tests
         public void TestThenISeeStepListRuleScenarios()
         {
             RunStepListScenario("equals", ComparisonType.Equals);
+            RunStepListScenario("exists", ComparisonType.Contains);
             RunStepListScenario("contains", ComparisonType.Contains);
             RunStepListScenario("does not contain", ComparisonType.DoesNotContain);
+            RunStepListScenario("does not exist", ComparisonType.DoesNotContain);
             RunStepListScenario("starts with", ComparisonType.StartsWith);
             RunStepListScenario("ends with", ComparisonType.EndsWith);
         }

@@ -76,7 +76,7 @@ namespace SpecBind.Tests.Validation
         /// Tests the comparison with boolean members returns false because it's not supported.
         /// </summary>
         [TestMethod]
-        public void TestComparisonWithBooleansThrowsNotSupportedException()
+        public void TestComparisonWithBooleansReturnsFalse()
         {
             RunItemCompareTest("true", "false", false);
         }

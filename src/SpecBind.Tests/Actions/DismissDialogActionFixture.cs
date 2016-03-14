@@ -105,5 +105,24 @@ namespace SpecBind.Tests.Actions
 
             browser.VerifyAll();
         }
+
+        /// <summary>
+        /// dismiss alert when the text is null, to make sure it's translated into an empty string and the OK button is selected.
+        /// </summary>
+        [TestMethod]
+        public void TestDismissAlertWhenTextIsEnteredAndOkButtonIsChoosenCallsBrowserAction()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(p => p.DismissAlert(AlertBoxAction.Ok, "Some Text"));
+
+            var buttonClickAction = new DismissDialogAction(browser.Object);
+
+            var context = new DismissDialogAction.DismissDialogContext("ok", "Some Text");
+            var result = buttonClickAction.Execute(context);
+
+            Assert.AreEqual(true, result.Success);
+
+            browser.VerifyAll();
+        }
     }
 }

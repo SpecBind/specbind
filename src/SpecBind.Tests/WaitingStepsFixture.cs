@@ -23,6 +23,17 @@ namespace SpecBind.Tests
         private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(10);
 
         /// <summary>
+        /// Tests the default wait property for a 30 second timeout.
+        /// </summary>
+        [TestMethod]
+        public void TestGetDefaultWaitReturnsThirtySeconds()
+        {
+            var result = WaitingSteps.DefaultWait;
+
+            Assert.AreEqual(TimeSpan.FromSeconds(30), result);
+        }
+
+        /// <summary>
         /// Tests the wait for control exists step.
         /// </summary>
         [TestMethod]
@@ -148,6 +159,106 @@ namespace SpecBind.Tests
         }
 
         /// <summary>
+        /// Tests the wait for control still exists step.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlStillExistsStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<WaitForElementAction>(
+                testPage.Object,
+                It.Is<WaitForElementAction.WaitForElementContext>(c => c.PropertyName == "myfield" && c.Condition == WaitConditions.RemainsExistent && c.Timeout == Timeout)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitToStillSeeElementWithTimeout(10, "My Field");
+
+            pipelineService.VerifyAll();
+            scenarioContext.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for control not exists step with no timeout specified.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlStillExistsNoTimeoutStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<WaitForElementAction>(
+                testPage.Object,
+                It.Is<WaitForElementAction.WaitForElementContext>(c => c.PropertyName == "myfield" && c.Condition == WaitConditions.RemainsExistent && c.Timeout == null)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitToStillSeeElement("My Field");
+
+            pipelineService.VerifyAll();
+            scenarioContext.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for control remains non-existent step.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlRemainsNonExistentStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<WaitForElementAction>(
+                testPage.Object,
+                It.Is<WaitForElementAction.WaitForElementContext>(c => c.PropertyName == "myfield" && c.Condition == WaitConditions.RemainsNonExistent && c.Timeout == Timeout)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitToStillNotSeeElementWithTimeout(10, "My Field");
+
+            pipelineService.VerifyAll();
+            scenarioContext.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for control remains non-existent step with no timeout specified.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlRemainsNonExistentNoTimeoutStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<WaitForElementAction>(
+                testPage.Object,
+                It.Is<WaitForElementAction.WaitForElementContext>(c => c.PropertyName == "myfield" && c.Condition == WaitConditions.RemainsNonExistent && c.Timeout == null)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitToStillNotSeeElement("My Field");
+
+            pipelineService.VerifyAll();
+            scenarioContext.VerifyAll();
+        }
+
+        /// <summary>
         /// Tests the wait for control enabled step.
         /// </summary>
         [TestMethod]
@@ -198,6 +309,56 @@ namespace SpecBind.Tests
         }
 
         /// <summary>
+        /// Tests the wait for control remains enabled step.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlRemainsEnabledStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<WaitForElementAction>(
+                testPage.Object,
+                It.Is<WaitForElementAction.WaitForElementContext>(c => c.PropertyName == "myfield" && c.Condition == WaitConditions.RemainsEnabled && c.Timeout == Timeout)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitForElementStillEnabledWithTimeout(10, "My Field");
+
+            pipelineService.VerifyAll();
+            scenarioContext.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for control remains enabled step with no timeout specified.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlRemainsEnabledNoTimeoutStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<WaitForElementAction>(
+                testPage.Object,
+                It.Is<WaitForElementAction.WaitForElementContext>(c => c.PropertyName == "myfield" && c.Condition == WaitConditions.RemainsEnabled && c.Timeout == null)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitForElementStillEnabled("My Field");
+
+            pipelineService.VerifyAll();
+            scenarioContext.VerifyAll();
+        }
+
+        /// <summary>
         /// Tests the wait for control not enabled step.
         /// </summary>
         [TestMethod]
@@ -242,6 +403,106 @@ namespace SpecBind.Tests
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
             steps.WaitForElementNotEnabled("My Field");
+
+            pipelineService.VerifyAll();
+            scenarioContext.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for control remains disabled step.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlRemainsDisabledStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<WaitForElementAction>(
+                testPage.Object,
+                It.Is<WaitForElementAction.WaitForElementContext>(c => c.PropertyName == "myfield" && c.Condition == WaitConditions.RemainsDisabled && c.Timeout == Timeout)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitForElementStillNotEnabledWithTimeout(10, "My Field");
+
+            pipelineService.VerifyAll();
+            scenarioContext.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for control remains disabled step with no timeout specified.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlRemainsDisabledNoTimeoutStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<WaitForElementAction>(
+                testPage.Object,
+                It.Is<WaitForElementAction.WaitForElementContext>(c => c.PropertyName == "myfield" && c.Condition == WaitConditions.RemainsDisabled && c.Timeout == null)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitForElementStillNotEnabled("My Field");
+
+            pipelineService.VerifyAll();
+            scenarioContext.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for control not moving step.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlNotMovingStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<WaitForElementAction>(
+                testPage.Object,
+                It.Is<WaitForElementAction.WaitForElementContext>(c => c.PropertyName == "myfield" && c.Condition == WaitConditions.NotMoving && c.Timeout == Timeout)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitForElementNotMovingWithTimeout(10, "My Field");
+
+            pipelineService.VerifyAll();
+            scenarioContext.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the wait for control not moving step with no timeout specified.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForControlNotMovingNoTimeoutStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<WaitForElementAction>(
+                testPage.Object,
+                It.Is<WaitForElementAction.WaitForElementContext>(c => c.PropertyName == "myfield" && c.Condition == WaitConditions.NotMoving && c.Timeout == null)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitForElementNotMoving("My Field");
 
             pipelineService.VerifyAll();
             scenarioContext.VerifyAll();

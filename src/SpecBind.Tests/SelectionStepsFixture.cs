@@ -49,6 +49,33 @@ namespace SpecBind.Tests
         }
 
         /// <summary>
+        /// Tests the WhenIHoverOverAnElement method with a successful result.
+        /// </summary>
+        [TestMethod]
+        public void TestWhenIHoverOverAnElementStep()
+        {
+
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<HoverOverElementAction>(testPage.Object, It.Is<ActionContext>(c => c.PropertyName == "mylink")))
+                           .Returns(ActionResult.Successful());
+
+            var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WhenIHoverOverAnElementStep("my link");
+
+            pageMapper.VerifyAll();
+            scenarioContext.VerifyAll();
+            pipelineService.VerifyAll();
+        }
+
+        /// <summary>
         /// Tests the WhenIChooseALinkStep method when a step has not been set.
         /// </summary>
         [TestMethod]

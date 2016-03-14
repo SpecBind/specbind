@@ -71,5 +71,18 @@ namespace SpecBind.Tests.Validation
         {
             RunItemCompareTest("2/22/2013", "February 21, 2013", true);
         }
+
+        /// <summary>
+        /// Tests the ToString method for an expected response.
+        /// </summary>
+        [TestMethod]
+        public void TestToStringReturnsValidationInfo()
+        {
+            var comparer = new LessThanComparer();
+
+            var result = comparer.ToString();
+
+            Assert.AreEqual("Validation: lessthan", result);
+        }
     }
 }

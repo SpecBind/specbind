@@ -84,10 +84,7 @@ namespace SpecBind.Validation
         /// <param name="expected">The expected value.</param>
         /// <param name="actual">The actual value.</param>
         /// <returns><c>true</c> if the value passes the check, <c>false</c> otherwise.</returns>
-        protected virtual bool Compare(DateTime expected, DateTime actual)
-        {
-            throw new NotSupportedException();
-        }
+        protected abstract bool Compare(DateTime expected, DateTime actual);
 
         /// <summary>
         /// Compares the integer values according to the rule.
@@ -95,10 +92,7 @@ namespace SpecBind.Validation
         /// <param name="expected">The expected value.</param>
         /// <param name="actual">The actual value.</param>
         /// <returns><c>true</c> if the value passes the check, <c>false</c> otherwise.</returns>
-        protected virtual bool Compare(int expected, int actual)
-        {
-            throw new NotSupportedException();
-        }
+        protected abstract bool Compare(int expected, int actual);
 
         /// <summary>
         /// Compares the double values according to the rule.
@@ -106,10 +100,7 @@ namespace SpecBind.Validation
         /// <param name="expected">The expected value.</param>
         /// <param name="actual">The actual value.</param>
         /// <returns><c>true</c> if the value passes the check, <c>false</c> otherwise.</returns>
-        protected virtual bool Compare(double expected, double actual)
-        {
-            throw new NotSupportedException();
-        }
+        protected abstract bool Compare(double expected, double actual);
 
         /// <summary>
         /// Compares the string values according to the rule.

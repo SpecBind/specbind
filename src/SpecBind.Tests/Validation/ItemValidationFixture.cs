@@ -103,5 +103,31 @@ namespace SpecBind.Tests.Validation
 
             propertyData.VerifyAll();
         }
-	}
+
+        /// <summary>
+        /// Tests the ToString method to return the correct string.
+        /// </summary>
+        [TestMethod]
+        public void TestToStringReturnsRelevantItemData()
+        {
+            var item = new ItemValidation(" Field ", " equals ", " value ");
+
+            var result = item.ToString();
+
+            Assert.AreEqual("Field equals value", result);
+        }
+
+        /// <summary>
+        /// Tests the ToString method with a null value to return the correct string.
+        /// </summary>
+        [TestMethod]
+        public void TestToStringWithNullValueReturnsRelevantItemData()
+        {
+            var item = new ItemValidation(" Field ", " equals ", null);
+
+            var result = item.ToString();
+
+            Assert.AreEqual("Field equals <NULL>", result);
+        }
+    }
 }
