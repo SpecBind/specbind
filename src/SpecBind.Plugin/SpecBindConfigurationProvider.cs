@@ -111,11 +111,9 @@ namespace SpecBind.Plugin
         /// <param name="args">The arguments.</param>
         private static void WriteLine(string format, params object[] args)
         {
-            var content = string.Format(format, args);
-
             if (System.Diagnostics.Debugger.IsLogging())
             {
-                System.Diagnostics.Debug.WriteLine(content, "SpecBind");
+                System.Diagnostics.Debug.WriteLine(string.Format(format, args), "SpecBind");
             }
         }
     }
