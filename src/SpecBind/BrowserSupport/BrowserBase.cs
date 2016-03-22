@@ -9,6 +9,7 @@ namespace SpecBind.BrowserSupport
     using System.Linq;
 
     using SpecBind.Actions;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
     using UriHelper = Helpers.UriHelper;
 
@@ -52,6 +53,18 @@ namespace SpecBind.BrowserSupport
         internal bool IsDisposed
         {
             get { return this.disposed; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether or not the browser should be reused
+        /// </summary>
+        internal virtual bool ReuseBrowser
+        {
+            get
+            {
+                var configSection = SettingHelper.GetConfigurationSection();
+                return configSection.BrowserFactory.ReuseBrowser;
+            }
         }
 
         /// <summary>
@@ -186,7 +199,7 @@ namespace SpecBind.BrowserSupport
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
+            this.Dispose(!this.ReuseBrowser);
             GC.SuppressFinalize(this);
         }
 
