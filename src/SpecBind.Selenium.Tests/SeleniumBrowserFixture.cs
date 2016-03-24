@@ -350,12 +350,36 @@ namespace SpecBind.Selenium.Tests
             Assert.IsNotNull(lazyDriver.Value);
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
+            var mockBrowser = new Mock<SeleniumBrowser>(lazyDriver, logger.Object) {CallBase = true};
+            mockBrowser.Setup(x => x.ReuseBrowser).Returns(false);
 
-            var browser = new SeleniumBrowser(lazyDriver, logger.Object);
-
-            browser.Dispose();
+            mockBrowser.Object.Dispose();
 
             driver.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the dispose method is called if the driver has been used.
+        /// </summary>
+        [TestMethod]
+        public void TestDisposeDoesNotCloseBrowserWhenReuseBrowserIsTrue()
+        {
+            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            driver.Setup(d => d.Quit());
+            driver.Setup(d => d.Dispose());
+
+            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
+
+            Assert.IsNotNull(lazyDriver.Value);
+
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+            var mockBrowser = new Mock<SeleniumBrowser>(lazyDriver, logger.Object) { CallBase = true };
+            mockBrowser.Setup(x => x.ReuseBrowser).Returns(true);
+
+            mockBrowser.Object.Dispose();
+
+            driver.Verify(d => d.Quit(), Times.Never);
+            driver.Verify(d => d.Dispose(), Times.Never);
         }
 
         /// <summary>
