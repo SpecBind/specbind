@@ -4,18 +4,18 @@
 
 namespace SpecBind.Actions
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
+	using System;
+	using System.Threading;
+	using System.Threading.Tasks;
 
-    using SpecBind.ActionPipeline;
-    using SpecBind.BrowserSupport;
-    using SpecBind.Pages;
+	using SpecBind.ActionPipeline;
+	using SpecBind.BrowserSupport;
+	using SpecBind.Pages;
 
-    /// <summary>
-    /// An action that waits for the framework url to resolve to a certain page.
-    /// </summary>
-    public class WaitForPageAction : ContextActionBase<WaitForPageAction.WaitForPageActionContext>
+	/// <summary>
+	/// An action that waits for the framework url to resolve to a certain page.
+	/// </summary>
+	public class WaitForPageAction : ContextActionBase<WaitForPageAction.WaitForPageActionContext>
     {
         private readonly IBrowser browser;
         private readonly ILogger logger;
@@ -49,7 +49,7 @@ namespace SpecBind.Actions
         /// <value>
         /// The default timeout, 30 seconds.
         /// </value>
-        public static TimeSpan DefaultTimeout { get; set; }
+        public static new TimeSpan DefaultTimeout { get; set; }
 
         /// <summary>
         /// Executes this instance action.
@@ -66,7 +66,7 @@ namespace SpecBind.Actions
                     "Cannot locate a page for name: {0}. Check page aliases in the test assembly.", actionContext.PropertyName));
             }
 
-            var timeout = actionContext.Timeout.GetValueOrDefault(DefaultTimeout);
+            var timeout = actionContext.Timeout.GetValueOrDefault(WaitForPageAction.DefaultTimeout);
             var cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.CancelAfter(timeout);
             var token = cancellationTokenSource.Token;

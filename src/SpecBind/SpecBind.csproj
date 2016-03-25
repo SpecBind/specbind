@@ -76,6 +76,7 @@
     <Compile Include="Actions\SetCookiePreAction.cs" />
     <Compile Include="Actions\SetTokenFromValueAction.cs" />
     <Compile Include="Actions\HighlightLocatorAction.cs" />
+    <Compile Include="Actions\ValidateActionBase.cs" />
     <Compile Include="Actions\ValidateElementEnabledAction.cs" />
     <Compile Include="Actions\ValidateElementExistsAction.cs" />
     <Compile Include="Actions\ValidateItemAction.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Helpers\TableItemType.cs" />
     <Compile Include="Helpers\TokenManager.cs" />
     <Compile Include="Helpers\ValidationTableExtensions.cs" />
+    <Compile Include="Helpers\Waiter.cs" />
     <Compile Include="Helpers\WrappedSettingHelper.cs" />
     <Compile Include="PageStepBase.cs" />
     <Compile Include="Pages\ElementDescription.cs" />

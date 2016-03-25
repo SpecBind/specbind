@@ -3,14 +3,16 @@
 // </copyright>
 namespace SpecBind.Actions
 {
-    using SpecBind.ActionPipeline;
+	using System;
+	using SpecBind.ActionPipeline;
+	using SpecBind.Helpers;
     using SpecBind.Pages;
     using SpecBind.Validation;
 
     /// <summary>
     /// An action that helps perform item validation.
     /// </summary>
-    internal class ValidateItemAction : ContextActionBase<ValidateItemAction.ValidateItemContext>
+	public class ValidateItemAction : ValidateActionBase<ValidateItemAction.ValidateItemContext>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidateItemAction"/> class.
@@ -20,7 +22,7 @@ namespace SpecBind.Actions
         {
         }
 
-        /// <summary>
+		/// <summary>
         /// Executes the specified action based on the context.
         /// </summary>
         /// <param name="context">The context.</param>
@@ -51,10 +53,18 @@ namespace SpecBind.Actions
                 return false;
             }
 
-            string actualValue;
-            var successful = propertyData.ValidateItem(validation, out actualValue);
-            itemResult.NoteValidationResult(validation, successful, actualValue);
-            return successful;
+
+			string actualValue = null;
+			bool? successful = null;
+
+			this.DoValidate<IPropertyData>(propertyData, e =>
+				{
+					successful = e.ValidateItem(validation, out actualValue);
+					return successful.Value;
+				});
+
+			itemResult.NoteValidationResult(validation, successful.Value, actualValue);
+			return successful.Value;
         }
 
         /// <summary>

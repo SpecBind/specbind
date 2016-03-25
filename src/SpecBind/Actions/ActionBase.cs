@@ -4,7 +4,8 @@
 
 namespace SpecBind.Actions
 {
-    using SpecBind.ActionPipeline;
+	using System;
+	using SpecBind.ActionPipeline;
 
 	/// <summary>
 	/// A base class for an action in the pipeline.
@@ -14,6 +15,14 @@ namespace SpecBind.Actions
 		private readonly string actionName;
 
 		/// <summary>
+		/// Initializes the ActionBase type.
+		/// </summary>
+		static ActionBase()
+		{
+			DefaultTimeout = TimeSpan.FromSeconds(30);
+		}
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="ActionBase"/> class.
 		/// </summary>
 		/// <param name="actionName">Name of the action.</param>
@@ -21,6 +30,19 @@ namespace SpecBind.Actions
 		{
 			this.actionName = actionName;
 		}
+
+		/// <summary>
+		/// Gets or sets the default timeout to wait.
+		/// </summary>
+		/// <value>
+		/// The timeout.
+		/// </value>
+		public static TimeSpan DefaultTimeout { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether or not to keep retrying validations, until the timeout.
+		/// </summary>
+		public static bool RetryValidationUntilTimeout { get; set; }
 
 		/// <summary>
 		/// Gets the action name.

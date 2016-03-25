@@ -12,7 +12,7 @@ namespace SpecBind.Configuration
 	{
 		private const string StartUrlElement = @"startUrl";
 		private const string ExcludedAssembliesElement = @"excludedAssemblies";
-		private const string ActionRetryLimitElement = @"actionRetryLimit";
+		private const string RetryValidationUntilTimeoutElement = @"retryValidationUntilTimeout";
 		private const string WaitForStillElementBeforeClickingElement = @"waitForStillElementBeforeClicking";
 
 		/// <summary>
@@ -34,24 +34,20 @@ namespace SpecBind.Configuration
 		}
 
 		/// <summary>
-		/// Gets or sets the application's retry limit for actions in steps (defaults to 0).
+		/// Gets or sets a value indicating whether or not validation actions should retry until the standard ElementLocateTimeout.
 		/// </summary>
-		/// <value>The retry limit.</value>
-		/// <remarks>
-		/// Waits for 1 second between retries.
-		/// Experimental; use for working around general async flakiness.
-		/// </remarks>
-		[ConfigurationProperty(ActionRetryLimitElement, DefaultValue = 0, IsRequired = false)]
-		public int ActionRetryLimit
+		/// <value>whether or not to retry.</value>
+		[ConfigurationProperty(RetryValidationUntilTimeoutElement, DefaultValue = false, IsRequired = false)]
+		public bool RetryValidationUntilTimeout
 		{
 			get
 			{
-				return (int)this[ActionRetryLimitElement];
+				return (bool)this[RetryValidationUntilTimeoutElement];
 			}
 
 			set
 			{
-				this[ActionRetryLimitElement] = value;
+				this[RetryValidationUntilTimeoutElement] = value;
 			}
 		}
 
@@ -60,7 +56,7 @@ namespace SpecBind.Configuration
 		/// </summary>
 		/// <value>Whether or not to wait.</value>
 		/// <remarks>
-		/// Waits 200 milliseconds between element position measures.
+		/// Waits 200ms between element position measures.
 		/// Resolves issues where animation moves a button for a while, when it first becomes available.
 		/// Without this workaround, the click simply ends up sent to a nearby element or the page, usually doing nothing
 		/// and causing the next step verifying navigation or other click effect to timeout.

@@ -102,13 +102,16 @@ namespace SpecBind.Selenium
             var managementSettings = driver.Manage();
            
             // Set timeouts
+
+			var applicationConfiguration = SpecBind.Helpers.SettingHelper.GetConfigurationSection().Application;
+
             managementSettings.Timeouts()
                 .ImplicitlyWait(browserFactoryConfiguration.ElementLocateTimeout)
                 .SetPageLoadTimeout(browserFactoryConfiguration.PageLoadTimeout);
 
-            WaitForElementAction.DefaultTimeout = browserFactoryConfiguration.ElementLocateTimeout;
-            WaitForListItemsAction.DefaultTimeout = browserFactoryConfiguration.ElementLocateTimeout;
+			ActionBase.DefaultTimeout = browserFactoryConfiguration.ElementLocateTimeout;
             WaitForPageAction.DefaultTimeout = browserFactoryConfiguration.PageLoadTimeout;
+			ActionBase.RetryValidationUntilTimeout = applicationConfiguration.RetryValidationUntilTimeout;
 
             // Maximize window
             managementSettings.Window.Maximize();
@@ -296,7 +299,6 @@ namespace SpecBind.Selenium
 
             if (browserFactoryConfiguration.EnsureCleanSession)
             {
-                Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Clearing firefox cookies");
                 driver.Manage().Cookies.DeleteAllCookies();
             }
 

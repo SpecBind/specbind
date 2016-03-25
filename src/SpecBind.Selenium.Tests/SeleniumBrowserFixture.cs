@@ -3,26 +3,35 @@
 // </copyright>
 namespace SpecBind.Selenium.Tests
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Drawing.Imaging;
-    using System.IO;
+	using System;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Drawing.Imaging;
+	using System.IO;
 
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    using Moq;
+	using Moq;
 
-    using OpenQA.Selenium;
+	using OpenQA.Selenium;
 
-    using SpecBind.Actions;
-    using SpecBind.BrowserSupport;
-    using SpecBind.Pages;
-    using SpecBind.Selenium.Tests.Resources;
+	using SpecBind.Actions;
+	using SpecBind.BrowserSupport;
+	using SpecBind.Pages;
+	using SpecBind.Selenium.Tests.Resources;
 
-    /// <summary>
-    /// A test fixture for the Selenium Browser.
-    /// </summary>
-    [TestClass]
+	/// <summary>
+	/// A test fixture for the Selenium Browser.
+	/// </summary>
+	/// <remarks>
+	/// The browser under test needs to be disposed before the mocked driver is verified,
+	/// because the browser's destructor disposes the driver.
+	/// With strict mocks, we must set up the driver's disposal,
+	/// but it must happen before we verify it.
+	/// Therefore, we use a "using" statement for every browser we create in these tests,
+	/// perform assertions related to the browser in that "using" statement,
+	/// and then after that, we verify the driver.
+	/// </remarks>
+	[TestClass]
     [ExcludeFromCodeCoverage]
     public class SeleniumBrowserFixture
     {
@@ -32,13 +41,15 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestGetPageBaseTypeReturnsNull()
         {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
+			var driver = this.CreateMockWebDriverNotExpectingInitialization();
+			var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var result = browser.BasePageType;
+			using (var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object))
+			{
+				var result = browser.BasePageType;
+				Assert.IsNull(result);
+			}
 
-            Assert.IsNull(result);
             driver.VerifyAll();
         }
 
@@ -49,16 +60,17 @@ namespace SpecBind.Selenium.Tests
         public void TestGetUrlReturnsBrowserUrl()
         {
             const string BrowserUrl = "http://www.mysite.com/home";
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.SetupGet(d => d.Url).Returns(BrowserUrl);
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.SetupGet(d => d.Url).Returns(BrowserUrl);
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
+			using (var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object))
+			{
+				var result = browser.Url;
+				Assert.AreEqual(BrowserUrl, result);
+			}
 
-            var result = browser.Url;
-
-            Assert.AreEqual(BrowserUrl, result);
             driver.VerifyAll();
         }
 
@@ -73,14 +85,15 @@ namespace SpecBind.Selenium.Tests
             var navigation = new Mock<INavigation>(MockBehavior.Strict);
             navigation.Setup(n => n.GoToUrl(url));
 
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Navigate()).Returns(navigation.Object);
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.Navigate()).Returns(navigation.Object);
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.GoTo(url);
+			using (var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object))
+			{
+				browser.GoTo(url);
+			}
 
             driver.VerifyAll();
             navigation.VerifyAll();
@@ -101,44 +114,46 @@ namespace SpecBind.Selenium.Tests
             var options = new Mock<IOptions>(MockBehavior.Strict);
             options.Setup(o => o.Cookies).Returns(cookies.Object);
 
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Manage()).Returns(options.Object);
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.Manage()).Returns(options.Object);
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.AddCookie("TestCookie", "TestValue", "/", expireDate, null, false);
+			using (var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object))
+			{
+				browser.AddCookie("TestCookie", "TestValue", "/", expireDate, null, false);
+			}
 
             driver.VerifyAll();
             options.VerifyAll();
             cookies.VerifyAll();
         }
 
-        /// <summary>
-        /// Tests the add cookie calls driver method.
-        /// </summary>
-        [TestMethod]
-        public void TestAddCookieWhenCookieExistsCallsDriverMethodAndRemovesExistingCookie()
-        {
-            var expireDate = DateTime.Now;
+		/// <summary>
+		/// Tests the add cookie calls driver method.
+		/// </summary>
+		[TestMethod]
+		public void TestAddCookieWhenCookieExistsCallsDriverMethodAndRemovesExistingCookie()
+		{
+			var expireDate = DateTime.Now;
 
-            var cookies = new Mock<ICookieJar>(MockBehavior.Strict);
-            cookies.Setup(c => c.GetCookieNamed("TestCookie")).Returns(new Cookie("TestCookie", "SomeValue"));
-            cookies.Setup(c => c.DeleteCookieNamed("TestCookie"));
-            cookies.Setup(c => c.AddCookie(It.Is<Cookie>(ck => ck.Name == "TestCookie" && ck.Value == "TestValue" && ck.Path == "/" && ck.Expiry == expireDate)));
+			var cookies = new Mock<ICookieJar>(MockBehavior.Strict);
+			cookies.Setup(c => c.GetCookieNamed("TestCookie")).Returns(new Cookie("TestCookie", "SomeValue"));
+			cookies.Setup(c => c.DeleteCookieNamed("TestCookie"));
+			cookies.Setup(c => c.AddCookie(It.Is<Cookie>(ck => ck.Name == "TestCookie" && ck.Value == "TestValue" && ck.Path == "/" && ck.Expiry == expireDate)));
 
-            var options = new Mock<IOptions>(MockBehavior.Strict);
-            options.Setup(o => o.Cookies).Returns(cookies.Object);
+			var options = new Mock<IOptions>(MockBehavior.Strict);
+			options.Setup(o => o.Cookies).Returns(cookies.Object);
 
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Manage()).Returns(options.Object);
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.Manage()).Returns(options.Object);
 
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
+			var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.AddCookie("TestCookie", "TestValue", "/", expireDate, null, false);
+			using (var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object))
+			{
+				browser.AddCookie("TestCookie", "TestValue", "/", expireDate, null, false);
+			}
 
             driver.VerifyAll();
             options.VerifyAll();
@@ -157,14 +172,15 @@ namespace SpecBind.Selenium.Tests
             var options = new Mock<IOptions>(MockBehavior.Strict);
             options.Setup(o => o.Cookies).Returns(cookies.Object);
 
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Manage()).Returns(options.Object);
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.Manage()).Returns(options.Object);
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.ClearCookies();
+			using (var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object))
+			{
+				browser.ClearCookies();
+			}
 
             driver.VerifyAll();
             options.VerifyAll();
@@ -247,16 +263,17 @@ namespace SpecBind.Selenium.Tests
             var locator = new Mock<ITargetLocator>(MockBehavior.Strict);
             locator.Setup(l => l.Alert()).Returns(alerter.Object);
 
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.SwitchTo()).Returns(locator.Object);
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.SwitchTo()).Returns(locator.Object);
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
+			using (var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object))
+			{
+				browser.DismissAlert(AlertBoxAction.Ok, "My Text");
+			}
 
-            browser.DismissAlert(AlertBoxAction.Ok, "My Text");
-
-            alerter.VerifyAll();
+			alerter.VerifyAll();
             driver.VerifyAll();
             locator.VerifyAll();
         }
@@ -265,15 +282,16 @@ namespace SpecBind.Selenium.Tests
         /// Tests the close method does nothing when the driver has not been called.
         /// </summary>
         [TestMethod]
-        public void TestClosesDoenNothingWhenDriverIsNotInitialized()
+        public void TestClosesDoesNothingWhenDriverIsNotInitialized()
         {
             var driver = new Mock<IWebDriver>(MockBehavior.Strict);
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.Close();
+			using (var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object))
+			{
+				browser.Close();
+			}
 
             driver.VerifyAll();
         }
@@ -284,8 +302,8 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestClosesBrowserWhenDriverIsInitialized()
         {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Close());
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.Close());
 
             var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
 
@@ -293,9 +311,10 @@ namespace SpecBind.Selenium.Tests
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(lazyDriver, logger.Object);
-
-            browser.Close();
+			using (var browser = new SeleniumBrowser(lazyDriver, logger.Object))
+			{
+				browser.Close();
+			}
 
             driver.VerifyAll();
         }
@@ -306,14 +325,15 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestGetNativePageLocationReturnsUrl()
         {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.SetupGet(d => d.Url).Returns("http://localhost:2222/MyPage");
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.SetupGet(d => d.Url).Returns("http://localhost:2222/MyPage");
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.EnsureOnPage<MyPage>();
+			using (var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object))
+			{
+				browser.EnsureOnPage<MyPage>();
+			}
 
             driver.VerifyAll();
         }
@@ -324,13 +344,13 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestDisposeDoesNothingWhenDriverIsNotInitialized()
         {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+			var driver = this.CreateMockWebDriverNotExpectingInitialization();
 
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
+			var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.Dispose();
+			using (var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object))
+			{
+			}
 
             driver.VerifyAll();
         }
@@ -341,19 +361,16 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestDisposeClosesBrowserWhenDriverIsInitialized()
         {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Quit());
-            driver.Setup(d => d.Dispose());
-
-            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
 
             Assert.IsNotNull(lazyDriver.Value);
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(lazyDriver, logger.Object);
-
-            browser.Dispose();
+			using (var browser = new SeleniumBrowser(lazyDriver, logger.Object))
+			{
+			}
 
             driver.VerifyAll();
         }
@@ -364,20 +381,17 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestDisposeWhenCalledTwiceOnlyDisposesOnce()
         {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Quit());
-            driver.Setup(d => d.Dispose());
-
-            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
 
             Assert.IsNotNull(lazyDriver.Value);
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(lazyDriver, logger.Object);
-
-            browser.Dispose();
-            browser.Dispose();
+			using (var browser = new SeleniumBrowser(lazyDriver, logger.Object))
+			{
+				browser.Dispose();
+			}
 
             driver.Verify(d => d.Quit(), Times.Exactly(1));
             driver.Verify(d => d.Dispose(), Times.Exactly(1));
@@ -391,8 +405,8 @@ namespace SpecBind.Selenium.Tests
         public void TestExecuteScriptWhenDriverSupportItRunsScript()
         {
             var result = new object();
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.As<IJavaScriptExecutor>().Setup(e => e.ExecuteScript("some script", It.IsAny<object[]>()))
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.As<IJavaScriptExecutor>().Setup(e => e.ExecuteScript("some script", It.IsAny<object[]>()))
                                             .Returns(result);
 
             var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
@@ -401,11 +415,11 @@ namespace SpecBind.Selenium.Tests
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(lazyDriver, logger.Object);
-
-            var resultObject = browser.ExecuteScript("some script", "Hello");
-
-            Assert.AreSame(result, resultObject);
+			using (var browser = new SeleniumBrowser(lazyDriver, logger.Object))
+			{
+				var resultObject = browser.ExecuteScript("some script", "Hello");
+				Assert.AreSame(result, resultObject);
+			}
 
             driver.VerifyAll();
         }
@@ -417,8 +431,8 @@ namespace SpecBind.Selenium.Tests
         public void TestExecuteScriptWhenResultIsNativeElementReturnsProxyClass()
         {
             var result = new Mock<IWebElement>(MockBehavior.Strict);
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.As<IJavaScriptExecutor>().Setup(e => e.ExecuteScript("some script", It.IsAny<object[]>()))
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.As<IJavaScriptExecutor>().Setup(e => e.ExecuteScript("some script", It.IsAny<object[]>()))
                                             .Returns(result.Object);
 
             var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
@@ -427,12 +441,13 @@ namespace SpecBind.Selenium.Tests
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(lazyDriver, logger.Object);
+			using (var browser = new SeleniumBrowser(lazyDriver, logger.Object))
+			{
+				var resultObject = browser.ExecuteScript("some script", "Hello");
 
-            var resultObject = browser.ExecuteScript("some script", "Hello");
-
-            Assert.IsNotNull(resultObject);
-            Assert.IsInstanceOfType(resultObject, typeof(WebElement));
+				Assert.IsNotNull(resultObject);
+				Assert.IsInstanceOfType(resultObject, typeof(WebElement));
+			}
 
             driver.VerifyAll();
             result.VerifyAll();
@@ -444,19 +459,19 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestExecuteScriptWhenDriverDoesNotSupportScriptReturnsNull()
         {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-
-            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
 
             Assert.IsNotNull(lazyDriver.Value);
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(lazyDriver, logger.Object);
+			using (var browser = new SeleniumBrowser(lazyDriver, logger.Object))
+			{
+				var resultObject = browser.ExecuteScript("some script", "Hello");
 
-            var resultObject = browser.ExecuteScript("some script", "Hello");
-
-            Assert.IsNull(resultObject);
+				Assert.IsNull(resultObject);
+			}
 
             driver.VerifyAll();
         }
@@ -467,15 +482,17 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestTakeScreenshotWhenNotSupportedDoesNothing()
         {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+			var driver = this.CreateMockWebDriverExpectingInitialization();
 
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
+			var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
+			using (var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object))
+			{
+				var fullPath = browser.TakeScreenshot(@"C:\somepath", "fileBase");
 
-            var fullPath = browser.TakeScreenshot(@"C:\somepath", "fileBase");
+				Assert.IsNull(fullPath);
+			}
 
-            Assert.IsNull(fullPath);
             driver.VerifyAll();
         }
 
@@ -485,16 +502,18 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestTakeScreenshotWhenScreenshotErrorsReturnsNothing()
         {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.As<ITakesScreenshot>().Setup(s => s.GetScreenshot()).Throws<InvalidOperationException>();
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.As<ITakesScreenshot>().Setup(s => s.GetScreenshot()).Throws<InvalidOperationException>();
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
+			using (var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object))
+			{
+				var fullPath = browser.TakeScreenshot(@"C:\somepath", "fileBase");
 
-            var fullPath = browser.TakeScreenshot(@"C:\somepath", "fileBase");
+				Assert.IsNull(fullPath);
+			}
 
-            Assert.IsNull(fullPath);
             driver.VerifyAll();
         }
 
@@ -504,8 +523,8 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestTakeScreenshotWhenCalledWithoutErrorTakesScreenshot()
         {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.As<ITakesScreenshot>().Setup(s => s.GetScreenshot()).Throws<InvalidOperationException>();
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.As<ITakesScreenshot>().Setup(s => s.GetScreenshot()).Throws<InvalidOperationException>();
 
             var basePath = Path.GetTempPath();
             var fileName = Guid.NewGuid().ToString();
@@ -524,31 +543,53 @@ namespace SpecBind.Selenium.Tests
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
+			using (var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object))
+			{
 
-            string fullPath = null;
-            try
-            {
-                fullPath = browser.TakeScreenshot(basePath, fileName);
-            }
-            finally
-            {
-                if (fullPath != null && File.Exists(fullPath))
-                {
-                    File.Delete(fullPath);
-                }
-            }
+				string fullPath = null;
 
-            Assert.IsNotNull(fullPath);
-            driver.VerifyAll();
+				try
+				{
+					fullPath = browser.TakeScreenshot(basePath, fileName);
+				}
+				finally
+				{
+					if (fullPath != null && File.Exists(fullPath))
+					{
+						File.Delete(fullPath);
+					}
+				}
+
+				Assert.IsNotNull(fullPath);
+			}
+
+			driver.VerifyAll();
         }
 
-        /// <summary>
-        /// Tests the alert scenario.
-        /// </summary>
-        /// <param name="action">The action.</param>
-        /// <param name="acceptResult">if set to <c>true</c> the result should accept; otherwise it should dismiss.</param>
-        private static void TestAlertScenario(AlertBoxAction action, bool acceptResult)
+		private Mock<IWebDriver> CreateMockWebDriverExpectingInitialization()
+		{
+			var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+
+			// NOTE: the SeleniumBrowser quits and disposes its driver as part of its destructor,
+			// So every driver we create that will get initialized has to have this set up,
+			// if we're going to use MockBehavior.Strict.
+			driver.Setup(d => d.Quit());
+			driver.Setup(d => d.Dispose());
+
+			return driver;
+		}
+
+		private Mock<IWebDriver> CreateMockWebDriverNotExpectingInitialization()
+		{
+			return new Mock<IWebDriver>(MockBehavior.Strict);
+		}
+
+		/// <summary>
+		/// Tests the alert scenario.
+		/// </summary>
+		/// <param name="action">The action.</param>
+		/// <param name="acceptResult">if set to <c>true</c> the result should accept; otherwise it should dismiss.</param>
+		private void TestAlertScenario(AlertBoxAction action, bool acceptResult)
         {
             var alerter = new Mock<IAlert>(MockBehavior.Strict);
 
@@ -564,14 +605,15 @@ namespace SpecBind.Selenium.Tests
             var locator = new Mock<ITargetLocator>(MockBehavior.Strict);
             locator.Setup(l => l.Alert()).Returns(alerter.Object);
 
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.SwitchTo()).Returns(locator.Object);
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.SwitchTo()).Returns(locator.Object);
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.DismissAlert(action, null);
+			using (var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object))
+			{
+				browser.DismissAlert(action, null);
+			}
 
             alerter.VerifyAll();
             driver.VerifyAll();

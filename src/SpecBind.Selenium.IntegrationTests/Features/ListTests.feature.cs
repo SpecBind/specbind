@@ -211,7 +211,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 39
  testRunner.Given("I navigated to the Student Courses page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 40
- testRunner.Then("I see Student Courses list contains 8 items", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("I see Student Courses list contains exactly 8 items", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

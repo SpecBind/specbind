@@ -7,6 +7,7 @@ namespace SpecBind
 
     using SpecBind.ActionPipeline;
     using SpecBind.Actions;
+	using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
 
     using TechTalk.SpecFlow;
@@ -39,6 +40,8 @@ namespace SpecBind
         private const string WaitForListElementToContainItemsRegex = @"I wait for (.+) to contain items";
         private const string WaitForListElementToContainItemsWithTimeoutRegex = @"I wait (\d+) seconds? for (.+) to contain items";
         private const string WaitForActiveViewRegex = @"I wait for the view to become active";
+		private const string WaitForAngularRegex = @"I wait for (?i)angular ajax(?-i) calls to complete";
+		private const string WaitForjQueryRegex = @"I wait for (?i)jquery ajax(?-i) calls to complete";
 
         // The following Regex items are for the given "past tense" form
         private const string GivenWaitToSeeElementRegex = @"I waited to see (.+)";
@@ -54,6 +57,8 @@ namespace SpecBind
         private const string GivenWaitForListElementToContainItemsRegex = @"I waited for (.+) to contain items";
         private const string GivenWaitForListElementToContainItemsWithTimeoutRegex = @"I waited (\d+) seconds? for (.+) to contain items";
         private const string GivenWaitForActiveViewRegex = @"I waited for the view to become active";
+		private const string GivenWaitForAngularRegex = @"I waited for (?i)angular ajax(?-i) calls to complete";
+		private const string GivenWaitForjQueryRegex = @"I waited for (?i)jquery ajax(?-i) calls to complete";
 
         private readonly IActionPipelineService actionPipelineService;
 
@@ -338,7 +343,29 @@ namespace SpecBind
             page.WaitForPageToBeActive();
         }
 
-        /// <summary>
+		/// <summary>
+		/// A step that waits for any pending Angular AJAX calls to complete.
+		/// </summary>
+		[Given(GivenWaitForAngularRegex)]
+		[When(WaitForAngularRegex)]
+		[Then(WaitForAngularRegex)]
+		public void WaitForAngular()
+		{
+			WebDriverSupport.WaitForAngular();
+		}
+
+		/// <summary>
+		/// A step that waits for any pending jQuery AJAX calls to complete.
+		/// </summary>
+		[Given(GivenWaitForjQueryRegex)]
+		[When(WaitForjQueryRegex)]
+		[Then(WaitForjQueryRegex)]
+		public void WaitForjQuery()
+		{
+			WebDriverSupport.WaitForjQuery();
+		}
+
+		/// <summary>
         /// Gets the time span from the seconds value.
         /// </summary>
         /// <param name="seconds">The seconds.</param>

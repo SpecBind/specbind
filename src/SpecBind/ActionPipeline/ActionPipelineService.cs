@@ -7,7 +7,7 @@ namespace SpecBind.ActionPipeline
 	using System;
 
 	using SpecBind.Helpers;
-    using SpecBind.Pages;
+	using SpecBind.Pages;
 
 	/// <summary>
 	/// A class that manages actions that should be taken during parts of the process
@@ -24,13 +24,12 @@ namespace SpecBind.ActionPipeline
 	{
 		private readonly IActionRepository actionRepository;
 
-        /// <summary>
+		/// <summary>
         /// Initializes the <see cref="ActionPipelineService"/> class.
         /// </summary>
         static ActionPipelineService()
 		{
 			var configSection = SettingHelper.GetConfigurationSection();
-			ConfiguredActionRetryLimit = configSection.Application.ActionRetryLimit;
 		}
 
         /// <summary>
@@ -38,25 +37,11 @@ namespace SpecBind.ActionPipeline
 		/// </summary>
 		/// <param name="actionRepository">The action repository.</param>
 		public ActionPipelineService(IActionRepository actionRepository)
-        {
-            this.actionRepository = actionRepository;
-            this.ActionRetryLimit = ConfiguredActionRetryLimit;
-        }
+		{
+			this.actionRepository = actionRepository;
+		}
 
         /// <summary>
-        /// Gets or sets the number of times to retry a failed action.
-        /// </summary>
-        public int ActionRetryLimit { get; set; }
-
-        /// <summary>
-        /// Gets or sets the configured action retry limit.
-        /// </summary>
-        /// <value>
-        /// The configured action retry limit.
-        /// </value>
-        protected internal static int ConfiguredActionRetryLimit { get; set; }
-
-		/// <summary>
         /// Performs the action.
         /// </summary>
         /// <typeparam name="TAction">The type of the action.</typeparam>
@@ -85,30 +70,14 @@ namespace SpecBind.ActionPipeline
 			this.PerformPreAction(action, context);
 
 			ActionResult result = null;
-
-			int tries = 0;
-			do
+			try
 			{
-				if (tries++ > 0)
-				{
-					System.Threading.Thread.Sleep(1000);
-				}
-
-			    try
-			    {
-				    result = action.Execute(context);
-                        if (result.Success)
-                        {
-                            break;
-                        }
-
-			    }
-			    catch (Exception ex)
-			    {
-				    result = ActionResult.Failure(ex);
-			    }
+				result = action.Execute(context);
 			}
-			while (tries <= this.ActionRetryLimit);
+			catch (Exception ex)
+			{
+				result = ActionResult.Failure(ex);
+			}
 
             this.PerformPostAction(action, context, result);
 

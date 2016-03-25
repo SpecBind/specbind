@@ -4,12 +4,14 @@
 namespace SpecBind.Actions
 {
     using SpecBind.ActionPipeline;
+	using SpecBind.Helpers;
     using SpecBind.Pages;
+	using System;
 
     /// <summary>
     /// An action that validates a list of items for specific actions.
     /// </summary>
-    public class ValidateListRowCountAction : ContextActionBase<ValidateListRowCountAction.ValidateListRowCountContext>
+	public class ValidateListRowCountAction : ValidateActionBase<ValidateListRowCountAction.ValidateListRowCountContext>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidateListRowCountAction"/> class.
@@ -36,18 +38,25 @@ namespace SpecBind.Actions
                         propertyData.Name));
             }
 
-            var validationResult = propertyData.ValidateListRowCount(actionContext.CompareType, actionContext.RowCount);
-            if (validationResult.Item1)
-            {
-                return ActionResult.Successful();
-            }
+			Tuple<bool, int> validationResult = null;
 
-            return ActionResult.Failure(
-                new ElementExecuteException(
-                    "List count validation of field '{0}' failed. Expected Items: {1}, Actual Items: {2}",
-                    propertyData.Name,
-                    actionContext.RowCount,
-                    validationResult.Item2));
+			this.DoValidate<IPropertyData>(propertyData, e =>
+				{
+					validationResult = e.ValidateListRowCount(actionContext.CompareType, actionContext.RowCount);
+					return validationResult.Item1;
+				});
+
+			if (validationResult.Item1)
+			{
+				return ActionResult.Successful();
+			}
+
+			return ActionResult.Failure(
+					new ElementExecuteException(
+						"List count validation of field '{0}' failed. Expected Items: {1}, Actual Items: {2}",
+						propertyData.Name,
+						actionContext.RowCount,
+						validationResult.Item2));
         }
 
         /// <summary>

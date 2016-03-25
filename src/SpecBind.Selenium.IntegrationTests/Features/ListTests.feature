@@ -37,7 +37,7 @@ Scenario: Long Lists By Criteria
 
 Scenario: Verifying List Count
 	Given I navigated to the Student Courses page
-	Then I see Student Courses list contains 8 items
+	Then I see Student Courses list contains exactly 8 items
 
 Scenario: Selecting Items By Index
 	Given I navigated to the Student Courses page
