@@ -42,7 +42,7 @@ namespace SpecBind.Actions
 			int attemptsCompleted = 0;
 			try
 			{
-				var waiter = new Waiter<T>();
+				var waiter = new Waiter<T>(DefaultTimeout);
 				waiter.WaitFor(arg, e =>
 					{
 						bool result = validator(e);

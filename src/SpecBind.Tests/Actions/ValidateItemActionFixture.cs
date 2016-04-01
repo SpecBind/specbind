@@ -4,22 +4,22 @@
 
 namespace SpecBind.Tests.Actions
 {
-    using System.Linq;
+	using System.Linq;
 
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    using Moq;
+	using Moq;
 
-    using SpecBind.ActionPipeline;
-    using SpecBind.Actions;
-    using SpecBind.Pages;
-    using SpecBind.Tests.Validation;
-    using SpecBind.Validation;
+	using SpecBind.ActionPipeline;
+	using SpecBind.Actions;
+	using SpecBind.Pages;
+	using SpecBind.Tests.Validation;
+	using SpecBind.Validation;
 
-    /// <summary>
-    /// A test fixture for a validate item action
-    /// </summary>
-    [TestClass]
+	/// <summary>
+	/// A test fixture for a validate item action
+	/// </summary>
+	[TestClass]
     public class ValidateItemActionFixture
     {
         /// <summary>
@@ -159,5 +159,99 @@ namespace SpecBind.Tests.Actions
 
             locator.VerifyAll();
         }
-    }
+
+
+		/// <summary>
+		/// Tests the RetryValidationUntilTimeout configuration attribute,
+		/// with initial failure but subsequent success returned before the timeout.
+		/// </summary>
+		[TestMethod]
+		public void TestRetryValidationUntilTimeoutWithEventualSuccessBeforeTimeout()
+		{
+			try
+			{
+				ValidateItemAction.RetryValidationUntilTimeout = true;
+				ActionBase.DefaultTimeout = System.TimeSpan.FromSeconds(5); // NOTE: interval between checks is 200ms
+
+				var table = new ValidationTable();
+				table.AddValidation("name", "My Data", "equals");
+				table.Process();
+
+				var propData = new Mock<IPropertyData>(MockBehavior.Strict);
+				string actualValue;
+				propData.SetupSequence(p => p.ValidateItem(table.Validations.First(), out actualValue))
+					.Returns(false)
+					.Returns(true); // after 200ms -- just in time
+
+				var propertyData = propData.Object;
+				var locator = new Mock<IElementLocator>(MockBehavior.Strict);
+				locator.Setup(p => p.TryGetProperty("name", out propertyData)).Returns(true);
+
+				var validateItemAction = new ValidateItemAction
+				{
+					ElementLocator = locator.Object
+				};
+
+				var context = new ValidateItemAction.ValidateItemContext(table);
+
+				var result = validateItemAction.Execute(context);
+
+				Assert.IsTrue(result.Success);
+
+				locator.VerifyAll();
+			}
+			finally
+			{
+				ValidateItemAction.RetryValidationUntilTimeout = false;
+				ActionBase.DefaultTimeout = System.TimeSpan.FromSeconds(5);
+			}
+		}
+
+		/// <summary>
+		/// Tests the RetryValidationUntilTimeout configuration attribute,
+		/// with initial failure but subsequent success returned before the timeout.
+		/// </summary>
+		[TestMethod]
+		public void TestRetryValidationUntilTimeoutWithNoSuccessBeforeTimeout()
+		{
+			try
+			{
+				ValidateItemAction.RetryValidationUntilTimeout = true;
+				ActionBase.DefaultTimeout = System.TimeSpan.FromMilliseconds(300); // NOTE: interval between checks is 200ms
+
+				var table = new ValidationTable();
+				table.AddValidation("name", "My Data", "equals");
+				table.Process();
+
+				var propData = new Mock<IPropertyData>(MockBehavior.Strict);
+				string actualValue;
+				propData.SetupSequence(p => p.ValidateItem(table.Validations.First(), out actualValue))
+					.Returns(false)
+					.Returns(false) // after 200ms
+					.Returns(true); // after 400ms -- too late
+
+				var propertyData = propData.Object;
+				var locator = new Mock<IElementLocator>(MockBehavior.Strict);
+				locator.Setup(p => p.TryGetProperty("name", out propertyData)).Returns(true);
+
+				var validateItemAction = new ValidateItemAction
+				{
+					ElementLocator = locator.Object
+				};
+
+				var context = new ValidateItemAction.ValidateItemContext(table);
+
+				var result = validateItemAction.Execute(context);
+
+				Assert.IsFalse(result.Success);
+
+				locator.VerifyAll();
+			}
+			finally
+			{
+				ValidateItemAction.RetryValidationUntilTimeout = false;
+				ActionBase.DefaultTimeout = System.TimeSpan.FromSeconds(5);
+			}
+		}
+	}
 }

@@ -42,13 +42,6 @@ namespace SpecBind.Selenium
             this.pageCache = new Dictionary<Type, Func<IWebDriver, IBrowser, Action<object>, object>>();
         }
 
-		/*
-		 * Destructors don't play nice with strict mocks.
-		 * If the destructor operations aren't setup, then strict mocks cause the test runer to crash when the destructor is called.
-		 * If the destructor operations are setup, then VerifyAll() fails because they haven't been executed yet.
-		 *
-		 * Why not just ensure Dispose() gets called at the right time?
-		 */
         /// <summary>
         /// Finalizes an instance of the <see cref="SeleniumBrowser" /> class.
         /// </summary>
