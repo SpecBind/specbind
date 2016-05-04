@@ -3,576 +3,552 @@
 // </copyright>
 namespace SpecBind.Selenium.Tests
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Drawing.Imaging;
-    using System.IO;
-
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-    using Moq;
-
-    using OpenQA.Selenium;
-
-    using SpecBind.Actions;
-    using SpecBind.BrowserSupport;
-    using SpecBind.Pages;
-    using SpecBind.Selenium.Tests.Resources;
-
-    /// <summary>
-    /// A test fixture for the Selenium Browser.
-    /// </summary>
-    [TestClass]
-    [ExcludeFromCodeCoverage]
-    public class SeleniumBrowserFixture
-    {
-        /// <summary>
-        /// Tests the getting of the page base type, expecting it to return null.
-        /// </summary>
-        [TestMethod]
-        public void TestGetPageBaseTypeReturnsNull()
-        {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            var result = browser.BasePageType;
-
-            Assert.IsNull(result);
-            driver.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the getting of the Url property returns the value from the window.
-        /// </summary>
-        [TestMethod]
-        public void TestGetUrlReturnsBrowserUrl()
-        {
-            const string BrowserUrl = "http://www.mysite.com/home";
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.SetupGet(d => d.Url).Returns(BrowserUrl);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            var result = browser.Url;
-
-            Assert.AreEqual(BrowserUrl, result);
-            driver.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the getting of the goto page calls the appropriate driver method.
-        /// </summary>
-        [TestMethod]
-        public void TestGotoPageCallsDriverMethod()
-        {
-            var url = new Uri("http://www.bing.com");
-
-            var navigation = new Mock<INavigation>(MockBehavior.Strict);
-            navigation.Setup(n => n.GoToUrl(url));
-
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Navigate()).Returns(navigation.Object);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.GoTo(url);
-
-            driver.VerifyAll();
-            navigation.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the add cookie calls driver method.
-        /// </summary>
-        [TestMethod]
-        public void TestAddCookieWhenCookieDoesntExistCallsDriverMethod()
-        {
-            var expireDate = DateTime.Now;
-
-            var cookies = new Mock<ICookieJar>(MockBehavior.Strict);
-            cookies.Setup(c => c.GetCookieNamed("TestCookie")).Returns((Cookie)null);
-            cookies.Setup(c => c.AddCookie(It.Is<Cookie>(ck => ck.Name == "TestCookie" && ck.Value == "TestValue" && ck.Path == "/" && ck.Expiry == expireDate)));
-
-            var options = new Mock<IOptions>(MockBehavior.Strict);
-            options.Setup(o => o.Cookies).Returns(cookies.Object);
-
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Manage()).Returns(options.Object);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.AddCookie("TestCookie", "TestValue", "/", expireDate, null, false);
-
-            driver.VerifyAll();
-            options.VerifyAll();
-            cookies.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the add cookie calls driver method.
-        /// </summary>
-        [TestMethod]
-        public void TestAddCookieWhenCookieExistsCallsDriverMethodAndRemovesExistingCookie()
-        {
-            var expireDate = DateTime.Now;
-
-            var cookies = new Mock<ICookieJar>(MockBehavior.Strict);
-            cookies.Setup(c => c.GetCookieNamed("TestCookie")).Returns(new Cookie("TestCookie", "SomeValue"));
-            cookies.Setup(c => c.DeleteCookieNamed("TestCookie"));
-            cookies.Setup(c => c.AddCookie(It.Is<Cookie>(ck => ck.Name == "TestCookie" && ck.Value == "TestValue" && ck.Path == "/" && ck.Expiry == expireDate)));
-
-            var options = new Mock<IOptions>(MockBehavior.Strict);
-            options.Setup(o => o.Cookies).Returns(cookies.Object);
-
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Manage()).Returns(options.Object);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.AddCookie("TestCookie", "TestValue", "/", expireDate, null, false);
-
-            driver.VerifyAll();
-            options.VerifyAll();
-            cookies.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the clear cookies method.
-        /// </summary>
-        [TestMethod]
-        public void TestClearCookies()
-        {
-            var cookies = new Mock<ICookieJar>(MockBehavior.Strict);
-            cookies.Setup(c => c.DeleteAllCookies());
-
-            var options = new Mock<IOptions>(MockBehavior.Strict);
-            options.Setup(o => o.Cookies).Returns(cookies.Object);
-
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Manage()).Returns(options.Object);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.ClearCookies();
-
-            driver.VerifyAll();
-            options.VerifyAll();
-            cookies.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the dismiss alert calls accept when ok is chosen.
-        /// </summary>
-        [TestMethod]
-        public void TestDismissAlertAcceptsWhenOkIsChoosen()
-        {
-            TestAlertScenario(AlertBoxAction.Ok, true);
-        }
-
-        /// <summary>
-        /// Tests the dismiss alert calls accept when yes is chosen.
-        /// </summary>
-        [TestMethod]
-        public void TestDismissAlertAcceptsWhenYesIsChoosen()
-        {
-            TestAlertScenario(AlertBoxAction.Yes, true);
-        }
-
-        /// <summary>
-        /// Tests the dismiss alert calls accept when retry is chosen.
-        /// </summary>
-        [TestMethod]
-        public void TestDismissAlertAcceptsWhenRetryIsChoosen()
-        {
-            TestAlertScenario(AlertBoxAction.Retry, true);
-        }
-
-        /// <summary>
-        /// Tests the dismiss alert calls accept when cancel is chosen.
-        /// </summary>
-        [TestMethod]
-        public void TestDismissAlertAcceptsWhenCancelIsChoosen()
-        {
-            TestAlertScenario(AlertBoxAction.Cancel, false);
-        }
-
-        /// <summary>
-        /// Tests the dismiss alert calls accept when close is chosen.
-        /// </summary>
-        [TestMethod]
-        public void TestDismissAlertAcceptsWhenCloseIsChoosen()
-        {
-            TestAlertScenario(AlertBoxAction.Close, false);
-        }
-
-        /// <summary>
-        /// Tests the dismiss alert calls accept when ignore is chosen.
-        /// </summary>
-        [TestMethod]
-        public void TestDismissAlertAcceptsWhenIgnoreIsChoosen()
-        {
-            TestAlertScenario(AlertBoxAction.Ignore, false);
-        }
-
-        /// <summary>
-        /// Tests the dismiss alert calls accept when no is chosen.
-        /// </summary>
-        [TestMethod]
-        public void TestDismissAlertAcceptsWhenNoIsChoosen()
-        {
-            TestAlertScenario(AlertBoxAction.No, false);
-        }
-
-        /// <summary>
-        /// Tests the dismiss alert calls accept when ok is chosen after entering text.
-        /// </summary>
-        [TestMethod]
-        public void TestDismissAlertEntersTextAndAcceptsWhenOkIsChoosen()
-        {
-            var alerter = new Mock<IAlert>(MockBehavior.Strict);
-            alerter.Setup(a => a.SendKeys("My Text"));
-            alerter.Setup(a => a.Accept());
-
-            var locator = new Mock<ITargetLocator>(MockBehavior.Strict);
-            locator.Setup(l => l.Alert()).Returns(alerter.Object);
-
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.SwitchTo()).Returns(locator.Object);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.DismissAlert(AlertBoxAction.Ok, "My Text");
-
-            alerter.VerifyAll();
-            driver.VerifyAll();
-            locator.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the close method does nothing when the driver has not been called.
-        /// </summary>
-        [TestMethod]
-        public void TestClosesDoenNothingWhenDriverIsNotInitialized()
-        {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.Close();
-
-            driver.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the close method is called if the driver has been used.
-        /// </summary>
-        [TestMethod]
-        public void TestClosesBrowserWhenDriverIsInitialized()
-        {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Close());
-
-            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
-
-            Assert.IsNotNull(lazyDriver.Value);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(lazyDriver, logger.Object);
-
-            browser.Close();
-
-            driver.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the getting the page location returns the url value.
-        /// </summary>
-        [TestMethod]
-        public void TestGetNativePageLocationReturnsUrl()
-        {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.SetupGet(d => d.Url).Returns("http://localhost:2222/MyPage");
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.EnsureOnPage<MyPage>();
-
-            driver.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the dispose method does nothing when the driver has not been called.
-        /// </summary>
-        [TestMethod]
-        public void TestDisposeDoesNothingWhenDriverIsNotInitialized()
-        {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.Dispose();
-
-            driver.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the dispose method is called if the driver has been used.
-        /// </summary>
-        [TestMethod]
-        public void TestDisposeClosesBrowserWhenDriverIsInitialized()
-        {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Quit());
-            driver.Setup(d => d.Dispose());
-
-            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
-
-            Assert.IsNotNull(lazyDriver.Value);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-            var mockBrowser = new Mock<SeleniumBrowser>(lazyDriver, logger.Object) {CallBase = true};
-            mockBrowser.Setup(x => x.ReuseBrowser).Returns(false);
-
-            mockBrowser.Object.Dispose();
-
-            driver.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the dispose method is called if the driver has been used.
-        /// </summary>
-        [TestMethod]
-        public void TestDisposeDoesNotCloseBrowserWhenReuseBrowserIsTrue()
-        {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Quit());
-            driver.Setup(d => d.Dispose());
-
-            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
-
-            Assert.IsNotNull(lazyDriver.Value);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-            var mockBrowser = new Mock<SeleniumBrowser>(lazyDriver, logger.Object) { CallBase = true };
-            mockBrowser.Setup(x => x.ReuseBrowser).Returns(true);
-
-            mockBrowser.Object.Dispose();
-
-            driver.Verify(d => d.Quit(), Times.Never);
-            driver.Verify(d => d.Dispose(), Times.Never);
-        }
-
-        /// <summary>
-        /// Tests the dispose is only called once.
-        /// </summary>
-        [TestMethod]
-        public void TestDisposeWhenCalledTwiceOnlyDisposesOnce()
-        {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.Quit());
-            driver.Setup(d => d.Dispose());
-
-            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
-
-            Assert.IsNotNull(lazyDriver.Value);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(lazyDriver, logger.Object);
-
-            browser.Dispose();
-            browser.Dispose();
-
-            driver.Verify(d => d.Quit(), Times.Exactly(1));
-            driver.Verify(d => d.Dispose(), Times.Exactly(1));
-            driver.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the execute script method for the browser when it exists.
-        /// </summary>
-        [TestMethod]
-        public void TestExecuteScriptWhenDriverSupportItRunsScript()
-        {
-            var result = new object();
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.As<IJavaScriptExecutor>().Setup(e => e.ExecuteScript("some script", It.IsAny<object[]>()))
-                                            .Returns(result);
-
-            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
-
-            Assert.IsNotNull(lazyDriver.Value);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(lazyDriver, logger.Object);
-
-            var resultObject = browser.ExecuteScript("some script", "Hello");
-
-            Assert.AreSame(result, resultObject);
-
-            driver.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the execute script method for the browser when it exists.
-        /// </summary>
-        [TestMethod]
-        public void TestExecuteScriptWhenResultIsNativeElementReturnsProxyClass()
-        {
-            var result = new Mock<IWebElement>(MockBehavior.Strict);
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.As<IJavaScriptExecutor>().Setup(e => e.ExecuteScript("some script", It.IsAny<object[]>()))
-                                            .Returns(result.Object);
-
-            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
-
-            Assert.IsNotNull(lazyDriver.Value);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(lazyDriver, logger.Object);
-
-            var resultObject = browser.ExecuteScript("some script", "Hello");
-
-            Assert.IsNotNull(resultObject);
-            Assert.IsInstanceOfType(resultObject, typeof(WebElement));
-
-            driver.VerifyAll();
-            result.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the execute script method when it doesn't support it returns null.
-        /// </summary>
-        [TestMethod]
-        public void TestExecuteScriptWhenDriverDoesNotSupportScriptReturnsNull()
-        {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-
-            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
-
-            Assert.IsNotNull(lazyDriver.Value);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(lazyDriver, logger.Object);
-
-            var resultObject = browser.ExecuteScript("some script", "Hello");
-
-            Assert.IsNull(resultObject);
-
-            driver.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the take screenshot method does nothing when the interface is not supported.
-        /// </summary>
-        [TestMethod]
-        public void TestTakeScreenshotWhenNotSupportedDoesNothing()
-        {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            var fullPath = browser.TakeScreenshot(@"C:\somepath", "fileBase");
-
-            Assert.IsNull(fullPath);
-            driver.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the take screenshot method does nothing when the interface is not supported.
-        /// </summary>
-        [TestMethod]
-        public void TestTakeScreenshotWhenScreenshotErrorsReturnsNothing()
-        {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.As<ITakesScreenshot>().Setup(s => s.GetScreenshot()).Throws<InvalidOperationException>();
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            var fullPath = browser.TakeScreenshot(@"C:\somepath", "fileBase");
-
-            Assert.IsNull(fullPath);
-            driver.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the take screenshot method performs the appropriate calls.
-        /// </summary>
-        [TestMethod]
-        public void TestTakeScreenshotWhenCalledWithoutErrorTakesScreenshot()
-        {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.As<ITakesScreenshot>().Setup(s => s.GetScreenshot()).Throws<InvalidOperationException>();
-
-            var basePath = Path.GetTempPath();
-            var fileName = Guid.NewGuid().ToString();
-
-            Screenshot screenshot;
-            using (var ms = new MemoryStream())
-            {
-                var image = TestResource.TestImage;
-                image.Save(ms, ImageFormat.Jpeg);
-
-                screenshot = new Screenshot(Convert.ToBase64String(ms.ToArray()));
-            }
-
-            var screenShot = driver.As<ITakesScreenshot>();
-            screenShot.Setup(s => s.GetScreenshot()).Returns(screenshot);
-
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            string fullPath = null;
-            try
-            {
-                fullPath = browser.TakeScreenshot(basePath, fileName);
-            }
-            finally
-            {
-                if (fullPath != null && File.Exists(fullPath))
-                {
-                    File.Delete(fullPath);
-                }
-            }
-
-            Assert.IsNotNull(fullPath);
-            driver.VerifyAll();
-        }
-
-        /// <summary>
-        /// Tests the alert scenario.
-        /// </summary>
-        /// <param name="action">The action.</param>
-        /// <param name="acceptResult">if set to <c>true</c> the result should accept; otherwise it should dismiss.</param>
-        private static void TestAlertScenario(AlertBoxAction action, bool acceptResult)
+	using System;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Drawing.Imaging;
+	using System.IO;
+
+	using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+	using Moq;
+
+	using OpenQA.Selenium;
+
+	using SpecBind.Actions;
+	using SpecBind.BrowserSupport;
+	using SpecBind.Pages;
+	using SpecBind.Selenium.Tests.Resources;
+
+	/// <summary>
+	/// A test fixture for the Selenium Browser.
+	/// </summary>
+	/// <remarks>
+	/// The browser under test needs to be disposed before the mocked driver is verified,
+	/// because the browser's destructor disposes the driver.
+	/// With strict mocks, we must set up the driver's disposal,
+	/// but it must happen before we verify it.
+	/// Therefore, we use a "using" statement for every browser we create in these tests,
+	/// perform assertions related to the browser in that "using" statement,
+	/// and then after that, we verify the driver.
+	/// </remarks>
+	[TestClass]
+	[ExcludeFromCodeCoverage]
+	public class SeleniumBrowserFixture
+	{
+		/// <summary>
+		/// Tests the getting of the page base type, expecting it to return null.
+		/// </summary>
+		[TestMethod]
+		public void TestGetPageBaseTypeReturnsNull()
+		{
+			var driver = this.CreateMockWebDriverNotExpectingInitialization();
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				var result = browser.BasePageType;
+				Assert.IsNull(result);
+			});
+		}
+
+		/// <summary>
+		/// Tests the getting of the Url property returns the value from the window.
+		/// </summary>
+		[TestMethod]
+		public void TestGetUrlReturnsBrowserUrl()
+		{
+			const string BrowserUrl = "http://www.mysite.com/home";
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.SetupGet(d => d.Url).Returns(BrowserUrl);
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				var result = browser.Url;
+				Assert.AreEqual(BrowserUrl, result);
+			});
+		}
+
+		/// <summary>
+		/// Tests the getting of the goto page calls the appropriate driver method.
+		/// </summary>
+		[TestMethod]
+		public void TestGotoPageCallsDriverMethod()
+		{
+			var url = new Uri("http://www.bing.com");
+
+			var navigation = new Mock<INavigation>(MockBehavior.Strict);
+			navigation.Setup(n => n.GoToUrl(url));
+
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.Navigate()).Returns(navigation.Object);
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				browser.GoTo(url);
+			});
+
+			navigation.VerifyAll();
+		}
+
+		/// <summary>
+		/// Tests the add cookie calls driver method.
+		/// </summary>
+		[TestMethod]
+		public void TestAddCookieWhenCookieDoesntExistCallsDriverMethod()
+		{
+			var expireDate = DateTime.Now;
+
+			var cookies = new Mock<ICookieJar>(MockBehavior.Strict);
+			cookies.Setup(c => c.GetCookieNamed("TestCookie")).Returns((Cookie)null);
+			cookies.Setup(c => c.AddCookie(It.Is<Cookie>(ck => ck.Name == "TestCookie" && ck.Value == "TestValue" && ck.Path == "/" && ck.Expiry == expireDate)));
+
+			var options = new Mock<IOptions>(MockBehavior.Strict);
+			options.Setup(o => o.Cookies).Returns(cookies.Object);
+
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.Manage()).Returns(options.Object);
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				browser.AddCookie("TestCookie", "TestValue", "/", expireDate, null, false);
+			});
+
+			options.VerifyAll();
+			cookies.VerifyAll();
+		}
+
+		/// <summary>
+		/// Tests the add cookie calls driver method.
+		/// </summary>
+		[TestMethod]
+		public void TestAddCookieWhenCookieExistsCallsDriverMethodAndRemovesExistingCookie()
+		{
+			var expireDate = DateTime.Now;
+
+			var cookies = new Mock<ICookieJar>(MockBehavior.Strict);
+			cookies.Setup(c => c.GetCookieNamed("TestCookie")).Returns(new Cookie("TestCookie", "SomeValue"));
+			cookies.Setup(c => c.DeleteCookieNamed("TestCookie"));
+			cookies.Setup(c => c.AddCookie(It.Is<Cookie>(ck => ck.Name == "TestCookie" && ck.Value == "TestValue" && ck.Path == "/" && ck.Expiry == expireDate)));
+
+			var options = new Mock<IOptions>(MockBehavior.Strict);
+			options.Setup(o => o.Cookies).Returns(cookies.Object);
+
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.Manage()).Returns(options.Object);
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				browser.AddCookie("TestCookie", "TestValue", "/", expireDate, null, false);
+			});
+
+			options.VerifyAll();
+			cookies.VerifyAll();
+		}
+
+		/// <summary>
+		/// Tests the clear cookies method.
+		/// </summary>
+		[TestMethod]
+		public void TestClearCookies()
+		{
+			var cookies = new Mock<ICookieJar>(MockBehavior.Strict);
+			cookies.Setup(c => c.DeleteAllCookies());
+
+			var options = new Mock<IOptions>(MockBehavior.Strict);
+			options.Setup(o => o.Cookies).Returns(cookies.Object);
+
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.Manage()).Returns(options.Object);
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				browser.ClearCookies();
+			});
+
+			options.VerifyAll();
+			cookies.VerifyAll();
+		}
+
+		/// <summary>
+		/// Tests the clear URL method.
+		/// </summary>
+		[TestMethod]
+		public void TestClearUrl()
+		{
+			var expected = "about:blank";
+
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.SetupSet(d => d.Url = expected);
+			driver.SetupGet(d => d.Url).Returns(expected);
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				browser.ClearUrl();
+				var actual = browser.Url;
+
+				Assert.AreEqual(expected, actual);
+			});
+		}
+
+		/// <summary>
+		/// Tests the dismiss alert calls accept when ok is chosen.
+		/// </summary>
+		[TestMethod]
+		public void TestDismissAlertAcceptsWhenOkIsChoosen()
+		{
+			TestAlertScenario(AlertBoxAction.Ok, true);
+		}
+
+		/// <summary>
+		/// Tests the dismiss alert calls accept when yes is chosen.
+		/// </summary>
+		[TestMethod]
+		public void TestDismissAlertAcceptsWhenYesIsChoosen()
+		{
+			TestAlertScenario(AlertBoxAction.Yes, true);
+		}
+
+		/// <summary>
+		/// Tests the dismiss alert calls accept when retry is chosen.
+		/// </summary>
+		[TestMethod]
+		public void TestDismissAlertAcceptsWhenRetryIsChoosen()
+		{
+			TestAlertScenario(AlertBoxAction.Retry, true);
+		}
+
+		/// <summary>
+		/// Tests the dismiss alert calls accept when cancel is chosen.
+		/// </summary>
+		[TestMethod]
+		public void TestDismissAlertAcceptsWhenCancelIsChoosen()
+		{
+			TestAlertScenario(AlertBoxAction.Cancel, false);
+		}
+
+		/// <summary>
+		/// Tests the dismiss alert calls accept when close is chosen.
+		/// </summary>
+		[TestMethod]
+		public void TestDismissAlertAcceptsWhenCloseIsChoosen()
+		{
+			TestAlertScenario(AlertBoxAction.Close, false);
+		}
+
+		/// <summary>
+		/// Tests the dismiss alert calls accept when ignore is chosen.
+		/// </summary>
+		[TestMethod]
+		public void TestDismissAlertAcceptsWhenIgnoreIsChoosen()
+		{
+			TestAlertScenario(AlertBoxAction.Ignore, false);
+		}
+
+		/// <summary>
+		/// Tests the dismiss alert calls accept when no is chosen.
+		/// </summary>
+		[TestMethod]
+		public void TestDismissAlertAcceptsWhenNoIsChoosen()
+		{
+			TestAlertScenario(AlertBoxAction.No, false);
+		}
+
+		/// <summary>
+		/// Tests the dismiss alert calls accept when ok is chosen after entering text.
+		/// </summary>
+		[TestMethod]
+		public void TestDismissAlertEntersTextAndAcceptsWhenOkIsChoosen()
+		{
+			var alerter = new Mock<IAlert>(MockBehavior.Strict);
+			alerter.Setup(a => a.SendKeys("My Text"));
+			alerter.Setup(a => a.Accept());
+
+			var locator = new Mock<ITargetLocator>(MockBehavior.Strict);
+			locator.Setup(l => l.Alert()).Returns(alerter.Object);
+
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.SwitchTo()).Returns(locator.Object);
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				browser.DismissAlert(AlertBoxAction.Ok, "My Text");
+			});
+
+			alerter.VerifyAll();
+			locator.VerifyAll();
+		}
+
+		/// <summary>
+		/// Tests the close method does nothing when the driver has not been called.
+		/// </summary>
+		[TestMethod]
+		public void TestClosesDoesNothingWhenDriverIsNotInitialized()
+		{
+			var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				browser.Close();
+			});
+		}
+
+		/// <summary>
+		/// Tests the close method is called if the driver has been used.
+		/// </summary>
+		[TestMethod]
+		public void TestClosesBrowserWhenDriverIsInitialized()
+		{
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.Close());
+
+			this.InitializeDriverAndTestBrowserWith(driver, browser =>
+			{
+				browser.Close();
+			});
+		}
+
+		/// <summary>
+		/// Tests the getting the page location returns the url value.
+		/// </summary>
+		[TestMethod]
+		public void TestGetNativePageLocationReturnsUrl()
+		{
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.SetupGet(d => d.Url).Returns("http://localhost:2222/MyPage");
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				browser.EnsureOnPage<MyPage>();
+			});
+		}
+
+		/// <summary>
+		/// Tests the dispose method does nothing when the driver has not been called.
+		/// </summary>
+		[TestMethod]
+		public void TestDisposeDoesNothingWhenDriverIsNotInitialized()
+		{
+			var driver = this.CreateMockWebDriverNotExpectingInitialization();
+
+			this.TestBrowserWith(driver, browser =>
+			{
+			});
+		}
+
+		/// <summary>
+		/// Tests the dispose method is called if the driver has been used.
+		/// </summary>
+		[TestMethod]
+		public void TestDisposeClosesBrowserWhenDriverIsInitialized()
+		{
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+
+			this.InitializeDriverAndTestBrowserWith(driver, browser =>
+			{
+			});
+		}
+
+		/// <summary>
+		/// Tests the dispose is only called once.
+		/// </summary>
+		[TestMethod]
+		public void TestDisposeWhenCalledTwiceOnlyDisposesOnce()
+		{
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+
+			this.InitializeDriverAndTestBrowserWith(driver, browser =>
+			{
+				browser.Dispose();
+			});
+
+			driver.Verify(d => d.Quit(), Times.Exactly(1));
+			driver.Verify(d => d.Dispose(), Times.Exactly(1));
+		}
+
+		/// <summary>
+		/// Tests the execute script method for the browser when it exists.
+		/// </summary>
+		[TestMethod]
+		public void TestExecuteScriptWhenDriverSupportItRunsScript()
+		{
+			var result = new object();
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.As<IJavaScriptExecutor>().Setup(e => e.ExecuteScript("some script", It.IsAny<object[]>()))
+											.Returns(result);
+
+			this.InitializeDriverAndTestBrowserWith(driver, browser =>
+			{
+				var resultObject = browser.ExecuteScript("some script", "Hello");
+				Assert.AreSame(result, resultObject);
+			});
+		}
+
+		/// <summary>
+		/// Tests the execute script method for the browser when it exists.
+		/// </summary>
+		[TestMethod]
+		public void TestExecuteScriptWhenResultIsNativeElementReturnsProxyClass()
+		{
+			var result = new Mock<IWebElement>(MockBehavior.Strict);
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.As<IJavaScriptExecutor>().Setup(e => e.ExecuteScript("some script", It.IsAny<object[]>()))
+											.Returns(result.Object);
+
+			this.InitializeDriverAndTestBrowserWith(driver, browser =>
+			{
+				var resultObject = browser.ExecuteScript("some script", "Hello");
+
+				Assert.IsNotNull(resultObject);
+				Assert.IsInstanceOfType(resultObject, typeof(WebElement));
+			});
+
+			result.VerifyAll();
+		}
+
+		/// <summary>
+		/// Tests the execute script method when it doesn't support it returns null.
+		/// </summary>
+		[TestMethod]
+		public void TestExecuteScriptWhenDriverDoesNotSupportScriptReturnsNull()
+		{
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+
+			this.InitializeDriverAndTestBrowserWith(driver, browser =>
+			{
+				var resultObject = browser.ExecuteScript("some script", "Hello");
+
+				Assert.IsNull(resultObject);
+			});
+		}
+
+		/// <summary>
+		/// Tests the take screenshot method does nothing when the interface is not supported.
+		/// </summary>
+		[TestMethod]
+		public void TestTakeScreenshotWhenNotSupportedDoesNothing()
+		{
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				var fullPath = browser.TakeScreenshot(@"C:\somepath", "fileBase");
+
+				Assert.IsNull(fullPath);
+			});
+		}
+
+		/// <summary>
+		/// Tests the take screenshot method does nothing when the interface is not supported.
+		/// </summary>
+		[TestMethod]
+		public void TestTakeScreenshotWhenScreenshotErrorsReturnsNothing()
+		{
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.As<ITakesScreenshot>().Setup(s => s.GetScreenshot()).Throws<InvalidOperationException>();
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				var fullPath = browser.TakeScreenshot(@"C:\somepath", "fileBase");
+
+				Assert.IsNull(fullPath);
+			});
+		}
+
+		/// <summary>
+		/// Tests the take screenshot method performs the appropriate calls.
+		/// </summary>
+		[TestMethod]
+		public void TestTakeScreenshotWhenCalledWithoutErrorTakesScreenshot()
+		{
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.As<ITakesScreenshot>().Setup(s => s.GetScreenshot()).Throws<InvalidOperationException>();
+
+			var basePath = Path.GetTempPath();
+			var fileName = Guid.NewGuid().ToString();
+
+			Screenshot screenshot;
+			using (var ms = new MemoryStream())
+			{
+				var image = TestResource.TestImage;
+				image.Save(ms, ImageFormat.Jpeg);
+
+				screenshot = new Screenshot(Convert.ToBase64String(ms.ToArray()));
+			}
+
+			var screenShot = driver.As<ITakesScreenshot>();
+			screenShot.Setup(s => s.GetScreenshot()).Returns(screenshot);
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				string fullPath = null;
+
+				try
+				{
+					fullPath = browser.TakeScreenshot(basePath, fileName);
+				}
+				finally
+				{
+					if (fullPath != null && File.Exists(fullPath))
+					{
+						File.Delete(fullPath);
+					}
+				}
+
+				Assert.IsNotNull(fullPath);
+			});
+		}
+
+		private void InitializeDriverAndTestBrowserWith(Mock<IWebDriver> driver, Action<SeleniumBrowser> test)
+		{
+			this.TestBrowserWith(driver, true, test);
+		}
+
+		private void TestBrowserWith(Mock<IWebDriver> driver, Action<SeleniumBrowser> test)
+		{
+			this.TestBrowserWith(driver, false, test);
+		}
+
+		private void TestBrowserWith(Mock<IWebDriver> driver, bool initializeDriver, Action<SeleniumBrowser> test)
+		{
+			var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
+			if (initializeDriver)
+			{
+				Assert.IsNotNull(lazyDriver.Value);
+			}
+
+			var logger = new Mock<ILogger>(MockBehavior.Loose);
+
+			using (var browser = new SeleniumBrowser(lazyDriver, logger.Object))
+			{
+				test(browser);
+			}
+
+			driver.VerifyAll();
+		}
+
+		private Mock<IWebDriver> CreateMockWebDriverExpectingInitialization()
+		{
+			var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+
+			// NOTE: the SeleniumBrowser quits and disposes its driver as part of its destructor,
+			// So every driver we create that will get initialized has to have this set up,
+			// if we're going to use MockBehavior.Strict.
+			driver.Setup(d => d.Quit());
+			driver.Setup(d => d.Dispose());
+
+			return driver;
+		}
+
+		private Mock<IWebDriver> CreateMockWebDriverNotExpectingInitialization()
+		{
+			return new Mock<IWebDriver>(MockBehavior.Strict);
+		}
+
+		/// <summary>
+		/// Tests the alert scenario.
+		/// </summary>
+		/// <param name="action">The action.</param>
+		/// <param name="acceptResult">if set to <c>true</c> the result should accept; otherwise it should dismiss.</param>
+		private void TestAlertScenario(AlertBoxAction action, bool acceptResult)
         {
             var alerter = new Mock<IAlert>(MockBehavior.Strict);
 
@@ -588,17 +564,15 @@ namespace SpecBind.Selenium.Tests
             var locator = new Mock<ITargetLocator>(MockBehavior.Strict);
             locator.Setup(l => l.Alert()).Returns(alerter.Object);
 
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
-            driver.Setup(d => d.SwitchTo()).Returns(locator.Object);
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.SwitchTo()).Returns(locator.Object);
 
-            var logger = new Mock<ILogger>(MockBehavior.Loose);
-
-            var browser = new SeleniumBrowser(new Lazy<IWebDriver>(() => driver.Object), logger.Object);
-
-            browser.DismissAlert(action, null);
+			this.TestBrowserWith(driver, browser =>
+			{
+				browser.DismissAlert(action, null);
+			});
 
             alerter.VerifyAll();
-            driver.VerifyAll();
             locator.VerifyAll();
         }
 

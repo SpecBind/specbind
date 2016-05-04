@@ -6,6 +6,7 @@ namespace SpecBind.Actions
     using System;
 
     using SpecBind.ActionPipeline;
+	using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -14,28 +15,12 @@ namespace SpecBind.Actions
     public class WaitForElementAction : ContextActionBase<WaitForElementAction.WaitForElementContext>
     {
         /// <summary>
-        /// Initializes the <see cref="WaitForElementAction"/> class.
-        /// </summary>
-        static WaitForElementAction()
-        {
-            DefaultTimeout = TimeSpan.FromSeconds(30);
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="WaitForElementAction"/> class.
         /// </summary>
         public WaitForElementAction()
             : base(typeof(WaitForElementAction).Name)
         {
         }
-
-        /// <summary>
-        /// Gets or sets the default timeout to wait, if none is specified.
-        /// </summary>
-        /// <value>
-        /// The default timeout, 30 seconds.
-        /// </value>
-        public static TimeSpan DefaultTimeout { get; set; }
 
         /// <summary>
         /// Executes the specified context.
@@ -69,24 +54,20 @@ namespace SpecBind.Actions
         /// <returns>The located element.</returns>
         protected IPropertyData GetElement(string propertyName, TimeSpan? timeout)
         {
+			IPropertyData element = null;
+
             timeout = timeout.GetValueOrDefault(DefaultTimeout);
-
-            var getStartTime = DateTime.Now;
-
-            do
-            {
-                IPropertyData element;
-                if (this.ElementLocator.TryGetElement(propertyName, out element))
-                {
-                    return element;
-                }
-
-                System.Threading.Thread.Sleep(200);
-            }
-            while (DateTime.Now - getStartTime < timeout);
-
-            // This will throw the appropriate exception if still not found
-            return this.ElementLocator.GetElement(propertyName);
+			var waiter = new Waiter<IElementLocator>(timeout.Value);
+			try
+			{
+				waiter.WaitFor(this.ElementLocator, e => e.TryGetElement(propertyName, out element));
+				return element;
+			}
+			catch (TimeoutException)
+			{
+				// This will throw the appropriate exception if still not found
+				return this.ElementLocator.GetElement(propertyName);
+			}
         }
 
         /// <summary>

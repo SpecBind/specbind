@@ -9,6 +9,7 @@ namespace SpecBind.Actions
     using System.Threading.Tasks;
 
     using SpecBind.ActionPipeline;
+	using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -19,14 +20,6 @@ namespace SpecBind.Actions
         private readonly ILogger logger;
 
         /// <summary>
-        /// Initializes the <see cref="WaitForListItemsAction"/> class.
-        /// </summary>
-        static WaitForListItemsAction()
-        {
-            DefaultTimeout = TimeSpan.FromSeconds(30);
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="WaitForListItemsAction" /> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
@@ -35,14 +28,6 @@ namespace SpecBind.Actions
         {
             this.logger = logger;
         }
-
-        /// <summary>
-        /// Gets or sets the default timeout to wait, if none is specified.
-        /// </summary>
-        /// <value>
-        /// The default timeout, 30 seconds.
-        /// </value>
-        public static TimeSpan DefaultTimeout { get; set; }
 
         /// <summary>
         /// Executes this instance action.
@@ -94,24 +79,20 @@ namespace SpecBind.Actions
         /// <returns>The located property.</returns>
         protected IPropertyData GetProperty(string propertyName, TimeSpan? timeout = null)
         {
+			IPropertyData element = null;
+
             timeout = timeout.GetValueOrDefault(DefaultTimeout);
-
-            var getStartTime = DateTime.Now;
-
-            do
-            {
-                IPropertyData property;
-                if (this.ElementLocator.TryGetProperty(propertyName, out property))
+			var waiter = new Waiter<IElementLocator>(timeout.Value);
+			try
                 {
-                    return property;
-                }
-
-                System.Threading.Thread.Sleep(200);
+				waiter.WaitFor(this.ElementLocator, e => e.TryGetProperty(propertyName, out element));
+				return element;
             }
-            while (DateTime.Now - getStartTime < timeout);
-
+			catch (TimeoutException)
+			{
             // This will throw the appropriate exception if still not found
             return this.ElementLocator.GetProperty(propertyName);
+        }
         }
 
         /// <summary>

@@ -8,13 +8,14 @@ namespace SpecBind.Actions
     using System.Linq;
 
     using SpecBind.ActionPipeline;
+	using SpecBind.Helpers;
     using SpecBind.Pages;
     using SpecBind.Validation;
 
     /// <summary>
     /// An action that validates a list of items for specific actions.
     /// </summary>
-    public class ValidateListAction : ContextActionBase<ValidateListAction.ValidateListContext>
+	public class ValidateListAction : ValidateActionBase<ValidateListAction.ValidateListContext>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidateListAction"/> class.
@@ -41,7 +42,14 @@ namespace SpecBind.Actions
                             propertyData.Name));
             }
 
-            var validationResult = propertyData.ValidateList(actionContext.CompareType, actionContext.ValidationTable.Validations.ToList());
+			ValidationResult validationResult = null;
+
+			this.DoValidate<IPropertyData>(propertyData, e =>
+				{
+					validationResult = e.ValidateList(actionContext.CompareType, actionContext.ValidationTable.Validations.ToList());
+					return validationResult.IsValid;
+				});
+
             if (validationResult.IsValid)
             {
                 return ActionResult.Successful();

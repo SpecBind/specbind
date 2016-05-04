@@ -25,6 +25,12 @@ namespace SpecBind.Helpers
         /// <returns>The exception if it exists; otherwise <c>null</c>.</returns>
         Exception GetError();
 
+		/// <summary>
+		/// Gets the text of the currently executing step.
+		/// </summary>
+		/// <returns>The step text.</returns>
+		string GetCurrentStepText();
+
         /// <summary>
         /// Gets the name of the step file.
         /// </summary>

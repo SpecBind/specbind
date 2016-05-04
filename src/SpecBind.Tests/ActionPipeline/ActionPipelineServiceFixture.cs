@@ -139,41 +139,6 @@ namespace SpecBind.Tests.ActionPipeline
         }
 
         /// <summary>
-        /// Tests the pipeline call creates the action, invokes all pipeline steps and does not fail.
-        /// </summary>
-        [TestMethod]
-        public void TestPipelineCallCreatesActionAndRetriesOnFirstFailureThenDoesNotFail()
-        {
-            var context = new ActionContext("MyProperty");
-
-            var page = new Mock<IPage>(MockBehavior.Strict);
-
-            var preAction = new Mock<IPreAction>(MockBehavior.Strict);
-            preAction.Setup(p => p.PerformPreAction(It.IsAny<MockRetryAction>(), context));
-
-            var postAction = new Mock<IPostAction>(MockBehavior.Strict);
-            postAction.Setup(p => p.PerformPostAction(It.IsAny<MockRetryAction>(), context, It.IsAny<ActionResult>()));
-
-            var repository = new Mock<IActionRepository>(MockBehavior.Strict);
-            repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction.Object });
-            repository.Setup(r => r.GetPostActions()).Returns(new[] { postAction.Object });
-            repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
-            repository.Setup(r => r.CreateAction<MockRetryAction>()).Returns(new MockRetryAction());
-
-            var service = new ActionPipelineService(repository.Object) { ActionRetryLimit = 2 };
-
-            var result = service.PerformAction<MockRetryAction>(page.Object, context);
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual(true, result.Success);
-
-            repository.VerifyAll();
-            page.VerifyAll();
-            preAction.VerifyAll();
-            postAction.VerifyAll();
-        }
-
-        /// <summary>
         /// A mock action class.
         /// </summary>
 	    public class MockAction : ActionBase

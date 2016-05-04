@@ -3,26 +3,26 @@
 // </copyright>
 namespace SpecBind.CodedUI
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Drawing.Imaging;
-    using System.IO;
-    using System.Linq;
+	using System;
+	using System.Collections.Generic;
+	using System.Drawing.Imaging;
+	using System.IO;
+	using System.Linq;
 
-    using Microsoft.VisualStudio.TestTools.UITest.Extension;
-    using Microsoft.VisualStudio.TestTools.UITesting;
-    using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
+	using Microsoft.VisualStudio.TestTools.UITest.Extension;
+	using Microsoft.VisualStudio.TestTools.UITesting;
+	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
 
-    using SpecBind.Actions;
-    using SpecBind.BrowserSupport;
-    using SpecBind.Helpers;
-    using SpecBind.Pages;
+	using SpecBind.Actions;
+	using SpecBind.BrowserSupport;
+	using SpecBind.Helpers;
+	using SpecBind.Pages;
 
-    /// <summary>
-    /// An IBrowser implementation for Coded UI.
-    /// </summary>
-    // ReSharper disable once InconsistentNaming
-    public class CodedUIBrowser : BrowserBase
+	/// <summary>
+	/// An IBrowser implementation for Coded UI.
+	/// </summary>
+	// ReSharper disable once InconsistentNaming
+	public class CodedUIBrowser : BrowserBase
     {
         private readonly Dictionary<Type, Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument>> pageCache;
         private readonly Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>> frameCache;
@@ -104,6 +104,14 @@ namespace SpecBind.CodedUI
         }
 
         /// <summary>
+		/// Clears the URL.
+		/// </summary>
+		public override void ClearUrl()
+		{
+			this.GoTo(new Uri("about:blank"));
+		}
+
+		/// <summary>
         /// Closes this instance.
         /// </summary>
         public override void Close()
@@ -231,14 +239,20 @@ namespace SpecBind.CodedUI
             }
         }
 
-        /// <summary>
-        /// Releases windows and driver specific resources. This method is already protected by the base instance.
-        /// </summary>
-        protected override void DisposeWindow()
+		/// <summary>
+		/// Releases windows and driver specific resources. This method is already protected by the base instance.
+		/// </summary>
+		/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+		protected override void DisposeWindow(bool disposing)
         {
+			if (this.IsDisposed)
+			{
+				return;
+			}
+
             if (this.window.IsValueCreated)
             {
-                this.window.Value.Dispose();
+				this.window.Value.Dispose();
             }
         }
 
@@ -324,7 +338,7 @@ namespace SpecBind.CodedUI
                         pageType.Name);
                 }
 
-
+                
             }
 
             var documentElement = function(parentElement, this, null);

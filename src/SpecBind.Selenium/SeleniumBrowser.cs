@@ -4,23 +4,23 @@
 
 namespace SpecBind.Selenium
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Drawing.Imaging;
-    using System.IO;
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Drawing.Imaging;
+	using System.IO;
 
-    using OpenQA.Selenium;
+	using OpenQA.Selenium;
 
-    using SpecBind.Actions;
-    using SpecBind.BrowserSupport;
-    using SpecBind.Helpers;
-    using SpecBind.Pages;
+	using SpecBind.Actions;
+	using SpecBind.BrowserSupport;
+	using SpecBind.Helpers;
+	using SpecBind.Pages;
 
-    /// <summary>
-    /// A web browser level wrapper for selenium
-    /// </summary>
-    public class SeleniumBrowser : BrowserBase
+	/// <summary>
+	/// A web browser level wrapper for selenium
+	/// </summary>
+	public class SeleniumBrowser : BrowserBase
     {
         private readonly Lazy<IWebDriver> driver;
         private readonly SeleniumPageBuilder pageBuilder;
@@ -118,6 +118,14 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+		/// Clears the URL.
+		/// </summary>
+		public override void ClearUrl()
+		{
+			this.driver.Value.Url = "about:blank";
+		}
+
+        /// <summary>
         /// Closes this instance.
         /// </summary>
         public override void Close()
@@ -136,7 +144,7 @@ namespace SpecBind.Selenium
         public override void DismissAlert(AlertBoxAction action, string text)
         {
             var alert = this.driver.Value.SwitchTo().Alert();
-
+            
             if (text != null)
             {
                 alert.SendKeys(text);
@@ -174,7 +182,7 @@ namespace SpecBind.Selenium
             }
 
             var result = javascriptExecutor.ExecuteScript(script, args);
-
+            
             var webElement = result as IWebElement;
             if (webElement == null)
             {
@@ -214,7 +222,7 @@ namespace SpecBind.Selenium
             try
             {
                 var fullPath = Path.Combine(imageFolder, string.Format("{0}.jpg", fileNameBase));
-
+                
                 var screenshot = takesScreenshot.GetScreenshot();
                 screenshot.SaveAsFile(fullPath, ImageFormat.Jpeg);
 
@@ -302,11 +310,17 @@ namespace SpecBind.Selenium
         }
 
 
-        /// <summary>
-        /// Releases windows and driver specific resources. This method is already protected by the base instance.
-        /// </summary>
-        protected override void DisposeWindow()
+		/// <summary>
+		/// Releases windows and driver specific resources. This method is already protected by the base instance.
+		/// </summary>
+		/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+		protected override void DisposeWindow(bool disposing)
         {
+            if (this.IsDisposed)
+            {
+                return;
+            }
+
             if (this.driver.IsValueCreated)
             {
                 var localDriver = this.driver.Value;

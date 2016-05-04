@@ -4,19 +4,18 @@
 
 namespace SpecBind.BrowserSupport
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 
-    using SpecBind.Actions;
-    using SpecBind.Helpers;
-    using SpecBind.Pages;
-    using UriHelper = Helpers.UriHelper;
+	using SpecBind.Actions;
+	using SpecBind.Pages;
+	using UriHelper = Helpers.UriHelper;
 
-    /// <summary>
-    /// A set of extension methods for the <see cref="IBrowser" /> interface.
-    /// </summary>
-    public abstract class BrowserBase : IBrowser
+	/// <summary>
+	/// A set of extension methods for the <see cref="IBrowser" /> interface.
+	/// </summary>
+	public abstract class BrowserBase : IBrowser
     {
         private readonly ILogger logger;
         private bool disposed;
@@ -44,61 +43,62 @@ namespace SpecBind.BrowserSupport
         /// </value>
         public abstract string Url { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether this instance is disposed.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if this instance is disposed; otherwise, <c>false</c>.
-        /// </value>
-        internal bool IsDisposed
+		/// <summary>
+		/// Gets a value indicating whether or not the browser has been closed.
+		/// </summary>
+		public bool IsClosed { get; private set; }
+
+		/// <summary>
+		/// Gets a value indicating whether this instance is disposed.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if this instance is disposed; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsDisposed
         {
             get { return this.disposed; }
         }
 
-        /// <summary>
-        /// Gets a value indicating whether or not the browser should be reused
-        /// </summary>
-        internal virtual bool ReuseBrowser
-        {
-            get
-            {
-                var configSection = SettingHelper.GetConfigurationSection();
-                return configSection.BrowserFactory.ReuseBrowser;
-            }
-        }
-
-        /// <summary>
-        /// Adds the cookie to the browser.
-        /// </summary>
-        /// <param name="name">The cookie name.</param>
-        /// <param name="value">The cookie value.</param>
-        /// <param name="path">The path.</param>
-        /// <param name="expireDateTime">The expiration date time.</param>
-        /// <param name="domain">The cookie domain.</param>
-        /// <param name="secure">if set to <c>true</c> the cookie is secure.</param>
-        public abstract void AddCookie(string name, string value, string path, DateTime? expireDateTime, string domain, bool secure);
+		/// <summary>
+		/// Adds the cookie to the browser.
+		/// </summary>
+		/// <param name="name">The cookie name.</param>
+		/// <param name="value">The cookie value.</param>
+		/// <param name="path">The path.</param>
+		/// <param name="expireDateTime">The expiration date time.</param>
+		/// <param name="domain">The cookie domain.</param>
+		/// <param name="secure">if set to <c>true</c> the cookie is secure.</param>
+		public abstract void AddCookie(string name, string value, string path, DateTime? expireDateTime, string domain, bool secure);
 
         /// <summary>
         /// Clear all browser cookies
         /// </summary>
         public abstract void ClearCookies();
 
+		/// <summary>
+		/// Clears the URL.
+		/// </summary>
+		public abstract void ClearUrl();
+
         /// <summary>
         /// Closes this instance.
         /// </summary>
         public abstract void Close();
 
-        /// <summary>
+		/// <summary>
         /// Closes the instance and optionally dispose of all resources
         /// </summary>
         /// <param name="dispose">Whether or not resources should get disposed</param>
         public void Close(bool dispose)
         {
             this.Close();
+
             if (dispose)
             {
                 this.Dispose();
             }
+
+			this.IsClosed = true;
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace SpecBind.BrowserSupport
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(!this.ReuseBrowser);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -245,12 +245,12 @@ namespace SpecBind.BrowserSupport
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected void Dispose(bool disposing)
         {
-            if (!disposing || this.disposed)
+            if (this.disposed)
             {
                 return;
             }
 
-            this.DisposeWindow();
+            this.DisposeWindow(disposing);
 
             this.disposed = true;
         }
@@ -270,9 +270,10 @@ namespace SpecBind.BrowserSupport
         /// <returns>A page interface.</returns>
         protected abstract IPage CreateNativePage(Type pageType, bool verifyPageValidity);
 
-        /// <summary>
-        /// Releases windows and driver specific resources. This method is already protected by the base instance.
-        /// </summary>
-        protected abstract void DisposeWindow();
+		/// <summary>
+		/// Releases windows and driver specific resources. This method is already protected by the base instance.
+		/// </summary>
+		/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+		protected abstract void DisposeWindow(bool disposing);
     }
 }

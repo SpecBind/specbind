@@ -19,6 +19,7 @@ namespace SpecBind.Configuration
         private const string SettingsElementName = "settings";
         private const string ReuseBrowserElementName = "reuseBrowser";
         private const string ValidateWebDriverElementName = "validateWebDriver";
+		private const string WaitForPendingAjaxCallsViaElementName = "waitForPendingAjaxCallsVia";
 
 
         /// <summary>
@@ -157,5 +158,24 @@ namespace SpecBind.Configuration
                 this[ValidateWebDriverElementName] = value;
             }
         }
+
+
+		/// <summary>
+		/// Gets or sets a value indicating what mechanism, if any,
+		/// to use to check for pending AJAX requests before proceeding with each step.
+		/// </summary>
+		[ConfigurationProperty(WaitForPendingAjaxCallsViaElementName, DefaultValue = "none", IsRequired = false)]
+		public string WaitForPendingAjaxCallsVia
+		{
+			get
+			{
+				return (string)this[WaitForPendingAjaxCallsViaElementName];
+			}
+
+			set
+			{
+				this[WaitForPendingAjaxCallsViaElementName] = value;
+			}
+		}
     }
 }
