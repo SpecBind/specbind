@@ -113,3 +113,4 @@ UpgradeLog*.XML
 /src/lib
 src/SpecBind.sln.DotSettings
 examples/FullDemo/ContosoUniversity/App_Data/School.sdf
+/examples/FullDemo/ContosoUniversity/Properties/PublishProfiles/ContosoUniversity.pubxml

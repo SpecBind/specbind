@@ -169,6 +169,61 @@ namespace SpecBind.Selenium.Tests
 		}
 
 		/// <summary>
+		/// Tests the GetCookie method returns a System.Net.Cookie
+		/// </summary>
+		[TestMethod]
+		public void TestGetCookieReturnsCookieWhenExists()
+		{
+			const string CookieName = "TestCookie";
+			const string CookieValue = "SomeValue";
+			System.Net.Cookie cookie = null;
+			var cookies = new Mock<ICookieJar>(MockBehavior.Strict);
+			cookies.Setup(c => c.GetCookieNamed(CookieName)).Returns(new Cookie(CookieName, CookieValue));
+
+			var options = new Mock<IOptions>(MockBehavior.Strict);
+			options.Setup(o => o.Cookies).Returns(cookies.Object);
+
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.Manage()).Returns(options.Object);
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				cookie = browser.GetCookie(CookieName);
+			});
+
+			options.VerifyAll();
+			cookies.VerifyAll();
+			Assert.AreEqual(CookieName, cookie.Name);
+			Assert.AreEqual(CookieValue, cookie.Value);
+		}
+
+		/// <summary>
+		/// Tests the GetCookie method returns null when a cookie with a given name was not found
+		/// </summary>
+		[TestMethod]
+		public void TestGetCookieReturnsNullWhenCookieDoesNotExist()
+		{
+			System.Net.Cookie cookie = null;
+			var cookies = new Mock<ICookieJar>(MockBehavior.Strict);
+			cookies.Setup(c => c.GetCookieNamed(It.IsAny<string>())).Returns(null as Cookie);
+
+			var options = new Mock<IOptions>(MockBehavior.Strict);
+			options.Setup(o => o.Cookies).Returns(cookies.Object);
+
+			var driver = this.CreateMockWebDriverExpectingInitialization();
+			driver.Setup(d => d.Manage()).Returns(options.Object);
+
+			this.TestBrowserWith(driver, browser =>
+			{
+				cookie = browser.GetCookie("not a cookie");
+			});
+
+			options.VerifyAll();
+			cookies.VerifyAll();
+			Assert.IsNull(cookie);
+		}
+
+		/// <summary>
 		/// Tests the clear URL method.
 		/// </summary>
 		[TestMethod]
