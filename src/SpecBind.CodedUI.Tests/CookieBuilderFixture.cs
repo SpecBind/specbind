@@ -4,6 +4,7 @@
 namespace SpecBind.CodedUI.Tests
 {
     using System;
+    using System.Text.RegularExpressions;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -129,6 +130,20 @@ namespace SpecBind.CodedUI.Tests
             var cookieString = CookieBuilder.CreateCookie("TestCookie", "Some Value", "/MyPath", new DateTime(2015, 3, 30, 0, 0, 0, 0, DateTimeKind.Utc), "www.mydomain.com", false);
 
             Assert.AreEqual(@"document.cookie = ""TestCookie=Some%20Value; expires=Mon, 30 Mar 2015 00:00:00 GMT; domain=www.mydomain.com; path=/MyPath""", cookieString);
+        }
+
+        [TestMethod]
+        public void TestGetCookieValueCreatesAndCallsFunction()
+        {
+            var cookieString = CookieBuilder.GetCookieValue("TestCookie");
+            var strippedString = Regex.Replace(cookieString, @"\s+", "");
+            var expectedOutput = "function getCookie(name) {\n" + "  var value = \"; \" + document.cookie;\n"
+                                 + "  var parts = value.split(\"; \" + name + \"=\");\n"
+                                 + "  if (parts.length == 2) return parts.pop().split(\";\").shift();\n" + "}\n"
+                                 + "getCookie('TestCookie')";
+            var strippedOutput = Regex.Replace(expectedOutput, @"\s+", "");
+
+            Assert.AreEqual(strippedOutput, strippedString);
         }
     }
 }

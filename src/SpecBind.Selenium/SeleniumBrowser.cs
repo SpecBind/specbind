@@ -4,26 +4,30 @@
 
 namespace SpecBind.Selenium
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Diagnostics.CodeAnalysis;
-	using System.Drawing.Imaging;
-	using System.IO;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Drawing.Imaging;
+    using System.IO;
 
-	using OpenQA.Selenium;
+    using OpenQA.Selenium;
 
-	using SpecBind.Actions;
-	using SpecBind.BrowserSupport;
-	using SpecBind.Helpers;
-	using SpecBind.Pages;
+    using SpecBind.Actions;
+    using SpecBind.BrowserSupport;
+    using SpecBind.Helpers;
+    using SpecBind.Pages;
 
-	/// <summary>
-	/// A web browser level wrapper for selenium
-	/// </summary>
-	public class SeleniumBrowser : BrowserBase
+    using Cookie = System.Net.Cookie;
+
+    /// <summary>
+    /// A web browser level wrapper for selenium
+    /// </summary>
+    public class SeleniumBrowser : BrowserBase
     {
         private readonly Lazy<IWebDriver> driver;
+
         private readonly SeleniumPageBuilder pageBuilder;
+
         private readonly Dictionary<Type, Func<IWebDriver, IBrowser, Action<object>, object>> pageCache;
 
         private bool switchedContext;
@@ -33,7 +37,8 @@ namespace SpecBind.Selenium
         /// </summary>
         /// <param name="driver">The browser driver as a lazy object.</param>
         /// <param name="logger">The logger.</param>
-        public SeleniumBrowser(Lazy<IWebDriver> driver, ILogger logger) : base(logger)
+        public SeleniumBrowser(Lazy<IWebDriver> driver, ILogger logger)
+            : base(logger)
         {
             // TODO: create timeouts structure, pass it through this constructor, so we know what the default timeouts are.
             this.driver = driver;
@@ -43,21 +48,15 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="SeleniumBrowser" /> class.
-        /// </summary>
-        [ExcludeFromCodeCoverage]
-        ~SeleniumBrowser()
-        {
-            this.Dispose(false);
-        }
-
-        /// <summary>
         /// Gets the type of the base page.
         /// </summary>
         /// <value>The type of the base page.</value>
         public override Type BasePageType
         {
-            get { return null; }
+            get
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -86,6 +85,15 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Finalizes an instance of the <see cref="SeleniumBrowser" /> class.
+        /// </summary>
+        [ExcludeFromCodeCoverage]
+        ~SeleniumBrowser()
+        {
+            this.Dispose(false);
+        }
+
+        /// <summary>
         /// Adds the cookie to the browser.
         /// </summary>
         /// <param name="name">The cookie name.</param>
@@ -94,7 +102,13 @@ namespace SpecBind.Selenium
         /// <param name="expireDateTime">The expiration date time.</param>
         /// <param name="domain">The cookie domain.</param>
         /// <param name="secure">if set to <c>true</c> the cookie is secure.</param>
-        public override void AddCookie(string name, string value, string path, DateTime? expireDateTime, string domain, bool secure)
+        public override void AddCookie(
+            string name,
+            string value,
+            string path,
+            DateTime? expireDateTime,
+            string domain,
+            bool secure)
         {
             var localDriver = this.driver.Value;
             var cookieContainer = localDriver.Manage().Cookies;
@@ -105,7 +119,39 @@ namespace SpecBind.Selenium
                 cookieContainer.DeleteCookieNamed(name);
             }
 
-            cookieContainer.AddCookie(new Cookie(name, value, domain, path, expireDateTime));
+            cookieContainer.AddCookie(new OpenQA.Selenium.Cookie(name, value, domain, path, expireDateTime));
+        }
+
+        /// <summary>
+        /// Get a cookie from the browser
+        /// </summary>
+        /// <param name="name">The name of the cookie</param>
+        /// <returns>The cookie (if exists)</returns>
+        public override Cookie GetCookie(string name)
+        {
+            var localDriver = this.driver.Value;
+            var cookieContainer = localDriver.Manage().Cookies;
+            var seleniumCookie = cookieContainer.GetCookieNamed(name);
+
+            if (seleniumCookie != null)
+            {
+                var cookie = new Cookie()
+                             {
+                                 Name = seleniumCookie.Name,
+                                 Domain = seleniumCookie.Domain,
+                                 HttpOnly = seleniumCookie.IsHttpOnly,
+                                 Expires = seleniumCookie.Expiry.GetValueOrDefault(),
+                                 Path = seleniumCookie.Path,
+                                 Value = seleniumCookie.Value,
+                                 Secure = seleniumCookie.Secure
+                             };
+
+                return cookie;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -118,12 +164,12 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
-		/// Clears the URL.
-		/// </summary>
-		public override void ClearUrl()
-		{
-			this.driver.Value.Url = "about:blank";
-		}
+        /// Clears the URL.
+        /// </summary>
+        public override void ClearUrl()
+        {
+            this.driver.Value.Url = "about:blank";
+        }
 
         /// <summary>
         /// Closes this instance.
@@ -144,7 +190,7 @@ namespace SpecBind.Selenium
         public override void DismissAlert(AlertBoxAction action, string text)
         {
             var alert = this.driver.Value.SwitchTo().Alert();
-            
+
             if (text != null)
             {
                 alert.SendKeys(text);
@@ -182,7 +228,7 @@ namespace SpecBind.Selenium
             }
 
             var result = javascriptExecutor.ExecuteScript(script, args);
-            
+
             var webElement = result as IWebElement;
             if (webElement == null)
             {
@@ -222,7 +268,7 @@ namespace SpecBind.Selenium
             try
             {
                 var fullPath = Path.Combine(imageFolder, string.Format("{0}.jpg", fileNameBase));
-                
+
                 var screenshot = takesScreenshot.GetScreenshot();
                 screenshot.SaveAsFile(fullPath, ImageFormat.Jpeg);
 
@@ -282,7 +328,8 @@ namespace SpecBind.Selenium
 
             // Check to see if a frames reference exists, and switch if needed
             PageNavigationAttribute navigationAttribute;
-            if (pageType.TryGetAttribute(out navigationAttribute) && !string.IsNullOrWhiteSpace(navigationAttribute.FrameName))
+            if (pageType.TryGetAttribute(out navigationAttribute)
+                && !string.IsNullOrWhiteSpace(navigationAttribute.FrameName))
             {
                 webDriver.SwitchTo().Frame(navigationAttribute.FrameName);
                 this.switchedContext = true;
@@ -303,18 +350,18 @@ namespace SpecBind.Selenium
             var nativePage = pageBuildMethod(webDriver, this, null);
 
             return new SeleniumPage(nativePage)
-               {
-                   ExecuteWithElementLocateTimeout = this.ExecuteWithElementLocateTimeout,
-                   EvaluateWithElementLocateTimeout =  this.EvaluateWithElementLocateTimeout
-               };
+                   {
+                       ExecuteWithElementLocateTimeout = this.ExecuteWithElementLocateTimeout,
+                       EvaluateWithElementLocateTimeout =
+                           this.EvaluateWithElementLocateTimeout
+                   };
         }
 
-
-		/// <summary>
-		/// Releases windows and driver specific resources. This method is already protected by the base instance.
-		/// </summary>
-		/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-		protected override void DisposeWindow(bool disposing)
+        /// <summary>
+        /// Releases windows and driver specific resources. This method is already protected by the base instance.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected override void DisposeWindow(bool disposing)
         {
             if (this.IsDisposed)
             {

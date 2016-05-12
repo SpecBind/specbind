@@ -79,6 +79,25 @@ namespace SpecBind.CodedUI
         }
 
         /// <summary>
+        /// Gets the value of a cookie via javascript's document
+        /// </summary>
+        /// <param name="name">The name of the cookie to retrieve</param>
+        public static string GetCookieValue(string name)
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine(
+                "function getCookie(name) {\n" +
+                "  var value = \"; \" + document.cookie;\n" +
+                "  var parts = value.split(\"; \" + name + \"=\");\n" +
+                "  if (parts.length == 2) return parts.pop().split(\";\").shift();\n" +
+                "}\n");
+
+            builder.AppendFormat("getCookie('{0}')", name);
+
+            return builder.ToString();
+        }
+
+        /// <summary>
         /// Strips the port from the domain.
         /// </summary>
         /// <param name="domain">The domain.</param>

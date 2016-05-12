@@ -4,15 +4,16 @@
 
 namespace SpecBind.BrowserSupport
 {
-	using System;
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
+    using System.Net;
 
-	using SpecBind.Pages;
+    using SpecBind.Pages;
 
-	/// <summary>
-	/// An interface to describe browser methods.
-	/// </summary>
-	public interface IBrowser : IDisposable
+    /// <summary>
+    /// An interface to describe browser methods.
+    /// </summary>
+    public interface IBrowser : IDisposable
     {
         /// <summary>
         /// Gets the type of the base page.
@@ -28,38 +29,45 @@ namespace SpecBind.BrowserSupport
         /// <value>
         /// The url of the base page.
         /// </value>
-		string Url { get; }
+        string Url { get; }
 
-		/// <summary>
-		/// Gets a value indicating whether or not the browser has been closed.
-		/// </summary>
-		bool IsClosed { get; }
+        /// <summary>
+        /// Gets a value indicating whether or not the browser has been closed.
+        /// </summary>
+        bool IsClosed { get; }
 
-		/// <summary>
-		/// Gets a value indicating whether or not the browser has been disposed.
-		/// </summary>
-		bool IsDisposed { get; }
+        /// <summary>
+        /// Gets a value indicating whether or not the browser has been disposed.
+        /// </summary>
+        bool IsDisposed { get; }
 
-		/// <summary>
-		/// Adds the cookie to the browser.
-		/// </summary>
-		/// <param name="name">The cookie name.</param>
-		/// <param name="value">The cookie value.</param>
-		/// <param name="path">The path.</param>
-		/// <param name="expireDateTime">The expiration date time.</param>
-		/// <param name="domain">The cookie domain.</param>
-		/// <param name="secure">if set to <c>true</c> the cookie is secure.</param>
-		void AddCookie(string name, string value, string path, DateTime? expireDateTime, string domain, bool secure);
+        /// <summary>
+        /// Adds the cookie to the browser.
+        /// </summary>
+        /// <param name="name">The cookie name.</param>
+        /// <param name="value">The cookie value.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="expireDateTime">The expiration date time.</param>
+        /// <param name="domain">The cookie domain.</param>
+        /// <param name="secure">if set to <c>true</c> the cookie is secure.</param>
+        void AddCookie(string name, string value, string path, DateTime? expireDateTime, string domain, bool secure);
+
+        /// <summary>
+        /// Get a cookie from the browser
+        /// </summary>
+        /// <param name="name">The name of the cookie</param>
+        /// <returns>The cookie (if exists)</returns>
+        Cookie GetCookie(string name);
 
         /// <summary>
         /// Clear all browser cookies
         /// </summary>
         void ClearCookies();
 
-		/// <summary>
-		/// Clears the URL.
-		/// </summary>
-		void ClearUrl();
+        /// <summary>
+        /// Clears the URL.
+        /// </summary>
+        void ClearUrl();
 
         /// <summary>
         /// Closes this instance.
