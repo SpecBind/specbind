@@ -429,8 +429,7 @@ namespace SpecBind.BrowserSupport
                 LogDebug(
                     () =>
                         string.Format(
-                            ":-( WebDriverSupport.GetAngularPendingRequestCount: " + ex.GetType().Name + ": "
-                            + ex.Message));
+                            ":-( WebDriverSupport.GetAngularPendingRequestCount: {0}: {1}", ex.GetType().Name, ex.Message));
                 return -1;
             }
         }
@@ -445,7 +444,7 @@ namespace SpecBind.BrowserSupport
             {
                 LogDebug(
                     () =>
-                        string.Format(":-( WebDriverSupport.GetjQueryActive: " + ex.GetType().Name + ": " + ex.Message));
+                        string.Format(":-( WebDriverSupport.GetjQueryActive: {0}: {1}", ex.GetType().Name, ex.Message));
                 return -1;
             }
         }
