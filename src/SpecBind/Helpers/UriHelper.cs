@@ -8,15 +8,15 @@ namespace SpecBind.Helpers
 	using System.Collections.Generic;
 	using System.Text.RegularExpressions;
 
-	using SpecBind.BrowserSupport;
-	using SpecBind.Pages;
+	using BrowserSupport;
+	using Pages;
 
 	/// <summary>
 	/// A helper to get to a page on the site.
 	/// </summary>
 	public static class UriHelper
 	{
-        private const string ENV_VAR_NAME_URL = "SpecBind.ApplicationStartUrl";
+        private const string EnvironmentSettingName = "APPLICATION_START_URL";
 
 		/// <summary>
 		/// Initializes the <see cref="UriHelper" /> class.
@@ -26,7 +26,7 @@ namespace SpecBind.Helpers
 			var configSection = SettingHelper.GetConfigurationSection();
 
 			Uri parsedUri;
-            var envValue = SettingHelper.GetEnvironmentVariable(ENV_VAR_NAME_URL);
+            var envValue = SettingHelper.GetEnvironmentVariable(EnvironmentSettingName);
             if (!string.IsNullOrEmpty(envValue) && Uri.TryCreate(configSection.Application.StartUrl, UriKind.Absolute, out parsedUri))
             {
                 BaseUri = parsedUri;
