@@ -16,6 +16,8 @@ namespace SpecBind.Helpers
 	/// </summary>
 	public static class UriHelper
 	{
+        private const string ENV_VAR_NAME_URL = "SpecBind.ApplicationStartUrl";
+
 		/// <summary>
 		/// Initializes the <see cref="UriHelper" /> class.
 		/// </summary>
@@ -24,12 +26,22 @@ namespace SpecBind.Helpers
 			var configSection = SettingHelper.GetConfigurationSection();
 
 			Uri parsedUri;
-			BaseUri = configSection != null && configSection.Application != null
-			          && Uri.TryCreate(configSection.Application.StartUrl, UriKind.Absolute, out parsedUri)
-				          ? parsedUri
-				          : new Uri("http://localhost");
+            var envValue = SettingHelper.GetEnvironmentVariable(ENV_VAR_NAME_URL);
+            if (!string.IsNullOrEmpty(envValue) && Uri.TryCreate(configSection.Application.StartUrl, UriKind.Absolute, out parsedUri))
+            {
+                BaseUri = parsedUri;
+            }
+            else if (configSection != null && configSection.Application != null
+                      && Uri.TryCreate(configSection.Application.StartUrl, UriKind.Absolute, out parsedUri))
+            {
+                BaseUri = parsedUri;
+            }
+            else
+            {
+                BaseUri = new Uri("http://localhost");
+            }
 
-			Console.WriteLine("Application Base URI: {0}", BaseUri);
+            Console.WriteLine("Application Base URI: {0}", BaseUri);
 		}
 
         #pragma warning disable SA1623 // PropertySummaryDocumentationMustMatchAccessors

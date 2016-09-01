@@ -25,6 +25,19 @@ namespace SpecBind.Helpers
 			return ConfigurationManager.GetSection("specBind") as ConfigurationSectionHandler;
 		}
 
+        /// <summary>
+        /// Gets an environment variable from the system. If it does not exist, <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <param name="variableName">The name of the environment variable.</param>
+        /// <param name="defaultValue">The value to return if the environment variable doesn't exist. Defaults to <c>null</c></param>
+        /// <returns>The environment variable value; otherwise the <paramref name="defaultValue"/></returns>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public static string GetEnvironmentVariable(string variableName, string defaultValue = null)
+        {
+            var envVariables = Environment.GetEnvironmentVariables();
+            return envVariables.Contains(variableName) ? envVariables[variableName].ToString() : defaultValue;
+        }
+
 		/// <summary>
 		/// Gets a value indicating wither highlight mode is enabled in configuration or app settings.
 		/// </summary>

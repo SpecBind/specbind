@@ -385,11 +385,20 @@ namespace SpecBind.Selenium
             }
 
             // Add any additional settings that are not reserved
+            var envRegex = new System.Text.RegularExpressions.Regex("\\$\\{(.+)\\}");
             var reservedSettings = new[] { RemoteUrlSetting };
             foreach (var setting in settings.OfType<NameValueConfigurationElement>()
                                             .Where(s => reservedSettings.All(r => !string.Equals(r, s.Name, StringComparison.OrdinalIgnoreCase))))
             {
-                capability.SetCapability(setting.Name, setting.Value);
+                // Support environment variables
+                var value = setting.Value;
+                var match = envRegex.Match(value);
+                if (match.Success)
+                {
+                    value = SettingHelper.GetEnvironmentVariable(match.Groups[1].Value);
+                }
+
+                capability.SetCapability(setting.Name, value);
             }
 
             remoteWebDriver = new RemoteScreenshotWebDriver(remoteUri, capability);
