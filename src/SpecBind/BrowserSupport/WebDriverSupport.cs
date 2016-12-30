@@ -338,6 +338,11 @@ namespace SpecBind.BrowserSupport
         [AfterScenario]
         public void ExecuteAfterScenario()
         {
+            if (Browser == null)
+            {
+                return;
+            }
+            
             try
             {
                 this.CheckForScreenshot();
