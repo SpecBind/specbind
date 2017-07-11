@@ -35,10 +35,27 @@ namespace SpecBind.Tests
 			context.VerifyAll();
 		}
 
-		/// <summary>
-		/// Tests the GetTokenByKey method.
-		/// </summary>
-		[TestMethod]
+	    /// <summary>
+	    /// Tests the GetToken method with a normal piece of data.
+	    /// </summary>
+	    [TestMethod]
+	    public void TestGetTokenWithSendKeysFormat()
+	    {
+	        var context = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+
+	        var manager = new TokenManager(context.Object);
+
+	        var result = manager.GetToken("{{TAB}}");
+
+	        Assert.AreEqual("{TAB}", result);
+
+	        context.VerifyAll();
+	    }
+
+        /// <summary>
+        /// Tests the GetTokenByKey method.
+        /// </summary>
+        [TestMethod]
 		public void TestGetTokenByKey()
 		{
 			var context = new Mock<IScenarioContextHelper>(MockBehavior.Strict);

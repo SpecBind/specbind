@@ -33,7 +33,7 @@ namespace SpecBind.Helpers
 			TokenData tokenData;
 			if (TryParseToken(fieldValue, out tokenData))
 			{
-				contextValue = this.GetTokenByKey(tokenData.Name);
+			    contextValue = tokenData.Name != null ? this.GetTokenByKey(tokenData.Name) : tokenData.Value;
 			}
 
 			return contextValue ?? fieldValue;
@@ -128,7 +128,7 @@ namespace SpecBind.Helpers
 		/// <returns><c>true</c> if it is a token; otherwise <c>false</c>.</returns>
 		private static bool TryParseToken(string fieldValue, out TokenData data)
 		{
-			fieldValue = (fieldValue != null) ? fieldValue.Trim() : null;
+			fieldValue = fieldValue?.Trim();
 
 			data = null;
 			if (string.IsNullOrWhiteSpace(fieldValue) || !fieldValue.StartsWith("{") || !fieldValue.EndsWith("}"))
@@ -136,7 +136,14 @@ namespace SpecBind.Helpers
 				return false;
 			}
 
-			var innerToken = fieldValue.Substring(1, fieldValue.Length - 2).Trim();
+            // Special case if token came in as {{TAB}} return the item as written, it's a special sendkeys format
+		    var innerToken = fieldValue.Substring(1, fieldValue.Length - 2).Trim();
+            if (innerToken.StartsWith("{") && innerToken.EndsWith("}"))
+            {
+                data = new TokenData { Value = innerToken };
+                return true;
+            }
+
 			var parts = innerToken.Split(new[] { ':' }, 2);
 
 			data = new TokenData { Name = parts[0] };
