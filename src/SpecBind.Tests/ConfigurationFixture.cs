@@ -11,6 +11,8 @@ namespace SpecBind.Tests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using SpecBind.Configuration;
+    using System.IO;
+    using System.Reflection;
 
     /// <summary>
     /// Test classes for verifying configuration.
@@ -63,10 +65,18 @@ namespace SpecBind.Tests
         /// Tests that the ExcludedAssemblies property is populated if it is in the config file.
         /// </summary>
         [TestMethod]
+        [DeploymentItem("WithExcludedAssemblyConfig.config")]
         public void TestLoadingExcludedAssemblies()
         {
-            var fileMap = new ConfigurationFileMap("WithExcludedAssemblyConfig.config");
-            var config = ConfigurationManager.OpenMappedMachineConfiguration(fileMap);
+            string currentPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string filePath = Path.Combine(currentPath, "WithExcludedAssemblyConfig.config");
+            Assert.IsTrue(File.Exists(filePath), $"File not found: '{filePath}'");
+
+            var fileMap = new ExeConfigurationFileMap
+            {
+                ExeConfigFilename = filePath
+            };
+            var config = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
             var section = config.GetSection("specBind") as ConfigurationSectionHandler;
 
             Assert.IsNotNull(section);
