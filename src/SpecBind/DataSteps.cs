@@ -22,6 +22,7 @@ namespace SpecBind
     {
         // Step regex values - in constants because they are shared.
         private const string EnterDataInFieldsStepRegex = @"I enter data";
+        private const string EnterDataInFieldStepRegex = @"I enter ""(.+)"" into (.+)";
         private const string ObserveDataStepRegex = @"I see";
         private const string ObserveListDataStepRegex = @"I see (.+) list ([A-Za-z ]+)";
         private const string ObserveListRowCountRegex = @"I see (.+) list contains (exactly|at least|at most) ([0-9]+) items?";
@@ -29,6 +30,7 @@ namespace SpecBind
 
         // The following Regex items are for the given "past tense" form
         private const string GivenEnterDataInFieldsStepRegex = @"I entered data";
+        private const string GivenEnterDataInFieldStepRegex = @"I enter ""(.+)"" into (.+)";
         private const string GivenObserveDataStepRegex = @"I saw";
         private const string GivenObserveListDataStepRegex = @"I saw (.+) list ([A-Za-z ]+)";
         private const string GivenObserveListRowCountRegex = @"I saw (.+) list contains (exactly|at least|at most) ([0-9]+) items?";
@@ -84,6 +86,22 @@ namespace SpecBind
                 var errors = string.Join("; ", results.Where(r => r.Exception != null).Select(r => r.Exception.Message));
                 throw new ElementExecuteException("Errors occurred while entering data. Details: {0}", errors);
             }
+        }
+
+        /// <summary>
+        /// A step that is invoked when you enter data into a single field.
+        /// </summary>
+        /// <param name="data">The data that needs to be entered.</param>
+        /// <param name="fieldName">The field name.</param>
+        [Given(GivenEnterDataInFieldStepRegex)]
+        [When(EnterDataInFieldStepRegex)]
+        [Then(EnterDataInFieldStepRegex)]
+        public void WhenIEnterDataInFieldStep(string data, string fieldName)
+        {
+            var page = this.GetPageFromContext();
+            var context = new EnterDataAction.EnterDataContext(fieldName.ToLookupKey(), data);
+
+            this.actionPipelineService.PerformAction<EnterDataAction>(page, context).CheckResult();
         }
 
         /// <summary>

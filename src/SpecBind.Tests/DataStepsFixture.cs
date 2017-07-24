@@ -180,6 +180,63 @@ namespace SpecBind.Tests
         }
 
         /// <summary>
+        /// Tests the WhenIEnterDataInFieldsStep method with a successful result.
+        /// </summary>
+        [TestMethod]
+        public void TestWhenIEnterDataInFieldStep()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(
+                    p => p.PerformAction<EnterDataAction>(testPage.Object, It.Is<EnterDataAction.EnterDataContext>(c => c.PropertyName == "myfield" && c.Data == "myvalue")))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+
+            steps.WhenIEnterDataInFieldStep("myvalue", "My Field");
+
+            scenarioContext.VerifyAll();
+            pipelineService.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the WhenIEnterDataInFieldsStep method with a failed result.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ElementExecuteException))]
+        public void TestWhenIEnterDataInFieldStepWithFailure()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(
+                    p => p.PerformAction<EnterDataAction>(testPage.Object, It.Is<EnterDataAction.EnterDataContext>(c => c.PropertyName == "myfield" && c.Data == "myvalue")))
+                .Returns(ActionResult.Failure(new ElementExecuteException("Could Not Find Field: myfield")));
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+
+            try
+            {
+                steps.WhenIEnterDataInFieldStep("myvalue", "My Field");
+            }
+            catch (ElementExecuteException ex)
+            {
+                StringAssert.Contains(ex.Message, "Could Not Find Field: myfield");
+
+                scenarioContext.VerifyAll();
+                pipelineService.VerifyAll();
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Tests the WhenIClearDataInFieldsStep method with a null table.
         /// </summary>
         [TestMethod]
