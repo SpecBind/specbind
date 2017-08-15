@@ -342,7 +342,7 @@ namespace SpecBind.BrowserSupport
             {
                 return;
             }
-            
+
             try
             {
                 this.CheckForScreenshot();
@@ -392,14 +392,22 @@ namespace SpecBind.BrowserSupport
         {
             var scenarioHelper = this.objectContainer.Resolve<IScenarioContextHelper>();
             var ex = scenarioHelper.GetError();
+            var isError = false;
             if (ex == null)
             {
-                return;
+                var setting = configurationHandler.Value.BrowserFactory?.CreateScreenshotOnExit;
+                if (!setting.GetValueOrDefault(false))
+                {
+                    return;
+                }
+            }
+            else
+            {
+                isError = true;
+                LogDebug(() => $"{ex.GetType().Name}: {ex.Message}");
             }
 
-            LogDebug(() => ex.GetType().Name + ": " + ex.Message);
-
-            var fileName = scenarioHelper.GetStepFileName();
+            var fileName = scenarioHelper.GetStepFileName(isError);
             var basePath = Directory.GetCurrentDirectory();
             var fullPath = Browser.TakeScreenshot(basePath, fileName);
             Browser.SaveHtml(basePath, fileName);
@@ -407,7 +415,7 @@ namespace SpecBind.BrowserSupport
             var traceListener = this.objectContainer.Resolve<ITraceListener>();
             if (fullPath != null && traceListener != null)
             {
-                traceListener.WriteTestOutput("Created Error Screenshot: {0}", fullPath);
+                traceListener.WriteTestOutput("Created Screenshot: {0}", fullPath);
             }
 
             try

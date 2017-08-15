@@ -121,21 +121,15 @@ namespace SpecBind.Helpers
 			return "(Unable to detect current step)";
 		}
 
-        /// <summary>
-        /// Gets the name of the step file.
-        /// </summary>
-        /// <returns>A unique file name for the scenario.</returns>
-	    public string GetStepFileName()
-        {
-            return string.Format(
-                "error_{0}_{1}_{2}",
-                this.featureContext != null
-                    ? this.featureContext.FeatureInfo.Title.ToIdentifier()
-                    : Guid.NewGuid().ToString(),
-                this.scenarioContext != null
-                    ? this.scenarioContext.ScenarioInfo.Title.ToIdentifier()
-                    : Guid.NewGuid().ToString(),
-                DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+	    /// <summary>
+	    /// Gets the name of the step file.
+	    /// </summary>
+	    /// <param name="isError">A value indicating wither the file is the result of an error or not.</param>
+	    /// <returns>A unique file name for the scenario.</returns>
+	    public string GetStepFileName(bool isError)
+	    {
+            return
+                $"{(isError ? "error" : "scenario")}_{(this.featureContext != null ? this.featureContext.FeatureInfo.Title.ToIdentifier() : Guid.NewGuid().ToString())}_{(this.scenarioContext != null ? this.scenarioContext.ScenarioInfo.Title.ToIdentifier() : Guid.NewGuid().ToString())}_{DateTime.Now:yyyyMMdd_HHmmss}";
         }
 
 	    /// <summary>

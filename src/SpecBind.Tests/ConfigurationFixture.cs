@@ -33,6 +33,7 @@ namespace SpecBind.Tests
                                  BrowserFactory = new BrowserFactoryConfigurationElement
                                                       {
                                                           BrowserType = "Chrome",
+                                                          CreateScreenshotOnExit = true,
                                                           Provider = "MyProvider, MyProvider.Class",
                                                           EnsureCleanSession = true,
                                                           ElementLocateTimeout = TimeSpan.FromSeconds(10),
@@ -51,6 +52,7 @@ namespace SpecBind.Tests
             Assert.AreEqual(TimeSpan.FromSeconds(10), section.BrowserFactory.ElementLocateTimeout);
             Assert.AreEqual(TimeSpan.FromSeconds(15), section.BrowserFactory.PageLoadTimeout);
             Assert.AreEqual(true, section.BrowserFactory.EnsureCleanSession);
+            Assert.AreEqual(true, section.BrowserFactory.CreateScreenshotOnExit);
             Assert.IsNotNull(section.BrowserFactory.Settings);
             Assert.AreEqual(0, section.Application.ExcludedAssemblies.Cast<AssemblyElement>().ToList().Count);
             Assert.AreEqual(true, section.BrowserFactory.ValidateWebDriver);

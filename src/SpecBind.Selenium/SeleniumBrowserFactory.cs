@@ -6,15 +6,17 @@ namespace SpecBind.Selenium
 {
     using System;
     using System.Configuration;
-    using System.Diagnostics;
     using System.IO;
     using System.IO.Compression;
     using System.Linq;
     using System.Net;
     using System.Threading;
 
+    using Microsoft.Win32;
+
     using OpenQA.Selenium;
     using OpenQA.Selenium.Chrome;
+    using OpenQA.Selenium.Edge;
     using OpenQA.Selenium.Firefox;
     using OpenQA.Selenium.IE;
     using OpenQA.Selenium.PhantomJS;
@@ -35,6 +37,7 @@ namespace SpecBind.Selenium
         // Constants to assist with settings
         private const string ChromeUrl = "http://chromedriver.storage.googleapis.com";
         private const string RemoteUrlSetting = "RemoteUrl";
+        private const string ChromeArgumentSetting = "ChromeArguments"; 
         private const string PhantomjsExe = "phantomjs.exe";
         
         private static readonly string SeleniumDriverPath;
@@ -80,9 +83,19 @@ namespace SpecBind.Selenium
                         break;
                     case BrowserType.Chrome:
                         var chromeOptions = new ChromeOptions { LeaveBrowserRunning = false };
+
+                        var cmdLineSetting = browserFactoryConfiguration.Settings[ChromeArgumentSetting];
+                        if (!string.IsNullOrWhiteSpace(cmdLineSetting?.Value))
+                        {
+                            foreach (var arg in cmdLineSetting.Value.Split(';'))
+                            {
+                                chromeOptions.AddArgument(arg);
+                            }
+                        }
+
                         var chromeDriverService = ChromeDriverService.CreateDefaultService();
                         chromeDriverService.HideCommandPromptWindow = true;
-
+                        
                         driver = new ChromeDriver(chromeDriverService, chromeOptions);
                         break;
                     case BrowserType.PhantomJS:
@@ -93,8 +106,14 @@ namespace SpecBind.Selenium
                     case BrowserType.Safari:
                         driver = new SafariDriver();
                         break;
+                    case BrowserType.Edge:
+                        var edgeOptions = new EdgeOptions { PageLoadStrategy = EdgePageLoadStrategy.Normal };
+                        var edgeDriverService = EdgeDriverService.CreateDefaultService();
+                        driver = new EdgeDriver(edgeDriverService, edgeOptions);
+                        break;
                     default:
-                        throw new InvalidOperationException(string.Format("Browser type '{0}' is not supported in Selenium local mode. Did you mean to configure a remote driver?", browserType));
+                        throw new InvalidOperationException(
+                            $"Browser type '{browserType}' is not supported in Selenium local mode. Did you mean to configure a remote driver?");
                 }
             }
 
@@ -103,11 +122,11 @@ namespace SpecBind.Selenium
            
             // Set timeouts
 
-			var applicationConfiguration = SpecBind.Helpers.SettingHelper.GetConfigurationSection().Application;
+			var applicationConfiguration = SettingHelper.GetConfigurationSection().Application;
 
-            managementSettings.Timeouts()
-                .ImplicitlyWait(browserFactoryConfiguration.ElementLocateTimeout)
-                .SetPageLoadTimeout(browserFactoryConfiguration.PageLoadTimeout);
+            var timeouts = managementSettings.Timeouts();
+            timeouts.ImplicitWait = browserFactoryConfiguration.ElementLocateTimeout;
+            timeouts.PageLoad = browserFactoryConfiguration.PageLoadTimeout;
 
 			ActionBase.DefaultTimeout = browserFactoryConfiguration.ElementLocateTimeout;
             WaitForPageAction.DefaultTimeout = browserFactoryConfiguration.PageLoadTimeout;
@@ -174,6 +193,9 @@ namespace SpecBind.Selenium
                         case BrowserType.PhantomJS:
                             DownloadPhantomJsDriver();
                             break;
+                        case BrowserType.Edge:
+                            DownloadEdgeDriver();
+                            break;
                         default:
                             throw;
                     }
@@ -209,10 +231,10 @@ namespace SpecBind.Selenium
             using (var webClient = new WebClient())
             {
                 // First get the latest version
-                var releaseNumber = webClient.DownloadString(string.Format("{0}/LATEST_RELEASE", ChromeUrl));    
+                var releaseNumber = webClient.DownloadString($"{ChromeUrl}/LATEST_RELEASE");    
 
                 // Combine to download
-                url = string.Format("{0}/{1}", ChromeUrl, releaseNumber.Trim());
+                url = $"{ChromeUrl}/{releaseNumber.Trim()}";
             }
 
             DownloadAndExtractZip(url, "chromedriver_win32.zip");
@@ -225,10 +247,55 @@ namespace SpecBind.Selenium
         {
             // Determine bit-wise of OS
 			// HACK: Only use 32-bit driver; SendKeys is unusably slow with 64-bit driver
-			var fileName = string.Format("IEDriverServer_{0}_2.50.0.zip", /* Environment.Is64BitOperatingSystem ? "x64" : */ "Win32");
 
             // Download - this is set to a single version for now
-			DownloadAndExtractZip("http://selenium-release.storage.googleapis.com/2.50", fileName);
+			DownloadAndExtractZip("http://selenium-release.storage.googleapis.com/2.50", "IEDriverServer_Win32_2.50.0.zip");
+        }
+
+        /// <summary>
+        /// Downloads and installs the MS Edge driver based on the platform version
+        /// </summary>
+        private static void DownloadEdgeDriver()
+        {
+            var winVersion = GetWindowsBuildNumber();
+
+            string downloadUrl;
+            switch (winVersion)
+            {
+                case "15063":
+                    downloadUrl = "https://download.microsoft.com/download/3/4/2/342316D7-EBE0-4F10-ABA2-AE8E0CDF36DD/MicrosoftWebDriver.exe";
+                    break;
+                case "Insiders":
+                    downloadUrl = "https://download.microsoft.com/download/1/4/1/14156DA0-D40F-460A-B14D-1B264CA081A5/MicrosoftWebDriver.exe";
+                    break;
+                case "14393":
+                    downloadUrl = "https://download.microsoft.com/download/3/2/D/32D3E464-F2EF-490F-841B-05D53C848D15/MicrosoftWebDriver.exe";
+                    break;
+                case "10586":
+                    downloadUrl = "https://download.microsoft.com/download/C/0/7/C07EBF21-5305-4EC8-83B1-A6FCC8F93F45/MicrosoftWebDriver.msi";
+                    break;
+                case "10240":
+                    downloadUrl = "https://download.microsoft.com/download/8/D/0/8D0D08CF-790D-4586-B726-C6469A9ED49C/MicrosoftWebDriver.msi";
+                    break;
+                default: return;
+            }
+
+            using (var webClient = new WebClient())
+            {
+                // Combine to download
+                var exePath = Path.Combine(SeleniumDriverPath, "MicrosoftWebDriver.exe");
+                webClient.DownloadFile(downloadUrl, exePath);
+            }
+        }
+
+        /// <summary>
+        /// Gets the Windows current Build version
+        /// </summary>
+        /// <returns>The build number if located; otherwise <c>null</c>.</returns>
+        private static string GetWindowsBuildNumber()
+        {
+            var registryKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+            return registryKey?.GetValue("CurrentBuildNumber", null).ToString();
         }
 
         /// <summary>
@@ -241,7 +308,7 @@ namespace SpecBind.Selenium
             using (var webClient = new WebClient())
             {
                 // Combine to download
-                var url = string.Format("{0}/{1}", baseUri, zipName);
+                var url = $"{baseUri}/{zipName}";
                 var zipPath = Path.Combine(SeleniumDriverPath, zipName);
                 webClient.DownloadFile(url, zipPath);
 
@@ -315,7 +382,7 @@ namespace SpecBind.Selenium
         {
             var remoteSetting = settings[RemoteUrlSetting];
 
-            if (remoteSetting == null || string.IsNullOrWhiteSpace(remoteSetting.Value))
+            if (string.IsNullOrWhiteSpace(remoteSetting?.Value))
             {
                 return null;
             }
@@ -324,7 +391,7 @@ namespace SpecBind.Selenium
             if (!Uri.TryCreate(remoteSetting.Value, UriKind.Absolute, out remoteUri))
             {
                 throw new ConfigurationErrorsException(
-                    string.Format("The {0} setting is not a valid URI: {1}", RemoteUrlSetting, remoteSetting.Value));
+                    $"The {RemoteUrlSetting} setting is not a valid URI: {remoteSetting.Value}");
             }
 
             return remoteUri;
@@ -381,7 +448,8 @@ namespace SpecBind.Selenium
 					capability = DesiredCapabilities.Edge();
 					break;
                 default:
-                    throw new InvalidOperationException(string.Format("Browser Type '{0}' is not supported as a remote driver.", browserType));
+                    throw new InvalidOperationException(
+                        $"Browser Type '{browserType}' is not supported as a remote driver.");
             }
 
             // Add any additional settings that are not reserved
@@ -422,7 +490,7 @@ namespace SpecBind.Selenium
 
                 // Append our directory to the system path
                 var systemPath = Environment.GetEnvironmentVariable("PATH");
-                systemPath = string.Format("{0};{1}", path, systemPath);
+                systemPath = $"{path};{systemPath}";
                 Environment.SetEnvironmentVariable("PATH", systemPath);
             }
             catch (SystemException)

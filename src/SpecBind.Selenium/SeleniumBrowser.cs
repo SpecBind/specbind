@@ -7,7 +7,6 @@ namespace SpecBind.Selenium
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.Drawing.Imaging;
     using System.IO;
 
     using OpenQA.Selenium;
@@ -51,13 +50,7 @@ namespace SpecBind.Selenium
         /// Gets the type of the base page.
         /// </summary>
         /// <value>The type of the base page.</value>
-        public override Type BasePageType
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public override Type BasePageType => null;
 
         /// <summary>
         /// Gets the url of the current page.
@@ -65,24 +58,12 @@ namespace SpecBind.Selenium
         /// <value>
         /// The url of the base page.
         /// </value>
-        public override string Url
-        {
-            get
-            {
-                return this.driver.Value.Url;
-            }
-        }
+        public override string Url => this.driver.Value.Url;
 
         /// <summary>
         /// Gets the current driver to enable the user to do custom steps if necessary
         /// </summary>
-        public IWebDriver Driver
-        {
-            get
-            {
-                return this.driver.Value;
-            }
-        }
+        public IWebDriver Driver => this.driver.Value;
 
         /// <summary>
         /// Finalizes an instance of the <see cref="SeleniumBrowser" /> class.
@@ -267,10 +248,10 @@ namespace SpecBind.Selenium
 
             try
             {
-                var fullPath = Path.Combine(imageFolder, string.Format("{0}.jpg", fileNameBase));
+                var fullPath = Path.Combine(imageFolder, $"{fileNameBase}.jpg");
 
                 var screenshot = takesScreenshot.GetScreenshot();
-                screenshot.SaveAsFile(fullPath, ImageFormat.Jpeg);
+                screenshot.SaveAsFile(fullPath, ScreenshotImageFormat.Jpeg);
 
                 return fullPath;
             }
@@ -291,7 +272,7 @@ namespace SpecBind.Selenium
             var localDriver = this.driver.Value;
             try
             {
-                var fullPath = Path.Combine(destinationFolder, string.Format("{0}.html", fileNameBase));
+                var fullPath = Path.Combine(destinationFolder, $"{fileNameBase}.html");
                 using (var writer = File.CreateText(fullPath))
                 {
                     writer.Write(localDriver.PageSource);
@@ -384,17 +365,16 @@ namespace SpecBind.Selenium
         /// <returns><c>true</c> if the element is located; otherwise <c>false</c>.</returns>
         private bool EvaluateWithElementLocateTimeout(TimeSpan timeout, Func<bool> work)
         {
-            TimeSpan originalTimeout = WaitForElementAction.DefaultTimeout;
             var timeoutManager = this.driver.Value.Manage().Timeouts();
 
             try
             {
-                timeoutManager.ImplicitlyWait(timeout);
+                timeoutManager.ImplicitWait = timeout;
                 return work();
             }
             finally
             {
-                timeoutManager.ImplicitlyWait(originalTimeout);
+                timeoutManager.ImplicitWait = ActionBase.DefaultTimeout;
             }
         }
 
@@ -405,17 +385,16 @@ namespace SpecBind.Selenium
         /// <param name="work">The work.</param>
         private void ExecuteWithElementLocateTimeout(TimeSpan timeout, Action work)
         {
-            TimeSpan originalTimeout = WaitForElementAction.DefaultTimeout;
             var timeoutManager = this.driver.Value.Manage().Timeouts();
 
             try
             {
-                timeoutManager.ImplicitlyWait(timeout);
+                timeoutManager.ImplicitWait = timeout;
                 work();
             }
             finally
             {
-                timeoutManager.ImplicitlyWait(originalTimeout);
+                timeoutManager.ImplicitWait = ActionBase.DefaultTimeout;
             }
         }
     }
