@@ -31,11 +31,12 @@ namespace SpecBind.Helpers
 		/// <returns>The step text.</returns>
 		string GetCurrentStepText();
 
-        /// <summary>
-        /// Gets the name of the step file.
-        /// </summary>
-        /// <returns>A unique file name for the scenario.</returns>
-        string GetStepFileName();
+	    /// <summary>
+	    /// Gets the name of the step file.
+	    /// </summary>
+	    /// <param name="isError"></param>
+	    /// <returns>A unique file name for the scenario.</returns>
+	    string GetStepFileName(bool isError);
 
         /// <summary>
         /// Determines whether the current scenario's feature contains the specified tag.

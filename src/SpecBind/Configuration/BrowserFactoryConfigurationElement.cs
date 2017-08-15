@@ -11,6 +11,7 @@ namespace SpecBind.Configuration
     /// </summary>
     public class BrowserFactoryConfigurationElement : ConfigurationElement
     {
+        private const string CreateScreenshotElementName = "createScreenshotAfterScenario";
         private const string ElementLocateTimeoutElementName = "elementLocateTimeout";
         private const string EnsureCleanSessionElementName = "ensureCleanSession";
         private const string PageLoadTimeoutElementName = "pageLoadTimeout";
@@ -37,6 +38,24 @@ namespace SpecBind.Configuration
             set
             {
                 this[BrowserTypeElementName] = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether a screenshot should be taken after the final step of each completed scenario.
+        /// </summary>
+        /// <value><c>true</c> if a screenshot should be taken; otherwise <c>false</c>.</value>
+        [ConfigurationProperty(CreateScreenshotElementName, DefaultValue = false, IsRequired = false)]
+        public bool CreateScreenshotOnExit
+        {
+            get
+            {
+                return (bool)this[CreateScreenshotElementName];
+            }
+
+            set
+            {
+                this[CreateScreenshotElementName] = value;
             }
         }
 

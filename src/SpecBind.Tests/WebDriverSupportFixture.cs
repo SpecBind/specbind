@@ -89,7 +89,7 @@ namespace SpecBind.Tests
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetError()).Returns(new InvalidOperationException());
-            scenarioContext.Setup(s => s.GetStepFileName()).Returns("TestFileName");
+            scenarioContext.Setup(s => s.GetStepFileName(true)).Returns("TestFileName");
 
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns("TestFileName.jpg");
@@ -115,13 +115,61 @@ namespace SpecBind.Tests
         /// Tests the teardown with an error that then takes a screenshot.
         /// </summary>
         [TestMethod]
+        public void TestCheckForScreenshotWithNoErrorButSettingEnabledTakesSuccessfulScreenshot()
+        {
+            var listener = new Mock<ITraceListener>(MockBehavior.Strict);
+            listener.Setup(l => l.WriteTestOutput(It.Is<string>(s => s.Contains("TestFileName.jpg"))));
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetError()).Returns((Exception)null);
+            scenarioContext.Setup(s => s.GetStepFileName(false)).Returns("TestFileName");
+
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns("TestFileName.jpg");
+            browser.Setup(b => b.SaveHtml(It.IsAny<string>(), "TestFileName")).Returns((string)null);
+            browser.Setup(b => b.Close(true));
+
+            var container = new Mock<IObjectContainer>(MockBehavior.Strict);
+            container.Setup(c => c.Resolve<IScenarioContextHelper>()).Returns(scenarioContext.Object);
+            container.Setup(c => c.Resolve<ITraceListener>()).Returns(listener.Object);
+
+            WebDriverSupport.Browser = browser.Object;
+            var driverSupport = new WebDriverSupport(container.Object);
+
+            // Setup Configuration
+            var config = new ConfigurationSectionHandler
+                         {
+                             BrowserFactory =
+                                 new BrowserFactoryConfigurationElement
+                                 {
+                                     CreateScreenshotOnExit = true
+                                 }
+                         };
+
+            WebDriverSupport.ConfigurationMethod = new Lazy<ConfigurationSectionHandler>(() => config);
+
+            driverSupport.CheckForScreenshot();
+
+            config.BrowserFactory.CreateScreenshotOnExit = false;
+            WebDriverSupport.ConfigurationMethod = new Lazy<ConfigurationSectionHandler>(() => config);
+
+            container.VerifyAll();
+            browser.VerifyAll();
+            scenarioContext.VerifyAll();
+            listener.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the teardown with an error that then takes a screenshot.
+        /// </summary>
+        [TestMethod]
         public void TestCheckForScreenshotWithErrorAttemptsScreenshotButFails()
         {
             var listener = new Mock<ITraceListener>(MockBehavior.Strict);
             
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetError()).Returns(new InvalidOperationException());
-            scenarioContext.Setup(s => s.GetStepFileName()).Returns("TestFileName");
+            scenarioContext.Setup(s => s.GetStepFileName(true)).Returns("TestFileName");
 
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns((string)null);
@@ -151,7 +199,7 @@ namespace SpecBind.Tests
         {
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetError()).Returns(new InvalidOperationException());
-            scenarioContext.Setup(s => s.GetStepFileName()).Returns("TestFileName");
+            scenarioContext.Setup(s => s.GetStepFileName(true)).Returns("TestFileName");
 
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns((string)null);
