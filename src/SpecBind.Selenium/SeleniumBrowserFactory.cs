@@ -81,6 +81,7 @@ namespace SpecBind.Selenium
                         driver = GetFireFoxDriver(browserFactoryConfiguration);
                         break;
                     case BrowserType.Chrome:
+                    case BrowserType.ChromeHeadless:
                         var chromeOptions = new ChromeOptions { LeaveBrowserRunning = false };
 
                         var cmdLineSetting = browserFactoryConfiguration.Settings[ChromeArgumentSetting];
@@ -90,6 +91,12 @@ namespace SpecBind.Selenium
                             {
                                 chromeOptions.AddArgument(arg);
                             }
+                        }
+
+                        // Activate chrome headless via a command line
+                        if (browserType == BrowserType.ChromeHeadless)
+                        {
+                            chromeOptions.AddArgument("--headless");
                         }
 
                         var chromeDriverService = ChromeDriverService.CreateDefaultService();
@@ -187,6 +194,7 @@ namespace SpecBind.Selenium
                             DownloadIeDriver();
                             break;
                         case BrowserType.Chrome:
+                        case BrowserType.ChromeHeadless:
                             DownloadChromeDriver();
                             break;
                         case BrowserType.PhantomJS:
