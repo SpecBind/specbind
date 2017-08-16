@@ -14,7 +14,7 @@
     <tags>specbind codedui</tags>
     <language>en-US</language>
     <dependencies>
-      <group targetFramework=".NETFramework4.5">
+      <group targetFramework=".NETFramework4.6">
         <dependency id="SpecBind" version="$version$" />
         <dependency id="SpecBindGeneratorPlugin.SpecFlow" version="$version$" />
       </group>

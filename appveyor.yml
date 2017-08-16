@@ -3,7 +3,7 @@
 #---------------------------------#
 
 # version format
-version: 1.8.0.{build}
+version: 2.0.0.{build}
 
 # branches to build
 branches:
@@ -124,3 +124,15 @@ notifications:
   on_build_success: true
   on_build_failure: true
   on_build_status_changed: true
+
+#---------------------------------#
+#      branch configuration       #
+#---------------------------------#
+for:
+
+-
+  branches:
+    except:
+     - master
+  
+  version: '2.0.0.{build}-{branch}'

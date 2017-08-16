@@ -38,23 +38,6 @@ namespace SpecBind.BrowserSupport
         Opera = 5,
 
         /// <summary>
-        /// Android Emulator
-        /// </summary>
-        Android = 6,
-
-        /// <summary>
-        /// iOS iPhone Emulator
-        /// </summary>
-        // ReSharper disable once InconsistentNaming
-        iPhone = 7,
-
-        /// <summary>
-        /// iOS iPad Emulator
-        /// </summary>
-        // ReSharper disable once InconsistentNaming
-        iPad = 8,
-
-        /// <summary>
         /// PhantomJS Browser
         /// </summary>
         // ReSharper disable once InconsistentNaming
@@ -66,5 +49,10 @@ namespace SpecBind.BrowserSupport
 		// ReSharper disable once InconsistentNaming
 		Edge = 10,
 
+	    /// <summary>
+	    /// Chrome Browser without a UI attached
+	    /// </summary>
+	    // ReSharper disable once InconsistentNaming
+        ChromeHeadless = 11
 	}
 }

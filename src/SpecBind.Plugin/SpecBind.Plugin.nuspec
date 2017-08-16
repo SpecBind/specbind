@@ -14,8 +14,8 @@
     <tags>specflow specbind</tags>
     <language>en-US</language>
     <dependencies>
-      <dependency id="SpecFlow" version="2.0.0" />
-      <dependency id="SpecFlow.CustomPlugin" version="2.0.0" />
+      <dependency id="SpecFlow" version="2.2.0" />
+      <dependency id="SpecFlow.CustomPlugin" version="2.2.0" />
     </dependencies>
   </metadata>
   <files>
