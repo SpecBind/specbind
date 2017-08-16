@@ -19,8 +19,8 @@ namespace SpecBind.Selenium
     using OpenQA.Selenium.Edge;
     using OpenQA.Selenium.Firefox;
     using OpenQA.Selenium.IE;
+    using OpenQA.Selenium.Opera;
     using OpenQA.Selenium.PhantomJS;
-    using OpenQA.Selenium.Remote;
     using OpenQA.Selenium.Safari;
 
     using SpecBind.Actions;
@@ -67,8 +67,7 @@ namespace SpecBind.Selenium
         /// <exception cref="System.InvalidOperationException">Thrown if the browser is not supported.</exception>
         internal static IWebDriver CreateWebDriver(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration)
         {
-            IWebDriver driver;
-            if (!RemoteDriverExists(browserFactoryConfiguration.Settings, browserType, out driver))
+            if (!RemoteDriverExists(browserFactoryConfiguration.Settings, browserType, out IWebDriver driver))
             {
                 switch (browserType)
                 {
@@ -95,7 +94,7 @@ namespace SpecBind.Selenium
 
                         var chromeDriverService = ChromeDriverService.CreateDefaultService();
                         chromeDriverService.HideCommandPromptWindow = true;
-                        
+
                         driver = new ChromeDriver(chromeDriverService, chromeOptions);
                         break;
                     case BrowserType.PhantomJS:
@@ -337,15 +336,13 @@ namespace SpecBind.Selenium
                 {
                     // Removed debug lines but left in comments for future logger support
                     // Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting:{0} with value: {1}", configurationElement.Name, configurationElement.Value);
-                    bool boolValue;
-                    int intValue;
 
-                    if (int.TryParse(configurationElement.Value, out intValue))
+                    if (int.TryParse(configurationElement.Value, out int intValue))
                     {
                         // Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting with int value: '{0}'", configurationElement.Name);
                         ffprofile.SetPreference(configurationElement.Name, intValue);
                     }
-                    else if (bool.TryParse(configurationElement.Value, out boolValue))
+                    else if (bool.TryParse(configurationElement.Value, out bool boolValue))
                     {
                         // Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting with bool value: '{0}'", configurationElement.Name);
                         ffprofile.SetPreference(configurationElement.Name, boolValue);
@@ -387,8 +384,7 @@ namespace SpecBind.Selenium
                 return null;
             }
 
-            Uri remoteUri;
-            if (!Uri.TryCreate(remoteSetting.Value, UriKind.Absolute, out remoteUri))
+            if (!Uri.TryCreate(remoteSetting.Value, UriKind.Absolute, out Uri remoteUri))
             {
                 throw new ConfigurationErrorsException(
                     $"The {RemoteUrlSetting} setting is not a valid URI: {remoteSetting.Value}");
@@ -414,38 +410,29 @@ namespace SpecBind.Selenium
                 return false;
             }
 
-            DesiredCapabilities capability;
+            DriverOptions driverOptions;
             switch (browserType)
             {
                 case BrowserType.IE:
-                    capability = DesiredCapabilities.InternetExplorer();
+                    driverOptions = new InternetExplorerOptions();
                     break;
                 case BrowserType.FireFox:
-                    capability = DesiredCapabilities.Firefox();
+                    driverOptions = new FirefoxOptions();
                     break;
                 case BrowserType.Chrome:
-                    capability = DesiredCapabilities.Chrome();
+                    driverOptions = new ChromeOptions();
                     break;
                 case BrowserType.Safari:
-                    capability = DesiredCapabilities.Safari();
+                    driverOptions = new SafariOptions();
                     break;
                 case BrowserType.Opera:
-                    capability = DesiredCapabilities.Opera();
-                    break;
-                case BrowserType.Android:
-                    capability = DesiredCapabilities.Android();
-                    break;
-                case BrowserType.iPhone:
-                    capability = DesiredCapabilities.IPhone();
-                    break;
-                case BrowserType.iPad:
-                    capability = DesiredCapabilities.IPad();
+                    driverOptions = new OperaOptions();
                     break;
                 case BrowserType.PhantomJS:
-                    capability = DesiredCapabilities.PhantomJS();
+                    driverOptions = new PhantomJSOptions();
                     break;
 				case BrowserType.Edge:
-					capability = DesiredCapabilities.Edge();
+					driverOptions = new EdgeOptions();
 					break;
                 default:
                     throw new InvalidOperationException(
@@ -466,10 +453,10 @@ namespace SpecBind.Selenium
                     value = SettingHelper.GetEnvironmentVariable(match.Groups[1].Value);
                 }
 
-                capability.SetCapability(setting.Name, value);
+                driverOptions.AddAdditionalCapability(setting.Name, value);
             }
 
-            remoteWebDriver = new RemoteScreenshotWebDriver(remoteUri, capability);
+            remoteWebDriver = new RemoteScreenshotWebDriver(remoteUri, driverOptions.ToCapabilities());
             return true;
         }
 

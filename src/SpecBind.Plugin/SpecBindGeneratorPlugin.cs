@@ -5,9 +5,6 @@ namespace SpecBind.Plugin
 {
     using System;
 
-    using BoDi;
-
-    using TechTalk.SpecFlow.Generator.Configuration;
     using TechTalk.SpecFlow.Generator.Plugins;
     using TechTalk.SpecFlow.Generator.UnitTestProvider;
 
@@ -18,36 +15,27 @@ namespace SpecBind.Plugin
     public class SpecBindGeneratorPlugin : IGeneratorPlugin
     {
         /// <summary>
-        /// The register dependencies.
+        /// Initializes the plugin to change the behavior of the generator
         /// </summary>
-        /// <param name="container">The container.</param>
-        public void RegisterDependencies(ObjectContainer container)
+        /// <param name="generatorPluginEvents">The generator plugin events.</param>
+        /// <param name="generatorPluginParameters">Parameters to the generator.</param>
+        public void Initialize(GeneratorPluginEvents generatorPluginEvents, GeneratorPluginParameters generatorPluginParameters)
         {
+            generatorPluginEvents.CustomizeDependencies += CustomizeDependencies;
         }
 
-        /// <summary>
-        /// The register customizations.
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="generatorConfiguration">The generator configuration.</param>
-        public void RegisterCustomizations(ObjectContainer container, SpecFlowProjectConfiguration generatorConfiguration)
+        private static void CustomizeDependencies(object sender, CustomizeDependenciesEventArgs eventArgs)
         {
+            var container = eventArgs.ObjectContainer;
+
             container.RegisterTypeAs<SpecBindConfigurationProvider, ISpecBindConfigurationProvider>();
 
-            var unitTestGenProvider = generatorConfiguration.GeneratorConfiguration.GeneratorUnitTestProvider;
+            var unitTestGenProvider = eventArgs.SpecFlowProjectConfiguration.SpecFlowConfiguration.UnitTestProvider;
             if (string.Equals(unitTestGenProvider, "mstest", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(unitTestGenProvider, "mstest.2010", StringComparison.OrdinalIgnoreCase))
             {
                 container.RegisterTypeAs<SpecBindTestGeneratorProvider, IUnitTestGeneratorProvider>();
             }
-        }
-
-        /// <summary>
-        /// The register configuration defaults.
-        /// </summary>
-        /// <param name="specFlowConfiguration">The specflow configuration.</param>
-        public void RegisterConfigurationDefaults(SpecFlowProjectConfiguration specFlowConfiguration)
-        {
         }
     }
 }
