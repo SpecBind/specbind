@@ -31,6 +31,7 @@ namespace SpecBind.Selenium
             SetProperty(locators, attribute, a => By.ClassName(a.Class), a => a.Class != null);
             SetProperty(locators, attribute, a => By.LinkText(a.Text), a => a.Text != null);
             SetProperty(locators, attribute, a => By.CssSelector(a.CssSelector), a => a.CssSelector != null);
+            SetProperty(locators, attribute, a => By.XPath(a.XPath), a => a.XPath != null);
 
             var xpathTag = new XPathTag(attribute.NormalizedTagName);
 

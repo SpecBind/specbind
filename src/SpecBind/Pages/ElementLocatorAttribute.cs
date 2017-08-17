@@ -137,6 +137,12 @@ namespace SpecBind.Pages
         /// <value>The CSS selector.</value>
 	    public string CssSelector { get; set; }
 
+        /// <summary>
+        /// Gets or sets the XPATH expression to use. Only supported in Selenium
+        /// </summary>
+        /// <value>The XPATH expression.</value>
+        public string XPath { get; set; }
+
 	    #endregion
 	}
 }
