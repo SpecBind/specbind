@@ -169,6 +169,21 @@ namespace SpecBind.Selenium.Tests
         }
 
         /// <summary>
+        /// Tests the attribute with XPath property returns XPath locator.
+        /// </summary>
+        [TestMethod]
+        public void TestAttributeWithXPathReturnsXPathLocator()
+        {
+            var attribute = new ElementLocatorAttribute { XPath = ".//[@element='row']" };
+
+            var resultList = LocatorBuilder.GetElementLocators(attribute);
+
+            Assert.AreEqual(1, resultList.Count);
+            var item = resultList.First();
+            Assert.AreEqual(By.XPath(".//[@element='row']"), item);
+        }
+
+        /// <summary>
         /// Tests the attribute with image tag and URL returns x path locator.
         /// </summary>
         [TestMethod]
