@@ -330,7 +330,7 @@ namespace SpecBind.Selenium
 
             var nativePage = pageBuildMethod(webDriver, this, null);
 
-            return new SeleniumPage(nativePage)
+            return new SeleniumPage(nativePage, webDriver)
                    {
                        ExecuteWithElementLocateTimeout = this.ExecuteWithElementLocateTimeout,
                        EvaluateWithElementLocateTimeout =

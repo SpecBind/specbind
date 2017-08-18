@@ -5,12 +5,11 @@
 namespace SpecBind.Selenium
 {
     using System;
-    using System.Drawing;
     using System.Reflection;
-    using System.Runtime.Remoting.Messaging;
     using System.Threading;
 
     using OpenQA.Selenium;
+    using OpenQA.Selenium.Support.Extensions;
     using OpenQA.Selenium.Support.UI;
 
     using SpecBind.Actions;
@@ -22,13 +21,17 @@ namespace SpecBind.Selenium
     /// </summary>
     public class SeleniumPage : PageBase<object, IWebElement>
     {
+        private readonly IWebDriver webDriver;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SeleniumPage"/> class.
         /// </summary>
         /// <param name="nativePage">The native page.</param>
-        public SeleniumPage(object nativePage)
+        /// <param name="webDriver"></param>
+        public SeleniumPage(object nativePage, IWebDriver webDriver)
             : base(nativePage.GetType(), nativePage)
         {
+            this.webDriver = webDriver;
         }
 
         /// <summary>
@@ -114,7 +117,7 @@ namespace SpecBind.Selenium
         /// <returns>The action to fill the page.</returns>
         public override Action<IWebElement, string> GetPageFillMethod(Type propertyType)
         {
-            return FillPage;
+            return this.FillPage;
         }
 
         /// <summary>
@@ -142,6 +145,15 @@ namespace SpecBind.Selenium
                 default:
                     return element.Text;
             }
+        }
+
+        /// <inheritdoc />
+        public override void Highlight(IWebElement element)
+        {
+            var orig = element.GetAttribute("style");
+            this.SetAttribute(element, "style", "border: 5px solid red;");
+            Thread.Sleep(TimeSpan.FromSeconds(1.5));
+            this.SetAttribute(element, "style", orig);
         }
 
         /// <summary>
@@ -191,19 +203,15 @@ namespace SpecBind.Selenium
                                 }
                                 catch (NoSuchElementException)
                                 {
-                                    return;
                                 }
                                 catch (NotFoundException)
                                 {
-                                    return;
                                 }
                                 catch (ElementNotVisibleException)
                                 {
-                                    return;
                                 }
                                 catch (StaleElementReferenceException)
                                 {
-                                    return;
                                 }
                             });
                         break;
@@ -368,7 +376,7 @@ namespace SpecBind.Selenium
         /// </summary>
         /// <param name="element">The element.</param>
         /// <param name="data">The data.</param>
-        private static void FillPage(IWebElement element, string data)
+        private void FillPage(IWebElement element, string data)
         {
             // Respect the data control interface first.
             // ReSharper disable once SuspiciousTypeConversion.Global
@@ -399,7 +407,7 @@ namespace SpecBind.Selenium
                         bool checkValue;
                         if (bool.TryParse(data, out checkValue) && element.Selected != checkValue)
                         {
-                            new SeleniumPage(element).ClickElement(element);
+                            new SeleniumPage(element, this.webDriver).ClickElement(element);
                         }
 
                         return;
@@ -408,7 +416,7 @@ namespace SpecBind.Selenium
                     if (string.Equals("radio", inputType, StringComparison.OrdinalIgnoreCase))
                     {
                         // Need to click twice to select the element.
-                        new SeleniumPage(element).ClickElement(element, times: 2);
+                        new SeleniumPage(element, this.webDriver).ClickElement(element, 2);
                         return;
                     }
 
@@ -441,7 +449,7 @@ namespace SpecBind.Selenium
         /// <returns>The appropriate page object.</returns>
         private SeleniumPage CreatePageFromElement(IWebElement element)
         {
-            return new SeleniumPage(element)
+            return new SeleniumPage(element, this.webDriver)
             {
                 ExecuteWithElementLocateTimeout = this.ExecuteWithElementLocateTimeout,
                 EvaluateWithElementLocateTimeout = this.EvaluateWithElementLocateTimeout
@@ -460,6 +468,24 @@ namespace SpecBind.Selenium
             waiter.Until(condition);
             var elapsed = DateTime.Now - startTime;
             return elapsed >= waiter.Timeout;
+        }
+
+        /// <summary>
+        /// Sets the attribute on the element via the web driver.
+        /// </summary>
+        /// <param name="element">The element being manipulated.</param>
+        /// <param name="attributeName">The name of the attribute being modified.</param>
+        /// <param name="value">The value of the parameter.</param>
+        private void SetAttribute(IWebElement element, string attributeName, string value)
+        {
+            try
+            {
+                this.webDriver.ExecuteJavaScript("arguments[0].setAttribute(arguments[1], arguments[2])", element, attributeName, value);
+            }
+            catch (WebDriverException)
+            {
+                // This is a support function, ignore not supported for now
+            }
         }
     }
 }

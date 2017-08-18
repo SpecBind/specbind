@@ -172,7 +172,6 @@ namespace SpecBind.PropertyHandlers
         /// </summary>
         public virtual void Highlight()
         {
-            throw this.CreateNotSupportedException("Highlighting an item");
         }
 
         /// <summary>

@@ -29,7 +29,7 @@ namespace SpecBind.Selenium.Tests
         public void TestGetNativePage()
         {
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.GetNativePage<NativePage>();
             Assert.AreSame(nativePage, result);
@@ -42,7 +42,7 @@ namespace SpecBind.Selenium.Tests
         public void TestGetPageType()
         {
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.PageType;
             Assert.AreEqual(typeof(NativePage), result);
@@ -57,7 +57,7 @@ namespace SpecBind.Selenium.Tests
             var element = new Mock<IWebElement>(MockBehavior.Strict);
 
             var nativePage = new NativePage { MyControl = element.Object };
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
 
             IPropertyData propertyData;
@@ -77,7 +77,7 @@ namespace SpecBind.Selenium.Tests
             var element = new Mock<IWebElement>(MockBehavior.Strict);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.GetPageFromElement(element.Object);
 
@@ -95,7 +95,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Displayed).Returns(true);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.ElementExistsCheck(element.Object);
 
@@ -113,7 +113,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Displayed).Returns(false);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.ElementExistsCheck(element.Object);
 
@@ -131,7 +131,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Displayed).Throws<NoSuchElementException>();
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.ElementExistsCheck(element.Object);
 
@@ -149,7 +149,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Displayed).Throws<ElementNotVisibleException>();
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.ElementExistsCheck(element.Object);
 
@@ -168,7 +168,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Enabled).Returns(true);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.ElementEnabledCheck(element.Object);
 
@@ -186,12 +186,61 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Displayed).Returns(false);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.ElementEnabledCheck(element.Object);
 
             Assert.AreEqual(false, result);
             element.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the highlight method draws a border around the element.
+        /// </summary>
+        [TestMethod]
+        public void TestHighlightElementExecutesJavascript()
+        {
+            const string DefaultStyle = "color: blue;";
+            const string JavaScript = "arguments[0].setAttribute(arguments[1], arguments[2])";
+
+            var element = new Mock<IWebElement>(MockBehavior.Strict);
+            element.Setup(e => e.GetAttribute("style")).Returns(DefaultStyle);
+
+            var item = element.Object;
+            var webDriver = new Mock<IWebDriver>(MockBehavior.Strict);
+            webDriver.As<IJavaScriptExecutor>().Setup(j => j.ExecuteScript(JavaScript, item, "style", "border: 5px solid red;")).Returns((object)null);
+            webDriver.As<IJavaScriptExecutor>().Setup(j => j.ExecuteScript(JavaScript, item, "style", DefaultStyle)).Returns((object)null);
+
+            var nativePage = new NativePage();
+            var page = new SeleniumPage(nativePage, webDriver.Object);
+
+            page.Highlight(item);
+            
+            element.VerifyAll();
+            webDriver.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the highlight method does not throw an exception if the driver isn't supported.
+        /// </summary>
+        [TestMethod]
+        public void TestHighlightElementWhenDriverNotSupportedDoesNotThowException()
+        {
+            const string DefaultStyle = "color: blue;";
+
+            var element = new Mock<IWebElement>(MockBehavior.Strict);
+            element.Setup(e => e.GetAttribute("style")).Returns(DefaultStyle);
+
+            var item = element.Object;
+            var webDriver = new Mock<IWebDriver>(MockBehavior.Strict);
+
+            var nativePage = new NativePage();
+            var page = new SeleniumPage(nativePage, webDriver.Object);
+
+            page.Highlight(item);
+
+            element.VerifyAll();
+            webDriver.VerifyAll();
         }
 
         /// <summary>
@@ -205,7 +254,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Enabled).Returns(false);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.ElementEnabledCheck(element.Object);
 
@@ -223,7 +272,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Displayed).Throws<NoSuchElementException>();
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.ElementEnabledCheck(element.Object);
 
@@ -241,7 +290,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Displayed).Throws<ElementNotVisibleException>();
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.ElementEnabledCheck(element.Object);
 
@@ -260,7 +309,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Displayed).Throws<StaleElementReferenceException>();
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.ElementEnabledCheck(element.Object);
 
@@ -279,7 +328,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Text).Returns("Normal Text");
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.GetElementText(element.Object);
 
@@ -306,7 +355,7 @@ namespace SpecBind.Selenium.Tests
                    .Returns(new ReadOnlyCollection<IWebElement>(new[] { option.Object }));
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.GetElementText(element.Object);
 
@@ -326,7 +375,7 @@ namespace SpecBind.Selenium.Tests
             element.Setup(e => e.GetAttribute("value")).Returns("Input Text");
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.GetElementText(element.Object);
 
@@ -346,7 +395,7 @@ namespace SpecBind.Selenium.Tests
             element.Setup(e => e.GetAttribute("value")).Returns("Input Text Area");
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.GetElementText(element.Object);
 
@@ -367,7 +416,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Selected).Returns(true);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.GetElementText(element.Object);
 
@@ -385,7 +434,7 @@ namespace SpecBind.Selenium.Tests
             this.SetupClick(element);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.ClickElement(element.Object);
 
@@ -403,7 +452,7 @@ namespace SpecBind.Selenium.Tests
             element.Setup(e => e.Clear());
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var clearMethod = page.GetClearMethod(null);
             clearMethod(element.Object);
@@ -422,7 +471,7 @@ namespace SpecBind.Selenium.Tests
             element.Setup(e => e.SendKeys("Some Text"));
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var fillMethod = page.GetPageFillMethod(null);
             fillMethod(element.Object, "Some Text");
@@ -442,7 +491,7 @@ namespace SpecBind.Selenium.Tests
             element.Setup(e => e.SendKeys("Some Text"));
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var fillMethod = page.GetPageFillMethod(null);
             fillMethod(element.Object, "Some Text");
@@ -463,7 +512,7 @@ namespace SpecBind.Selenium.Tests
             this.SetupClick(element);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var fillMethod = page.GetPageFillMethod(null);
             fillMethod(element.Object, "true");
@@ -483,7 +532,7 @@ namespace SpecBind.Selenium.Tests
             this.SetupClick(element);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var fillMethod = page.GetPageFillMethod(null);
             fillMethod(element.Object, "true");
@@ -511,7 +560,7 @@ namespace SpecBind.Selenium.Tests
                    .Returns(new ReadOnlyCollection<IWebElement>(new[] { option.Object }));
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var fillMethod = page.GetPageFillMethod(null);
             fillMethod(element.Object, "Selected Item");
@@ -541,7 +590,7 @@ namespace SpecBind.Selenium.Tests
                    .Returns(new ReadOnlyCollection<IWebElement>(new[] { option.Object }));
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var fillMethod = page.GetPageFillMethod(null);
             fillMethod(element.Object, "Selected Item");
@@ -559,7 +608,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Displayed).Returns(true);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.WaitForElement(element.Object, WaitConditions.Exists, null);
 
@@ -578,7 +627,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Displayed).Returns(false);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.WaitForElement(element.Object, WaitConditions.Exists, null);
 
@@ -597,7 +646,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Displayed).Returns(false);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
             this.SetupToWaitForElement(page);
 
             var result = page.WaitForElement(element.Object, WaitConditions.NotExists, null);
@@ -617,7 +666,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Enabled).Returns(true);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.WaitForElement(element.Object, WaitConditions.Enabled, null);
 
@@ -636,7 +685,7 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Enabled).Returns(false);
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.WaitForElement(element.Object, WaitConditions.NotEnabled, null);
 
@@ -655,7 +704,7 @@ namespace SpecBind.Selenium.Tests
             element.Setup(e => e.GetAttribute("href")).Returns("http://myurl.com/page");
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage);
+            var page = new SeleniumPage(nativePage, null);
 
             var result = page.GetElementAttributeValue(element.Object, "href");
 
