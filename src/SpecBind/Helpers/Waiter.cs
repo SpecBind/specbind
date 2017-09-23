@@ -59,9 +59,10 @@ namespace SpecBind.Helpers
 			var startTime = DateTime.Now;
 			var waitIntervalMilliseconds = Convert.ToInt32(this.WaitInterval.TotalMilliseconds);
 
-			// TODO: Use Task.Run to put this on a background thread?
-			// Is there any benefit it that, since we still have to wait for it?
-			do
+            // We must wait for conditions in the same thread to support Microsfot Coded UI tests
+            // because they're run in Single Thread Apartment (STA) mode of COM
+            // See https://github.com/dpiessens/specbind/issues/111
+            do
 			{
 				if (conditionChecker())
 				{
@@ -130,10 +131,11 @@ namespace SpecBind.Helpers
 			var startTime = DateTime.Now;
 			var waitIntervalMilliseconds = Convert.ToInt32(this.WaitInterval.TotalMilliseconds);
 
-			// TODO: Use Task.Run to put this on a background thread?
-			// Is there any benefit it that, since we still have to wait for it?
-			do
-			{
+            // We must wait for conditions in the same thread to support Microsfot Coded UI tests
+            // because they're run in Single Thread Apartment (STA) mode of COM
+            // See https://github.com/dpiessens/specbind/issues/111
+            do
+            {
 				if (conditionChecker(element))
 				{
 					return;

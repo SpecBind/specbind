@@ -5,8 +5,6 @@
 namespace SpecBind.Actions
 {
     using System;
-    using System.Threading;
-    using System.Threading.Tasks;
 
     using SpecBind.ActionPipeline;
 	using SpecBind.Helpers;
@@ -53,18 +51,16 @@ namespace SpecBind.Actions
 
             // Setup timeout items
             var timeout = actionContext.Timeout.GetValueOrDefault(DefaultTimeout);
-            var cancellationTokenSource = new CancellationTokenSource();
-            cancellationTokenSource.CancelAfter(timeout);
-            var token = cancellationTokenSource.Token;
+            var waitInterval = TimeSpan.FromMilliseconds(200);
+            var waiter = new Waiter(timeout, waitInterval);
 
             try
             {
-                var task = Task.Run(() => this.CheckForPage(element, token), token);
-                task.Wait(token);
+                waiter.WaitFor(() => this.CheckForPage(element));
 
                 return ActionResult.Successful();
             }
-            catch (OperationCanceledException)
+            catch (TimeoutException)
             {
 				var exception = new ElementExecuteException("List '{0}' did not contain elements after {1}", propertyName, timeout);
                 return ActionResult.Failure(exception);
@@ -99,20 +95,19 @@ namespace SpecBind.Actions
         /// Checks for page.
         /// </summary>
         /// <param name="listElement">the list element.</param>
-        /// <param name="token">The cancellation token.</param>
-        private void CheckForPage(IPropertyData listElement, CancellationToken token)
+        /// <returns><c>true</c> if the element contains at least one list item; otherwise <c>false</c>.</returns>
+        private bool CheckForPage(IPropertyData listElement)
         {
             while (true)
             {
                 var item = listElement.GetItemAtIndex(0);
                 if (item != null)
                 {
-                    return;
+                    return true;
                 }
 
                 this.logger.Debug("List did not contain any elements, waiting...");
-                token.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(200));
-                token.ThrowIfCancellationRequested();
+                return false;
             }
         }
 
