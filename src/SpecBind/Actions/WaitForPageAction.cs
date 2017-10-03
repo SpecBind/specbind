@@ -4,18 +4,17 @@
 
 namespace SpecBind.Actions
 {
-	using System;
-	using System.Threading;
-	using System.Threading.Tasks;
+    using System;
 
-	using SpecBind.ActionPipeline;
-	using SpecBind.BrowserSupport;
-	using SpecBind.Pages;
+    using SpecBind.ActionPipeline;
+    using SpecBind.BrowserSupport;
+    using SpecBind.Helpers;
+    using SpecBind.Pages;
 
-	/// <summary>
-	/// An action that waits for the framework url to resolve to a certain page.
-	/// </summary>
-	public class WaitForPageAction : ContextActionBase<WaitForPageAction.WaitForPageActionContext>
+    /// <summary>
+    /// An action that waits for the framework url to resolve to a certain page.
+    /// </summary>
+    public class WaitForPageAction : ContextActionBase<WaitForPageAction.WaitForPageActionContext>
     {
         private readonly IBrowser browser;
         private readonly ILogger logger;
@@ -67,18 +66,22 @@ namespace SpecBind.Actions
             }
 
             var timeout = actionContext.Timeout.GetValueOrDefault(WaitForPageAction.DefaultTimeout);
-            var cancellationTokenSource = new CancellationTokenSource();
-            cancellationTokenSource.CancelAfter(timeout);
-            var token = cancellationTokenSource.Token;
+            var waitInterval = TimeSpan.FromMilliseconds(200);
+            var waiter = new Waiter(timeout, waitInterval);
 
             try
             {
-                var task = Task.Run(() => this.CheckForPage(type, token), token);
-                task.Wait(token);
+                IPage page = null;
 
-                return ActionResult.Successful(task.Result);
+                waiter.WaitFor(() =>
+                {
+                    page = this.CheckForPage(type);
+                    return page != null;
+                });
+
+                return ActionResult.Successful(page);
             }
-            catch (OperationCanceledException)
+            catch (TimeoutException)
             {
                 var exception = new PageNavigationException("Browser did not resolve to the '{0}' page in {1}", type.Name, timeout);
                 return ActionResult.Failure(exception);
@@ -89,9 +92,8 @@ namespace SpecBind.Actions
         /// Checks for page.
         /// </summary>
         /// <param name="pageType">Type of the page.</param>
-        /// <param name="token">The token.</param>
         /// <returns>The page object once the item is located.</returns>
-        private IPage CheckForPage(Type pageType, CancellationToken token)
+        private IPage CheckForPage(Type pageType)
         {
             var page = this.browser.Page(pageType);
             while (true)
@@ -104,8 +106,7 @@ namespace SpecBind.Actions
                 catch (PageNavigationException ex)
                 {
                     this.logger.Debug("Browser is not on page. Details: {0}", ex.Message);
-                    token.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(200));
-                    token.ThrowIfCancellationRequested();
+                    return null;
                 }
             }
         }
