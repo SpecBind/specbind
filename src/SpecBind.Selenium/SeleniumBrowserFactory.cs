@@ -21,6 +21,7 @@ namespace SpecBind.Selenium
     using OpenQA.Selenium.IE;
     using OpenQA.Selenium.Opera;
     using OpenQA.Selenium.PhantomJS;
+    using OpenQA.Selenium.Remote;
     using OpenQA.Selenium.Safari;
 
     using SpecBind.Actions;
@@ -39,7 +40,8 @@ namespace SpecBind.Selenium
         private const string RemoteUrlSetting = "RemoteUrl";
         private const string ChromeArgumentSetting = "ChromeArguments"; 
         private const string PhantomjsExe = "phantomjs.exe";
-        
+        private const string IgnoreProtectedModeSettings = "IgnoreProtectedModeSettings";
+
         private static readonly string SeleniumDriverPath;
 
         /// <summary>
@@ -72,7 +74,25 @@ namespace SpecBind.Selenium
                 switch (browserType)
                 {
                     case BrowserType.IE:
-                        var explorerOptions = new InternetExplorerOptions { EnsureCleanSession = browserFactoryConfiguration.EnsureCleanSession };
+
+                        NameValueConfigurationElement ignoreProtectedModeSettingsNameValueConfigurationElement
+                            = browserFactoryConfiguration.Settings[IgnoreProtectedModeSettings];
+                        bool ignoreProtectedModeSettings = false;
+                        if (!string.IsNullOrWhiteSpace(ignoreProtectedModeSettingsNameValueConfigurationElement?.Value))
+                        {
+                            if (!bool.TryParse(ignoreProtectedModeSettingsNameValueConfigurationElement.Value, out ignoreProtectedModeSettings))
+                            {
+                                throw new ConfigurationErrorsException(
+                                    $"The {IgnoreProtectedModeSettings} setting is not a valid boolean: {ignoreProtectedModeSettingsNameValueConfigurationElement.Value}");
+                            }
+                        }
+
+                        var explorerOptions = new InternetExplorerOptions
+                        {
+                            EnsureCleanSession = browserFactoryConfiguration.EnsureCleanSession,
+                            IntroduceInstabilityByIgnoringProtectedModeSettings = ignoreProtectedModeSettings
+                        };
+
                         var internetExplorerDriverService = InternetExplorerDriverService.CreateDefaultService();
                         internetExplorerDriverService.HideCommandPromptWindow = true;
                         driver = new InternetExplorerDriver(internetExplorerDriverService, explorerOptions);

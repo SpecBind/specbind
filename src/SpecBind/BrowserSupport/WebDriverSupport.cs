@@ -390,6 +390,11 @@ namespace SpecBind.BrowserSupport
         /// </summary>
         public void CheckForScreenshot()
         {
+            if ((Browser == null) || (!Browser.IsCreated))
+            {
+                return;
+            }
+
             var scenarioHelper = this.objectContainer.Resolve<IScenarioContextHelper>();
             var ex = scenarioHelper.GetError();
             var isError = false;

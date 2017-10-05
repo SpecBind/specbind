@@ -75,6 +75,11 @@ namespace SpecBind.CodedUI
         }
 
         /// <summary>
+        /// Gets a value indicating whether or not the browser is created.
+        /// </summary>
+        public override bool IsCreated => this.window.IsValueCreated;
+
+        /// <summary>
         /// Finalizes an instance of the <see cref="CodedUIBrowser" /> class.
         /// </summary>
         ~CodedUIBrowser()

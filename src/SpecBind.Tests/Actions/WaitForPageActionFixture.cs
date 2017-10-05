@@ -124,7 +124,8 @@ namespace SpecBind.Tests.Actions
 
             pageMapper.VerifyAll();
             browser.Verify(b => b.EnsureOnPage(page.Object), Times.Exactly(2));
-            browser.Verify(b => b.Page(typeof(SamplePage)), Times.Once());
+            browser.Verify(b => b.Page(typeof(SamplePage)), Times.Exactly(2));
+            browser.Verify(b => b.IsCreated, Times.Never());
             browser.VerifyAll();
             page.VerifyAll();
             logger.VerifyAll();
