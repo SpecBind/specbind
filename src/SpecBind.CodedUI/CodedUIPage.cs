@@ -226,12 +226,12 @@ namespace SpecBind.CodedUI
 				// ReSharper restore SuspiciousTypeConversion.Global
 			}
 
-			if (propertyType == typeof(HtmlTextArea))
+			if (typeof(HtmlTextArea).IsAssignableFrom(propertyType))
 			{
 				return (control, s) => ((HtmlTextArea)control).Text = s;
 			}
 
-			if (propertyType == typeof(HtmlEdit))
+			if (typeof(HtmlEdit).IsAssignableFrom(propertyType))
 			{
 				return (control, s) =>
 					{
@@ -272,7 +272,7 @@ namespace SpecBind.CodedUI
 					};
 			}
 
-			if (propertyType == typeof(HtmlComboBox))
+			if (typeof(HtmlComboBox).IsAssignableFrom(propertyType))
 			{
 				return (control, s) =>
 					{
@@ -282,7 +282,7 @@ namespace SpecBind.CodedUI
 					};
 			}
 
-			if (propertyType == typeof(HtmlRadioButton))
+			if (typeof(HtmlRadioButton).IsAssignableFrom(propertyType))
 			{
 				return (control, s) =>
 				{
@@ -295,7 +295,7 @@ namespace SpecBind.CodedUI
 				};
 			}
 
-			if (propertyType == typeof(HtmlCheckBox))
+			if (typeof(HtmlCheckBox).IsAssignableFrom(propertyType))
 			{
 				return (control, s) =>
 				{
@@ -308,7 +308,7 @@ namespace SpecBind.CodedUI
 				};
 			}
 
-			if (propertyType == typeof(HtmlFileInput))
+			if (typeof(HtmlFileInput).IsAssignableFrom(propertyType))
 			{
 				return (control, s) =>
 				    {
@@ -317,7 +317,7 @@ namespace SpecBind.CodedUI
 				    };
 			}
 
-            if (propertyType == typeof(HtmlCustom))
+            if (typeof(HtmlCustom).IsAssignableFrom(propertyType))
             {
                 return (control, s) => Keyboard.SendKeys(control, s, ModifierKeys.None);
             }
