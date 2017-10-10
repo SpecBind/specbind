@@ -65,10 +65,10 @@ namespace SpecBind.Tests.Actions
         }
 
         /// <summary>
-        /// Tests the execute method with a property that does not exist but that's the comparer.
+        /// Tests the execute method with a property that does not exist on the model fails.
         /// </summary>
         [TestMethod]
-        public void TestExecuteWhenFieldDoesNotExistAndIsDoesNotExistComparerReturnsSuccess()
+        public void TestExecuteWhenFieldDoesNotExistAndIsDoesNotExistComparerReturnsFailure()
         {
             IPropertyData propertyData;
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);
@@ -87,7 +87,10 @@ namespace SpecBind.Tests.Actions
 
             var result = validateItemAction.Execute(context);
 
-            Assert.AreEqual(true, result.Success);
+            Assert.AreEqual(false, result.Success);
+
+            Assert.IsNotNull(result.Exception);
+            StringAssert.Contains(result.Exception.Message, "[Not Found]");
 
             locator.VerifyAll();
         }

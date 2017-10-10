@@ -74,7 +74,7 @@ namespace SpecBind.Tests.Validation
             var propertyData = new Mock<IPropertyData>(MockBehavior.Strict);
             propertyData.Setup(p => p.CheckElementNotExists()).Returns(false);
 
-            RunItemCompareTest("False", null, true, propertyData);
+            RunItemCompareTest("False", null, false, propertyData);
         }
     }
 }

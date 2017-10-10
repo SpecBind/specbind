@@ -194,6 +194,10 @@ this.ScenarioSetup(scenarioInfo);
                         "Course Title",
                         "Enabled",
                         ""});
+            table4.AddRow(new string[] {
+                        "Foo",
+                        "Does Not Exist",
+                        ""});
 #line 35
    testRunner.Then("I see", ((string)(null)), table4, "Then ");
 #line hidden
