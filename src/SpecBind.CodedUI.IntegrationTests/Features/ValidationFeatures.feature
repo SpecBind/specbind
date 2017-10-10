@@ -36,5 +36,5 @@ Scenario: Validate Field Existence and Enabled
 		   | Field        | Rule           | Value |
 		   | Course Title | Exists         |       |
 		   | Course Title | Enabled        |       |
-		   #| Foo          | Does Not Exist |       | --> this may still need some work.
+		   | Foo          | Does Not Exist |       |
 		  
