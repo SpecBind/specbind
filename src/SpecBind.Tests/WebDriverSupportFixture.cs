@@ -70,6 +70,9 @@ namespace SpecBind.Tests
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve<IScenarioContextHelper>()).Returns(scenarioContext.Object);
 
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(b => b.IsCreated).Returns(true);
+            WebDriverSupport.Browser = browser.Object;
             var driverSupport = new WebDriverSupport(container.Object);
 
             driverSupport.CheckForScreenshot();
@@ -95,6 +98,7 @@ namespace SpecBind.Tests
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns("TestFileName.jpg");
             browser.Setup(b => b.SaveHtml(It.IsAny<string>(), "TestFileName")).Returns((string)null);
             browser.Setup(b => b.Close(true));
+            browser.Setup(b => b.IsCreated).Returns(true);
 
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve<IScenarioContextHelper>()).Returns(scenarioContext.Object);
@@ -128,6 +132,7 @@ namespace SpecBind.Tests
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns("TestFileName.jpg");
             browser.Setup(b => b.SaveHtml(It.IsAny<string>(), "TestFileName")).Returns((string)null);
             browser.Setup(b => b.Close(true));
+            browser.Setup(b => b.IsCreated).Returns(true);
 
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve<IScenarioContextHelper>()).Returns(scenarioContext.Object);
@@ -175,6 +180,7 @@ namespace SpecBind.Tests
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns((string)null);
             browser.Setup(b => b.SaveHtml(It.IsAny<string>(), "TestFileName")).Returns((string)null);
             browser.Setup(b => b.Close(true));
+            browser.Setup(b => b.IsCreated).Returns(true);
 
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve<IScenarioContextHelper>()).Returns(scenarioContext.Object);
@@ -205,6 +211,7 @@ namespace SpecBind.Tests
             browser.Setup(b => b.TakeScreenshot(It.IsAny<string>(), "TestFileName")).Returns((string)null);
             browser.Setup(b => b.SaveHtml(It.IsAny<string>(), "TestFileName")).Returns((string)null);
             browser.Setup(b => b.Close(true));
+            browser.Setup(b => b.IsCreated).Returns(true);
 
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
             container.Setup(c => c.Resolve<IScenarioContextHelper>()).Returns(scenarioContext.Object);

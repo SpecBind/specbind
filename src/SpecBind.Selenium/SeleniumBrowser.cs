@@ -66,6 +66,11 @@ namespace SpecBind.Selenium
         public IWebDriver Driver => this.driver.Value;
 
         /// <summary>
+        /// Gets a value indicating whether or not the browser is created.
+        /// </summary>
+        public override bool IsCreated => this.driver.IsValueCreated;
+
+        /// <summary>
         /// Finalizes an instance of the <see cref="SeleniumBrowser" /> class.
         /// </summary>
         [ExcludeFromCodeCoverage]

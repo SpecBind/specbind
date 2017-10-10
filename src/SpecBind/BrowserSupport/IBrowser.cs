@@ -37,6 +37,11 @@ namespace SpecBind.BrowserSupport
         bool IsClosed { get; }
 
         /// <summary>
+        /// Gets a value indicating whether or not the browser is created.
+        /// </summary>
+        bool IsCreated { get; }
+
+        /// <summary>
         /// Gets a value indicating whether or not the browser has been disposed.
         /// </summary>
         bool IsDisposed { get; }

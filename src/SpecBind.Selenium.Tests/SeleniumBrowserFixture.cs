@@ -552,7 +552,36 @@ namespace SpecBind.Selenium.Tests
 			});
 		}
 
-		private void InitializeDriverAndTestBrowserWith(Mock<IWebDriver> driver, Action<SeleniumBrowser> test)
+        [TestMethod]
+        public void IsCreated_BeforeBrowserIsCreated_ReturnsFalse()
+        {
+            // Arrange
+            SeleniumBrowserFactory browserFactory = new SeleniumBrowserFactory();
+
+            // Act
+            IBrowser browser = browserFactory.GetBrowser();
+
+            // Assert
+            Assert.IsFalse(browser.IsCreated);
+        }
+
+        [TestMethod]
+        public void IsCreated_AfterBrowserIsCreated_ReturnsTrue()
+        {
+            // Arrange
+            SeleniumBrowserFactory browserFactory = new SeleniumBrowserFactory();
+
+            // Act
+            IBrowser browser = browserFactory.GetBrowser();
+
+            // trying to get the Url will launch the browser
+            string url = browser.Url;
+
+            // Assert
+            Assert.IsTrue(browser.IsCreated);
+        }
+
+        private void InitializeDriverAndTestBrowserWith(Mock<IWebDriver> driver, Action<SeleniumBrowser> test)
 		{
 			this.TestBrowserWith(driver, true, test);
 		}

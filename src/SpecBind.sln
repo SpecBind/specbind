@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{355684DD-22AC-4D3A-B93B-6B92D123A044}"
 	ProjectSection(SolutionItems) = preProject
@@ -23,6 +23,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.CodedUI.Tests", "SpecBind.CodedUI.Tests\SpecBind.CodedUI.Tests.csproj", "{0EDE594B-518E-420E-9779-E11971767220}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.CodedUI.IntegrationTests", "SpecBind.CodedUI.IntegrationTests\SpecBind.CodedUI.IntegrationTests.csproj", "{5A11FA8E-F9F9-4FC3-A935-B405FAAE3FF3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0BCFC808-1647-448E-A9DC-99B3D9D336B5} = {0BCFC808-1647-448E-A9DC-99B3D9D336B5}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.Selenium", "SpecBind.Selenium\SpecBind.Selenium.csproj", "{BB4BC498-4C1B-40B3-965E-4650125A2DF0}"
 EndProject
