@@ -4,6 +4,7 @@
 
 namespace SpecBind.Selenium.Tests
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
@@ -16,6 +17,7 @@ namespace SpecBind.Selenium.Tests
     using OpenQA.Selenium.Support.PageObjects;
 
     using SpecBind.BrowserSupport;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -32,6 +34,8 @@ namespace SpecBind.Selenium.Tests
         {
             var driver = new Mock<IWebDriver>(MockBehavior.Strict);
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var uriHelper = new Mock<IUriHelper>(MockBehavior.Strict);
+            var lazyUriHelper = new Lazy<IUriHelper>(() => uriHelper.Object);
 
             var listItem = new Mock<IWebElement>(MockBehavior.Loose);
             listItem.Setup(l => l.Displayed).Returns(true);
@@ -45,10 +49,9 @@ namespace SpecBind.Selenium.Tests
             // Setup mock for list
             driver.Setup(d => d.FindElement(By.Id("ListDiv"))).Returns(listElement.Object);
 
+            var pageFunc = new SeleniumPageBuilder(lazyUriHelper).CreatePage(typeof(BuildPage));
 
-            var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(BuildPage));
-
-            var pageObject = pageFunc(driver.Object, browser.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, lazyUriHelper, null);
             var page = pageObject as BuildPage;
 
             Assert.IsNotNull(page);
@@ -97,6 +100,8 @@ namespace SpecBind.Selenium.Tests
         {
             var driver = new Mock<IWebDriver>(MockBehavior.Strict);
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var uriHelper = new Mock<IUriHelper>(MockBehavior.Strict);
+            var lazyUriHelper = new Lazy<IUriHelper>(() => uriHelper.Object);
 
             var listItem = new Mock<IWebElement>(MockBehavior.Loose);
             listItem.Setup(l => l.Displayed).Returns(true);
@@ -110,10 +115,9 @@ namespace SpecBind.Selenium.Tests
             // Setup mock for list
             driver.Setup(d => d.FindElement(By.Id("ListDiv"))).Returns(listElement.Object);
 
+            var pageFunc = new SeleniumPageBuilder(lazyUriHelper).CreatePage(typeof(NestedElementPage));
 
-            var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NestedElementPage));
-
-            var pageObject = pageFunc(driver.Object, browser.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, lazyUriHelper, null);
             var page = pageObject as NestedElementPage;
 
             Assert.IsNotNull(page);
@@ -140,10 +144,12 @@ namespace SpecBind.Selenium.Tests
         {
             var driver = new Mock<IWebDriver>();
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var uriHelper = new Mock<IUriHelper>(MockBehavior.Strict);
+            var lazyUriHelper = new Lazy<IUriHelper>(() => uriHelper.Object);
 
-            var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NativeAttributePage));
+            var pageFunc = new SeleniumPageBuilder(lazyUriHelper).CreatePage(typeof(NativeAttributePage));
 
-            var pageObject = pageFunc(driver.Object, browser.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, lazyUriHelper, null);
             var page = pageObject as NativeAttributePage;
 
             Assert.IsNotNull(page);
@@ -159,10 +165,12 @@ namespace SpecBind.Selenium.Tests
         {
             var driver = new Mock<IWebDriver>();
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var uriHelper = new Mock<IUriHelper>(MockBehavior.Strict);
+            var lazyUriHelper = new Lazy<IUriHelper>(() => uriHelper.Object);
 
-            var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NativeAttributePage));
+            var pageFunc = new SeleniumPageBuilder(lazyUriHelper).CreatePage(typeof(NativeAttributePage));
 
-            var pageObject = pageFunc(driver.Object, browser.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, lazyUriHelper, null);
             var page = pageObject as NativeAttributePage;
 
             Assert.IsNotNull(page);
@@ -178,10 +186,12 @@ namespace SpecBind.Selenium.Tests
         {
             var driver = new Mock<IWebDriver>();
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var uriHelper = new Mock<IUriHelper>(MockBehavior.Strict);
+            var lazyUriHelper = new Lazy<IUriHelper>(() => uriHelper.Object);
 
-            var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(NativeAttributePage));
+            var pageFunc = new SeleniumPageBuilder(lazyUriHelper).CreatePage(typeof(NativeAttributePage));
 
-            var pageObject = pageFunc(driver.Object, browser.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, lazyUriHelper, null);
             var page = pageObject as NativeAttributePage;
 
             Assert.IsNotNull(page);
@@ -197,6 +207,8 @@ namespace SpecBind.Selenium.Tests
         {
             var driver = new Mock<IWebDriver>(MockBehavior.Strict);
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var uriHelper = new Mock<IUriHelper>(MockBehavior.Strict);
+            var lazyUriHelper = new Lazy<IUriHelper>(() => uriHelper.Object);
 
             var listItem = new Mock<IWebElement>(MockBehavior.Loose);
             listItem.Setup(l => l.Displayed).Returns(true);
@@ -210,10 +222,9 @@ namespace SpecBind.Selenium.Tests
             // Setup mock for list
             driver.Setup(d => d.FindElement(By.Id("ListDiv"))).Returns(listElement.Object);
 
+            var pageFunc = new SeleniumPageBuilder(lazyUriHelper).CreatePage(typeof(BuildPage));
 
-            var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(BuildPage));
-
-            var pageObject = pageFunc(driver.Object, browser.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, lazyUriHelper, null);
             var page = pageObject as BuildPage;
 
             Assert.IsNotNull(page);
@@ -292,7 +303,9 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestMissingArgumentConstructor()
         {
-            var builder = new SeleniumPageBuilder();
+            var uriHelper = new Mock<IUriHelper>(MockBehavior.Strict);
+            var lazyUriHelper = new Lazy<IUriHelper>(() => uriHelper.Object);
+            var builder = new SeleniumPageBuilder(lazyUriHelper);
 
             var pageFunc = builder.CreatePage(typeof(NoConstructorElement));
 
@@ -301,7 +314,7 @@ namespace SpecBind.Selenium.Tests
             var driver = new Mock<IWebDriver>();
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            var page = pageFunc(driver.Object, browser.Object, null);
+            var page = pageFunc(driver.Object, browser.Object, lazyUriHelper, null);
 
             Assert.IsNotNull(page);
             Assert.IsInstanceOfType(page, typeof(NoConstructorElement));
@@ -315,10 +328,12 @@ namespace SpecBind.Selenium.Tests
         {
             var driver = new Mock<IWebDriver>();
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var uriHelper = new Mock<IUriHelper>(MockBehavior.Strict);
+            var lazyUriHelper = new Lazy<IUriHelper>(() => uriHelper.Object);
 
-            var pageFunc = new SeleniumPageBuilder().CreatePage(typeof(BrowserDocument));
+            var pageFunc = new SeleniumPageBuilder(lazyUriHelper).CreatePage(typeof(BrowserDocument));
 
-            var pageObject = pageFunc(driver.Object, browser.Object, null);
+            var pageObject = pageFunc(driver.Object, browser.Object, lazyUriHelper, null);
             var page = pageObject as BrowserDocument;
 
             Assert.IsNotNull(page);

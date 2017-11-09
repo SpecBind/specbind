@@ -10,6 +10,7 @@ namespace SpecBind.Tests
     using Moq;
 
     using SpecBind.BrowserSupport;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -40,11 +41,12 @@ namespace SpecBind.Tests
         {
             var parent = new Mock<IParentContext>(MockBehavior.Strict);
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var uriHelper = new Mock<IUriHelper>(MockBehavior.Strict);
+            var lazyUriHelper = new Lazy<IUriHelper>(() => uriHelper.Object);
 
+            var pageFunc = new PageBuilderTestProxy(lazyUriHelper).CreatePage(typeof(PropertyPage));
 
-            var pageFunc = new PageBuilderTestProxy().CreatePage(typeof(PropertyPage));
-
-            var pageObject = pageFunc(parent.Object, browser.Object, null);
+            var pageObject = pageFunc(parent.Object, browser.Object, lazyUriHelper, null);
             var page = pageObject as PropertyPage;
 
             Assert.IsNotNull(page);
@@ -84,11 +86,20 @@ namespace SpecBind.Tests
         public class PageBuilderTestProxy : PageBuilderBase<IParentContext, object, ITestElement>
         {
             /// <summary>
+            /// Initializes a new instance of the <see cref="PageBuilderTestProxy"/> class.
+            /// </summary>
+            /// <param name="uriHelper">The URI helper.</param>
+            public PageBuilderTestProxy(Lazy<IUriHelper> uriHelper)
+                : base(uriHelper)
+            {
+            }
+
+            /// <summary>
             /// Creates the page.
             /// </summary>
             /// <param name="pageType">Type of the page.</param>
             /// <returns>The created page class.</returns>
-            public Func<IParentContext, IBrowser, Action<object>, object> CreatePage(Type pageType)
+            public Func<IParentContext, IBrowser, Lazy<IUriHelper>, Action<object>, object> CreatePage(Type pageType)
             {
                 return this.CreateElementInternal(pageType);
             }

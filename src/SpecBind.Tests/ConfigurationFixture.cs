@@ -11,6 +11,8 @@ namespace SpecBind.Tests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using SpecBind.Configuration;
+    using System.IO;
+    using System.Reflection;
 
     /// <summary>
     /// Test classes for verifying configuration.
@@ -25,23 +27,24 @@ namespace SpecBind.Tests
         public void TestReadWriteConfiguration()
         {
             var section = new ConfigurationSectionHandler
-                              {
-                                 Application = new ApplicationConfigurationElement
-                                      {
-                                          StartUrl = "http://myapp.com"
-                                      },
-                                 BrowserFactory = new BrowserFactoryConfigurationElement
-                                                      {
-                                                          BrowserType = "Chrome",
-                                                          CreateScreenshotOnExit = true,
-                                                          Provider = "MyProvider, MyProvider.Class",
-                                                          EnsureCleanSession = true,
-                                                          ElementLocateTimeout = TimeSpan.FromSeconds(10),
-                                                          PageLoadTimeout = TimeSpan.FromSeconds(15),
-                                                          ValidateWebDriver = true,
-                                                          ReuseBrowser = true
-                                                      }
-                              };
+            {
+                Application = new ApplicationConfigurationElement
+                {
+                    StartUrl = "http://myapp.com"
+                },
+                BrowserFactory = new BrowserFactoryConfigurationElement
+                {
+                    BrowserType = "Chrome",
+                    CreateScreenshotOnExit = true,
+                    Provider = "MyProvider, MyProvider.Class",
+                    EnsureCleanSession = true,
+                    ElementLocateTimeout = TimeSpan.FromSeconds(10),
+                    PageLoadTimeout = TimeSpan.FromSeconds(15),
+                    ValidateWebDriver = true,
+                    ReuseBrowser = true,
+                    WaitForPendingAjaxCallsVia = "none"
+                }
+            };
 
             Assert.IsNotNull(section.Application);
             Assert.AreEqual("http://myapp.com", section.Application.StartUrl);
@@ -54,19 +57,29 @@ namespace SpecBind.Tests
             Assert.AreEqual(true, section.BrowserFactory.EnsureCleanSession);
             Assert.AreEqual(true, section.BrowserFactory.CreateScreenshotOnExit);
             Assert.IsNotNull(section.BrowserFactory.Settings);
+            Assert.IsNotNull(section.BrowserFactory.UserProfilePreferences);
             Assert.AreEqual(0, section.Application.ExcludedAssemblies.Cast<AssemblyElement>().ToList().Count);
             Assert.AreEqual(true, section.BrowserFactory.ValidateWebDriver);
             Assert.AreEqual(true, section.BrowserFactory.ReuseBrowser);
+            Assert.AreEqual("none", section.BrowserFactory.WaitForPendingAjaxCallsVia);
         }
 
         /// <summary>
         /// Tests that the ExcludedAssemblies property is populated if it is in the config file.
         /// </summary>
         [TestMethod]
+        [DeploymentItem("WithExcludedAssemblyConfig.config")]
         public void TestLoadingExcludedAssemblies()
         {
-            var fileMap = new ConfigurationFileMap("WithExcludedAssemblyConfig.config");
-            var config = ConfigurationManager.OpenMappedMachineConfiguration(fileMap);
+            string currentPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string filePath = Path.Combine(currentPath, "WithExcludedAssemblyConfig.config");
+            Assert.IsTrue(File.Exists(filePath), $"File not found: '{filePath}'");
+
+            var fileMap = new ExeConfigurationFileMap
+            {
+                ExeConfigFilename = filePath
+            };
+            var config = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
             var section = config.GetSection("specBind") as ConfigurationSectionHandler;
 
             Assert.IsNotNull(section);

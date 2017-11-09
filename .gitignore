@@ -111,7 +111,7 @@ UpgradeLog*.XML
 *.DotSettings
 /examples/FullDemo/ContosoUniversity.sln.GhostDoc.xml
 /src/SpecBind.sln.GhostDoc.xml
-/src/lib
+/src/lib/SpecBindGeneratorPlugin.Generator.SpecflowPlugin.dll
 src/SpecBind.sln.DotSettings
 examples/FullDemo/ContosoUniversity/App_Data/School.sdf
 /examples/FullDemo/ContosoUniversity/Properties/PublishProfiles/ContosoUniversity.pubxml

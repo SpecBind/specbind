@@ -74,10 +74,11 @@ namespace SpecBind.Tests
         public void TestPageBuilderContextWhenConstructedReturnsTheConstructedValues()
         {
             var browser = new ExpressionData(null, typeof(object));
+            var uriHelper = new ExpressionData(null, typeof(object));
             var document = new ExpressionData(null, typeof(object));
             var parentElement = new ExpressionData(null, typeof(object));
 
-            var context = new PageBuilderContext(browser, parentElement, document);
+            var context = new PageBuilderContext(browser, uriHelper, parentElement, document);
 
             Assert.AreSame(browser, context.Browser);
             Assert.AreSame(document, context.Document);
@@ -93,9 +94,10 @@ namespace SpecBind.Tests
         public void TestCreateChildContextWhenCalledReturnsTheConstructedValuesAndNewContext()
         {
             var browser = new ExpressionData(null, typeof(object));
+            var uriHelper = new ExpressionData(null, typeof(object));
             var document = new ExpressionData(null, typeof(object));
             var parentElement = new ExpressionData(null, typeof(object));
-            var context = new PageBuilderContext(browser, parentElement, document);
+            var context = new PageBuilderContext(browser, uriHelper, parentElement, document);
 
             var child = new ExpressionData(null, typeof(object));
             var childContext = context.CreateChildContext(child);
@@ -117,9 +119,10 @@ namespace SpecBind.Tests
         public void TestCreateChildContextWhenMultipleContextsAreCreatedThenTheRootContextIsTheFirstParent()
         {
             var browser = new ExpressionData(null, typeof(object));
+            var uriHelper = new ExpressionData(null, typeof(object));
             var document = new ExpressionData(null, typeof(object));
             var parentElement = new ExpressionData(null, typeof(object));
-            var context = new PageBuilderContext(browser, parentElement, document);
+            var context = new PageBuilderContext(browser, uriHelper, parentElement, document);
 
             var child1 = new ExpressionData(null, typeof(object));
             var child2 = new ExpressionData(null, typeof(object));

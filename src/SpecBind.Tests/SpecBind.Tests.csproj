@@ -94,6 +94,8 @@
     <Compile Include="Actions\WaitForElementActionFixture.cs" />
     <Compile Include="Actions\WaitForListItemsActionFixture.cs" />
     <Compile Include="Actions\WaitForPageActionFixture.cs" />
+    <Compile Include="ApplicationStepsFixture.cs" />
+    <Compile Include="BrowserStepsFixture.cs" />
     <Compile Include="BrowserBaseFixture.cs" />
     <Compile Include="BrowserSuport\ProxyLoggerFixture.cs" />
     <Compile Include="DataStepsFixture.cs" />

@@ -7,15 +7,21 @@
 
 namespace SpecBind.ActionPipeline
 {
-	using System.Collections.Generic;
+    using System.Collections.Generic;
 
-	using SpecBind.Validation;
+    using SpecBind.Validation;
 
     /// <summary>
-	/// Contains a cache of available actions, pre-actions and post-actions.
-	/// </summary>
-	public interface IActionRepository
-	{
+    /// Contains a cache of available actions, pre-actions and post-actions.
+    /// </summary>
+    public interface IActionRepository
+    {
+        /// <summary>
+        /// Gets a value indicating whether this instance is initialized.
+        /// </summary>
+        /// <value><c>true</c> if this instance is initialized; otherwise, <c>false</c>.</value>
+        bool IsInitialized { get; }
+
         /// <summary>
         /// Creates the action.
         /// </summary>
@@ -23,28 +29,33 @@ namespace SpecBind.ActionPipeline
         /// <returns>The created action object.</returns>
         TAction CreateAction<TAction>();
 
-		/// <summary>
-		/// Gets the post-execute actions.
-		/// </summary>
-		/// <returns>An enumerable collection of actions.</returns>
-		IEnumerable<IPostAction> GetPostActions();
+        /// <summary>
+        /// Gets the post-execute actions.
+        /// </summary>
+        /// <returns>An enumerable collection of actions.</returns>
+        IEnumerable<IPostAction> GetPostActions();
 
-		/// <summary>
-		/// Gets the pre-execute actions.
-		/// </summary>
-		/// <returns>An enumerable collection of actions.</returns>
-		IEnumerable<IPreAction> GetPreActions();
+        /// <summary>
+        /// Gets the pre-execute actions.
+        /// </summary>
+        /// <returns>An enumerable collection of actions.</returns>
+        IEnumerable<IPreAction> GetPreActions();
 
-		/// <summary>
-		/// Gets the locator actions.
-		/// </summary>
-		/// <returns>An enumerable collection of actions.</returns>
-		IEnumerable<ILocatorAction> GetLocatorActions();
+        /// <summary>
+        /// Gets the locator actions.
+        /// </summary>
+        /// <returns>An enumerable collection of actions.</returns>
+        IEnumerable<ILocatorAction> GetLocatorActions();
 
-	    /// <summary>
-	    /// Gets the comparison actions used to process various types.
-	    /// </summary>
-	    /// <returns>An enumerable collection of actions.</returns>
-	    IReadOnlyCollection<IValidationComparer> GetComparisonTypes();
-	}
+        /// <summary>
+        /// Gets the comparison actions used to process various types.
+        /// </summary>
+        /// <returns>An enumerable collection of actions.</returns>
+        IReadOnlyCollection<IValidationComparer> GetComparisonTypes();
+
+        /// <summary>
+        /// Initializes this instance.
+        /// </summary>
+        void Initialize();
+    }
 }

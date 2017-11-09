@@ -22,7 +22,8 @@ namespace SpecBind.Selenium
         where TElement : IWebElement
         where TChildElement : class
     {
-        private readonly Lazy<Func<ISearchContext, IBrowser, Action<object>, object>> builderFunc;
+        private readonly Lazy<IUriHelper> uriHelper;
+        private readonly Lazy<Func<ISearchContext, IBrowser, Lazy<IUriHelper>, Action<object>, object>> builderFunc;
         private readonly Lazy<By> locator;
 
         private ReadOnlyCollection<IWebElement> itemCollection;
@@ -32,10 +33,12 @@ namespace SpecBind.Selenium
         /// </summary>
         /// <param name="parentElement">The parent element.</param>
         /// <param name="browser">The browser.</param>
-        public SeleniumListElementWrapper(TElement parentElement, IBrowser browser)
+        /// <param name="uriHelper">The URI helper.</param>
+        public SeleniumListElementWrapper(TElement parentElement, IBrowser browser, Lazy<IUriHelper> uriHelper)
             : base(parentElement, browser)
         {
-            this.builderFunc = new Lazy<Func<ISearchContext, IBrowser, Action<object>, object>>(this.CreateBuilderFunction);
+            this.uriHelper = uriHelper;
+            this.builderFunc = new Lazy<Func<ISearchContext, IBrowser, Lazy<IUriHelper>, Action<object>, object>>(() => this.CreateBuilderFunction(uriHelper));
             this.locator = new Lazy<By>(this.GetElementLocator);
         }
 
@@ -78,10 +81,11 @@ namespace SpecBind.Selenium
         /// <summary>
         /// Creates the builder function.
         /// </summary>
+        /// <param name="uriHelper">The URI helper.</param>
         /// <returns>The created builder function.</returns>
-        protected Func<ISearchContext, IBrowser, Action<object>, object> CreateBuilderFunction()
+        protected Func<ISearchContext, IBrowser, Lazy<IUriHelper>, Action<object>, object> CreateBuilderFunction(Lazy<IUriHelper> uriHelper)
         {
-            var builder = new SeleniumPageBuilder();
+            var builder = new SeleniumPageBuilder(uriHelper);
             return builder.CreatePage(typeof(TChildElement));
         }
 
@@ -94,7 +98,7 @@ namespace SpecBind.Selenium
         /// <returns>The created child element.</returns>
         protected virtual TChildElement CreateChildElement(IBrowser browser, TElement parentElement, IWebElement element)
         {
-            var childElement = (TChildElement)this.builderFunc.Value(element, browser, null);
+            var childElement = (TChildElement)this.builderFunc.Value(element, browser, this.uriHelper, null);
 
             var webElement = childElement as WebElement;
             if (webElement != null)

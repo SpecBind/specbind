@@ -4,10 +4,12 @@
 
 namespace SpecBind.ActionPipeline
 {
-	using System;
+    using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
+    using BoDi;
+    using BrowserSupport;
 	using SpecBind.Pages;
 
 	/// <summary>
@@ -23,14 +25,18 @@ namespace SpecBind.ActionPipeline
 	/// </remarks>
 	internal class ActionPipelineService : IActionPipelineService
 	{
+        private readonly IObjectContainer objectContainer;
+
 		private readonly IActionRepository actionRepository;
 
         /// <summary>
-		/// Initializes a new instance of the <see cref="ActionPipelineService"/> class.
-		/// </summary>
-		/// <param name="actionRepository">The action repository.</param>
-		public ActionPipelineService(IActionRepository actionRepository)
-		{
+        /// Initializes a new instance of the <see cref="ActionPipelineService" /> class.
+        /// </summary>
+        /// <param name="objectContainer">The object container.</param>
+        /// <param name="actionRepository">The action repository.</param>
+        public ActionPipelineService(IObjectContainer objectContainer, IActionRepository actionRepository)
+        {
+            this.objectContainer = objectContainer;
 			this.actionRepository = actionRepository;
 		}
 
@@ -44,6 +50,18 @@ namespace SpecBind.ActionPipeline
 	    public ActionResult PerformAction<TAction>(IPage page, ActionContext context)
             where TAction : IAction
         {
+            // Initialize the browser if not already initialized
+            if (!this.objectContainer.IsRegistered<IBrowser>())
+            {
+                WebDriverSupport.InitializeBrowser(this.objectContainer);
+            }
+
+            // Initialize the action repository if not already initialized
+            if (!this.actionRepository.IsInitialized)
+            {
+                this.actionRepository.Initialize();
+            }
+
             var action = this.actionRepository.CreateAction<TAction>();
             return this.PerformAction(page, action, context);
         }

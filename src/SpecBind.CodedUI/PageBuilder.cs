@@ -24,14 +24,26 @@ namespace SpecBind.CodedUI
         where TOutput : HtmlControl
 	{
         /// <summary>
+        /// Initializes a new instance of the <see cref="PageBuilder{TParent, TOutput}"/> class.
+        /// </summary>
+        /// <param name="uriHelper">The URI helper.</param>
+        public PageBuilder(Lazy<IUriHelper> uriHelper)
+            : base(uriHelper)
+        {
+        }
+
+        /// <summary>
         /// Creates the page.
         /// </summary>
         /// <param name="elementType">Type of the page.</param>
+        /// <param name="uriHelper">The URI helper.</param>
         /// <returns>The page builder function.</returns>
         /// <exception cref="System.InvalidOperationException">Thrown if the constructor is invalid.</exception>
-        public static Func<TParent, IBrowser, Action<HtmlControl>, TOutput> CreateElement(Type elementType)
+        public static Func<TParent, IBrowser, Lazy<IUriHelper>, Action<HtmlControl>, TOutput> CreateElement(
+            Type elementType,
+            Lazy<IUriHelper> uriHelper)
 		{
-		    var builder = new PageBuilder<TParent, TOutput>();
+		    var builder = new PageBuilder<TParent, TOutput>(uriHelper);
 		    return builder.CreateElementInternal(elementType);
 		}
 
@@ -40,10 +52,14 @@ namespace SpecBind.CodedUI
         /// </summary>
         /// <param name="frameType">Type of the class that will provide the frame.</param>
         /// <param name="property">The property on the class that should be accessed to provide the frame.</param>
+        /// <param name="uriHelper">The URI helper.</param>
         /// <returns>The function used to create the document.</returns>
-        public static Func<TParent, TOutput> CreateFrameLocator(Type frameType, PropertyInfo property)
+        public static Func<TParent, TOutput> CreateFrameLocator(
+            Type frameType,
+            PropertyInfo property,
+            Lazy<IUriHelper> uriHelper)
         {
-            var builder = new PageBuilder<TParent, TOutput>();
+            var builder = new PageBuilder<TParent, TOutput>(uriHelper);
             return builder.CreateFrameLocatorInternal(frameType, property);
         }
 
@@ -130,7 +146,7 @@ namespace SpecBind.CodedUI
         protected override void SetPageNavigationAttribute(TOutput control, PageNavigationAttribute attribute)
         {
             SetProperty(control.FilterProperties, HtmlDocument.PropertyNames.AbsolutePath, attribute.Url);
-            SetProperty(control.FilterProperties, HtmlDocument.PropertyNames.PageUrl, UriHelper.GetQualifiedPageUri(attribute.Url).ToString());
+            SetProperty(control.FilterProperties, HtmlDocument.PropertyNames.PageUrl, this.UriHelper.Value.GetQualifiedPageUri(attribute.Url).ToString());
         }
 
 		/// <summary>

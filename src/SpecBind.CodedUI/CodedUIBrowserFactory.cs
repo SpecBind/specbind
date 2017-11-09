@@ -14,6 +14,7 @@ namespace SpecBind.CodedUI
 	using SpecBind.Configuration;
 
 	using BrowserFactory = SpecBind.BrowserSupport.BrowserFactory;
+    using Helpers;
 
     /// <summary>
 	/// A browser factory class for Coded UI tests.
@@ -35,9 +36,14 @@ namespace SpecBind.CodedUI
         /// <param name="browserType">Type of the browser.</param>
         /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <param name="logger">The logger.</param>
+        /// <param name="applicationConfigurationElement">The application configuration element.</param>
         /// <returns>A browser object.</returns>
         /// <exception cref="System.InvalidOperationException">Thrown if the browser type is not supported.</exception>
-        protected override IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration, ILogger logger)
+        protected override IBrowser CreateBrowser(
+            BrowserType browserType,
+            BrowserFactoryConfigurationElement browserFactoryConfiguration,
+            ILogger logger,
+            ApplicationConfigurationElement applicationConfigurationElement)
 		{
 			string browserKey = null;
 			switch (browserType)
@@ -78,7 +84,9 @@ namespace SpecBind.CodedUI
 				});
 
 			var browser = new Lazy<BrowserWindow>(launchAction, LazyThreadSafetyMode.None);
-			return new CodedUIBrowser(browser, logger);
+            var uriHelper = new Lazy<IUriHelper>(() => new UriHelper(applicationConfigurationElement.StartUrl));
+
+            return new CodedUIBrowser(browser, logger, uriHelper);
 		}
     }
 }

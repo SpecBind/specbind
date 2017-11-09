@@ -46,11 +46,11 @@
     <Reference Include="TechTalk.SpecFlow, Version=2.2.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
       <HintPath>..\packages\SpecFlow.2.2.0\lib\net45\TechTalk.SpecFlow.dll</HintPath>
     </Reference>
-    <Reference Include="WebDriver, Version=3.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Selenium.WebDriver.3.5.1\lib\net40\WebDriver.dll</HintPath>
+    <Reference Include="WebDriver, Version=3.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selenium.WebDriver.3.7.0\lib\net45\WebDriver.dll</HintPath>
     </Reference>
-    <Reference Include="WebDriver.Support, Version=3.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Selenium.Support.3.5.1\lib\net40\WebDriver.Support.dll</HintPath>
+    <Reference Include="WebDriver.Support, Version=3.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selenium.Support.3.7.0\lib\net45\WebDriver.Support.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Choose>
@@ -70,6 +70,16 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>AlertTests.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Features\ApplicationConfigurationTests.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ApplicationConfigurationTests.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Features\BrowserTests.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BrowserTests.feature</DependentUpon>
     </Compile>
     <Compile Include="Features\InputTests.feature.cs">
       <AutoGen>True</AutoGen>
@@ -113,6 +123,7 @@
     <Compile Include="Pages\StudentCoursesPage.cs" />
     <Compile Include="Pages\StudentsSearchPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Steps\BrowserSteps.cs" />
     <Compile Include="Steps\ErrorCheckSteps.cs" />
     <Compile Include="Pages\StudentDetailPage.cs" />
     <Compile Include="Steps\TestPostNavigateHook.cs" />
@@ -125,6 +136,14 @@
     <None Include="Features\AlertTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>AlertTests.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\ApplicationConfigurationTests.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ApplicationConfigurationTests.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\BrowserTests.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>BrowserTests.feature.cs</LastGenOutput>
     </None>
     <None Include="Features\InputTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

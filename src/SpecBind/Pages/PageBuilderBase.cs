@@ -27,10 +27,18 @@ namespace SpecBind.Pages
         /// <summary>
         /// Initializes a new instance of the <see cref="PageBuilderBase{TParent, TOutput, TElement}"/> class.
         /// </summary>
-        protected PageBuilderBase()
+        /// <param name="uriHelper">The URI helper.</param>
+        protected PageBuilderBase(Lazy<IUriHelper> uriHelper)
         {
+            this.UriHelper = uriHelper;
             this.assignMethodInfo = new Action<TElement, ElementLocatorAttribute, object[]>(this.AssignElementAttributes).GetMethodInfo();
         }
+
+        /// <summary>
+        /// Gets the URI helper.
+        /// </summary>
+        /// <value>The URI helper.</value>
+        protected Lazy<IUriHelper> UriHelper { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether to allow an empty constructor for a page object.
@@ -98,7 +106,7 @@ namespace SpecBind.Pages
         /// <param name="elementType">Type of the page.</param>
         /// <returns>The page builder function.</returns>
         /// <exception cref="System.InvalidOperationException">Thrown if the constructor is invalid.</exception>
-        protected Func<TParent, IBrowser, Action<TOutput>, TOutput> CreateElementInternal(Type elementType)
+        protected Func<TParent, IBrowser, Lazy<IUriHelper>, Action<TOutput>, TOutput> CreateElementInternal(Type elementType)
         {
             var expression = this.CreateNewItemExpression(elementType);
             return expression.Compile();
@@ -118,10 +126,10 @@ namespace SpecBind.Pages
             var docVariable = Expression.Variable(frameType);
 
             var expressions = new List<Expression>
-				                  {
-					                  Expression.Assign(docVariable, Expression.Convert(Expression.Invoke(createExpression, parentArgument, Expression.Constant(null, typeof(IBrowser)), Expression.Constant(null, typeof(Action<TElement>))), frameType)),
-									  Expression.Convert(Expression.Property(docVariable, property), typeof(TOutput))
-				                  };
+			{
+				Expression.Assign(docVariable, Expression.Convert(Expression.Invoke(createExpression, parentArgument, Expression.Constant(null, typeof(IBrowser)), Expression.Constant(null, typeof(Lazy<IUriHelper>)), Expression.Constant(null, typeof(Action<TElement>))), frameType)),
+				Expression.Convert(Expression.Property(docVariable, property), typeof(TOutput))
+			};
 
             var methodCall = Expression.Block(new[] { docVariable }, expressions);
 
@@ -223,10 +231,13 @@ namespace SpecBind.Pages
         /// <param name="elementType">Type of the element.</param>
         /// <returns>The initial creation lambda expression.</returns>
         /// <exception cref="System.InvalidOperationException">Thrown if the constructor is invalid.</exception>
-        private Expression<Func<TParent, IBrowser, Action<TOutput>, TOutput>> CreateNewItemExpression(Type elementType)
+        private Expression<Func<TParent, IBrowser, Lazy<IUriHelper>, Action<TOutput>, TOutput>> CreateNewItemExpression(Type elementType)
         {
             var browserParameter = Expression.Parameter(typeof(IBrowser), "browser");
             var browserArgument = new ExpressionData(browserParameter, typeof(IBrowser), "browser");
+
+            var uriHelperParameter = Expression.Parameter(typeof(Lazy<IUriHelper>), "uriHelper");
+            var uriHelperArgument = new ExpressionData(uriHelperParameter, typeof(Lazy<IUriHelper>), "uriHelper");
 
             var parentParameter = Expression.Parameter(typeof(TParent), "parent");
             var parentArgument = new ExpressionData(parentParameter, typeof(TParent), "rootContext");
@@ -234,7 +245,7 @@ namespace SpecBind.Pages
             var docVariable = Expression.Variable(elementType);
             var documentData = new ExpressionData(docVariable, elementType, elementType.Name);
 
-            var context = new PageBuilderContext(browserArgument, parentArgument, documentData);
+            var context = new PageBuilderContext(browserArgument, uriHelperArgument, parentArgument, documentData);
 
             var constructor = this.GetConstructor(elementType, context);
             if (constructor == null)
@@ -264,7 +275,7 @@ namespace SpecBind.Pages
             expressions.Add(docVariable);
 
             var methodCall = Expression.Block(new[] { docVariable }, expressions);
-            return Expression.Lambda<Func<TParent, IBrowser, Action<TOutput>, TOutput>>(methodCall, parentParameter, browserParameter, actionParameter);
+            return Expression.Lambda<Func<TParent, IBrowser, Lazy<IUriHelper>, Action<TOutput>, TOutput>>(methodCall, parentParameter, browserParameter, uriHelperParameter, actionParameter);
         }
 
         /// <summary>
@@ -411,7 +422,7 @@ namespace SpecBind.Pages
             propertyExpressions.AddRange(this.CreateHtmlObject(context, attribute, customAttributes));
             context.CurrentElement = currentItem;
 
-            return Expression.New(constructor, parentListVariable, context.Browser.Expression);
+            return Expression.New(constructor, parentListVariable, context.Browser.Expression, context.UriHelper.Expression);
         }
 
         /// <summary>

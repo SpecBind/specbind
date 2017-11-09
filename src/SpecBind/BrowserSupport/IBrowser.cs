@@ -8,6 +8,7 @@ namespace SpecBind.BrowserSupport
     using System.Collections.Generic;
     using System.Net;
 
+    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -45,6 +46,12 @@ namespace SpecBind.BrowserSupport
         /// Gets a value indicating whether or not the browser has been disposed.
         /// </summary>
         bool IsDisposed { get; }
+
+        /// <summary>
+        /// Gets or sets the URI helper.
+        /// </summary>
+        /// <value>The URI helper.</value>
+        Lazy<IUriHelper> UriHelper { get; set; }
 
         /// <summary>
         /// Adds the cookie to the browser.

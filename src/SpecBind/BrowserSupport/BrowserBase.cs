@@ -10,6 +10,7 @@ namespace SpecBind.BrowserSupport
     using System.Net;
 
     using SpecBind.Actions;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
     using UriHelper = Helpers.UriHelper;
 
@@ -25,9 +26,11 @@ namespace SpecBind.BrowserSupport
         /// Initializes a new instance of the <see cref="BrowserBase"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        protected BrowserBase(ILogger logger)
+        /// <param name="uriHelper">The URI helper.</param>
+        protected BrowserBase(ILogger logger, Lazy<IUriHelper> uriHelper)
         {
             this.logger = logger;
+            this.UriHelper = uriHelper;
         }
 
         /// <summary>
@@ -64,6 +67,12 @@ namespace SpecBind.BrowserSupport
         {
             get { return this.disposed; }
         }
+
+        /// <summary>
+        /// Gets or sets the URI helper.
+        /// </summary>
+        /// <value>The URI helper.</value>
+        public Lazy<IUriHelper> UriHelper { get; set; }
 
         /// <summary>
         /// Adds the cookie to the browser.
@@ -171,7 +180,7 @@ namespace SpecBind.BrowserSupport
         /// </returns>
         public IPage GoToPage(Type pageType, IDictionary<string, string> parameters)
         {
-            var filledUri = UriHelper.FillPageUri(this, pageType, parameters);
+            var filledUri = this.UriHelper.Value.FillPageUri(this, pageType, parameters);
             try
             {
                 this.logger.Debug("Navigating to URL: {0}", filledUri);
@@ -242,7 +251,7 @@ namespace SpecBind.BrowserSupport
         /// <returns><c>true</c> if it is a match.</returns>
         protected bool CheckIsOnPage(Type pageType, IPage page, out string actualPath, out string expectedPath)
         {
-            var validateRegex = UriHelper.GetQualifiedPageUriRegex(this, pageType);
+            var validateRegex = this.UriHelper.Value.GetQualifiedPageUriRegex(this, pageType);
 
             var actualUrls = this.GetNativePageLocation(page);
 

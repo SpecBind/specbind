@@ -29,7 +29,7 @@ namespace SpecBind.CodedUI
     {
         private readonly Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>> frameCache;
 
-        private readonly Dictionary<Type, Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument>> pageCache;
+        private readonly Dictionary<Type, Func<UITestControl, IBrowser, Lazy<IUriHelper>, Action<HtmlControl>, HtmlDocument>> pageCache;
 
         private readonly Lazy<BrowserWindow> window;
 
@@ -38,12 +38,13 @@ namespace SpecBind.CodedUI
         /// </summary>
         /// <param name="browserWindow">The browser window.</param>
         /// <param name="logger">The logger.</param>
-        public CodedUIBrowser(Lazy<BrowserWindow> browserWindow, ILogger logger)
-            : base(logger)
+        /// <param name="uriHelper">The URI helper.</param>
+        public CodedUIBrowser(Lazy<BrowserWindow> browserWindow, ILogger logger, Lazy<IUriHelper> uriHelper)
+            : base(logger, uriHelper)
         {
             this.frameCache = new Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>>(GetFrameCache);
             this.window = browserWindow;
-            this.pageCache = new Dictionary<Type, Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument>>();
+            this.pageCache = new Dictionary<Type, Func<UITestControl, IBrowser, Lazy<IUriHelper>, Action<HtmlControl>, HtmlDocument>>();
         }
 
         /// <summary>
@@ -306,9 +307,17 @@ namespace SpecBind.CodedUI
             if (page != null)
             {
                 var nativePage = page.GetNativePage<HtmlDocument>();
-                if (nativePage != null && nativePage.FrameDocument && nativePage.AbsolutePath != null)
+                if (nativePage != null)
                 {
-                    pageList.Add(nativePage.AbsolutePath);
+                    if (nativePage.AbsolutePath != null)
+                    {
+                        pageList.Add(nativePage.AbsolutePath);
+                    }
+
+                    if (nativePage.PageUrl != null)
+                    {
+                        pageList.Add(nativePage.PageUrl);
+                    }
                 }
             }
 
@@ -340,10 +349,10 @@ namespace SpecBind.CodedUI
         /// <returns>The internal document.</returns>
         private HtmlDocument CreateNativePage(Type pageType)
         {
-            Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument> function;
+            Func<UITestControl, IBrowser, Lazy<IUriHelper>, Action<HtmlControl>, HtmlDocument> function;
             if (!this.pageCache.TryGetValue(pageType, out function))
             {
-                function = PageBuilder<UITestControl, HtmlDocument>.CreateElement(pageType);
+                function = PageBuilder<UITestControl, HtmlDocument>.CreateElement(pageType, this.UriHelper);
                 this.pageCache.Add(pageType, function);
             }
 
@@ -376,7 +385,7 @@ namespace SpecBind.CodedUI
                 }
             }
 
-            var documentElement = function(parentElement, this, null);
+            var documentElement = function(parentElement, this, this.UriHelper, null);
 
             if (isFrameDocument)
             {
@@ -392,7 +401,7 @@ namespace SpecBind.CodedUI
         /// Creates the frame cache from the currently loaded types in the project.
         /// </summary>
         /// <returns>The created frame cache.</returns>
-        private static Dictionary<string, Func<UITestControl, HtmlFrame>> GetFrameCache()
+        private Dictionary<string, Func<UITestControl, HtmlFrame>> GetFrameCache()
         {
             var frames = new Dictionary<string, Func<UITestControl, HtmlFrame>>(StringComparer.OrdinalIgnoreCase);
 
@@ -409,7 +418,7 @@ namespace SpecBind.CodedUI
                 {
                     frames.Add(
                         property.Name,
-                        PageBuilder<UITestControl, HtmlFrame>.CreateFrameLocator(frameType, property));
+                        PageBuilder<UITestControl, HtmlFrame>.CreateFrameLocator(frameType, property, this.UriHelper));
                 }
             }
 
