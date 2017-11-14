@@ -5,8 +5,9 @@
 namespace SpecBind.ActionPipeline
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 
-	using SpecBind.Helpers;
 	using SpecBind.Pages;
 
 	/// <summary>
@@ -23,14 +24,6 @@ namespace SpecBind.ActionPipeline
 	internal class ActionPipelineService : IActionPipelineService
 	{
 		private readonly IActionRepository actionRepository;
-
-		/// <summary>
-        /// Initializes the <see cref="ActionPipelineService"/> class.
-        /// </summary>
-        static ActionPipelineService()
-		{
-			var configSection = SettingHelper.GetConfigurationSection();
-		}
 
         /// <summary>
 		/// Initializes a new instance of the <see cref="ActionPipelineService"/> class.
@@ -67,9 +60,13 @@ namespace SpecBind.ActionPipeline
 			var locater = this.CreateElementLocater(page);
 			action.ElementLocator = locater;
 
-			this.PerformPreAction(action, context);
+			var result = this.PerformPreAction(action, context);
 
-			ActionResult result = null;
+		    if (result != null)
+		    {
+		        return result;
+		    }
+
 			try
 			{
 				result = action.Execute(context);
@@ -100,13 +97,33 @@ namespace SpecBind.ActionPipeline
         /// </summary>
         /// <param name="action">The action.</param>
         /// <param name="context">The action context.</param>
-	    private void PerformPreAction(IAction action, ActionContext context)
-		{
+        /// <returns>If successful <c>null</c>, otherwise an ActionResult with the error.</returns>
+	    private ActionResult PerformPreAction(IAction action, ActionContext context)
+        {
+            var exceptions = new List<Exception>();
+
 			foreach (var preAction in this.actionRepository.GetPreActions())
 			{
-				preAction.PerformPreAction(action, context);
+                try
+                {
+                    preAction.PerformPreAction(action, context);
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
 			}
-		}
+
+            switch (exceptions.Count)
+            {
+                case 0:
+                    return null;
+                case 1:
+                    return ActionResult.Failure(exceptions.First());
+                default:
+                    return ActionResult.Failure(new AggregateException(exceptions));
+            }
+        }
 
         /// <summary>
         /// Performs any actions after the actual action.
@@ -121,5 +138,5 @@ namespace SpecBind.ActionPipeline
 				postAction.PerformPostAction(action, context, result);
 			}
 		}
-	}
+    }
 }

@@ -9,6 +9,7 @@ namespace SpecBind.Validation
 
     using SpecBind.ActionPipeline;
     using SpecBind.Helpers;
+    using SpecBind.Pages;
 
     /// <summary>
     /// An action pipeline pre-action that performs any processing on validation tables.
@@ -36,6 +37,7 @@ namespace SpecBind.Validation
         /// <param name="context">The action context.</param>
         public void PerformPreAction(IAction action, ActionContext context)
         {
+            // ReSharper disable once UsePatternMatching
             var containsTable = context as IValidationTable;
             if (containsTable == null)
             {
@@ -51,10 +53,12 @@ namespace SpecBind.Validation
                 // Lookup a comparison rule based on the input string.
                 var ruleLookupKey = ProcessText(itemValidation.RawComparisonType);
 
-                IValidationComparer comparer;
-                itemValidation.Comparer = ruleLookups.TryGetValue(ruleLookupKey, out comparer)
-                    ? comparer
-                    : ruleLookups.First(r => r.Value.IsDefault).Value;
+                if (!ruleLookups.TryGetValue(ruleLookupKey, out var comparer))
+                {
+                    throw new ElementExecuteException("Vaidation Rule could not be found for rule name: {0}", itemValidation.RawComparisonType);
+                }
+
+                itemValidation.Comparer = comparer;
 
                 // Process the value for any tokens, then check for any transforms.
                 var compareValue = this.tokenManager.GetToken(itemValidation.RawComparisonValue);

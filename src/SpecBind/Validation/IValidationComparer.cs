@@ -13,12 +13,6 @@ namespace SpecBind.Validation
     public interface IValidationComparer
     {
         /// <summary>
-        /// Gets a value indicating whether this instance is the default rule to use.
-        /// </summary>
-        /// <value><c>true</c> if this instance is a default rule; otherwise, <c>false</c>.</value>
-        bool IsDefault { get; }
-
-        /// <summary>
         /// Gets the rule keys.
         /// </summary>
         /// <value>The rule keys.</value>

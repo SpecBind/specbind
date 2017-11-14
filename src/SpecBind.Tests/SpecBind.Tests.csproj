@@ -139,6 +139,7 @@
     <Compile Include="Validation\ItemValidationHelper.cs" />
     <Compile Include="Validation\LessThanComparerFixture.cs" />
     <Compile Include="Validation\LessThanEqualsComparerFixture.cs" />
+    <Compile Include="Validation\NotEnabledComparerFixture.cs" />
     <Compile Include="Validation\NotEqualsComparerFixture.cs" />
     <Compile Include="Validation\StartsWithComparerFixture.cs" />
     <Compile Include="Validation\ValidationTablePreActionFixture.cs" />

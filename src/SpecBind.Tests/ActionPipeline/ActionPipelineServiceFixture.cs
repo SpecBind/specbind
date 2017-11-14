@@ -103,6 +103,92 @@ namespace SpecBind.Tests.ActionPipeline
 			postAction.VerifyAll();
 		}
 
+	    /// <summary>
+	    /// Tests the pipeline call invokes all pre-steps even if one fails and then throws that failure.
+	    /// </summary>
+	    [TestMethod]
+	    public void TestPipelineCallInvokesAllPrePipelineStepsIfTheyExistAndThrowsExceptionOnSingleFailure()
+	    {
+	        var context = new ActionContext("MyProperty");
+	        var exception = new InvalidOperationException("Something Failed!");
+
+	        var action = new Mock<IAction>(MockBehavior.Strict);
+	        action.SetupSet(a => a.ElementLocator = It.IsAny<IElementLocator>());
+
+	        var page = new Mock<IPage>(MockBehavior.Strict);
+
+	        var preAction1 = new Mock<IPreAction>(MockBehavior.Strict);
+	        preAction1.Setup(p => p.PerformPreAction(action.Object, context)).Throws(exception);
+
+	        var preAction2 = new Mock<IPreAction>(MockBehavior.Strict);
+	        preAction2.Setup(p => p.PerformPreAction(action.Object, context));
+
+
+            var repository = new Mock<IActionRepository>(MockBehavior.Strict);
+	        repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction1.Object, preAction2.Object });
+	        repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
+
+	        var service = new ActionPipelineService(repository.Object);
+
+	        var result = service.PerformAction(page.Object, action.Object, context);
+
+	        Assert.IsNotNull(result);
+	        Assert.AreEqual(false, result.Success);
+	        Assert.AreSame(exception, result.Exception);
+
+	        repository.VerifyAll();
+	        action.VerifyAll();
+	        page.VerifyAll();
+	        preAction1.VerifyAll();
+	        preAction2.VerifyAll();
+	    }
+
+	    /// <summary>
+	    /// Tests the pipeline call invokes all pre-steps even if one fails and then throws an aggregate exception.
+	    /// </summary>
+	    [TestMethod]
+	    public void TestPipelineCallInvokesAllPrePipelineStepsIfTheyExistAndThrowsAggregateExceptionOnMultipleFailures()
+	    {
+	        var context = new ActionContext("MyProperty");
+	        var exception1 = new InvalidOperationException("Something Failed 1!");
+	        var exception2 = new InvalidOperationException("Something Failed 2!");
+
+            var action = new Mock<IAction>(MockBehavior.Strict);
+	        action.SetupSet(a => a.ElementLocator = It.IsAny<IElementLocator>());
+
+	        var page = new Mock<IPage>(MockBehavior.Strict);
+
+	        var preAction1 = new Mock<IPreAction>(MockBehavior.Strict);
+	        preAction1.Setup(p => p.PerformPreAction(action.Object, context)).Throws(exception1);
+
+	        var preAction2 = new Mock<IPreAction>(MockBehavior.Strict);
+	        preAction2.Setup(p => p.PerformPreAction(action.Object, context)).Throws(exception2);
+
+
+	        var repository = new Mock<IActionRepository>(MockBehavior.Strict);
+	        repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction1.Object, preAction2.Object });
+	        repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
+
+	        var service = new ActionPipelineService(repository.Object);
+
+	        var result = service.PerformAction(page.Object, action.Object, context);
+
+	        Assert.IsNotNull(result);
+	        Assert.AreEqual(false, result.Success);
+
+            Assert.IsInstanceOfType(result.Exception, typeof(AggregateException));
+
+	        var aggregateException = (AggregateException)result.Exception;
+            Assert.AreSame(exception1, aggregateException.InnerExceptions[0]);
+	        Assert.AreSame(exception2, aggregateException.InnerExceptions[1]);
+
+            repository.VerifyAll();
+	        action.VerifyAll();
+	        page.VerifyAll();
+	        preAction1.VerifyAll();
+	        preAction2.VerifyAll();
+	    }
+
         /// <summary>
         /// Tests the pipeline call creates the action, invokes all pipeline steps and does not fail.
         /// </summary>
@@ -167,7 +253,7 @@ namespace SpecBind.Tests.ActionPipeline
         /// </summary>
 	    public class MockRetryAction : ActionBase
         {
-            private bool hasFailed = false;
+            private bool hasFailed;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="MockAction"/> class.
