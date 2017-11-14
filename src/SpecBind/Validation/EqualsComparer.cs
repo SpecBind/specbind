@@ -19,18 +19,6 @@ namespace SpecBind.Validation
         }
 
         /// <summary>
-        /// Gets a value indicating whether this instance is the default rule to use.
-        /// </summary>
-        /// <value><c>true</c> if this instance is a default rule; otherwise, <c>false</c>.</value>
-        public override bool IsDefault
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
         /// Compares the string values according to the rule.
         /// </summary>
         /// <param name="expected">The expected value.</param>

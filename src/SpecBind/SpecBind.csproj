@@ -177,6 +177,7 @@
     <Compile Include="Validation\IValidationTable.cs" />
     <Compile Include="Validation\LessThanComparer.cs" />
     <Compile Include="Validation\LessThanEqualsComparer.cs" />
+    <Compile Include="Validation\NotEnabledComparer.cs" />
     <Compile Include="Validation\NotEqualsComparer.cs" />
     <Compile Include="Validation\StartsWithComparer.cs" />
     <Compile Include="Validation\ValidateTableHelpers.cs" />
