@@ -380,8 +380,7 @@ namespace SpecBind.Selenium
         {
             // Respect the data control interface first.
             // ReSharper disable once SuspiciousTypeConversion.Global
-            var dataControlElement = element as IDataControl;
-            if (dataControlElement != null)
+            if (element is IDataControl dataControlElement)
             {
                 dataControlElement.SetValue(data);
                 return;
@@ -404,8 +403,7 @@ namespace SpecBind.Selenium
                     var inputType = element.GetAttribute("type");
                     if (string.Equals("checkbox", inputType, StringComparison.OrdinalIgnoreCase))
                     {
-                        bool checkValue;
-                        if (bool.TryParse(data, out checkValue) && element.Selected != checkValue)
+                        if (bool.TryParse(data, out bool checkValue) && element.Selected != checkValue)
                         {
                             new SeleniumPage(element, this.webDriver).ClickElement(element);
                         }

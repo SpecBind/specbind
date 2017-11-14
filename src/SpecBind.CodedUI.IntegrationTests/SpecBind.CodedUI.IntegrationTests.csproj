@@ -98,11 +98,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AlertTests.feature</DependentUpon>
     </Compile>
-    <Compile Include="Features\ControlPlaygroundFeature.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ControlPlaygroundFeature.feature</DependentUpon>
-    </Compile>
     <Compile Include="Features\DivListValidationTests.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -156,7 +151,6 @@
     <Compile Include="Pages\InformationPage.cs" />
     <Compile Include="Pages\InstructorsSearchPage.cs" />
     <Compile Include="Pages\LogOnPage.cs" />
-    <Compile Include="Pages\PlaygroundPage.cs" />
     <Compile Include="Pages\StudentDetailPage.cs" />
     <Compile Include="Pages\StudentsSearchPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -179,10 +173,6 @@
     <None Include="Features\AlertTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>AlertTests.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Features\ControlPlaygroundFeature.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ControlPlaygroundFeature.feature.cs</LastGenOutput>
     </None>
     <None Include="Features\DivListValidationTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
