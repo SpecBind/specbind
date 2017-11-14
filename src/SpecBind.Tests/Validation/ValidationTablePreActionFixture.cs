@@ -4,6 +4,7 @@
 
 namespace SpecBind.Tests.Validation
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -13,6 +14,7 @@ namespace SpecBind.Tests.Validation
 
     using SpecBind.ActionPipeline;
     using SpecBind.Helpers;
+    using SpecBind.Pages;
     using SpecBind.Validation;
 
     /// <summary>
@@ -77,7 +79,7 @@ namespace SpecBind.Tests.Validation
         }
 
         /// <summary>
-        /// Tests the action when context is a table, processes the values, but defaults the action to equals.
+        /// Tests the action when context is a table throws an exception if the rule is invalid.
         /// </summary>
         [TestMethod]
         public void TestActionWhenContextIsATableButHasBadRuleProcessesActions()
@@ -89,7 +91,6 @@ namespace SpecBind.Tests.Validation
             actionRepository.Setup(a => a.GetComparisonTypes()).Returns(items);
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
-            tokenManager.Setup(t => t.GetToken("foo")).Returns("foo");
 
             var preAction = new ValidationTablePreAction(actionRepository.Object, tokenManager.Object);
 
@@ -97,13 +98,16 @@ namespace SpecBind.Tests.Validation
             table.AddValidation("My Field", "bad rule", "foo");
 
             var context = new TableContext(table);
-            preAction.PerformPreAction(action.Object, context);
 
-            var validation = table.Validations.First();
-            Assert.AreEqual("myfield", validation.FieldName);
-            Assert.AreEqual("foo", validation.ComparisonValue);
-            Assert.IsNotNull(validation.Comparer);
-            Assert.IsInstanceOfType(validation.Comparer, typeof(EqualsComparer));
+            try
+            {
+                preAction.PerformPreAction(action.Object, context);
+            }
+            catch (Exception e)
+            {
+                Assert.IsInstanceOfType(e, typeof(ElementExecuteException));
+                Assert.AreEqual("Vaidation Rule could not be found for rule name: bad rule", e.Message);
+            }
 
             action.VerifyAll();
             actionRepository.VerifyAll();

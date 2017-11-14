@@ -46,24 +46,24 @@ namespace SpecBind.Tests.Validation
         /// Tests the compare method for simple comparisons.
         /// </summary>
         [TestMethod]
-        public void TestCompareExistsCase()
+        public void TestCompareEnabledCase()
         {
             var propertyData = new Mock<IPropertyData>(MockBehavior.Strict);
             propertyData.Setup(p => p.CheckElementEnabled()).Returns(true);
 
-            RunItemCompareTest("True", null, true, propertyData);
+            RunItemCompareTest(null, null, true, propertyData);
         }
 
         /// <summary>
         /// Tests the compare method for simple comparisons.
         /// </summary>
         [TestMethod]
-        public void TestCompareNotExistsCase()
+        public void TestCompareNotEnabledCase()
         {
             var propertyData = new Mock<IPropertyData>(MockBehavior.Strict);
             propertyData.Setup(p => p.CheckElementEnabled()).Returns(false);
 
-            RunItemCompareTest("False", null, true, propertyData);
+            RunItemCompareTest(null, null, false, propertyData);
         }
     }
 }

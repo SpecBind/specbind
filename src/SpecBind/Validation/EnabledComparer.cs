@@ -28,10 +28,8 @@ namespace SpecBind.Validation
         /// <returns><c>true</c> if the comparison passes, <c>false</c> otherwise.</returns>
         public override bool Compare(IPropertyData property, string expectedValue, string actualValue)
         {
-            bool parsedValue;
-            return (expectedValue != null && bool.TryParse(expectedValue, out parsedValue) && !parsedValue)
-                       ? !property.CheckElementEnabled()
-                       : property.CheckElementEnabled();
+            // Note: expected value is ignored when checking this
+            return property.CheckElementEnabled();
         }
     }
 }
