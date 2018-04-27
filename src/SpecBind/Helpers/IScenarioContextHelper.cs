@@ -34,7 +34,7 @@ namespace SpecBind.Helpers
 	    /// <summary>
 	    /// Gets the name of the step file.
 	    /// </summary>
-	    /// <param name="isError">Indicates wither the file is the result of an error.</param>
+	    /// <param name="isError">Indicates whether the file is the result of an error.</param>
 	    /// <returns>A unique file name for the scenario.</returns>
 	    string GetStepFileName(bool isError);
 

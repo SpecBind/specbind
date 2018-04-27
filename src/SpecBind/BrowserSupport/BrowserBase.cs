@@ -233,7 +233,7 @@ namespace SpecBind.BrowserSupport
         public abstract string SaveHtml(string destinationFolder, string fileNameBase);
 
         /// <summary>
-        /// Checks wither the page matches the current browser URL.
+        /// Checks whether the page matches the current browser URL.
         /// </summary>
         /// <param name="pageType">Type of the page.</param>
         /// <param name="page">The page to do further testing if it exists.</param>
