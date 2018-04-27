@@ -1,6 +1,6 @@
-﻿// // <copyright file="HomePage.cs">
-// //    Copyright © 2013 Dan Piessens.  All rights reserved.
-// // </copyright>
+﻿// <copyright file="HomePage.cs">
+//    Copyright © 2013 Dan Piessens.  All rights reserved.
+// </copyright>
 namespace SpecBind.Selenium.IntegrationTests.Pages
 {
     using OpenQA.Selenium;
