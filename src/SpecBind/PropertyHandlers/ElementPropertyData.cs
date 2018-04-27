@@ -47,9 +47,9 @@ namespace SpecBind.PropertyHandlers
         }
 
         /// <summary>
-        /// Checks to see if the element exists.
+        /// Checks to see if the element is enabled.
         /// </summary>
-        /// <returns><c>true</c> if the element exists.</returns>
+        /// <returns><c>true</c> if the element is enabled.</returns>
         public override bool CheckElementEnabled()
         {
             return this.elementAction(this.ElementHandler, this.ElementHandler.ElementEnabledCheck);

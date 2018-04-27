@@ -45,7 +45,7 @@ namespace SpecBind.Helpers
         /// <returns><c>true</c> the current feature contains the specified tag; otherwise, <c>false</c>.</returns>
         bool FeatureContainsTag(string tag);
 
-		/// <summary>Sets the value.</summary>
+		/// <summary>Gets the value.</summary>
 		/// <typeparam name="T">The type of the value.</typeparam>
 		/// <param name="key">The key.</param>
 		/// <returns>The value if located.</returns>

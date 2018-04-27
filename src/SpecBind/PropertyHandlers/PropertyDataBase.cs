@@ -15,7 +15,7 @@ namespace SpecBind.PropertyHandlers
     /// <summary>
     /// A base class to define all the properties.
     /// </summary>
-    /// <typeparam name="TElement">The type of the t element.</typeparam>
+    /// <typeparam name="TElement">The type of the element.</typeparam>
     internal abstract class PropertyDataBase<TElement> : IPropertyData
     {
         private readonly IPageElementHandler<TElement> elementHandler;
@@ -90,9 +90,9 @@ namespace SpecBind.PropertyHandlers
         }
 
         /// <summary>
-        /// Checks to see if the element exists.
+        /// Checks to see if the element is enabled.
         /// </summary>
-        /// <returns><c>true</c> if the element exists.</returns>
+        /// <returns><c>true</c> if the element is enabled.</returns>
         public virtual bool CheckElementEnabled()
         {
             throw this.CreateNotSupportedException("Checking for an element being enabled");
@@ -108,9 +108,9 @@ namespace SpecBind.PropertyHandlers
         }
 
         /// <summary>
-        /// Checks to see if the element does not exist.
+        /// Checks to see if the element doesn't exist.
         /// </summary>
-        /// <returns><c>true</c> if the element exists.</returns>
+        /// <returns><c>true</c> if the element doesn't exist.</returns>
         public virtual bool CheckElementNotExists()
         {
             throw this.CreateNotSupportedException("Checking for an element not existing");
@@ -135,11 +135,11 @@ namespace SpecBind.PropertyHandlers
         }
 
         /// <summary>
-        /// Gets the index of the item at.
+        /// Gets the item at the specified index.
         /// </summary>
         /// <param name="index">The index.</param>
         /// <returns>
-        /// The item as an <see cref="IPage" /> item; otherwise <c>null</c>.
+        /// The item at the specified index; otherwise <c>null</c>.
         /// </returns>
         public virtual IPage GetItemAtIndex(int index)
         {
@@ -147,7 +147,7 @@ namespace SpecBind.PropertyHandlers
         }
 
         /// <summary>
-        /// Gets the item as page.
+        /// Gets the item as a page.
         /// </summary>
         /// <returns>
         /// The item as a page.

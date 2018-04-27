@@ -71,10 +71,10 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
-        /// Checks to see if the element exists.
+        /// Checks to see if the element doesn't exists.
         /// </summary>
         /// <param name="element">The element.</param>
-        /// <returns><c>true</c> if the element exists, <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c> if the element doesn't exists, <c>false</c> otherwise.</returns>
         public override bool ElementNotExistsCheck(IWebElement element)
         {
             if (element == null)

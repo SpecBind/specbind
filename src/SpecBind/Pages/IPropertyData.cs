@@ -60,11 +60,11 @@ namespace SpecBind.Pages
 		/// </summary>
 		void ClickElement();
 
-		/// <summary>
-		/// Checks to see if the element exists.
-		/// </summary>
-		/// <returns><c>true</c> if the element exists.</returns>
-		bool CheckElementEnabled();
+        /// <summary>
+        /// Checks to see if the element is enabled.
+        /// </summary>
+        /// <returns><c>true</c> if the element is enabled.</returns>
+        bool CheckElementEnabled();
 
 		/// <summary>
 		/// Checks to see if the element exists.
@@ -76,7 +76,7 @@ namespace SpecBind.Pages
         /// Checks to see if the element doesn't exist.
         /// Unlike ElementExistsCheck, this doesn't let the web driver wait first for the element to exist.
         /// </summary>
-        /// <returns><c>true</c> if the element does not exist.</returns>
+        /// <returns><c>true</c> if the element doesn't exist.</returns>
         bool CheckElementNotExists();
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace SpecBind.Pages
 		IPage GetItemAtIndex(int index);
 
 		/// <summary>
-		/// Gets the item as page.
+		/// Gets the item as a page.
 		/// </summary>
 		/// <returns>The item as a page.</returns>
 		IPage GetItemAsPage();

@@ -154,7 +154,7 @@ namespace SpecBind.Helpers
         }
 
 		/// <summary>
-		/// Sets the value.
+		/// Gets the value.
 		/// </summary>
 		/// <typeparam name="T">The type of the value.</typeparam>
 		/// <param name="key">The key.</param>
