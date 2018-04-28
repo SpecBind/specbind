@@ -87,19 +87,17 @@ this.ScenarioSetup(scenarioInfo);
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Navigate to a student screen with a parameter")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Regression tests to ensure navigation functions correctly")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("Highlight")]
         public virtual void NavigateToAStudentScreenWithAParameter()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Navigate to a student screen with a parameter", new string[] {
-                        "Highlight"});
-#line 8
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Navigate to a student screen with a parameter", ((string[])(null)));
+#line 7
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "Id"});
             table1.AddRow(new string[] {
                         "1"});
-#line 9
+#line 8
  testRunner.Given("I navigated to the Student Detail page with parameters", ((string)(null)), table1, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -114,7 +112,7 @@ this.ScenarioSetup(scenarioInfo);
                         "Last Name",
                         "Equals",
                         "Alexander"});
-#line 12
+#line 11
   testRunner.Then("I see", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();

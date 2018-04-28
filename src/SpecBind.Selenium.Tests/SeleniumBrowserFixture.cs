@@ -7,6 +7,7 @@ namespace SpecBind.Selenium.Tests
 	using System.Diagnostics.CodeAnalysis;
 	using System.Drawing.Imaging;
 	using System.IO;
+    using System.Text.RegularExpressions;
 
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -16,6 +17,7 @@ namespace SpecBind.Selenium.Tests
 
 	using SpecBind.Actions;
 	using SpecBind.BrowserSupport;
+    using SpecBind.Helpers;
 	using SpecBind.Pages;
 	using SpecBind.Selenium.Tests.Resources;
 
@@ -370,8 +372,15 @@ namespace SpecBind.Selenium.Tests
 			var driver = this.CreateMockWebDriverExpectingInitialization();
 			driver.SetupGet(d => d.Url).Returns("http://localhost:2222/MyPage");
 
-			this.TestBrowserWith(driver, browser =>
+            var uriHelper = new Mock<IUriHelper>(MockBehavior.Strict);
+            var lazyUriHelper = new Lazy<IUriHelper>(() => uriHelper.Object);
+
+            this.TestBrowserWith(driver, lazyUriHelper, browser =>
 			{
+                uriHelper
+                    .Setup(u => u.GetQualifiedPageUriRegex(browser, typeof(MyPage)))
+                    .Returns(new Regex("http://localhost:2222/MyPage"));
+
 				browser.EnsureOnPage<MyPage>();
 			});
 		}
@@ -583,15 +592,20 @@ namespace SpecBind.Selenium.Tests
 
         private void InitializeDriverAndTestBrowserWith(Mock<IWebDriver> driver, Action<SeleniumBrowser> test)
 		{
-			this.TestBrowserWith(driver, true, test);
+			this.TestBrowserWith(driver, true, null, test);
 		}
 
 		private void TestBrowserWith(Mock<IWebDriver> driver, Action<SeleniumBrowser> test)
 		{
-			this.TestBrowserWith(driver, false, test);
+			this.TestBrowserWith(driver, false, null, test);
 		}
 
-		private void TestBrowserWith(Mock<IWebDriver> driver, bool initializeDriver, Action<SeleniumBrowser> test)
+        private void TestBrowserWith(Mock<IWebDriver> driver, Lazy<IUriHelper> uriHelper, Action<SeleniumBrowser> test)
+        {
+            this.TestBrowserWith(driver, false, uriHelper, test);
+        }
+
+        private void TestBrowserWith(Mock<IWebDriver> driver, bool initializeDriver, Lazy<IUriHelper> uriHelper, Action<SeleniumBrowser> test)
 		{
 			var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
 			if (initializeDriver)
@@ -601,7 +615,12 @@ namespace SpecBind.Selenium.Tests
 
 			var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-			using (var browser = new SeleniumBrowser(lazyDriver, logger.Object))
+            if (uriHelper == null)
+            {
+                uriHelper = new Lazy<IUriHelper>(() => new Mock<IUriHelper>(MockBehavior.Strict).Object);
+            }
+
+            using (var browser = new SeleniumBrowser(lazyDriver, logger.Object, uriHelper))
 			{
 				test(browser);
 			}

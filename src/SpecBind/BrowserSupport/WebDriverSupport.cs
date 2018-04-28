@@ -27,10 +27,10 @@ namespace SpecBind.BrowserSupport
     [ExcludeFromCodeCoverage]
     public class WebDriverSupport
     {
-        private static Lazy<ConfigurationSectionHandler> configurationHandler =
-            new Lazy<ConfigurationSectionHandler>(SettingHelper.GetConfigurationSection);
+        private static Lazy<BrowserFactoryConfigurationElement> configurationHandler;
+        private static Lazy<ApplicationConfigurationElement> applicationConfigurationHandler;
 
-        private readonly IObjectContainer objectContainer;
+        private IObjectContainer objectContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebDriverSupport" /> class.
@@ -50,16 +50,28 @@ namespace SpecBind.BrowserSupport
         internal static IBrowser Browser { get; set; }
 
         /// <summary>
-        /// Sets the configuration method for testing.
+        /// Sets the browser factory configuration element.
         /// </summary>
         /// <value>
-        /// The configuration method factory.
+        /// The browser factory configuration element.
         /// </value>
-        internal static Lazy<ConfigurationSectionHandler> ConfigurationMethod
+        internal static Lazy<BrowserFactoryConfigurationElement> ConfigurationMethod
         {
             set
             {
                 configurationHandler = value;
+            }
+        }
+
+        /// <summary>
+        /// Sets the application configuration element.
+        /// </summary>
+        /// <value>The application configuration element.</value>
+        internal static Lazy<ApplicationConfigurationElement> ApplicationConfigurationMethod
+        {
+            set
+            {
+                applicationConfigurationHandler = value;
             }
         }
 
@@ -70,7 +82,6 @@ namespace SpecBind.BrowserSupport
         public static void BeforeTestRun()
         {
             LogDebug(() => "Start Test Run");
-            CheckForDriver();
         }
 
         /// <summary>
@@ -83,21 +94,73 @@ namespace SpecBind.BrowserSupport
         }
 
         /// <summary>
-        /// Checks the browser factory for any necessary drivers.
-        /// </summary>
-        [BeforeTestRun]
-        public static void CheckForDriver()
-        {
-            var factory = BrowserFactory.GetBrowserFactory(new NullLogger());
-            factory.ValidateDriverSetup();
-        }
-
-        /// <summary>
         /// Things to do before each feature.
         /// </summary>
         public static void BeforeFeature()
         {
             LogDebug(() => "Feature: " + FeatureContext.Current.FeatureInfo.Title);
+        }
+
+        /// <summary>
+        /// Initializes the browser and page mapper at the start of the test run.
+        /// </summary>
+        /// <param name="objectContainer">The object container.</param>
+        public static void InitializeBrowser(IObjectContainer objectContainer)
+        {
+            var logger = objectContainer.Resolve<ILogger>();
+
+            var factory = BrowserFactory.GetBrowserFactory(configurationHandler.Value.Provider, logger);
+            var configSection = configurationHandler.Value;
+            factory.ValidateDriverSetup(configSection, applicationConfigurationHandler?.Value);
+
+            bool reusingBrowser = true;
+            if (!configSection.ReuseBrowser || Browser == null || Browser.IsDisposed)
+            {
+                Browser = factory.GetBrowser(configSection, applicationConfigurationHandler?.Value);
+                reusingBrowser = false;
+            }
+            else
+            {
+                Browser.UriHelper = new Lazy<IUriHelper>(() => new UriHelper(applicationConfigurationHandler?.Value.StartUrl));
+            }
+
+            if (configSection.EnsureCleanSession)
+            {
+                Browser.ClearCookies();
+
+                if (reusingBrowser)
+                {
+                    Browser.ClearUrl();
+                }
+            }
+
+            objectContainer.RegisterInstanceAs(Browser);
+
+            var mapper = new PageMapper();
+            mapper.Initialize(Browser.BasePageType);
+            objectContainer.RegisterInstanceAs<IPageMapper>(mapper);
+
+            if (ScenarioContext.Current != null)
+            {
+                ScenarioContext.Current.Set(Browser, "CurrentBrowser");
+            }
+        }
+
+        /// <summary>
+        /// Initializes the default browser.
+        /// </summary>
+        public void InitializeDefaultBrowser()
+        {
+            configurationHandler = new Lazy<BrowserFactoryConfigurationElement>(() =>
+            {
+                var configSection = SettingHelper.GetConfigurationSection();
+                if (configSection == null || configSection.BrowserFactory == null || string.IsNullOrWhiteSpace(configSection.BrowserFactory.Provider))
+                {
+                    throw new InvalidOperationException("The specBind config section must have a browser factory with a provider configured.");
+                }
+
+                return configSection.BrowserFactory;
+            });
         }
 
         /// <summary>
@@ -108,60 +171,31 @@ namespace SpecBind.BrowserSupport
         {
             LogDebug(() => "Scenario: " + ScenarioContext.Current.ScenarioInfo.Title);
             this.InitializeDriver();
-            ScenarioContext.Current.Set(Browser, "CurrentBrowser");
+            this.InitializeDefaultBrowser();
+            this.InitializeDefaultApplication();
         }
 
         /// <summary>
-        /// Initializes the page mapper at the start of the test run.
+        /// Initializes the driver.
         /// </summary>
         public void InitializeDriver()
         {
             this.objectContainer.RegisterTypeAs<ProxyLogger, ILogger>();
-            var logger = this.objectContainer.Resolve<ILogger>();
-
-            var factory = BrowserFactory.GetBrowserFactory(logger);
-            var configSection = configurationHandler.Value;
-
-            bool reusingBrowser = true;
-            if (!configSection.BrowserFactory.ReuseBrowser || Browser == null || Browser.IsDisposed)
-            {
-                Browser = factory.GetBrowser();
-                reusingBrowser = false;
-            }
-
-            if (configSection.BrowserFactory.EnsureCleanSession)
-            {
-                Browser.ClearCookies();
-
-                if (reusingBrowser)
-                {
-                    Browser.ClearUrl();
-                }
-            }
-
-            // NOTE: Don't register the browser to dispose, since doing so breaks the reuseBrowser support.
-            // We will dispose it after scenario or test run as appropriate.
-            this.objectContainer.RegisterInstanceAs(Browser, dispose: false);
 
             this.objectContainer.RegisterInstanceAs<ISettingHelper>(new WrappedSettingHelper());
 
-            var mapper = new PageMapper();
-            mapper.Initialize(Browser.BasePageType);
-            this.objectContainer.RegisterInstanceAs<IPageMapper>(mapper);
-
             this.objectContainer.RegisterTypeAs<ScenarioContextHelper, IScenarioContextHelper>();
+
             this.objectContainer.RegisterTypeAs<TokenManager, ITokenManager>();
 
             var repository = new ActionRepository(this.objectContainer);
             this.objectContainer.RegisterInstanceAs<IActionRepository>(repository);
-            this.objectContainer.RegisterTypeAs<ActionPipelineService, IActionPipelineService>();
 
-            // Initialize the repository
-            repository.Initialize();
+            this.objectContainer.RegisterTypeAs<ActionPipelineService, IActionPipelineService>();
         }
 
         /// <summary>
-        /// Things to do after every step.
+        /// Things to do before every step.
         /// </summary>
         [BeforeStep]
         public void BeforeStep()
@@ -182,14 +216,14 @@ namespace SpecBind.BrowserSupport
         {
             var configSection = configurationHandler.Value;
 
-            switch (configSection.BrowserFactory.WaitForPendingAjaxCallsVia.ToLowerInvariant())
+            switch (configSection.WaitForPendingAjaxCallsVia.ToLowerInvariant())
             {
                 case "angular":
-                    this.WaitForAngular(configSection.BrowserFactory.PageLoadTimeout);
+                    this.WaitForAngular(configSection.PageLoadTimeout);
                     break;
 
                 case "jquery":
-                    this.WaitForjQuery(configSection.BrowserFactory.PageLoadTimeout);
+                    this.WaitForjQuery(configSection.PageLoadTimeout);
                     break;
             }
         }
@@ -366,7 +400,7 @@ namespace SpecBind.BrowserSupport
             try
             {
                 var configSection = configurationHandler.Value;
-                if (configSection.BrowserFactory.ReuseBrowser)
+                if (configSection.ReuseBrowser)
                 {
                     return;
                 }
@@ -400,7 +434,7 @@ namespace SpecBind.BrowserSupport
             var isError = false;
             if (ex == null)
             {
-                var setting = configurationHandler.Value.BrowserFactory?.CreateScreenshotOnExit;
+                var setting = configurationHandler.Value?.CreateScreenshotOnExit;
                 if (!setting.GetValueOrDefault(false))
                 {
                     return;
@@ -475,6 +509,20 @@ namespace SpecBind.BrowserSupport
             }
 
             Debug.WriteLine(messageGenerator());
+        }
+
+        private void InitializeDefaultApplication()
+        {
+            applicationConfigurationHandler = new Lazy<ApplicationConfigurationElement>(() =>
+            {
+                var configSection = SettingHelper.GetConfigurationSection();
+                if (configSection == null || configSection.Application == null)
+                {
+                    throw new InvalidOperationException("The specBind config section must have an application configured.");
+                }
+
+                return configSection.Application;
+            });
         }
     }
 }

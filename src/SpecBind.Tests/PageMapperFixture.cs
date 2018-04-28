@@ -40,12 +40,28 @@ namespace SpecBind.Tests
 
 			Assert.IsNotNull(type);
 			Assert.AreEqual(1, mapper.MapCount);
-		}
+        }
 
-		/// <summary>
-		/// Tests to ensure a page class will be mapped by name removing page from it.
-		/// </summary>
-		[TestMethod]
+        /// <summary>
+        /// Tests to ensure a page class will be mapped once if called twice.
+        /// </summary>
+        [TestMethod]
+        public void TestMapAssemblyTypesTwice()
+        {
+            var mapper = new PageMapper();
+            mapper.MapAssemblyTypes(new[] { typeof(NoName) }, typeof(TestBase));
+            mapper.MapAssemblyTypes(new[] { typeof(NoName) }, typeof(TestBase));
+
+            var type = mapper.GetTypeFromName("noname");
+
+            Assert.IsNotNull(type);
+            Assert.AreEqual(1, mapper.MapCount);
+        }
+
+        /// <summary>
+        /// Tests to ensure a page class will be mapped by name removing page from it.
+        /// </summary>
+        [TestMethod]
 		public void TestMapAssemblyTypesWithPrefixedPageName()
 		{
 			var mapper = new PageMapper();

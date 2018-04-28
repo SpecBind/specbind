@@ -27,7 +27,7 @@ namespace SpecBind.Selenium
 
         private readonly SeleniumPageBuilder pageBuilder;
 
-        private readonly Dictionary<Type, Func<IWebDriver, IBrowser, Action<object>, object>> pageCache;
+        private readonly Dictionary<Type, Func<IWebDriver, IBrowser, Lazy<IUriHelper>, Action<object>, object>> pageCache;
 
         private bool switchedContext;
 
@@ -36,14 +36,15 @@ namespace SpecBind.Selenium
         /// </summary>
         /// <param name="driver">The browser driver as a lazy object.</param>
         /// <param name="logger">The logger.</param>
-        public SeleniumBrowser(Lazy<IWebDriver> driver, ILogger logger)
-            : base(logger)
+        /// <param name="uriHelper">The URI helper.</param>
+        public SeleniumBrowser(Lazy<IWebDriver> driver, ILogger logger, Lazy<IUriHelper> uriHelper)
+            : base(logger, uriHelper)
         {
             // TODO: create timeouts structure, pass it through this constructor, so we know what the default timeouts are.
             this.driver = driver;
 
-            this.pageBuilder = new SeleniumPageBuilder();
-            this.pageCache = new Dictionary<Type, Func<IWebDriver, IBrowser, Action<object>, object>>();
+            this.pageBuilder = new SeleniumPageBuilder(this.UriHelper);
+            this.pageCache = new Dictionary<Type, Func<IWebDriver, IBrowser, Lazy<IUriHelper>, Action<object>, object>>();
         }
 
         /// <summary>
@@ -292,6 +293,15 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Gets the browser logs.
+        /// </summary>
+        /// <returns>A collection of log entries.</returns>
+        public IReadOnlyCollection<LogEntry> GetBrowserLogs()
+        {
+            return this.driver.Value.Manage().Logs.GetLog(LogType.Browser);
+        }
+
+        /// <summary>
         /// Gets the native page location.
         /// </summary>
         /// <param name="page">The page interface.</param>
@@ -326,14 +336,14 @@ namespace SpecBind.Selenium
                 this.switchedContext = false;
             }
 
-            Func<IWebDriver, IBrowser, Action<object>, object> pageBuildMethod;
+            Func<IWebDriver, IBrowser, Lazy<IUriHelper>, Action<object>, object> pageBuildMethod;
             if (!this.pageCache.TryGetValue(pageType, out pageBuildMethod))
             {
                 pageBuildMethod = this.pageBuilder.CreatePage(pageType);
                 this.pageCache.Add(pageType, pageBuildMethod);
             }
 
-            var nativePage = pageBuildMethod(webDriver, this, null);
+            var nativePage = pageBuildMethod(webDriver, this, this.UriHelper, null);
 
             return new SeleniumPage(nativePage, webDriver)
                    {

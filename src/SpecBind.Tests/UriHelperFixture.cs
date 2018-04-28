@@ -29,8 +29,8 @@ namespace SpecBind.Tests
 		[TestMethod]
 		public void TestGetQualifiedPageUri()
 		{
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			var url = UriHelper.GetQualifiedPageUri("subpath/1");
+            UriHelper uriHelper = new UriHelper("http://localhost:2222/");
+			var url = uriHelper.GetQualifiedPageUri("subpath/1");
 
 			Assert.AreEqual(url, "http://localhost:2222/subpath/1");
 		}
@@ -43,8 +43,8 @@ namespace SpecBind.Tests
 		{
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			var url = UriHelper.GetQualifiedPageUri(browser.Object, typeof(NavigationAttributePage));
+            UriHelper uriHelper = new UriHelper("http://localhost:2222/");
+			var url = uriHelper.GetQualifiedPageUri(browser.Object, typeof(NavigationAttributePage));
 
 			Assert.AreEqual(url, new Uri("http://localhost:2222/root"));
 
@@ -59,8 +59,8 @@ namespace SpecBind.Tests
 		{
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			var url = UriHelper.GetQualifiedPageUri(browser.Object, typeof(AbsoluteUriPage));
+            UriHelper uriHelper = new UriHelper("http://localhost:2222/");
+			var url = uriHelper.GetQualifiedPageUri(browser.Object, typeof(AbsoluteUriPage));
 
             Assert.AreEqual(url, new Uri("http://www.atestsite.com/subpath"));
 
@@ -75,8 +75,8 @@ namespace SpecBind.Tests
         {
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            UriHelper.BaseUri = new Uri("http://myapp.qa8.somedomain.com/");
-            var url = UriHelper.GetQualifiedPageUri(browser.Object, typeof(NavigationAttributePage));
+            UriHelper uriHelper = new UriHelper("http://myapp.qa8.somedomain.com/");
+            var url = uriHelper.GetQualifiedPageUri(browser.Object, typeof(NavigationAttributePage));
 
             Assert.AreEqual(url, new Uri("http://myapp.qa8.somedomain.com/root"));
 
@@ -89,8 +89,8 @@ namespace SpecBind.Tests
         [TestMethod]
         public void TestGetQualifiedPageUriWithBaseVirtualDirectory()
         {
-            UriHelper.BaseUri = new Uri("http://localhost/MyVirtualDir");
-            var url = UriHelper.GetQualifiedPageUri("subpath/1");
+            UriHelper uriHelper = new UriHelper("http://localhost/MyVirtualDir");
+            var url = uriHelper.GetQualifiedPageUri("subpath/1");
 
             Assert.AreEqual("http://localhost/MyVirtualDir/subpath/1", url.ToString());
         }
@@ -103,8 +103,8 @@ namespace SpecBind.Tests
         {
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-            var url = UriHelper.GetQualifiedPageUri(browser.Object, typeof(NavigationWithNoSlashAttributePage));
+            UriHelper uriHelper = new UriHelper("http://localhost:2222/");
+            var url = uriHelper.GetQualifiedPageUri(browser.Object, typeof(NavigationWithNoSlashAttributePage));
 
             Assert.AreEqual(url, new Uri("http://localhost:2222/root"));
 
@@ -119,8 +119,8 @@ namespace SpecBind.Tests
         {
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-            var regex = UriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(NavigationAttributePage));
+            UriHelper uriHelper = new UriHelper("http://localhost:2222/");
+            var regex = uriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(NavigationAttributePage));
 
             Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root"));
             Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root/something123"));
@@ -136,8 +136,8 @@ namespace SpecBind.Tests
         {
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-            var regex = UriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(NavigationWithParamtersPage));
+            UriHelper uriHelper = new UriHelper("http://localhost:2222/");
+            var regex = uriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(NavigationWithParamtersPage));
 
             Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root?q=parameter"));
 
@@ -153,8 +153,8 @@ namespace SpecBind.Tests
         {
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-            var regex = UriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(NavigationWithNoSlashAttributePage));
+            UriHelper uriHelper = new UriHelper("http://localhost:2222/");
+            var regex = uriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(NavigationWithNoSlashAttributePage));
 
             Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root"));
             Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root/something123"));
@@ -170,8 +170,8 @@ namespace SpecBind.Tests
         {
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-            var regex = UriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(AbsoluteUriPage));
+            UriHelper uriHelper = new UriHelper("http://localhost:2222/");
+            var regex = uriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(AbsoluteUriPage));
 
             Assert.AreEqual(true, regex.IsMatch("http://www.atestsite.com/subpath"));
 
@@ -186,8 +186,8 @@ namespace SpecBind.Tests
         {
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-            var regex = UriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(NavigationWithRegexAttributePage));
+            UriHelper uriHelper = new UriHelper("http://localhost:2222/");
+            var regex = uriHelper.GetQualifiedPageUriRegex(browser.Object, typeof(NavigationWithRegexAttributePage));
 
             Assert.AreEqual(true, regex.IsMatch("http://localhost:2222/root/223"));
 
@@ -202,8 +202,8 @@ namespace SpecBind.Tests
 		{
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-            var url = UriHelper.GetPageUri(browser.Object, typeof(NavigationAttributePage));
+            UriHelper uriHelper = new UriHelper("http://localhost:2222/");
+            var url = uriHelper.GetPageUri(browser.Object, typeof(NavigationAttributePage));
 
             Assert.AreEqual("/root", url);
 
@@ -222,8 +222,8 @@ namespace SpecBind.Tests
 
 			try
 			{
-                UriHelper.BaseUri = new Uri("http://localhost:2222/");
-				UriHelper.GetPageUri(browser.Object, typeof(InvalidPage));
+                UriHelper uriHelper = new UriHelper("http://localhost:2222/");
+				uriHelper.GetPageUri(browser.Object, typeof(InvalidPage));
 			}
 			catch (PageNavigationException ex)
 			{
@@ -242,8 +242,8 @@ namespace SpecBind.Tests
 		{
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			var url = UriHelper.FillPageUri(
+            UriHelper uriHelper = new UriHelper("http://localhost:2222/");
+			var url = uriHelper.FillPageUri(
 				browser.Object, typeof(NavigationAttributePage), new Dictionary<string, string> { { "Id", "1" } });
 
             Assert.AreEqual("http://localhost:2222/root/1", url);
@@ -259,8 +259,8 @@ namespace SpecBind.Tests
 		{
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			var url = UriHelper.FillPageUri(
+            UriHelper uriHelper = new UriHelper("http://localhost:2222/");
+			var url = uriHelper.FillPageUri(
 				browser.Object, typeof(NavigationAttributePage), null);
 
             Assert.AreEqual("http://localhost:2222/root/{id}", url);
@@ -277,8 +277,8 @@ namespace SpecBind.Tests
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			browser.Setup(b => b.GetUriForPageType(typeof(InvalidPage))).Returns("/testpage");
 
-            UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			var url = UriHelper.FillPageUri(
+            UriHelper uriHelper = new UriHelper("http://localhost:2222/");
+			var url = uriHelper.FillPageUri(
 				browser.Object, typeof(InvalidPage), null);
 
             Assert.AreEqual("http://localhost:2222/testpage", url);
@@ -296,9 +296,9 @@ namespace SpecBind.Tests
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
 			// Setting base uri here should not matter as it will get ignored since AbsoluteUri = true for this test
-			UriHelper.BaseUri = new Uri("http://localhost:2222/");
+			UriHelper uriHelper = new UriHelper("http://localhost:2222/");
 
-			var url = UriHelper.FillPageUri(
+			var url = uriHelper.FillPageUri(
 				browser.Object, typeof(NavigationWithTemplateAndAbsoluteUri), new Dictionary<string, string> { { "param", "1" } });
 
 			Assert.AreEqual("http://root?q=1", url);
@@ -306,13 +306,44 @@ namespace SpecBind.Tests
 			browser.VerifyAll();
 		}
 
+        [TestMethod]
+        public void TestGetQualifiedPageUriFromEnvironmentVariable()
+        {
+            string environmentVariableName = "APPLICATION_START_URL";
+            string startUrl = "http://localhost:1111/startUrl";
+
+            try
+            {
+                Environment.SetEnvironmentVariable(environmentVariableName, startUrl);
+
+                UriHelper uriHelper = new UriHelper();
+                var url = uriHelper.GetQualifiedPageUri("environment");
+
+                Assert.AreEqual(new Uri("http://localhost:1111/startUrl/environment"), url);
+            }
+            finally
+            {
+                // delete environment variable
+                Environment.SetEnvironmentVariable(environmentVariableName, null);
+            }
+        }
+
+        [TestMethod]
+        public void TestGetQualifiedPageUriWithParameterlessConstructor()
+        {
+            UriHelper uriHelper = new UriHelper();
+            var url = uriHelper.GetQualifiedPageUri(string.Empty);
+
+            Assert.AreEqual(new Uri("http://localhost"), url);
+        }
+
 
         // ReSharper disable ClassNeverInstantiated.Local
 
-		/// <summary>
-		/// A test class for invalid configurations.
-		/// </summary>
-		private class InvalidPage : TestBase
+        /// <summary>
+        /// A test class for invalid configurations.
+        /// </summary>
+        private class InvalidPage : TestBase
 		{
 		}
 

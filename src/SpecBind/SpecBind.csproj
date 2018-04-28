@@ -15,6 +15,8 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -93,12 +95,15 @@
     <Compile Include="Actions\WaitForListItemsAction.cs" />
     <Compile Include="Actions\WaitForPageAction.cs" />
     <Compile Include="AlertBoxSteps.cs" />
+    <Compile Include="ApplicationSteps.cs" />
+    <Compile Include="BrowserSteps.cs" />
     <Compile Include="BrowserSupport\AlertBoxAction.cs" />
     <Compile Include="BrowserSupport\BrowserBase.cs" />
     <Compile Include="BrowserSupport\BrowserExtensions.cs" />
     <Compile Include="BrowserSupport\BrowserFactory.cs" />
     <Compile Include="BrowserSupport\BrowserType.cs" />
     <Compile Include="BrowserSupport\IBrowser.cs" />
+    <Compile Include="Helpers\IUriHelper.cs" />
     <Compile Include="BrowserSupport\NullLogger.cs" />
     <Compile Include="Configuration\ApplicationConfigurationElement.cs" />
     <Compile Include="Configuration\AssemblyCollection.cs" />

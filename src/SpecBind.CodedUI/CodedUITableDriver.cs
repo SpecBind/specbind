@@ -3,6 +3,7 @@
 // </copyright>
 namespace SpecBind.CodedUI
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -24,8 +25,9 @@ namespace SpecBind.CodedUI
         /// </summary>
         /// <param name="parentElement">The parent element.</param>
         /// <param name="webBrowser">The web browser.</param>
-        public CodedUITableDriver(HtmlTable parentElement, IBrowser webBrowser)
-            : base(parentElement, webBrowser)
+        /// <param name="uriHelper">The URI helper.</param>
+        public CodedUITableDriver(HtmlTable parentElement, IBrowser webBrowser, Lazy<IUriHelper> uriHelper)
+            : base(parentElement, webBrowser, uriHelper)
         {
         }
 

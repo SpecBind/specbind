@@ -6,6 +6,8 @@ namespace SpecBind.Configuration
     using System;
     using System.Configuration;
 
+    using BrowserSupport;
+
     /// <summary>
     /// A configuration element for the browser factory.
     /// </summary>
@@ -18,10 +20,21 @@ namespace SpecBind.Configuration
         private const string ProviderElementName = "provider";
         private const string BrowserTypeElementName = "browserType";
         private const string SettingsElementName = "settings";
+        private const string UserProfilePreferencesElementName = "userProfilePreferences";
         private const string ReuseBrowserElementName = "reuseBrowser";
         private const string ValidateWebDriverElementName = "validateWebDriver";
-		private const string WaitForPendingAjaxCallsViaElementName = "waitForPendingAjaxCallsVia";
+        private const string WaitForPendingAjaxCallsViaElementName = "waitForPendingAjaxCallsVia";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BrowserFactoryConfigurationElement" /> class.
+        /// </summary>
+        public BrowserFactoryConfigurationElement()
+        {
+            // Default configuration settings
+            this.BrowserType = Enum.GetName(typeof(BrowserType), BrowserSupport.BrowserType.IE);
+            this.ElementLocateTimeout = TimeSpan.FromSeconds(30);
+            this.PageLoadTimeout = TimeSpan.FromSeconds(30);
+        }
 
         /// <summary>
         /// Gets or sets the type of the browser to use for testing.
@@ -145,6 +158,19 @@ namespace SpecBind.Configuration
         }
 
         /// <summary>
+        /// Gets the user profile preferences.
+        /// </summary>
+        /// <value>The user profile preferences.</value>
+        [ConfigurationProperty(UserProfilePreferencesElementName, IsRequired = false)]
+        public NameValueConfigurationCollection UserProfilePreferences
+        {
+            get
+            {
+                return this[UserProfilePreferencesElementName] as NameValueConfigurationCollection ?? new NameValueConfigurationCollection();
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether or not the same Browser should be reused during tests
         /// </summary>
         [ConfigurationProperty(ReuseBrowserElementName, DefaultValue = false, IsRequired = false)]
@@ -179,22 +205,22 @@ namespace SpecBind.Configuration
         }
 
 
-		/// <summary>
-		/// Gets or sets a value indicating what mechanism, if any,
-		/// to use to check for pending AJAX requests before proceeding with each step.
-		/// </summary>
-		[ConfigurationProperty(WaitForPendingAjaxCallsViaElementName, DefaultValue = "none", IsRequired = false)]
-		public string WaitForPendingAjaxCallsVia
-		{
-			get
-			{
-				return (string)this[WaitForPendingAjaxCallsViaElementName];
-			}
+        /// <summary>
+        /// Gets or sets a value indicating what mechanism, if any,
+        /// to use to check for pending AJAX requests before proceeding with each step.
+        /// </summary>
+        [ConfigurationProperty(WaitForPendingAjaxCallsViaElementName, DefaultValue = "none", IsRequired = false)]
+        public string WaitForPendingAjaxCallsVia
+        {
+            get
+            {
+                return (string)this[WaitForPendingAjaxCallsViaElementName];
+            }
 
-			set
-			{
-				this[WaitForPendingAjaxCallsViaElementName] = value;
-			}
-		}
+            set
+            {
+                this[WaitForPendingAjaxCallsViaElementName] = value;
+            }
+        }
     }
 }

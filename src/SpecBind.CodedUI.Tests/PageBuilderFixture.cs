@@ -14,6 +14,7 @@ namespace SpecBind.CodedUI.Tests
 
 	using SpecBind.BrowserSupport;
 	using SpecBind.Pages;
+    using Helpers;
 
 	/// <summary>
 	/// A test fixture for the PageBuilder class.
@@ -27,10 +28,11 @@ namespace SpecBind.CodedUI.Tests
 		[TestMethod]
 		public void TestCreatePage()
 		{
+            var uriHelper = new Lazy<IUriHelper>(() => new UriHelper("http://localhost:2222"));
 		    var window = new BrowserWindow();
-            var pageFunc = PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(BuildPage));
+            var pageFunc = PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(BuildPage), uriHelper);
 
-		    var pageObject = pageFunc(window, null, null);
+		    var pageObject = pageFunc(window, null, uriHelper, null);
             var page = pageObject as BuildPage;
 
             Assert.IsNotNull(page);
@@ -85,10 +87,11 @@ namespace SpecBind.CodedUI.Tests
 	    [TestMethod]
         public void TestTableElementIfPopulatedIsNotReplaced()
 	    {
+            var uriHelper = new Lazy<IUriHelper>(() => new UriHelper(""));
             var window = new BrowserWindow();
-            var pageFunc = PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(BuildPage));
+            var pageFunc = PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(BuildPage), uriHelper);
 
-            var pageObject = pageFunc(window, null, null);
+            var pageObject = pageFunc(window, null, null, null);
             var page = pageObject as BuildPage;
 
             Assert.IsNotNull(page);
@@ -104,10 +107,12 @@ namespace SpecBind.CodedUI.Tests
 		[ExpectedException(typeof(InvalidOperationException))]
 		public void TestMissingArgumentConstructor()
 		{
+            var uriHelper = new Mock<Lazy<IUriHelper>>();
+
 			try
 			{
 
-                PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(NoConstructorElement));
+                PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(NoConstructorElement), uriHelper.Object);
 			}
 			catch (InvalidOperationException ex)
 			{
@@ -141,8 +146,9 @@ namespace SpecBind.CodedUI.Tests
 			var docType = typeof(MasterDocument);
 			var property = docType.GetProperty("FrameNavigation");
 
+            var uriHelper = new Lazy<IUriHelper>();
 			var window = new BrowserWindow();
-            var pageFunc = PageBuilder<BrowserWindow, HtmlControl>.CreateFrameLocator(docType, property);
+            var pageFunc = PageBuilder<BrowserWindow, HtmlControl>.CreateFrameLocator(docType, property, uriHelper);
 			var page = pageFunc(window);
 
 			Assert.IsNotNull(page);
@@ -158,10 +164,11 @@ namespace SpecBind.CodedUI.Tests
         {
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
+            var uriHelper = new Lazy<IUriHelper>();
             var window = new BrowserWindow();
-            var pageFunc = PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(BrowserDocument));
+            var pageFunc = PageBuilder<BrowserWindow, HtmlDocument>.CreateElement(typeof(BrowserDocument), uriHelper);
 
-            var pageObject = pageFunc(window, browser.Object, null);
+            var pageObject = pageFunc(window, browser.Object, uriHelper, null);
             var page = pageObject as BrowserDocument;
 
             Assert.IsNotNull(page);

@@ -13,6 +13,7 @@ namespace SpecBind.Selenium
     using OpenQA.Selenium.Support.PageObjects;
 
     using SpecBind.BrowserSupport;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -20,6 +21,15 @@ namespace SpecBind.Selenium
     /// </summary>
     public class SeleniumPageBuilder : PageBuilderBase<ISearchContext, object, IWebElement>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SeleniumPageBuilder"/> class.
+        /// </summary>
+        /// <param name="uriHelper">The URI helper.</param>
+        public SeleniumPageBuilder(Lazy<IUriHelper> uriHelper)
+            : base(uriHelper)
+        {
+        }
+
         /// <summary>
         /// Gets a value indicating whether to allow an empty constructor for a page object.
         /// </summary>
@@ -37,7 +47,7 @@ namespace SpecBind.Selenium
         /// </summary>
         /// <param name="pageType">Type of the page.</param>
         /// <returns>The created page class.</returns>
-        public Func<ISearchContext, IBrowser, Action<object>, object> CreatePage(Type pageType)
+        public Func<ISearchContext, IBrowser, Lazy<IUriHelper>, Action<object>, object> CreatePage(Type pageType)
         {
             return this.CreateElementInternal(pageType);
         }

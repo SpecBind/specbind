@@ -4,104 +4,113 @@
 
 namespace SpecBind.Tests.ActionPipeline
 {
-	using System;
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 
-	using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-	using Moq;
+    using Moq;
 
-	using SpecBind.ActionPipeline;
-	using SpecBind.Actions;
-	using SpecBind.Pages;
+    using SpecBind.ActionPipeline;
+    using SpecBind.Actions;
+    using SpecBind.Pages;
+    using BoDi;
+    using BrowserSupport;
+    using Configuration;
 
-	/// <summary>
-	/// A test fixture for the ActionPipelineService.
-	/// </summary>
-	[TestClass]
-	public class ActionPipelineServiceFixture
-	{
-		/// <summary>
-		/// Tests the pipeline call invokes all pipeline steps and does not fail.
-		/// </summary>
-		[TestMethod]
-		public void TestPipelineCallInvokesAllPipelineStepsAndDoesNotFail()
-		{
-		    var context = new ActionContext("MyProperty");
-			var actionResult = ActionResult.Successful();
+    /// <summary>
+    /// A test fixture for the ActionPipelineService.
+    /// </summary>
+    [TestClass]
+    public class ActionPipelineServiceFixture
+    {
+        /// <summary>
+        /// Tests the pipeline call invokes all pipeline steps and does not fail.
+        /// </summary>
+        [TestMethod]
+        public void TestPipelineCallInvokesAllPipelineStepsAndDoesNotFail()
+        {
+            var context = new ActionContext("MyProperty");
+            var actionResult = ActionResult.Successful();
 
-			var action = new Mock<IAction>(MockBehavior.Strict);
-			action.SetupSet(a => a.ElementLocator = It.IsAny<IElementLocator>());
+            var action = new Mock<IAction>(MockBehavior.Strict);
+            action.SetupSet(a => a.ElementLocator = It.IsAny<IElementLocator>());
             action.Setup(a => a.Execute(context)).Returns(actionResult);
 
-			var page = new Mock<IPage>(MockBehavior.Strict);
+            var page = new Mock<IPage>(MockBehavior.Strict);
 
-			var preAction = new Mock<IPreAction>(MockBehavior.Strict);
-			preAction.Setup(p => p.PerformPreAction(action.Object, context));
+            var container = new Mock<IObjectContainer>(MockBehavior.Strict);
 
-			var postAction = new Mock<IPostAction>(MockBehavior.Strict);
-			postAction.Setup(p => p.PerformPostAction(action.Object, context, actionResult));
+            var preAction = new Mock<IPreAction>(MockBehavior.Strict);
+            preAction.Setup(p => p.PerformPreAction(action.Object, context));
 
-			var repository = new Mock<IActionRepository>(MockBehavior.Strict);
-			repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction.Object });
-			repository.Setup(r => r.GetPostActions()).Returns(new[] { postAction.Object });
-			repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
+            var postAction = new Mock<IPostAction>(MockBehavior.Strict);
+            postAction.Setup(p => p.PerformPostAction(action.Object, context, actionResult));
 
-			var service = new ActionPipelineService(repository.Object);
+            var repository = new Mock<IActionRepository>(MockBehavior.Strict);
+            repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction.Object });
+            repository.Setup(r => r.GetPostActions()).Returns(new[] { postAction.Object });
+            repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
 
-			var result = service.PerformAction(page.Object, action.Object, context);
+            var service = new ActionPipelineService(container.Object, repository.Object);
 
-			Assert.IsNotNull(result);
-			Assert.AreEqual(true, result.Success);
-			Assert.AreSame(actionResult, result);
+            var result = service.PerformAction(page.Object, action.Object, context);
 
-			repository.VerifyAll();
-			action.VerifyAll();
-			page.VerifyAll();
-			preAction.VerifyAll();
-			postAction.VerifyAll();
-		}
+            Assert.IsNotNull(result);
+            Assert.AreEqual(true, result.Success);
+            Assert.AreSame(actionResult, result);
 
-		/// <summary>
-		/// Tests the pipeline call invokes all pipeline steps and does not fail.
-		/// </summary>
-		[TestMethod]
-		public void TestPipelineCallInvokesAllPipelineStepsAndSetsStatusToFailedWhenExceptionIsThrown()
-		{
+            repository.VerifyAll();
+            action.VerifyAll();
+            page.VerifyAll();
+            preAction.VerifyAll();
+            postAction.VerifyAll();
+            container.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the pipeline call invokes all pipeline steps and does not fail.
+        /// </summary>
+        [TestMethod]
+        public void TestPipelineCallInvokesAllPipelineStepsAndSetsStatusToFailedWhenExceptionIsThrown()
+        {
             var context = new ActionContext("MyProperty");
-			var exception = new InvalidOperationException("Something Failed!");
+            var exception = new InvalidOperationException("Something Failed!");
 
-			var action = new Mock<IAction>(MockBehavior.Strict);
-			action.SetupSet(a => a.ElementLocator = It.IsAny<IElementLocator>());
+            var action = new Mock<IAction>(MockBehavior.Strict);
+            action.SetupSet(a => a.ElementLocator = It.IsAny<IElementLocator>());
             action.Setup(a => a.Execute(context)).Throws(exception);
 
-			var page = new Mock<IPage>(MockBehavior.Strict);
+            var page = new Mock<IPage>(MockBehavior.Strict);
 
-			var preAction = new Mock<IPreAction>(MockBehavior.Strict);
-			preAction.Setup(p => p.PerformPreAction(action.Object, context));
+            var container = new Mock<IObjectContainer>(MockBehavior.Strict);
 
-			var postAction = new Mock<IPostAction>(MockBehavior.Strict);
-			postAction.Setup(p => p.PerformPostAction(action.Object, context, It.Is<ActionResult>(r => !r.Success)));
+            var preAction = new Mock<IPreAction>(MockBehavior.Strict);
+            preAction.Setup(p => p.PerformPreAction(action.Object, context));
 
-			var repository = new Mock<IActionRepository>(MockBehavior.Strict);
-			repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction.Object });
-			repository.Setup(r => r.GetPostActions()).Returns(new[] { postAction.Object });
-			repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
+            var postAction = new Mock<IPostAction>(MockBehavior.Strict);
+            postAction.Setup(p => p.PerformPostAction(action.Object, context, It.Is<ActionResult>(r => !r.Success)));
 
-			var service = new ActionPipelineService(repository.Object);
+            var repository = new Mock<IActionRepository>(MockBehavior.Strict);
+            repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction.Object });
+            repository.Setup(r => r.GetPostActions()).Returns(new[] { postAction.Object });
+            repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
 
-			var result = service.PerformAction(page.Object, action.Object, context);
+            var service = new ActionPipelineService(container.Object, repository.Object);
 
-			Assert.IsNotNull(result);
-			Assert.AreEqual(false, result.Success);
-			Assert.AreSame(exception, result.Exception);
+            var result = service.PerformAction(page.Object, action.Object, context);
 
-			repository.VerifyAll();
-			action.VerifyAll();
-			page.VerifyAll();
-			preAction.VerifyAll();
-			postAction.VerifyAll();
-		}
+            Assert.IsNotNull(result);
+            Assert.AreEqual(false, result.Success);
+            Assert.AreSame(exception, result.Exception);
+
+            repository.VerifyAll();
+            action.VerifyAll();
+            page.VerifyAll();
+            preAction.VerifyAll();
+            postAction.VerifyAll();
+            container.VerifyAll();
+        }
 
 	    /// <summary>
 	    /// Tests the pipeline call invokes all pre-steps even if one fails and then throws that failure.
@@ -117,7 +126,9 @@ namespace SpecBind.Tests.ActionPipeline
 
 	        var page = new Mock<IPage>(MockBehavior.Strict);
 
-	        var preAction1 = new Mock<IPreAction>(MockBehavior.Strict);
+            var container = new Mock<IObjectContainer>(MockBehavior.Strict);
+
+            var preAction1 = new Mock<IPreAction>(MockBehavior.Strict);
 	        preAction1.Setup(p => p.PerformPreAction(action.Object, context)).Throws(exception);
 
 	        var preAction2 = new Mock<IPreAction>(MockBehavior.Strict);
@@ -128,7 +139,7 @@ namespace SpecBind.Tests.ActionPipeline
 	        repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction1.Object, preAction2.Object });
 	        repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
 
-	        var service = new ActionPipelineService(repository.Object);
+	        var service = new ActionPipelineService(container.Object, repository.Object);
 
 	        var result = service.PerformAction(page.Object, action.Object, context);
 
@@ -141,7 +152,8 @@ namespace SpecBind.Tests.ActionPipeline
 	        page.VerifyAll();
 	        preAction1.VerifyAll();
 	        preAction2.VerifyAll();
-	    }
+            container.VerifyAll();
+        }
 
 	    /// <summary>
 	    /// Tests the pipeline call invokes all pre-steps even if one fails and then throws an aggregate exception.
@@ -158,7 +170,9 @@ namespace SpecBind.Tests.ActionPipeline
 
 	        var page = new Mock<IPage>(MockBehavior.Strict);
 
-	        var preAction1 = new Mock<IPreAction>(MockBehavior.Strict);
+            var container = new Mock<IObjectContainer>(MockBehavior.Strict);
+
+            var preAction1 = new Mock<IPreAction>(MockBehavior.Strict);
 	        preAction1.Setup(p => p.PerformPreAction(action.Object, context)).Throws(exception1);
 
 	        var preAction2 = new Mock<IPreAction>(MockBehavior.Strict);
@@ -169,7 +183,7 @@ namespace SpecBind.Tests.ActionPipeline
 	        repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction1.Object, preAction2.Object });
 	        repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
 
-	        var service = new ActionPipelineService(repository.Object);
+	        var service = new ActionPipelineService(container.Object, repository.Object);
 
 	        var result = service.PerformAction(page.Object, action.Object, context);
 
@@ -187,7 +201,8 @@ namespace SpecBind.Tests.ActionPipeline
 	        page.VerifyAll();
 	        preAction1.VerifyAll();
 	        preAction2.VerifyAll();
-	    }
+            container.VerifyAll();
+        }
 
         /// <summary>
         /// Tests the pipeline call creates the action, invokes all pipeline steps and does not fail.
@@ -198,6 +213,9 @@ namespace SpecBind.Tests.ActionPipeline
             var context = new ActionContext("MyProperty");
 
             var page = new Mock<IPage>(MockBehavior.Strict);
+
+            var container = new Mock<IObjectContainer>(MockBehavior.Strict);
+            container.Setup(c => c.IsRegistered<IBrowser>()).Returns(true);
 
             var preAction = new Mock<IPreAction>(MockBehavior.Strict);
             preAction.Setup(p => p.PerformPreAction(It.IsAny<MockAction>(), context));
@@ -210,8 +228,10 @@ namespace SpecBind.Tests.ActionPipeline
             repository.Setup(r => r.GetPostActions()).Returns(new[] { postAction.Object });
             repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
             repository.Setup(r => r.CreateAction<MockAction>()).Returns(new MockAction());
+            repository.Setup(r => r.IsInitialized).Returns(false);
+            repository.Setup(r => r.Initialize());
 
-            var service = new ActionPipelineService(repository.Object);
+            var service = new ActionPipelineService(container.Object, repository.Object);
 
             var result = service.PerformAction<MockAction>(page.Object, context);
 
@@ -222,13 +242,136 @@ namespace SpecBind.Tests.ActionPipeline
             page.VerifyAll();
             preAction.VerifyAll();
             postAction.VerifyAll();
+            container.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the pipeline call creates the browser, action, and invokes all pipeline steps and does not fail.
+        /// </summary>
+        [TestMethod]
+        public void TestPipelineCallCreatesBrowserAndActionAndInvokesAllPipelineStepsAndDoesNotFail()
+        {
+            var context = new ActionContext("MyProperty");
+
+            var page = new Mock<IPage>(MockBehavior.Strict);
+
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
+
+            var container = new Mock<IObjectContainer>(MockBehavior.Strict);
+            container.Setup(c => c.IsRegistered<IBrowser>()).Returns(false);
+            container.Setup(c => c.Resolve<ILogger>()).Returns(logger.Object);
+            container.Setup(c => c.RegisterInstanceAs(It.IsAny<IBrowser>(), null, false));
+            container.Setup(c => c.RegisterInstanceAs(It.IsAny<IPageMapper>(), null, false));
+
+            var preAction = new Mock<IPreAction>(MockBehavior.Strict);
+            preAction.Setup(p => p.PerformPreAction(It.IsAny<MockAction>(), context));
+
+            var postAction = new Mock<IPostAction>(MockBehavior.Strict);
+            postAction.Setup(p => p.PerformPostAction(It.IsAny<MockAction>(), context, It.IsAny<ActionResult>()));
+
+            var repository = new Mock<IActionRepository>(MockBehavior.Strict);
+            repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction.Object });
+            repository.Setup(r => r.GetPostActions()).Returns(new[] { postAction.Object });
+            repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
+            repository.Setup(r => r.CreateAction<MockAction>()).Returns(new MockAction());
+            repository.Setup(r => r.IsInitialized).Returns(false);
+            repository.Setup(r => r.Initialize());
+
+            var service = new ActionPipelineService(container.Object, repository.Object);
+
+            // Setup Configuration
+            var config = new BrowserFactoryConfigurationElement
+            {
+                Provider = "SpecBind.Tests.Support.MockBrowserFactory, SpecBind.Tests"
+            };
+
+            WebDriverSupport.ConfigurationMethod = new Lazy<BrowserFactoryConfigurationElement>(() => config);
+
+            var appConfig = new ApplicationConfigurationElement();
+            WebDriverSupport.ApplicationConfigurationMethod = new Lazy<ApplicationConfigurationElement>(() => appConfig);
+
+            var result = service.PerformAction<MockAction>(page.Object, context);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(true, result.Success);
+
+            repository.VerifyAll();
+            page.VerifyAll();
+            preAction.VerifyAll();
+            postAction.VerifyAll();
+            container.VerifyAll();
+            logger.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the pipeline initializes the browser and action repository once and doesn't fail.
+        /// </summary>
+        [TestMethod]
+        public void TestPipelineInitializesBrowserAndActionRepositoryOnceAndDoesNotFail()
+        {
+            var context = new ActionContext("MyProperty");
+
+            var page = new Mock<IPage>(MockBehavior.Strict);
+
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
+
+            var container = new Mock<IObjectContainer>(MockBehavior.Strict);
+            container.SetupSequence(c => c.IsRegistered<IBrowser>()).Returns(false).Returns(true);
+            container.Setup(c => c.Resolve<ILogger>()).Returns(logger.Object);
+            container.Setup(c => c.RegisterInstanceAs(It.IsAny<IBrowser>(), null, false));
+            container.Setup(c => c.RegisterInstanceAs(It.IsAny<IPageMapper>(), null, false));
+
+            var preAction = new Mock<IPreAction>(MockBehavior.Strict);
+            preAction.Setup(p => p.PerformPreAction(It.IsAny<MockAction>(), context));
+
+            var postAction = new Mock<IPostAction>(MockBehavior.Strict);
+            postAction.Setup(p => p.PerformPostAction(It.IsAny<MockAction>(), context, It.IsAny<ActionResult>()));
+
+            var repository = new Mock<IActionRepository>(MockBehavior.Strict);
+            repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction.Object });
+            repository.Setup(r => r.GetPostActions()).Returns(new[] { postAction.Object });
+            repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
+            repository.Setup(r => r.CreateAction<MockAction>()).Returns(new MockAction());
+            repository.Setup(r => r.Initialize());
+            repository.SetupSequence(r => r.IsInitialized).Returns(false).Returns(true);
+
+            var service = new ActionPipelineService(container.Object, repository.Object);
+
+            // Setup Configuration
+            var config = new BrowserFactoryConfigurationElement
+            {
+                Provider = "SpecBind.Tests.Support.MockBrowserFactory, SpecBind.Tests"
+            };
+
+            WebDriverSupport.ConfigurationMethod = new Lazy<BrowserFactoryConfigurationElement>(() => config);
+
+            var appConfig = new ApplicationConfigurationElement();
+            WebDriverSupport.ApplicationConfigurationMethod = new Lazy<ApplicationConfigurationElement>(() => appConfig);
+
+            var result = service.PerformAction<MockAction>(page.Object, context);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(true, result.Success);
+
+            result = service.PerformAction<MockAction>(page.Object, context);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(true, result.Success);
+
+            repository.VerifyAll();
+            repository.Verify(x => x.Initialize(), Times.Exactly(1));
+            page.VerifyAll();
+            preAction.VerifyAll();
+            postAction.VerifyAll();
+            container.VerifyAll();
+            container.Verify(c => c.RegisterInstanceAs(It.IsAny<IBrowser>(), null, false), Times.Exactly(1));
+            logger.VerifyAll();
         }
 
         /// <summary>
         /// A mock action class.
         /// </summary>
-	    public class MockAction : ActionBase
-	    {
+        public class MockAction : ActionBase
+        {
             /// <summary>
             /// Initializes a new instance of the <see cref="MockAction"/> class.
             /// </summary>
@@ -246,12 +389,12 @@ namespace SpecBind.Tests.ActionPipeline
             {
                 return ActionResult.Successful();
             }
-	    }
+        }
 
         /// <summary>
         /// A mock action class.
         /// </summary>
-	    public class MockRetryAction : ActionBase
+        public class MockRetryAction : ActionBase
         {
             private bool hasFailed;
 

@@ -5,6 +5,7 @@ namespace SpecBind.Tests
 {
 	using System;
 	using System.Collections.Generic;
+    using System.Text.RegularExpressions;
 
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -28,10 +29,11 @@ namespace SpecBind.Tests
         [TestMethod]
         public void TestGetPageAsInterfaceMethodCreatesFromNativePage()
         {
+            var uriHelper = new Mock<Lazy<IUriHelper>>();
             var testPage = new Mock<IPage>();
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object, uriHelper.Object);
             browser.Protected().Setup<IPage>("CreateNativePage", typeof(TestPage), false).Returns(testPage.Object);
 
             var result = browser.Object.Page<TestPage>();
@@ -49,10 +51,11 @@ namespace SpecBind.Tests
         [TestMethod]
         public void TestGetPageMethodCreatesFromNativePage()
         {
+            var uriHelper = new Mock<Lazy<IUriHelper>>();
             var testPage = new Mock<IPage>();
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object, uriHelper.Object);
             browser.Protected().Setup<IPage>("CreateNativePage", typeof(TestPage), false).Returns(testPage.Object);
 
             var result = browser.Object.Page(typeof(TestPage));
@@ -70,10 +73,11 @@ namespace SpecBind.Tests
         [TestMethod]
         public void TestGetUriForPageTypeReturnsNullInBaseClass()
         {
+            var uriHelper = new Mock<Lazy<IUriHelper>>();
             var testPage = new Mock<IPage>();
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-            var browser = new Mock<BrowserBase>(logger.Object) { CallBase = true };
+            var browser = new Mock<BrowserBase>(logger.Object, uriHelper.Object) { CallBase = true };
 
             var result = browser.Object.GetUriForPageType(typeof(TestPage));
 
@@ -89,13 +93,15 @@ namespace SpecBind.Tests
         [TestMethod]
         public void TestEnsureOnPageWhenUrlIsOnPageDoesNothing()
         {
+            var uriHelper = new Mock<IUriHelper>(MockBehavior.Strict);
+            var lazyUriHelper = new Lazy<IUriHelper>(() => uriHelper.Object);
             var testPage = new Mock<IPage>();
             testPage.SetupGet(p => p.PageType).Returns(typeof(TestPage));
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object, lazyUriHelper);
             browser.Protected().Setup<IList<string>>("GetNativePageLocation", testPage.Object).Returns(new[] { "http://localhost:2222/foo" });
+            uriHelper.Setup(u => u.GetQualifiedPageUriRegex(browser.Object, typeof(TestPage))).Returns(new Regex("http://localhost:2222/foo"));
 
             browser.Object.EnsureOnPage(testPage.Object);
 
@@ -110,13 +116,12 @@ namespace SpecBind.Tests
         [ExpectedException(typeof(PageNavigationException))]
         public void TestEnsureOnPageWhenUrlIsNotOnPageThrowsException()
         {
-            UriHelper.BaseUri = new Uri("http://localhost:2222");
+            Lazy<IUriHelper> uriHelper = new Lazy<IUriHelper>(() => new UriHelper("http://localhost:2222"));
             var testPage = new Mock<IPage>();
             testPage.SetupGet(p => p.PageType).Returns(typeof(TestPage));
             var logger = new Mock<ILogger>(MockBehavior.Loose);
 
-
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object, uriHelper);
             browser.Protected().Setup<IList<string>>("GetNativePageLocation", testPage.Object).Returns(new[] { "http://localhost:2222/" });
 
             ExceptionHelper.SetupForException<PageNavigationException>(
@@ -134,13 +139,17 @@ namespace SpecBind.Tests
         [TestMethod]
         public void TestGoToPageWhenUrlIsNotOnPageReturnsNativeClassAfterNavigating()
         {
+            var uriHelper = new Mock<IUriHelper>(MockBehavior.Strict);
+            var lazyUriHelper = new Lazy<IUriHelper>(() => uriHelper.Object);
+
             var testPage = new Mock<IPage>();
             var logger = new Mock<ILogger>(MockBehavior.Strict);
             logger.Setup(l => l.Debug("Navigating to URL: {0}", "http://localhost:2222/foo"));
 
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object, lazyUriHelper);
             browser.Protected().Setup<IPage>("CreateNativePage", typeof(TestPage), true).Returns(testPage.Object);
             browser.Setup(b => b.GoTo(new Uri("http://localhost:2222/foo")));
+            uriHelper.Setup(u => u.FillPageUri(browser.Object, typeof(TestPage), new Dictionary<string, string>())).Returns("http://localhost:2222/foo");
 
             var result = browser.Object.GoToPage(typeof(TestPage), new Dictionary<string, string>());
 
@@ -159,12 +168,12 @@ namespace SpecBind.Tests
         [ExpectedException(typeof(PageNavigationException))]
         public void TestGoToPageWhenUrlIsNotOnPageAndNavigationFailsThrowsAnException()
         {
-            UriHelper.BaseUri = new Uri("http://localhost:2222");
+            Lazy<IUriHelper> uriHelper = new Lazy<IUriHelper>(() => new UriHelper("http://localhost:2222"));
             var testPage = new Mock<IPage>();
             var logger = new Mock<ILogger>(MockBehavior.Strict);
             logger.Setup(l => l.Debug("Navigating to URL: {0}", "http://localhost:2222/foo"));
 
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object, uriHelper);
             browser.Setup(b => b.GoTo(new Uri("http://localhost:2222/foo"))).Throws<InvalidOperationException>();
 
             // ReSharper disable once ImplicitlyCapturedClosure
@@ -188,8 +197,9 @@ namespace SpecBind.Tests
         {
 			bool disposingManagedResources = true;
 
+            var uriHelper = new Mock<Lazy<IUriHelper>>();
             var logger = new Mock<ILogger>(MockBehavior.Loose);
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object, uriHelper.Object);
             browser.Setup(b => b.Close());
             browser.Protected().Setup("DisposeWindow", disposingManagedResources);
 
@@ -210,8 +220,9 @@ namespace SpecBind.Tests
         {
 			bool disposingManagedResources = true;
 
+            var uriHelper = new Mock<Lazy<IUriHelper>>();
 			var logger = new Mock<ILogger>(MockBehavior.Loose);
-            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
+            var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object, uriHelper.Object);
             browser.Setup(b => b.Close());
             browser.Protected().Setup("DisposeWindow", disposingManagedResources);
 

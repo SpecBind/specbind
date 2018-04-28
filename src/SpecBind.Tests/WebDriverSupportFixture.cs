@@ -4,28 +4,28 @@
 
 namespace SpecBind.Tests
 {
-	using System;
+    using System;
 
-	using BoDi;
+    using BoDi;
 
-	using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-	using Moq;
+    using Moq;
 
-	using SpecBind.ActionPipeline;
-	using SpecBind.Actions;
-	using SpecBind.BrowserSupport;
-	using SpecBind.Configuration;
-	using SpecBind.Helpers;
-	using SpecBind.Pages;
-	using SpecBind.Validation;
+    using SpecBind.ActionPipeline;
+    using SpecBind.Actions;
+    using SpecBind.BrowserSupport;
+    using SpecBind.Configuration;
+    using SpecBind.Helpers;
+    using SpecBind.Pages;
+    using SpecBind.Validation;
 
-	using TechTalk.SpecFlow.Tracing;
+    using TechTalk.SpecFlow.Tracing;
 
-	/// <summary>
-	/// A test fixture for the Web Driver class.
-	/// </summary>
-	[TestClass]
+    /// <summary>
+    /// A test fixture for the Web Driver class.
+    /// </summary>
+    [TestClass]
     public class WebDriverSupportFixture
     {
         /// <summary>
@@ -34,26 +34,17 @@ namespace SpecBind.Tests
         [TestMethod]
         public void TestInitializeTests()
         {
-			var logger = new Mock<ILogger>();
-
             var container = new Mock<IObjectContainer>(MockBehavior.Strict);
-			container.Setup(c => c.RegisterInstanceAs(It.IsAny<IBrowser>(), null, false));
-			container.Setup(c => c.RegisterInstanceAs<ISettingHelper>(It.IsAny<WrappedSettingHelper>(), null, false));
-            container.Setup(c => c.RegisterInstanceAs(It.IsAny<IPageMapper>(), null, false));
+            container.Setup(c => c.RegisterInstanceAs<ISettingHelper>(It.IsAny<WrappedSettingHelper>(), null, false));
             container.Setup(c => c.RegisterTypeAs<ScenarioContextHelper, IScenarioContextHelper>(null));
             container.Setup(c => c.RegisterTypeAs<TokenManager, ITokenManager>(null));
             container.Setup(c => c.RegisterInstanceAs(It.IsAny<IActionRepository>(), null, false));
             container.Setup(c => c.RegisterTypeAs<ActionPipelineService, IActionPipelineService>(null));
             container.Setup(c => c.RegisterTypeAs<ProxyLogger, ILogger>(null));
-            container.Setup(c => c.Resolve<ILogger>()).Returns(logger.Object);
 
-            container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(ILocatorAction).IsAssignableFrom(t)), null)).Returns(new Mock<ILocatorAction>().Object);
-            container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IPreAction).IsAssignableFrom(t)), null)).Returns(new Mock<IPreAction>().Object);
-            container.Setup(c => c.Resolve(It.Is<Type>(t => typeof(IValidationComparer).IsAssignableFrom(t)), null)).Returns(new Mock<IValidationComparer>().Object);
-            
             var driverSupport = new WebDriverSupport(container.Object);
 
-			driverSupport.InitializeDriver();
+            driverSupport.InitializeDriver();
 
             container.VerifyAll();
         }
@@ -142,21 +133,17 @@ namespace SpecBind.Tests
             var driverSupport = new WebDriverSupport(container.Object);
 
             // Setup Configuration
-            var config = new ConfigurationSectionHandler
-                         {
-                             BrowserFactory =
-                                 new BrowserFactoryConfigurationElement
-                                 {
-                                     CreateScreenshotOnExit = true
-                                 }
-                         };
+            var config = new BrowserFactoryConfigurationElement
+            {
+                CreateScreenshotOnExit = true
+            };
 
-            WebDriverSupport.ConfigurationMethod = new Lazy<ConfigurationSectionHandler>(() => config);
+            WebDriverSupport.ConfigurationMethod = new Lazy<BrowserFactoryConfigurationElement>(() => config);
 
             driverSupport.CheckForScreenshot();
 
-            config.BrowserFactory.CreateScreenshotOnExit = false;
-            WebDriverSupport.ConfigurationMethod = new Lazy<ConfigurationSectionHandler>(() => config);
+            config.CreateScreenshotOnExit = false;
+            WebDriverSupport.ConfigurationMethod = new Lazy<BrowserFactoryConfigurationElement>(() => config);
 
             container.VerifyAll();
             browser.VerifyAll();
@@ -250,18 +237,14 @@ namespace SpecBind.Tests
         {
             
             // arrange
-            var config = new ConfigurationSectionHandler
+            var config = new BrowserFactoryConfigurationElement
             {
-                BrowserFactory =
-                    new BrowserFactoryConfigurationElement
-                    {
-                        ReuseBrowser = true
-                    }
+                ReuseBrowser = true
             };
 
             var browser = new Mock<IBrowser>(MockBehavior.Loose);
             WebDriverSupport.Browser = browser.Object;
-            WebDriverSupport.ConfigurationMethod = new Lazy<ConfigurationSectionHandler>(() => config);
+            WebDriverSupport.ConfigurationMethod = new Lazy<BrowserFactoryConfigurationElement>(() => config);
 
             // act
             WebDriverSupport.TearDownAfterScenario();
@@ -277,19 +260,15 @@ namespace SpecBind.Tests
         public void TestTearDownAfterScenarioWhenReuseBrowserIsFalse()
         {
             // arrange
-            var config = new ConfigurationSectionHandler
+            var config = new BrowserFactoryConfigurationElement
             {
-                BrowserFactory =
-                    new BrowserFactoryConfigurationElement
-                    {
-                        ReuseBrowser = false
-                    }
+                ReuseBrowser = false
             };
 
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.Close(true));
             WebDriverSupport.Browser = browser.Object;
-            WebDriverSupport.ConfigurationMethod = new Lazy<ConfigurationSectionHandler>(() => config);
+            WebDriverSupport.ConfigurationMethod = new Lazy<BrowserFactoryConfigurationElement>(() => config);
 
             // act
             WebDriverSupport.TearDownAfterScenario();
@@ -298,80 +277,80 @@ namespace SpecBind.Tests
             browser.VerifyAll();
         }
 
-		/// <summary>
-		/// Tests WaitForAngular with a successful result, when nothing is pending.
-		/// </summary>
-		[TestMethod]
-		public void TestWaitForAngularWithNothingPending()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
-			browser.Setup(s => s.IsClosed).Returns(false);
-			browser.Setup(s => s.IsDisposed).Returns(false);
-			browser.Setup(s => s.Url).Returns("http://www.specbind.org");
-			browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
-			WebDriverSupport.Browser = browser.Object;
+        /// <summary>
+        /// Tests WaitForAngular with a successful result, when nothing is pending.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForAngularWithNothingPending()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(s => s.IsClosed).Returns(false);
+            browser.Setup(s => s.IsDisposed).Returns(false);
+            browser.Setup(s => s.Url).Returns("http://www.specbind.org");
+            browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
+            WebDriverSupport.Browser = browser.Object;
 
-			WebDriverSupport.WaitForAngular();
+            WebDriverSupport.WaitForAngular();
 
-			browser.VerifyAll();
-		}
+            browser.VerifyAll();
+        }
 
-		/// <summary>
-		/// Tests WaitForAngular with a successful result, when something is pending.
-		/// </summary>
-		[TestMethod]
-		public void TestWaitForAngularWithSomethingPending()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
-			browser.Setup(s => s.IsClosed).Returns(false);
-			browser.Setup(s => s.IsDisposed).Returns(false);
-			browser.Setup(s => s.Url).Returns("http://www.specbind.org");
-			browser.SetupSequence(s => s.ExecuteScript(It.IsAny<string>()))
-				.Returns("1")
-				.Returns("0");
-			WebDriverSupport.Browser = browser.Object;
+        /// <summary>
+        /// Tests WaitForAngular with a successful result, when something is pending.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForAngularWithSomethingPending()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(s => s.IsClosed).Returns(false);
+            browser.Setup(s => s.IsDisposed).Returns(false);
+            browser.Setup(s => s.Url).Returns("http://www.specbind.org");
+            browser.SetupSequence(s => s.ExecuteScript(It.IsAny<string>()))
+                .Returns("1")
+                .Returns("0");
+            WebDriverSupport.Browser = browser.Object;
 
-			WebDriverSupport.WaitForAngular();
+            WebDriverSupport.WaitForAngular();
 
-			browser.VerifyAll();
-		}
+            browser.VerifyAll();
+        }
 
-		/// <summary>
-		/// Tests WaitForjQuery with a successful result, when nothing is pending.
-		/// </summary>
-		[TestMethod]
-		public void TestWaitForjQueryWithNothingPending()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
-			browser.Setup(s => s.IsClosed).Returns(false);
-			browser.Setup(s => s.IsDisposed).Returns(false);
-			browser.Setup(s => s.Url).Returns("http://www.specbind.org");
-			browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
-			WebDriverSupport.Browser = browser.Object;
+        /// <summary>
+        /// Tests WaitForjQuery with a successful result, when nothing is pending.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForjQueryWithNothingPending()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(s => s.IsClosed).Returns(false);
+            browser.Setup(s => s.IsDisposed).Returns(false);
+            browser.Setup(s => s.Url).Returns("http://www.specbind.org");
+            browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
+            WebDriverSupport.Browser = browser.Object;
 
-			WebDriverSupport.WaitForjQuery();
+            WebDriverSupport.WaitForjQuery();
 
-			browser.VerifyAll();
-		}
+            browser.VerifyAll();
+        }
 
-		/// <summary>
-		/// Tests WaitForjQuery with a successful result, when something is pending.
-		/// </summary>
-		[TestMethod]
-		public void TestWaitForjQueryWithSomethingPending()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
-			browser.Setup(s => s.IsClosed).Returns(false);
-			browser.Setup(s => s.IsDisposed).Returns(false);
-			browser.Setup(s => s.Url).Returns("http://www.specbind.org");
-			browser.SetupSequence(s => s.ExecuteScript(It.IsAny<string>()))
-				.Returns("1")
-				.Returns("0");
-			WebDriverSupport.Browser = browser.Object;
+        /// <summary>
+        /// Tests WaitForjQuery with a successful result, when something is pending.
+        /// </summary>
+        [TestMethod]
+        public void TestWaitForjQueryWithSomethingPending()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(s => s.IsClosed).Returns(false);
+            browser.Setup(s => s.IsDisposed).Returns(false);
+            browser.Setup(s => s.Url).Returns("http://www.specbind.org");
+            browser.SetupSequence(s => s.ExecuteScript(It.IsAny<string>()))
+                .Returns("1")
+                .Returns("0");
+            WebDriverSupport.Browser = browser.Object;
 
-			WebDriverSupport.WaitForjQuery();
+            WebDriverSupport.WaitForjQuery();
 
-			browser.VerifyAll();
-		}
+            browser.VerifyAll();
+        }
     }
 }

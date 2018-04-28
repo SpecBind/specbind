@@ -14,52 +14,48 @@ namespace SpecBind.Helpers
 	/// <summary>
 	/// A helper to get to a page on the site.
 	/// </summary>
-	public static class UriHelper
+	public class UriHelper : IUriHelper
 	{
         private const string EnvironmentSettingName = "APPLICATION_START_URL";
 
 		/// <summary>
 		/// Initializes the <see cref="UriHelper" /> class.
 		/// </summary>
-		static UriHelper()
+        /// <param name="startUrl">The base URI.</param>
+        public UriHelper(string startUrl = null)
 		{
-			var configSection = SettingHelper.GetConfigurationSection();
-
 			Uri parsedUri;
             var envValue = SettingHelper.GetEnvironmentVariable(EnvironmentSettingName);
-            if (!string.IsNullOrEmpty(envValue) && Uri.TryCreate(configSection.Application.StartUrl, UriKind.Absolute, out parsedUri))
+            if (!string.IsNullOrEmpty(envValue) && Uri.TryCreate(envValue, UriKind.Absolute, out parsedUri))
             {
-                BaseUri = parsedUri;
+                this.BaseUri = parsedUri;
             }
-            else if (configSection != null && configSection.Application != null
-                      && Uri.TryCreate(configSection.Application.StartUrl, UriKind.Absolute, out parsedUri))
+            else if (Uri.TryCreate(startUrl, UriKind.Absolute, out parsedUri))
             {
-                BaseUri = parsedUri;
+                this.BaseUri = parsedUri;
             }
             else
             {
-                BaseUri = new Uri("http://localhost");
+                this.BaseUri = new Uri("http://localhost");
             }
 
-            Console.WriteLine("Application Base URI: {0}", BaseUri);
+            Console.WriteLine("Application Base URI: {0}", this.BaseUri);
 		}
 
-        #pragma warning disable SA1623 // PropertySummaryDocumentationMustMatchAccessors
         /// <summary>
         /// Sets the base URI.
         /// </summary>
         /// <value>The base URI.</value>
-        internal static Uri BaseUri { private get; set; }
-        #pragma warning restore SA1623 // PropertySummaryDocumentationMustMatchAccessors
+        internal Uri BaseUri { private get; set; }
 
         /// <summary>
         /// Gets the fully qualified page URI.
         /// </summary>
         /// <param name="subPath">The sub path.</param>
         /// <returns>The fully qualifies URI.</returns>
-        public static Uri GetQualifiedPageUri(string subPath)
+        public Uri GetQualifiedPageUri(string subPath)
 		{
-		    return new Uri(CreateCompleteUri(new UriStructure(subPath, false), false));
+		    return new Uri(this.CreateCompleteUri(new UriStructure(subPath, false), false));
 		}
 
 		/// <summary>
@@ -70,9 +66,9 @@ namespace SpecBind.Helpers
 		/// <returns>
 		/// The fully qualified URI.
 		/// </returns>
-		public static Uri GetQualifiedPageUri(IBrowser browser, Type pageType)
+		public Uri GetQualifiedPageUri(IBrowser browser, Type pageType)
 		{
-		    var compiledUri = CreateCompleteUri(GetPageUriInternal(browser, pageType), false);
+		    var compiledUri = this.CreateCompleteUri(GetPageUriInternal(browser, pageType), false);
             return new Uri(compiledUri);
 		}
 
@@ -82,10 +78,10 @@ namespace SpecBind.Helpers
         /// <param name="browser">The browser.</param>
         /// <param name="pageType">Type of the page.</param>
         /// <returns>The fully qualified URI.</returns>
-	    public static Regex GetQualifiedPageUriRegex(IBrowser browser, Type pageType)
+	    public Regex GetQualifiedPageUriRegex(IBrowser browser, Type pageType)
 	    {
 	        var detailPath = GetPageUriInternal(browser, pageType);
-            return new Regex(CreateCompleteUri(detailPath, true).Replace("?", "[?]"));
+            return new Regex(this.CreateCompleteUri(detailPath, true).Replace("?", "[?]"));
 	    }
 
 		/// <summary>
@@ -98,7 +94,7 @@ namespace SpecBind.Helpers
 		/// </returns>
 		/// <exception cref="PageNavigationException">No PageAttribute or PageNavigationAttribute exists on type: {0}</exception>
 		/// <exception cref="PageNavigationException">Thrown if the page is not able to navigate to.</exception>
-		public static string GetPageUri(IBrowser browser, Type pageType)
+		public string GetPageUri(IBrowser browser, Type pageType)
 		{
 		    return GetPageUriInternal(browser, pageType).Path;
 		}
@@ -110,13 +106,13 @@ namespace SpecBind.Helpers
 		/// <param name="pageType">Type of the page.</param>
 		/// <param name="pageArguments">The page arguments.</param>
 		/// <returns>The completed string.</returns>
-		public static string FillPageUri(IBrowser browser, Type pageType, IDictionary<string, string> pageArguments)
+		public string FillPageUri(IBrowser browser, Type pageType, IDictionary<string, string> pageArguments)
 		{
 		    var uriStructure = GetPageUriInternal(browser, pageType);
 
             if (string.IsNullOrWhiteSpace(uriStructure.UrlTemplate))
 			{
-                return CreateCompleteUri(uriStructure, false);
+                return this.CreateCompleteUri(uriStructure, false);
 			}
 
 			pageArguments = pageArguments ?? new Dictionary<string, string>(0);
@@ -132,7 +128,7 @@ namespace SpecBind.Helpers
 		                return pageArguments.ContainsKey(groupName) ? pageArguments[groupName] : m.Value;
 		            });
 
-		    return CreateCompleteUri(new UriStructure(filledPage, uriStructure.IsAbsolute), false);
+		    return this.CreateCompleteUri(new UriStructure(filledPage, uriStructure.IsAbsolute), false);
 		}
 
 		/// <summary>
@@ -141,7 +137,7 @@ namespace SpecBind.Helpers
         /// <param name="uriStructure">The URI structure.</param>
         /// <param name="isRegex">if set to <c>true</c> the result should be is regex escaped.</param>
         /// <returns>The formatted URI.</returns>
-        private static string CreateCompleteUri(UriStructure uriStructure, bool isRegex)
+        private string CreateCompleteUri(UriStructure uriStructure, bool isRegex)
         {
             if (uriStructure.IsAbsolute)
             {
@@ -150,7 +146,7 @@ namespace SpecBind.Helpers
 
             var subPath = uriStructure.Path ?? string.Empty;
 
-	        var basePath = BaseUri.ToString().TrimEnd('/', ' ');
+	        var basePath = this.BaseUri.ToString().TrimEnd('/', ' ');
 
             if (isRegex)
             {

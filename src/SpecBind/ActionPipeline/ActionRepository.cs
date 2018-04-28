@@ -15,10 +15,10 @@ namespace SpecBind.ActionPipeline
     using SpecBind.Validation;
 
     /// <summary>
-	/// The action repository for plugins in the pipeline.
-	/// </summary>
-	internal class ActionRepository : IActionRepository
-	{
+    /// The action repository for plugins in the pipeline.
+    /// </summary>
+    internal class ActionRepository : IActionRepository
+    {
         private readonly IObjectContainer objectContainer;
 
         private readonly List<IPreAction> preActions;
@@ -31,7 +31,7 @@ namespace SpecBind.ActionPipeline
         /// </summary>
         /// <param name="objectContainer">The object container.</param>
         public ActionRepository(IObjectContainer objectContainer)
-	    {
+        {
             this.objectContainer = objectContainer;
 
             this.preActions = new List<IPreAction>(5);
@@ -39,7 +39,13 @@ namespace SpecBind.ActionPipeline
             this.locatorActions = new List<ILocatorAction>(5);
 
             this.validationComparisons = new List<IValidationComparer>(10);
-	    }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is initialized.
+        /// </summary>
+        /// <value><c>true</c> if this instance is initialized; otherwise, <c>false</c>.</value>
+        public bool IsInitialized { get; private set; }
 
         /// <summary>
         /// Creates the action.
@@ -51,23 +57,23 @@ namespace SpecBind.ActionPipeline
             return this.CreateItem<TAction>(typeof(TAction));
         }
 
-	    /// <summary>
-		/// Gets the post-execute actions.
-		/// </summary>
-		/// <returns>An enumerable collection of actions.</returns>
-		public IEnumerable<IPostAction> GetPostActions()
-		{
-			return this.postActions.AsReadOnly();
-		}
+        /// <summary>
+        /// Gets the post-execute actions.
+        /// </summary>
+        /// <returns>An enumerable collection of actions.</returns>
+        public IEnumerable<IPostAction> GetPostActions()
+        {
+            return this.postActions.AsReadOnly();
+        }
 
-		/// <summary>
-		/// Gets the pre-execute actions.
-		/// </summary>
-		/// <returns>An enumerable collection of actions.</returns>
-		public IEnumerable<IPreAction> GetPreActions()
-		{
-			return this.preActions.AsReadOnly();
-		}
+        /// <summary>
+        /// Gets the pre-execute actions.
+        /// </summary>
+        /// <returns>An enumerable collection of actions.</returns>
+        public IEnumerable<IPreAction> GetPreActions()
+        {
+            return this.preActions.AsReadOnly();
+        }
 
         /// <summary>
         /// Gets the comparison actions used to process various types.
@@ -78,19 +84,19 @@ namespace SpecBind.ActionPipeline
             return this.validationComparisons.AsReadOnly();
         }
 
-		/// <summary>
-		/// Gets the locator actions.
-		/// </summary>
-		/// <returns>An enumerable collection of actions.</returns>
-		public IEnumerable<ILocatorAction> GetLocatorActions()
-		{
-			return this.locatorActions.AsReadOnly();
-		}
+        /// <summary>
+        /// Gets the locator actions.
+        /// </summary>
+        /// <returns>An enumerable collection of actions.</returns>
+        public IEnumerable<ILocatorAction> GetLocatorActions()
+        {
+            return this.locatorActions.AsReadOnly();
+        }
 
         /// <summary>
         /// Initializes this instance.
         /// </summary>
-	    public void Initialize()
+        public void Initialize()
         {
             var configSection = SettingHelper.GetConfigurationSection();
             var excludedAssemblies = configSection.Application.ExcludedAssemblies.Cast<AssemblyElement>().Select(a => a.Name);
@@ -100,7 +106,9 @@ namespace SpecBind.ActionPipeline
             {
                 this.RegisterType(asmType);
             }
-	    }
+
+            this.IsInitialized = true;
+        }
 
         /// <summary>
         /// Registers the type in the pipeline.
@@ -139,5 +147,5 @@ namespace SpecBind.ActionPipeline
         {
             return (T)this.objectContainer.Resolve(concreteType);
         }
-	}
+    }
 }

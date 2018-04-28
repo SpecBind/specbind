@@ -69,7 +69,7 @@ namespace SpecBind.Selenium
         /// <exception cref="System.InvalidOperationException">Thrown if the browser is not supported.</exception>
         internal static IWebDriver CreateWebDriver(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration)
         {
-            if (!RemoteDriverExists(browserFactoryConfiguration.Settings, browserType, out IWebDriver driver))
+            if (!RemoteDriverExists(browserFactoryConfiguration.Settings, browserFactoryConfiguration.UserProfilePreferences, browserType, out IWebDriver driver))
             {
                 switch (browserType)
                 {
@@ -103,6 +103,7 @@ namespace SpecBind.Selenium
                     case BrowserType.Chrome:
                     case BrowserType.ChromeHeadless:
                         var chromeOptions = new ChromeOptions { LeaveBrowserRunning = false };
+                        chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
 
                         var cmdLineSetting = browserFactoryConfiguration.Settings[ChromeArgumentSetting];
                         if (!string.IsNullOrWhiteSpace(cmdLineSetting?.Value))
@@ -122,6 +123,11 @@ namespace SpecBind.Selenium
                         var chromeDriverService = ChromeDriverService.CreateDefaultService();
                         chromeDriverService.HideCommandPromptWindow = true;
 
+                        foreach (var preference in browserFactoryConfiguration.UserProfilePreferences.OfType<NameValueConfigurationElement>())
+                        {
+                            chromeOptions.AddUserProfilePreference(preference.Name, preference.Value);
+                        }
+
                         driver = new ChromeDriver(chromeDriverService, chromeOptions);
                         break;
                     case BrowserType.PhantomJS:
@@ -133,7 +139,7 @@ namespace SpecBind.Selenium
                         driver = new SafariDriver();
                         break;
                     case BrowserType.Edge:
-                        var edgeOptions = new EdgeOptions { PageLoadStrategy = EdgePageLoadStrategy.Normal };
+                        var edgeOptions = new EdgeOptions { PageLoadStrategy = PageLoadStrategy.Normal };
                         var edgeDriverService = EdgeDriverService.CreateDefaultService();
                         driver = new EdgeDriver(edgeDriverService, edgeOptions);
                         break;
@@ -170,14 +176,21 @@ namespace SpecBind.Selenium
         /// <param name="browserType">Type of the browser.</param>
         /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <param name="logger">The logger.</param>
+        /// <param name="applicationConfiguration">The application configuration.</param>
         /// <returns>A browser object.</returns>
         /// <exception cref="System.InvalidOperationException">Thrown if the browser type is not supported.</exception>
-        protected override IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration, ILogger logger)
+        protected override IBrowser CreateBrowser(
+            BrowserType browserType,
+            BrowserFactoryConfigurationElement browserFactoryConfiguration,
+            ILogger logger,
+            ApplicationConfigurationElement applicationConfiguration)
         {
             var launchAction = new Func<IWebDriver>(() => CreateWebDriver(browserType, browserFactoryConfiguration));
             
             var browser = new Lazy<IWebDriver>(launchAction, LazyThreadSafetyMode.None);
-            return new SeleniumBrowser(browser, logger);
+            var uriHelper = new Lazy<IUriHelper>(() => new UriHelper(applicationConfiguration.StartUrl));
+
+            return new SeleniumBrowser(browser, logger, uriHelper);
         }
 
         /// <summary>
@@ -217,6 +230,9 @@ namespace SpecBind.Selenium
                         case BrowserType.ChromeHeadless:
                             DownloadChromeDriver();
                             break;
+                        case BrowserType.FireFox:
+                            DownloadFirefoxDriver();
+                            break;
                         case BrowserType.PhantomJS:
                             DownloadPhantomJsDriver();
                             break;
@@ -232,6 +248,16 @@ namespace SpecBind.Selenium
                     throw ex;
                 }
             }
+        }
+
+        /// <summary>
+        /// Downloads the Firefox driver.
+        /// </summary>
+        private void DownloadFirefoxDriver()
+        {
+            string fileName = $"geckodriver-v0.19.1-win{(Environment.Is64BitOperatingSystem ? "64" : "32")}.zip";
+
+            DownloadAndExtractZip("https://github.com/mozilla/geckodriver/releases/download/v0.19.1", fileName);
         }
 
         /// <summary>
@@ -276,7 +302,7 @@ namespace SpecBind.Selenium
 			// HACK: Only use 32-bit driver; SendKeys is unusably slow with 64-bit driver
 
             // Download - this is set to a single version for now
-			DownloadAndExtractZip("http://selenium-release.storage.googleapis.com/2.50", "IEDriverServer_Win32_2.50.0.zip");
+			DownloadAndExtractZip("http://selenium-release.storage.googleapis.com/3.7", "IEDriverServer_Win32_3.7.0.zip");
         }
 
         /// <summary>
@@ -425,10 +451,16 @@ namespace SpecBind.Selenium
         /// Checks to see if settings for the remote driver exists.
         /// </summary>
         /// <param name="settings">The settings.</param>
+        /// <param name="userProfilePreferences">The user profile preferences.</param>
         /// <param name="browserType">Type of the browser.</param>
         /// <param name="remoteWebDriver">The created remote web driver.</param>
-        /// <returns><c>true</c> if the settings exist; otherwise <c>false</c>.</returns>
-        private static bool RemoteDriverExists(NameValueConfigurationCollection settings, BrowserType browserType, out IWebDriver remoteWebDriver)
+        /// <returns>
+        ///   <c>true</c> if the settings exist; otherwise <c>false</c>.</returns>
+        private static bool RemoteDriverExists(
+            NameValueConfigurationCollection settings,
+            NameValueConfigurationCollection userProfilePreferences,
+            BrowserType browserType,
+            out IWebDriver remoteWebDriver)
         {
             var remoteUri = GetRemoteDriverUri(settings);
 
@@ -448,7 +480,14 @@ namespace SpecBind.Selenium
                     driverOptions = new FirefoxOptions();
                     break;
                 case BrowserType.Chrome:
-                    driverOptions = new ChromeOptions();
+                    ChromeOptions chromeOptions = new ChromeOptions();
+
+                    foreach (var preference in userProfilePreferences.OfType<NameValueConfigurationElement>())
+                    {
+                        chromeOptions.AddUserProfilePreference(preference.Name, preference.Value);
+                    }
+
+                    driverOptions = chromeOptions;
                     break;
                 case BrowserType.Safari:
                     driverOptions = new SafariOptions();
@@ -459,9 +498,9 @@ namespace SpecBind.Selenium
                 case BrowserType.PhantomJS:
                     driverOptions = new PhantomJSOptions();
                     break;
-				case BrowserType.Edge:
-					driverOptions = new EdgeOptions();
-					break;
+                case BrowserType.Edge:
+                    driverOptions = new EdgeOptions();
+                    break;
                 default:
                     throw new InvalidOperationException(
                         $"Browser Type '{browserType}' is not supported as a remote driver.");

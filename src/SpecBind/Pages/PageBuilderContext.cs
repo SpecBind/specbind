@@ -13,11 +13,13 @@ namespace SpecBind.Pages
         /// Initializes a new instance of the <see cref="PageBuilderContext" /> class.
         /// </summary>
         /// <param name="browser">The browser.</param>
+        /// <param name="uriHelper">The URI helper.</param>
         /// <param name="parentElement">The parent element.</param>
         /// <param name="document">The document.</param>
-        public PageBuilderContext(ExpressionData browser, ExpressionData parentElement, ExpressionData document)
+        public PageBuilderContext(ExpressionData browser, ExpressionData uriHelper, ExpressionData parentElement, ExpressionData document)
         {
             this.Browser = browser;
+            this.UriHelper = uriHelper;
             this.Document = document;
             this.ParentElement = parentElement;
         }
@@ -27,6 +29,12 @@ namespace SpecBind.Pages
         /// </summary>
         /// <value>The browser expression data.</value>
         public ExpressionData Browser { get; private set; }
+
+        /// <summary>
+        /// Gets the URI helper expression data.
+        /// </summary>
+        /// <value>The URI helper expression data.</value>
+        public ExpressionData UriHelper { get; private set; }
 
         /// <summary>
         /// Gets the document expression data.
@@ -59,11 +67,11 @@ namespace SpecBind.Pages
         /// <returns>The created child context.</returns>
         public PageBuilderContext CreateChildContext(ExpressionData childContext)
         {
-            return new PageBuilderContext(this.Browser, this.Document, childContext)
-                       {
-                           CurrentElement = null,
-                           RootLocator = this.RootLocator ?? this.ParentElement
-                       };
+            return new PageBuilderContext(this.Browser, this.UriHelper, this.Document, childContext)
+            {
+                CurrentElement = null,
+                RootLocator = this.RootLocator ?? this.ParentElement
+            };
         }
     }
 }

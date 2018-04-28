@@ -12,6 +12,7 @@ namespace SpecBind.CodedUI
 
 	using SpecBind.BrowserSupport;
 	using SpecBind.Pages;
+    using Helpers;
 
 	/// <summary>
 	/// An implementation of <see cref="ListElementWrapper{TElement,TChildElement}"/> for Coded UI.
@@ -23,7 +24,8 @@ namespace SpecBind.CodedUI
 		where TElement : UITestControl
 		where TChildElement : HtmlControl
 	{
-		private readonly Func<TElement, IBrowser, Action<HtmlControl>, TChildElement> builderFunc;
+        private readonly Lazy<IUriHelper> uriHelper;
+        private readonly Func<TElement, IBrowser, Lazy<IUriHelper>, Action<HtmlControl>, TChildElement> builderFunc;
         private readonly object lockObject;
 
         private List<TChildElement> items;
@@ -33,10 +35,12 @@ namespace SpecBind.CodedUI
         /// </summary>
         /// <param name="parentElement">The parent element.</param>
         /// <param name="webBrowser">The browser.</param>
-		public CodedUIListElementWrapper(TElement parentElement, IBrowser webBrowser)
+        /// <param name="uriHelper">The URI helper.</param>
+		public CodedUIListElementWrapper(TElement parentElement, IBrowser webBrowser, Lazy<IUriHelper> uriHelper)
             : base(parentElement, webBrowser)
 		{
-            this.builderFunc = PageBuilder<TElement, TChildElement>.CreateElement(typeof(TChildElement));
+            this.uriHelper = uriHelper;
+            this.builderFunc = PageBuilder<TElement, TChildElement>.CreateElement(typeof(TChildElement), uriHelper);
             this.lockObject = new object();
 
 			this.ValidateElementExists = true;
@@ -94,7 +98,7 @@ namespace SpecBind.CodedUI
         /// <returns>The list of child elements.</returns>
         protected virtual List<TChildElement> FetchElementList(TElement parentElement, IBrowser browser)
         {
-            var templateItem = this.builderFunc(parentElement, browser, null);
+            var templateItem = this.builderFunc(parentElement, browser, this.uriHelper, null);
             var childList = templateItem.FindMatchingControls();
 
             var itemCollection =
@@ -125,7 +129,7 @@ namespace SpecBind.CodedUI
         /// <returns>The created child element.</returns>
 	    private TChildElement CreateChildProxyElement(TElement parentElement, UITestControl control, IBrowser browser)
         {
-            var childElement =  this.builderFunc(parentElement, browser, ClearSearchProperties);
+            var childElement =  this.builderFunc(parentElement, browser, this.uriHelper, ClearSearchProperties);
 
             childElement.CopyFrom(control);
 

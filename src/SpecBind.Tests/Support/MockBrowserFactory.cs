@@ -34,8 +34,13 @@ namespace SpecBind.Tests.Support
         /// <param name="browserType">Type of the browser.</param>
         /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <param name="logger">The logger.</param>
+        /// <param name="applicationConfiguration">The application configuration.</param>
         /// <returns>A browser object.</returns>
-        protected override IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration, ILogger logger)
+        protected override IBrowser CreateBrowser(
+            BrowserType browserType,
+            BrowserFactoryConfigurationElement browserFactoryConfiguration,
+            ILogger logger,
+            ApplicationConfigurationElement applicationConfiguration)
         {
             this.BrowserMock = new Mock<IBrowser>();
             return this.BrowserMock.Object;

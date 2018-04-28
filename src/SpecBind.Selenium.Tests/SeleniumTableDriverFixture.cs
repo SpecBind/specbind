@@ -4,6 +4,7 @@
 
 namespace SpecBind.Selenium.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
@@ -15,6 +16,7 @@ namespace SpecBind.Selenium.Tests
     using OpenQA.Selenium;
 
     using SpecBind.BrowserSupport;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -30,11 +32,12 @@ namespace SpecBind.Selenium.Tests
         public void TestGetEmptyListReturnsNoResults()
         {
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var uriHelper = new Mock<Lazy<IUriHelper>>(MockBehavior.Strict);
             var parent = new Mock<IWebElement>(MockBehavior.Strict);
             parent.Setup(p => p.FindElements(By.TagName("tr"))).Returns(new List<IWebElement>(0).AsReadOnly());
 
 
-            var tableDriver = new SeleniumTableDriver(parent.Object, browser.Object);
+            var tableDriver = new SeleniumTableDriver(parent.Object, browser.Object, uriHelper.Object);
 
             var result = tableDriver.FirstOrDefault();
 
@@ -51,11 +54,11 @@ namespace SpecBind.Selenium.Tests
         public void TestGetEmptyListWithNullDriverSearchResultsNoResults()
         {
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var uriHelper = new Mock<Lazy<IUriHelper>>(MockBehavior.Strict);
             var parent = new Mock<IWebElement>(MockBehavior.Strict);
             parent.Setup(p => p.FindElements(By.TagName("tr"))).Returns((ReadOnlyCollection<IWebElement>)null);
 
-
-            var tableDriver = new SeleniumTableDriver(parent.Object, browser.Object);
+            var tableDriver = new SeleniumTableDriver(parent.Object, browser.Object, uriHelper.Object);
 
             var result = tableDriver.FirstOrDefault();
 
@@ -79,12 +82,13 @@ namespace SpecBind.Selenium.Tests
                     .Returns(new ReadOnlyCollection<IWebElement>(new IWebElement[0]));
 
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var uriHelper = new Mock<Lazy<IUriHelper>>(MockBehavior.Strict);
             var parent = new Mock<IWebElement>(MockBehavior.Strict);
             parent.Setup(p => p.FindElements(By.TagName("tr")))
                   .Returns(new List<IWebElement> { firstRow.Object }.AsReadOnly());
 
 
-            var tableDriver = new SeleniumTableDriver(parent.Object, browser.Object);
+            var tableDriver = new SeleniumTableDriver(parent.Object, browser.Object, uriHelper.Object);
 
             var result = tableDriver.FirstOrDefault();
 
@@ -116,12 +120,13 @@ namespace SpecBind.Selenium.Tests
                     .Returns(new List<IWebElement> { oneColumn.Object }.AsReadOnly());
 
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var uriHelper = new Mock<Lazy<IUriHelper>>(MockBehavior.Strict);
             var parent = new Mock<IWebElement>(MockBehavior.Strict);
             parent.Setup(p => p.FindElements(By.TagName("tr")))
                   .Returns(new List<IWebElement> { firstRow.Object }.AsReadOnly());
 
 
-            var tableDriver = new SeleniumTableDriver(parent.Object, browser.Object);
+            var tableDriver = new SeleniumTableDriver(parent.Object, browser.Object, uriHelper.Object);
 
             var result = tableDriver.FirstOrDefault();
 
@@ -155,12 +160,13 @@ namespace SpecBind.Selenium.Tests
                     .Returns(new List<IWebElement> { cell.Object }.AsReadOnly());
 
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var uriHelper = new Mock<Lazy<IUriHelper>>(MockBehavior.Strict);
             var parent = new Mock<IWebElement>(MockBehavior.Strict);
             parent.Setup(p => p.FindElements(By.TagName("tr")))
                   .Returns(new List<IWebElement> { firstRow.Object, secondRow.Object }.AsReadOnly());
 
 
-            var tableDriver = new SeleniumTableDriver(parent.Object, browser.Object);
+            var tableDriver = new SeleniumTableDriver(parent.Object, browser.Object, uriHelper.Object);
 
             var result = tableDriver.FirstOrDefault();
 
@@ -209,12 +215,13 @@ namespace SpecBind.Selenium.Tests
                     .Returns(new List<IWebElement> { cell.Object }.AsReadOnly());
 
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            var uriHelper = new Mock<Lazy<IUriHelper>>(MockBehavior.Strict);
             var parent = new Mock<IWebElement>(MockBehavior.Strict);
             parent.Setup(p => p.FindElements(By.TagName("tr")))
                   .Returns(new List<IWebElement> { firstRow.Object, secondRow.Object }.AsReadOnly());
 
 
-            var tableDriver = new SeleniumTableDriver(parent.Object, browser.Object);
+            var tableDriver = new SeleniumTableDriver(parent.Object, browser.Object, uriHelper.Object);
 
             var result = tableDriver.FirstOrDefault();
 

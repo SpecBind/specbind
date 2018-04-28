@@ -3,6 +3,7 @@
 // </copyright>
 namespace SpecBind.Selenium
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
@@ -21,12 +22,13 @@ namespace SpecBind.Selenium
         private readonly Dictionary<int, string> cellLookup;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SeleniumTableDriver"/> class.
+        /// Initializes a new instance of the <see cref="SeleniumTableDriver" /> class.
         /// </summary>
         /// <param name="parentElement">The parent element.</param>
         /// <param name="browser">The browser.</param>
-        public SeleniumTableDriver(IWebElement parentElement, IBrowser browser)
-            : base(parentElement, browser)
+        /// <param name="uriHelper">The URI helper.</param>
+        public SeleniumTableDriver(IWebElement parentElement, IBrowser browser, Lazy<IUriHelper> uriHelper)
+            : base(parentElement, browser, uriHelper)
         {
             this.cellLookup = new Dictionary<int, string>();
         }
