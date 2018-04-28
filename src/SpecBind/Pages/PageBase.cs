@@ -428,7 +428,7 @@ namespace SpecBind.Pages
         /// Checks for virtual properties and creates the structure for it.
         /// </summary>
         /// <param name="propertyInfo">The property information.</param>
-        /// <param name="elementHandler">The property data.</param>
+        /// <param name="elementHandler">The element handler.</param>
         private void CheckForVirtualProperties(MemberInfo propertyInfo, Func<IPage, Func<TElement, bool>, bool> elementHandler)
         {
             foreach (var customAttribute in propertyInfo.GetCustomAttributes<VirtualPropertyAttribute>())

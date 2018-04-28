@@ -25,7 +25,7 @@ namespace SpecBind.Pages
         /// <summary>
         /// Gets the browser expression data.
         /// </summary>
-        /// <value>The document expression data.</value>
+        /// <value>The browser expression data.</value>
         public ExpressionData Browser { get; private set; }
 
         /// <summary>

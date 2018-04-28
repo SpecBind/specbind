@@ -456,7 +456,7 @@ namespace SpecBind.BrowserSupport
         {
             try
             {
-                return Convert.ToInt32(Browser.ExecuteScript(@"return jQuery.active;"));
+                return Convert.ToInt32(Browser.ExecuteScript(@"if (typeof jQuery === 'undefined') { return 0; } else { return jQuery.active; }"));
             }
             catch (InvalidOperationException ex)
             {

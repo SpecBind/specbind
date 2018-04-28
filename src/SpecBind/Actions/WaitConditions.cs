@@ -3,8 +3,6 @@
 // </copyright>
 namespace SpecBind.Actions
 {
-    using System;
-
     /// <summary>
     /// Enumerates the different conditions to wait for on a control.
     /// </summary>

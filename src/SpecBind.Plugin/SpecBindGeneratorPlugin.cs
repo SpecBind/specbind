@@ -1,6 +1,6 @@
-﻿// // <copyright file="SpecBindGeneratorPlugin.cs">
-// //    Copyright © 2013 Dan Piessens.  All rights reserved.
-// // </copyright>
+﻿// <copyright file="SpecBindGeneratorPlugin.cs">
+//    Copyright © 2013 Dan Piessens.  All rights reserved.
+// </copyright>
 namespace SpecBind.Plugin
 {
     using System;

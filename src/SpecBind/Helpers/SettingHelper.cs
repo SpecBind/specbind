@@ -39,7 +39,7 @@ namespace SpecBind.Helpers
         }
 
 		/// <summary>
-		/// Gets a value indicating wither highlight mode is enabled in configuration or app settings.
+	    /// Gets a value indicating whether highlight mode is enabled in configuration or app settings.
 		/// </summary>
 		/// <returns><c>true</c> if highlight mode is enabled, <c>false</c> otherwise</returns>
 		[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]

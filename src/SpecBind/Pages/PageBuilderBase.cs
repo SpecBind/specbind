@@ -356,7 +356,7 @@ namespace SpecBind.Pages
                 else
                 {
                     //Normal path starts here
-                    //New up property and then check if for inner properties.
+                    //New up property and then check it for inner properties.
                     var childContext = context.CreateChildContext(context.CurrentElement);
 
                     propertyExpressions.AddRange(this.CreateHtmlObject(childContext, attribute, customAttributes));

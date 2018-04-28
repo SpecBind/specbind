@@ -7,7 +7,7 @@ namespace SpecBind.Actions
     using SpecBind.Pages;
 
     /// <summary>
-    /// An action that validates that the element exists.
+    /// An action that validates that the element is enabled.
     /// </summary>
     internal class ValidateElementEnabledAction : BasicValidationChecksActionBase
     {
@@ -41,7 +41,7 @@ namespace SpecBind.Actions
         /// Checks the element.
         /// </summary>
         /// <param name="propertyData">The property data.</param>
-        /// <returns><c>true</c> if the element exists, <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c> if the element is enabled, <c>false</c> otherwise.</returns>
         protected override bool CheckElement(IPropertyData propertyData)
         {
             return propertyData.CheckElementEnabled();

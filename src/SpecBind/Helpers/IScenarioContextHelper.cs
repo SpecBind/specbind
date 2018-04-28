@@ -34,7 +34,7 @@ namespace SpecBind.Helpers
 	    /// <summary>
 	    /// Gets the name of the step file.
 	    /// </summary>
-	    /// <param name="isError">Indicates wither the file is the result of an error.</param>
+	    /// <param name="isError">Indicates whether the file is the result of an error.</param>
 	    /// <returns>A unique file name for the scenario.</returns>
 	    string GetStepFileName(bool isError);
 
@@ -45,7 +45,7 @@ namespace SpecBind.Helpers
         /// <returns><c>true</c> the current feature contains the specified tag; otherwise, <c>false</c>.</returns>
         bool FeatureContainsTag(string tag);
 
-		/// <summary>Sets the value.</summary>
+		/// <summary>Gets the value.</summary>
 		/// <typeparam name="T">The type of the value.</typeparam>
 		/// <param name="key">The key.</param>
 		/// <returns>The value if located.</returns>
