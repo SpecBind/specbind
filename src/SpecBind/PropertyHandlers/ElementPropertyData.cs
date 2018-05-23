@@ -5,7 +5,7 @@
 namespace SpecBind.PropertyHandlers
 {
     using System;
-
+    using System.Collections.Generic;
     using SpecBind.Actions;
     using SpecBind.Pages;
     using SpecBind.Validation;
@@ -125,6 +125,24 @@ namespace SpecBind.PropertyHandlers
                         fillMethod(e, data);
                         return true;
                     });
+        }
+
+        /// <summary>
+        /// Gets the combo box items for the given element if supported.
+        /// </summary>
+        /// <returns>A list of items in the combo box, otherwise <c>null</c>.</returns>
+        public override IList<ComboBoxItem> GetComboBoxItems()
+        {
+            IList<ComboBoxItem> items = null;
+
+            this.elementAction(this.ElementHandler,
+                prop =>
+                {
+                    items = this.ElementHandler.GetElementOptions(prop);
+                    return true;
+                });
+
+            return items;
         }
 
         /// <summary>

@@ -89,6 +89,7 @@
     <Compile Include="Actions\ValidateElementExistsActionFixture.cs" />
     <Compile Include="Actions\ValidateItemActionFixture.cs" />
     <Compile Include="Actions\ValidateListActionFixture.cs" />
+    <Compile Include="Actions\ValidateComboBoxActionFixture.cs" />
     <Compile Include="Actions\ValidateListRowCountActionFixture.cs" />
     <Compile Include="Actions\ValidateTokenActionFixture.cs" />
     <Compile Include="Actions\WaitForElementActionFixture.cs" />

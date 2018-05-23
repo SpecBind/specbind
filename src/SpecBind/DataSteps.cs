@@ -13,6 +13,7 @@ namespace SpecBind
     using SpecBind.Pages;
 
     using TechTalk.SpecFlow;
+    using TechTalk.SpecFlow.Assist;
 
     /// <summary>
     /// Step bindings related to entering or validating data.
@@ -24,6 +25,7 @@ namespace SpecBind
         private const string EnterDataInFieldsStepRegex = @"I enter data";
         private const string EnterDataInFieldStepRegex = @"I enter ""(.+)"" into (.+)";
         private const string ObserveDataStepRegex = @"I see";
+        private const string ObserveComboBoxStepRegex = @"I see combo box (.+)";
         private const string ObserveListDataStepRegex = @"I see (.+) list ([A-Za-z ]+)";
         private const string ObserveListRowCountRegex = @"I see (.+) list contains (exactly|at least|at most) ([0-9]+) items?";
         private const string ClearDataInFieldsStepRegex = @"I clear data";
@@ -233,6 +235,51 @@ namespace SpecBind
 
             var context = new ValidateListRowCountAction.ValidateListRowCountContext(fieldName.ToLookupKey(), comparisonType, resultCount);
             this.actionPipelineService.PerformAction<ValidateListRowCountAction>(page, context).CheckResult();
+        }
+
+        /// <summary>
+        /// A step that observes wither a combo box contains a given set of items.
+        /// </summary>
+        /// <param name="fieldName">The name of the field.</param>
+        /// <param name="comparisonType">The comparison type for evaluation.</param>
+        /// <param name="table">Table of items for comparison.</param>
+        [When(ObserveComboBoxStepRegex)]
+        [Then(ObserveComboBoxStepRegex)]
+        public void ThenISeeComboBoxContainsStep(string fieldName, string comparisonType, Table table)
+        {
+            if (table == null || table.Header.Count == 0)
+            {
+                return;
+            }
+
+            var hasName = table.ContainsColumn(nameof(ComboBoxItem.Text));
+            var hasValue = table.ContainsColumn(nameof(ComboBoxItem.Value));
+
+            if (!hasName && !hasValue)
+            {
+                throw new ElementExecuteException($"A table must be specified for this step with one or both columns: '{nameof(ComboBoxItem.Text)}' and/or '{nameof(ComboBoxItem.Value)}'");
+            }
+
+            var items = table.CreateSet<ComboBoxItem>().ToList();
+
+            ComboComparisonType comparer;
+            switch (comparisonType)
+            {
+                case "does not contain":
+                    comparer = ComboComparisonType.DoesNotContain;
+                    break;
+                case "contains exactly":
+                    comparer = ComboComparisonType.ContainsExactly;
+                    break;
+                default:
+                    comparer = ComboComparisonType.Contains;
+                    break;
+            }
+
+            var context = new ValidateComboBoxAction.ValidateComboBoxContext(fieldName.ToLookupKey(), comparer, items, hasName, hasValue);
+
+            var page = this.GetPageFromContext();
+            this.actionPipelineService.PerformAction<ValidateComboBoxAction>(page, context).CheckResult();
         }
     }
 }

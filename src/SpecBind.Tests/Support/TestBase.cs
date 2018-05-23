@@ -3,15 +3,15 @@
 // </copyright>
 namespace SpecBind.Tests.Support
 {
-	using System;
+    using System;
+    using System.Collections.Generic;
+    using SpecBind.Actions;
+    using SpecBind.Pages;
 
-	using SpecBind.Actions;
-	using SpecBind.Pages;
-
-	/// <summary>
-	/// A test base class.
-	/// </summary>
-	public class TestBase : PageBase<BasePageClass, BaseElement>
+    /// <summary>
+    /// A test base class.
+    /// </summary>
+    public class TestBase : PageBase<BasePageClass, BaseElement>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TestBase" /> class.
@@ -134,5 +134,10 @@ namespace SpecBind.Tests.Support
 	    {
 	        return false;
 	    }
-	}
+
+        public override IList<ComboBoxItem> GetElementOptions(BaseElement element)
+        {
+            return null;
+        }
+    }
 }

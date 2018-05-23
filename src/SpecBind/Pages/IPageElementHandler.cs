@@ -4,8 +4,8 @@
 namespace SpecBind.Pages
 {
 	using System;
-
-	using SpecBind.Actions;
+    using System.Collections.Generic;
+    using SpecBind.Actions;
 
     /// <summary>
 	/// An interface that manages page elements.
@@ -47,12 +47,19 @@ namespace SpecBind.Pages
         /// <returns>The attribute's value.</returns>
         string GetElementAttributeValue(TElement element, string attributeName);
 
-		/// <summary>
-		/// Gets the element text.
-		/// </summary>
-		/// <param name="element">The element.</param>
-		/// <returns>The element's text.</returns>
-		string GetElementText(TElement element);
+        /// <summary>
+        /// Gets the element options for multi-select or list options.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>The element's options if supported, otherwise <c>null</c>.</returns>
+        IList<ComboBoxItem> GetElementOptions(TElement element);
+
+        /// <summary>
+        /// Gets the element text.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>The element's text.</returns>
+        string GetElementText(TElement element);
 
 		/// <summary>
 		/// Gets the page from element.

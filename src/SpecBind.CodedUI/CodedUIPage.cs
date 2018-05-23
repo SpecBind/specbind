@@ -3,27 +3,28 @@
 // </copyright>
 namespace SpecBind.CodedUI
 {
-	using System;
-	using System.CodeDom;
-	using System.Drawing;
-	using System.Linq;
+    using System;
+    using System.CodeDom;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Linq;
     using System.Threading;
-	using System.Windows.Input;
+    using System.Windows.Input;
 
-	using Microsoft.VisualStudio.TestTools.UITest.Extension;
-	using Microsoft.VisualStudio.TestTools.UITesting;
-	using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
+    using Microsoft.VisualStudio.TestTools.UITest.Extension;
+    using Microsoft.VisualStudio.TestTools.UITesting;
+    using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
 
-	using SpecBind.Actions;
-	using SpecBind.Helpers;
-	using SpecBind.Pages;
+    using SpecBind.Actions;
+    using SpecBind.Helpers;
+    using SpecBind.Pages;
 
-	/// <summary>
-	/// An implementation of a page for the code base.
-	/// </summary>
-	/// <typeparam name="TDocument">The type of the document.</typeparam>
-	// ReSharper disable once InconsistentNaming
-	public class CodedUIPage<TDocument> : PageBase<TDocument, HtmlControl>
+    /// <summary>
+    /// An implementation of a page for the code base.
+    /// </summary>
+    /// <typeparam name="TDocument">The type of the document.</typeparam>
+    // ReSharper disable once InconsistentNaming
+    public class CodedUIPage<TDocument> : PageBase<TDocument, HtmlControl>
 		where TDocument : class
 	{
 		#region Constructors and Destructors
@@ -141,12 +142,31 @@ namespace SpecBind.CodedUI
             return value != null ? value.ToString() : string.Empty;
         }
 
-	    /// <summary>
-		/// Gets the element text.
-		/// </summary>
-		/// <param name="element">The element.</param>
-		/// <returns>The element text.</returns>
-		public override string GetElementText(HtmlControl element)
+        /// <summary>
+        /// Gets the element options for multi-select or list options.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>The element's options if supported, otherwise <c>null</c>.</returns>
+        public override IList<ComboBoxItem> GetElementOptions(HtmlControl element)
+        {
+            var comboBoxElement = element as HtmlComboBox;
+            if (comboBoxElement != null)
+            {
+                return comboBoxElement.Items
+                        .OfType<HtmlListItem>()
+                        .Select(li => new ComboBoxItem { Value = li.ValueAttribute, Text = li.DisplayText })
+                        .ToList();
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the element text.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>The element text.</returns>
+        public override string GetElementText(HtmlControl element)
 		{
 		    var comboBoxElement = element as HtmlComboBox;
 		    if (comboBoxElement != null)
@@ -340,5 +360,5 @@ namespace SpecBind.CodedUI
             var moved = !(secondLeft.Equals(firstLeft) && secondTop.Equals(firstTop));
             return moved;
         }
-	}
+    }
 }

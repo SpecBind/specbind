@@ -14,15 +14,15 @@ namespace SpecBind.Pages
 	/// </summary>
 	public interface IPropertyData
 	{
-		#region Public Properties
+        #region Public Properties
 
-		/// <summary>
-		///     Gets a value indicating whether this instance represents a page element.
-		/// </summary>
-		/// <value>
-		///     <c>true</c> if this instance is a page element; otherwise, <c>false</c>.
-		/// </value>
-		bool IsElement { get; }
+        /// <summary>
+        ///     Gets a value indicating whether this instance represents a page element.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is a page element; otherwise, <c>false</c>.
+        /// </value>
+        bool IsElement { get; }
 
 		/// <summary>
 		/// Gets a value indicating whether this instance is a list.
@@ -48,12 +48,12 @@ namespace SpecBind.Pages
 		/// </value>
 		Type PropertyType { get; }
 
-		#endregion
+        #endregion
 
-		/// <summary>
-		/// Clears the data on the element.
-		/// </summary>
-		void ClearData();
+        /// <summary>
+        /// Clears the data on the element.
+        /// </summary>
+        void ClearData();
 
 		/// <summary>
 		/// Clicks the element that this property represents.
@@ -85,11 +85,17 @@ namespace SpecBind.Pages
 		/// <param name="data">The data.</param>
 		void FillData(string data);
 
-		/// <summary>
-		/// Gets the current value of the property.
-		/// </summary>
-		/// <returns>The current value as a string.</returns>
-		string GetCurrentValue();
+        /// <summary>
+        /// Gets the combo box items for the given element if supported.
+        /// </summary>
+        /// <returns>A list of items in the combo box.</returns>
+        IList<ComboBoxItem> GetComboBoxItems();
+
+        /// <summary>
+        /// Gets the current value of the property.
+        /// </summary>
+        /// <returns>The current value as a string.</returns>
+        string GetCurrentValue();
 
 		/// <summary>
 		/// Gets the index of the item at.

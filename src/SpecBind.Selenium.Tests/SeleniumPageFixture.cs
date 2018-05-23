@@ -443,6 +443,43 @@ namespace SpecBind.Selenium.Tests
         }
 
         /// <summary>
+        /// Tests the get element options for a combo box
+        /// </summary>
+        [TestMethod]
+        public void TestGetElementOptionsForComboBox()
+        {
+            var element = new Mock<IWebElement>(MockBehavior.Strict);
+            element.SetupGet(e => e.TagName).Returns("text");
+
+            var nativePage = new NativePage();
+            var page = new SeleniumPage(nativePage, null);
+
+            var result = page.GetElementOptions(element.Object);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
+            element.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the get element options for a  non-combo box
+        /// </summary>
+        [TestMethod]
+        public void TestGetElementOptionsForOtherControl()
+        {
+            var element = new Mock<IWebElement>(MockBehavior.Strict);
+            element.SetupGet(e => e.TagName).Returns("text");
+
+            var nativePage = new NativePage();
+            var page = new SeleniumPage(nativePage, null);
+
+            var result = page.GetElementOptions(element.Object);
+
+            Assert.IsNull(result);
+            element.VerifyAll();
+        }
+
+        /// <summary>
         /// Tests the get clear method.
         /// </summary>
         [TestMethod]

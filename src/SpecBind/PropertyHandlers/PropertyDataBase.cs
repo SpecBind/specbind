@@ -126,6 +126,15 @@ namespace SpecBind.PropertyHandlers
         }
 
         /// <summary>
+        /// Gets the combo box items for the given element if supported.
+        /// </summary>
+        /// <returns>A list of items in the combo box, otherwise <c>null</c>.</returns>
+        public virtual IList<ComboBoxItem> GetComboBoxItems()
+        {
+            throw this.CreateNotSupportedException("Getting the combo box items value");
+        }
+
+        /// <summary>
         /// Gets the current value of the property.
         /// </summary>
         /// <returns>The current value as a string.</returns>

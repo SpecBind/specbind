@@ -65,6 +65,7 @@
     <Compile Include="ActionPipeline\ActionResultExtensions.cs" />
     <Compile Include="Actions\ActionBase.cs" />
     <Compile Include="Actions\BasicValidationChecksActionBase.cs" />
+    <Compile Include="Actions\ComboComparisonType.cs" />
     <Compile Include="Actions\HoverOverElementAction.cs" />
     <Compile Include="Actions\ButtonClickAction.cs" />
     <Compile Include="Actions\ClearDataAction.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Actions\ValidateElementExistsAction.cs" />
     <Compile Include="Actions\ValidateItemAction.cs" />
     <Compile Include="Actions\ValidateListAction.cs" />
+    <Compile Include="Actions\ValidateComboBoxAction.cs" />
     <Compile Include="Actions\ValidateListRowCountAction.cs" />
     <Compile Include="Actions\ValidateTokenAction.cs" />
     <Compile Include="Actions\ValidationCheckContext.cs" />
@@ -120,6 +122,7 @@
     <Compile Include="Helpers\Waiter.cs" />
     <Compile Include="Helpers\WrappedSettingHelper.cs" />
     <Compile Include="PageStepBase.cs" />
+    <Compile Include="Pages\ComboBoxItem.cs" />
     <Compile Include="Pages\ElementDescription.cs" />
     <Compile Include="Pages\ElementLocatorAttribute.cs" />
     <Compile Include="Pages\ExpressionData.cs" />
