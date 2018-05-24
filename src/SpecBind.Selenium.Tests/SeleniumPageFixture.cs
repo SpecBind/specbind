@@ -6,7 +6,7 @@ namespace SpecBind.Selenium.Tests
     using System;
     using System.Collections.ObjectModel;
     using System.Drawing;
-
+    using System.Linq;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
@@ -448,8 +448,15 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestGetElementOptionsForComboBox()
         {
+            var optionElement = new Mock<IWebElement>(MockBehavior.Strict);
+            optionElement.SetupGet(e => e.Text).Returns("Option 1");
+            optionElement.Setup(e => e.GetAttribute("value")).Returns("0");
+
             var element = new Mock<IWebElement>(MockBehavior.Strict);
-            element.SetupGet(e => e.TagName).Returns("text");
+            element.SetupGet(e => e.TagName).Returns("select");
+            element.Setup(e => e.GetAttribute("multiple")).Returns("false");
+            element.Setup(e => e.FindElements(By.TagName("option")))
+                   .Returns((new IWebElement[] { optionElement.Object }).ToList().AsReadOnly());
 
             var nativePage = new NativePage();
             var page = new SeleniumPage(nativePage, null);
@@ -458,6 +465,11 @@ namespace SpecBind.Selenium.Tests
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count);
+
+            var option = result.First();
+            Assert.AreEqual("0", option.Value);
+            Assert.AreEqual("Option 1", option.Text);
+
             element.VerifyAll();
         }
 
