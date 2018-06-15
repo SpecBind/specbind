@@ -148,6 +148,15 @@ namespace SpecBind.CodedUI
         }
 
         /// <summary>
+        /// Determines whether the URL can be retrieved.
+        /// </summary>
+        /// <returns><c>true</c> if the URL can be retrieved; otherwise, <c>false</c>.</returns>
+        public override bool CanGetUrl()
+        {
+            return true;
+        }
+
+        /// <summary>
         /// Closes this instance.
         /// </summary>
         public override void Close()

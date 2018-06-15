@@ -42,5 +42,21 @@ namespace SpecBind.CodedUI.Tests
             // Assert
             Assert.IsTrue(browser.IsCreated);
         }
+
+        /// <summary>
+        /// Tests the can get URL method.
+        /// </summary>
+        [TestMethod]
+        public void CanGetUrl_ReturnsTrue()
+        {
+            // Arrange
+            CodedUIBrowserFactory browserFactory = new CodedUIBrowserFactory();
+
+            // Act
+            IBrowser browser = browserFactory.GetBrowser();
+
+            // Assert
+            Assert.IsTrue(browser.CanGetUrl());
+        }
     }
 }

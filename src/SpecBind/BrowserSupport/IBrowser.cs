@@ -75,6 +75,12 @@ namespace SpecBind.BrowserSupport
         void ClearUrl();
 
         /// <summary>
+        /// Determines whether the URL can be retrieved.
+        /// </summary>
+        /// <returns><c>true</c> if the URL can be retrieved; otherwise, <c>false</c>.</returns>
+        bool CanGetUrl();
+
+        /// <summary>
         /// Closes this instance.
         /// </summary>
         void Close();

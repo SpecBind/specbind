@@ -672,6 +672,94 @@ namespace SpecBind.Tests
 			steps.WaitForjQuery();
 
 			browser.VerifyAll();
-		}
+        }
+
+        /// <summary>
+        /// Tests IWaitForAngularAjaxCallsToComplete when the browser can get the URL.
+        /// </summary>
+        [TestMethod]
+        public void IWaitForAngularAjaxCallsToCompleteStep_WhenCanGetUrlReturnsTrue_GetsUrl()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(s => s.IsClosed).Returns(false);
+            browser.Setup(s => s.IsDisposed).Returns(false);
+            browser.Setup(s => s.CanGetUrl()).Returns(true);
+            browser.Setup(s => s.Url).Returns("http://www.specbind.org");
+            browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
+            WebDriverSupport.Browser = browser.Object;
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitForAngular();
+
+            browser.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests IWaitForAngularAjaxCallsToComplete when the browser cannot get the URL.
+        /// </summary>
+        [TestMethod]
+        public void IWaitForAngularAjaxCallsToCompleteStep_WhenCanGetUrlReturnsFalse_DoesNotTryToGetUrl()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(s => s.IsClosed).Returns(false);
+            browser.Setup(s => s.IsDisposed).Returns(false);
+            browser.Setup(s => s.CanGetUrl()).Returns(false);
+            WebDriverSupport.Browser = browser.Object;
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitForAngular();
+
+            browser.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests IWaitForjQueryAjaxCallsToComplete when the browser can get the URL.
+        /// </summary>
+        [TestMethod]
+        public void IWaitForjQueryAjaxCallsToCompleteStep_WhenCanGetUrlReturnsTrue_GetsUrl()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(s => s.IsClosed).Returns(false);
+            browser.Setup(s => s.IsDisposed).Returns(false);
+            browser.Setup(s => s.CanGetUrl()).Returns(true);
+            browser.Setup(s => s.Url).Returns("http://www.specbind.org");
+            browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
+            WebDriverSupport.Browser = browser.Object;
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitForjQuery();
+
+            browser.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests IWaitForjQueryAjaxCallsToComplete when the browser cannot get the URL.
+        /// </summary>
+        [TestMethod]
+        public void IWaitForjQueryAjaxCallsToCompleteStep_WhenCanGetUrlReturnsFalse_DoesNotTryToGetUrl()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(s => s.IsClosed).Returns(false);
+            browser.Setup(s => s.IsDisposed).Returns(false);
+            browser.Setup(s => s.CanGetUrl()).Returns(false);
+            WebDriverSupport.Browser = browser.Object;
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+
+            steps.WaitForjQuery();
+
+            browser.VerifyAll();
+        }
     }
 }
