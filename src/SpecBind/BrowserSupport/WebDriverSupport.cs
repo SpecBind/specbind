@@ -224,6 +224,11 @@ namespace SpecBind.BrowserSupport
                 return;
             }
 
+            if (!Browser.CanGetUrl())
+            {
+                return;
+            }
+
             if (!Browser.Url.StartsWith("http"))
             {
                 return;
@@ -284,6 +289,11 @@ namespace SpecBind.BrowserSupport
             }
 
             if (Browser.IsClosed)
+            {
+                return;
+            }
+
+            if (!Browser.CanGetUrl())
             {
                 return;
             }

@@ -242,12 +242,50 @@ namespace SpecBind.Selenium.Tests
 
 				Assert.AreEqual(expected, actual);
 			});
-		}
+        }
 
-		/// <summary>
-		/// Tests the dismiss alert calls accept when ok is chosen.
-		/// </summary>
-		[TestMethod]
+        /// <summary>
+        /// Tests the can get URL method without an alert box displayed.
+        /// </summary>
+        [TestMethod]
+        public void CanGetUrl_WithoutAlertBoxDisplayed_ReturnsTrue()
+        {
+            var locator = new Mock<ITargetLocator>(MockBehavior.Strict);
+            locator.Setup(l => l.Alert()).Returns<IAlert>(null);
+
+            var driver = this.CreateMockWebDriverExpectingInitialization();
+            driver.Setup(d => d.SwitchTo()).Returns(locator.Object);
+
+            this.TestBrowserWith(driver, browser =>
+            {
+                Assert.IsTrue(browser.CanGetUrl());
+            });
+        }
+
+        /// <summary>
+        /// Tests the can get URL method with an alert box displayed.
+        /// </summary>
+        [TestMethod]
+        public void CanGetUrl_WithAlertBoxDisplayed_ReturnsFalse()
+        {
+            var alerter = new Mock<IAlert>(MockBehavior.Strict);
+
+            var locator = new Mock<ITargetLocator>(MockBehavior.Strict);
+            locator.Setup(l => l.Alert()).Returns(alerter.Object);
+
+            var driver = this.CreateMockWebDriverExpectingInitialization();
+            driver.Setup(d => d.SwitchTo()).Returns(locator.Object);
+
+            this.TestBrowserWith(driver, browser =>
+            {
+                Assert.IsFalse(browser.CanGetUrl());
+            });
+        }
+
+        /// <summary>
+        /// Tests the dismiss alert calls accept when ok is chosen.
+        /// </summary>
+        [TestMethod]
 		public void TestDismissAlertAcceptsWhenOkIsChoosen()
 		{
 			TestAlertScenario(AlertBoxAction.Ok, true);

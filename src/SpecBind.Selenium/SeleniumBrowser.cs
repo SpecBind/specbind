@@ -17,6 +17,7 @@ namespace SpecBind.Selenium
     using SpecBind.Pages;
 
     using Cookie = System.Net.Cookie;
+    using OpenQA.Selenium.Support.UI;
 
     /// <summary>
     /// A web browser level wrapper for selenium
@@ -155,6 +156,15 @@ namespace SpecBind.Selenium
         public override void ClearUrl()
         {
             this.driver.Value.Url = "about:blank";
+        }
+
+        /// <summary>
+        /// Determines whether the URL can be retrieved.
+        /// </summary>
+        /// <returns><c>true</c> if the URL can be retrieved; otherwise, <c>false</c>.</returns>
+        public override bool CanGetUrl()
+        {
+            return !this.IsAlertDialogDisplayed();
         }
 
         /// <summary>
@@ -401,6 +411,16 @@ namespace SpecBind.Selenium
             {
                 timeoutManager.ImplicitWait = ActionBase.DefaultTimeout;
             }
+        }
+
+        /// <summary>
+        /// Determines whether the alert dialog is displayed.
+        /// </summary>
+        /// <returns><c>true</c> if the alert dialog is displayed; otherwise, <c>false</c>.</returns>
+        private bool IsAlertDialogDisplayed()
+        {
+            IAlert alert = ExpectedConditions.AlertIsPresent().Invoke(this.driver.Value);
+            return (alert != null);
         }
     }
 }
