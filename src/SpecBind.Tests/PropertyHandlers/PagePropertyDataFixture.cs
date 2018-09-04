@@ -42,6 +42,7 @@ namespace SpecBind.Tests.PropertyHandlers
             propertyData.TestForNotSupportedException(p => p.GetItemAtIndex(1), "Getting an item at a given index");
             propertyData.TestForNotSupportedException(p => p.Highlight(), "Highlighting an item");
             propertyData.TestForNotSupportedException(p => p.ValidateList(ComparisonType.Contains, null), "Validating a list");
+            propertyData.TestForNotSupportedException(p => p.GetComboBoxItems(), "Getting the combo box items value");
             propertyData.TestForNotSupportedException(p => p.WaitForElementCondition(WaitConditions.Exists, TimeSpan.Zero), "Waiting for an element");
 
             pageBase.VerifyAll();

@@ -193,6 +193,13 @@ namespace SpecBind.Pages
         public abstract string GetElementAttributeValue(TElement element, string attributeName);
 
         /// <summary>
+        /// Gets the element options for multi-select or list options.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>The element's options if supported, otherwise <c>null</c>.</returns>
+        public abstract IList<ComboBoxItem> GetElementOptions(TElement element);
+
+        /// <summary>
 		/// Gets the element text.
 		/// </summary>
 		/// <param name="element">The element.</param>

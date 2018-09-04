@@ -5,6 +5,8 @@
 namespace SpecBind.Selenium
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Threading;
 
@@ -118,6 +120,27 @@ namespace SpecBind.Selenium
         public override Action<IWebElement, string> GetPageFillMethod(Type propertyType)
         {
             return this.FillPage;
+        }
+
+        /// <summary>
+        /// Gets the element options for multi-select or list options.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>The element's options if supported, otherwise <c>null</c>.</returns>
+        public override IList<ComboBoxItem> GetElementOptions(IWebElement element)
+        {
+            var tagName = element.TagName.ToLowerInvariant().Trim();
+            switch (tagName)
+            {
+                case "select":
+                    var selectElement = new SelectElement(element);
+                    return selectElement.Options
+                                .Select(option => new ComboBoxItem { Value = option.GetAttribute("value"), Text = option.Text })
+                                .ToList();
+                    
+            }
+
+            return null;
         }
 
         /// <summary>

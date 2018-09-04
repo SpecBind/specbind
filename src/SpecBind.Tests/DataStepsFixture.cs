@@ -732,5 +732,147 @@ namespace SpecBind.Tests
             scenarioContext.VerifyAll();
             pipelineService.VerifyAll();
         }
+
+        /// <summary>
+        /// Tests the combo box validate step with expected parameters.
+        /// </summary>
+        [TestMethod]
+        public void TestThenISeeComboBoxContainsStepHasNoTable()
+        {
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+
+            steps.ThenISeeComboBoxContainsStep("myfield", "contains", null);
+
+            scenarioContext.VerifyAll();
+            pipelineService.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the combo box validate with expected parameters.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ElementExecuteException))]
+        public void TestThenISeeComboBoxContainsStepHasInvalidTable()
+        {
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+
+            var table = new Table("Item");
+            table.AddRow(new Dictionary<string, string>
+                             {
+                                 { "Item", "Something Cool" }
+                             });
+
+            ExceptionHelper.SetupForException<ElementExecuteException>(
+                () => steps.ThenISeeComboBoxContainsStep("myfield", "contains", table),
+                ex =>
+                {
+                    Assert.IsTrue(ex.Message.StartsWith("A table must be specified for this step"));
+
+                    scenarioContext.VerifyAll();
+                    pipelineService.VerifyAll();
+                });
+        }
+
+        /// <summary>
+        /// Tests the that the combo box contains the list of items.
+        /// </summary>
+        [TestMethod]
+        public void TestThenISeeComboBoxContainsStepContainsItems()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<ValidateComboBoxAction>(
+                testPage.Object,
+                It.Is<ValidateComboBoxAction.ValidateComboBoxContext>(
+                    c => c.PropertyName == "myfield" && c.ComparisonType == ComboComparisonType.Contains && c.Items.Count == 1)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+
+            var table = new Table("Text");
+            table.AddRow(new Dictionary<string, string>
+                             {
+                                 { "Text", "Something Cool" }
+                             });
+
+            steps.ThenISeeComboBoxContainsStep("myfield", "contains", table);
+
+            scenarioContext.VerifyAll();
+            pipelineService.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the that the combo box does not contain the list of items.
+        /// </summary>
+        [TestMethod]
+        public void TestThenISeeComboBoxContainsStepDoesNotContainItems()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<ValidateComboBoxAction>(
+                testPage.Object,
+                It.Is<ValidateComboBoxAction.ValidateComboBoxContext>(
+                    c => c.PropertyName == "myfield" && c.ComparisonType == ComboComparisonType.DoesNotContain && c.Items.Count == 1)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+
+            var table = new Table("Value");
+            table.AddRow(new Dictionary<string, string>
+                             {
+                                 { "Value", "1" }
+                             });
+
+            steps.ThenISeeComboBoxContainsStep("myfield", "does not contain", table);
+
+            scenarioContext.VerifyAll();
+            pipelineService.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests the that the combo box does contains exactly the list of items.
+        /// </summary>
+        [TestMethod]
+        public void TestThenISeeComboBoxContainsStepContainsExactlyItems()
+        {
+            var testPage = new Mock<IPage>();
+
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            pipelineService.Setup(p => p.PerformAction<ValidateComboBoxAction>(
+                testPage.Object,
+                It.Is<ValidateComboBoxAction.ValidateComboBoxContext>(
+                    c => c.PropertyName == "myfield" && c.ComparisonType == ComboComparisonType.ContainsExactly && c.Items.Count == 1)))
+                .Returns(ActionResult.Successful());
+
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+
+            var table = new Table("Text");
+            table.AddRow(new Dictionary<string, string>
+                             {
+                                 { "Text", "Something Cool" }
+                             });
+
+            steps.ThenISeeComboBoxContainsStep("myfield", "contains exactly", table);
+
+            scenarioContext.VerifyAll();
+            pipelineService.VerifyAll();
+        }
     }
 }

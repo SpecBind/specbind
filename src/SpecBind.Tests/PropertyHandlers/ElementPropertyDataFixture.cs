@@ -5,7 +5,7 @@
 namespace SpecBind.Tests.PropertyHandlers
 {
     using System;
-
+    using System.Collections.Generic;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
@@ -277,6 +277,31 @@ namespace SpecBind.Tests.PropertyHandlers
             Assert.IsTrue(result);
 
             pageBase.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests that GetComboBoxItems from an element property.
+        /// </summary>
+        [TestMethod]
+        public void TestGetComboBoxItemsFromElementProperty()
+        {
+            var element = new BaseElement();
+            var propData = new Mock<IPropertyData>();
+            var page = new Mock<IPage>(MockBehavior.Strict);
+            var comboData = new List<ComboBoxItem>();
+
+            var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
+            pageBase.Setup(p => p.GetElementOptions(element)).Returns(comboData);
+
+            var propertyData = CreatePropertyData(pageBase, element);
+
+            var result = propertyData.GetComboBoxItems();
+
+            Assert.AreSame(comboData, result);
+
+            pageBase.VerifyAll();
+            page.VerifyAll();
+            propData.VerifyAll();
         }
 
         /// <summary>
