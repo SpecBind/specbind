@@ -63,6 +63,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Drivers\ISeleniumDriver.cs" />
+    <Compile Include="Drivers\SeleniumChromeDriver.cs" />
+    <Compile Include="Drivers\SeleniumChromeHeadlessDriver.cs" />
+    <Compile Include="Drivers\SeleniumDriverBase.cs" />
+    <Compile Include="Drivers\SeleniumEdgeDriver.cs" />
+    <Compile Include="Drivers\SeleniumFirefoxDriver.cs" />
+    <Compile Include="Drivers\SeleniumInternetExplorerDriver.cs" />
+    <Compile Include="Drivers\SeleniumOperaDriver.cs" />
+    <Compile Include="Drivers\SeleniumPhantomJSDriver.cs" />
+    <Compile Include="Drivers\SeleniumSafariDriver.cs" />
+    <Compile Include="Extensions\NameValueConfigurationCollectionExtensions.cs" />
     <Compile Include="LocatorBuilder.cs" />
     <Compile Include="NativeAttributeBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

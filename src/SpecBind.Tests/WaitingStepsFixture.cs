@@ -591,6 +591,7 @@ namespace SpecBind.Tests
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			browser.Setup(s => s.IsClosed).Returns(false);
 			browser.Setup(s => s.IsDisposed).Returns(false);
+            browser.Setup(s => s.CanGetUrl()).Returns(true);
 			browser.Setup(s => s.Url).Returns("http://www.specbind.org");
 			browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
 			WebDriverSupport.Browser = browser.Object;
@@ -613,6 +614,7 @@ namespace SpecBind.Tests
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			browser.Setup(s => s.IsClosed).Returns(false);
 			browser.Setup(s => s.IsDisposed).Returns(false);
+            browser.Setup(s => s.CanGetUrl()).Returns(true);
 			browser.Setup(s => s.Url).Returns("http://www.specbind.org");
 			browser.SetupSequence(s => s.ExecuteScript(It.IsAny<string>()))
 				.Returns("1")
@@ -637,6 +639,7 @@ namespace SpecBind.Tests
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			browser.Setup(s => s.IsClosed).Returns(false);
 			browser.Setup(s => s.IsDisposed).Returns(false);
+            browser.Setup(s => s.CanGetUrl()).Returns(true);
 			browser.Setup(s => s.Url).Returns("http://www.specbind.org");
 			browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
 			WebDriverSupport.Browser = browser.Object;
@@ -659,6 +662,7 @@ namespace SpecBind.Tests
 			var browser = new Mock<IBrowser>(MockBehavior.Strict);
 			browser.Setup(s => s.IsClosed).Returns(false);
 			browser.Setup(s => s.IsDisposed).Returns(false);
+            browser.Setup(s => s.CanGetUrl()).Returns(true);
 			browser.Setup(s => s.Url).Returns("http://www.specbind.org");
 			browser.SetupSequence(s => s.ExecuteScript(It.IsAny<string>()))
 				.Returns("1")
