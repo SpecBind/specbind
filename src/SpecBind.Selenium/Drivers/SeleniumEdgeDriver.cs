@@ -47,6 +47,12 @@ namespace SpecBind.Selenium.Drivers
             string downloadUrl;
             switch (winVersion)
             {
+                case "17134":
+                    downloadUrl = "https://download.microsoft.com/download/F/8/A/F8AF50AB-3C3A-4BC4-8773-DC27B32988DD/MicrosoftWebDriver.exe";
+                    break;
+                case "16299":
+                    downloadUrl = "https://download.microsoft.com/download/D/4/1/D417998A-58EE-4EFE-A7CC-39EF9E020768/MicrosoftWebDriver.exe";
+                    break;
                 case "15063":
                     downloadUrl = "https://download.microsoft.com/download/3/4/2/342316D7-EBE0-4F10-ABA2-AE8E0CDF36DD/MicrosoftWebDriver.exe";
                     break;
