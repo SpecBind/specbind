@@ -1,8 +1,8 @@
 ﻿// <copyright file="NameValueConfigurationCollectionExtensions.cs">
-//    Copyright © 2018 Rami Abughazaleh.  All rights reserved.
+//    Copyright © 2013 Dan Piessens.  All rights reserved.
 // </copyright>
 
-namespace SpecBind.Selenium.Extensions
+namespace SpecBind.Extensions
 {
     using System.Collections.Generic;
     using System.Configuration;

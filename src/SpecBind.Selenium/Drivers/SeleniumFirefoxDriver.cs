@@ -16,27 +16,19 @@ namespace SpecBind.Selenium.Drivers
     internal class SeleniumFirefoxDriver : SeleniumDriverBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SeleniumFirefoxDriver"/> class.
-        /// </summary>
-        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        public SeleniumFirefoxDriver(BrowserFactoryConfigurationElement browserFactoryConfiguration)
-            : base(browserFactoryConfiguration)
-        {
-        }
-
-        /// <summary>
         /// Creates the web driver from the specified browser factory configuration.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The configured web driver.</returns>
-        protected override IWebDriver CreateLocalDriver()
+        protected override IWebDriver CreateLocalDriver(BrowserFactoryConfiguration browserFactoryConfiguration)
         {
             IWebDriver driver;
 
-            if (this.Settings != null && this.Settings.Count > 0)
+            if (browserFactoryConfiguration.Settings != null && browserFactoryConfiguration.Settings.Count > 0)
             {
                 var options = new FirefoxOptions();
 
-                foreach (KeyValuePair<string, string> configurationElement in this.Settings)
+                foreach (KeyValuePair<string, string> configurationElement in browserFactoryConfiguration.Settings)
                 {
                     // Removed debug lines but left in comments for future logger support
                     // Debug.WriteLine("SpecBind.Selenium.SeleniumBrowserFactory.GetFireFoxDriver: Setting firefox profile setting:{0} with value: {1}", configurationElement.Name, configurationElement.Value);
@@ -66,7 +58,7 @@ namespace SpecBind.Selenium.Drivers
                 driver = new FirefoxDriver();
             }
 
-            if (this.EnsureCleanSession)
+            if (browserFactoryConfiguration.EnsureCleanSession)
             {
                 driver.Manage().Cookies.DeleteAllCookies();
             }
@@ -86,8 +78,9 @@ namespace SpecBind.Selenium.Drivers
         /// <summary>
         /// Creates the driver options.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The driver options.</returns>
-        protected override DriverOptions CreateRemoteDriverOptions()
+        protected override DriverOptions CreateRemoteDriverOptions(BrowserFactoryConfiguration browserFactoryConfiguration)
         {
             return new FirefoxOptions();
         }

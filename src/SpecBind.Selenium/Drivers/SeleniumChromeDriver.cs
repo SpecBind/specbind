@@ -21,9 +21,7 @@ namespace SpecBind.Selenium.Drivers
         /// <summary>
         /// Initializes a new instance of the <see cref="SeleniumChromeDriver" /> class.
         /// </summary>
-        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        public SeleniumChromeDriver(BrowserFactoryConfigurationElement browserFactoryConfiguration)
-            : base(browserFactoryConfiguration)
+        public SeleniumChromeDriver()
         {
             this.AdditionalArguments = new List<string>();
         }
@@ -37,14 +35,15 @@ namespace SpecBind.Selenium.Drivers
         /// <summary>
         /// Creates the web driver from the specified browser factory configuration.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The configured web driver.</returns>
-        protected override IWebDriver CreateLocalDriver()
+        protected override IWebDriver CreateLocalDriver(BrowserFactoryConfiguration browserFactoryConfiguration)
         {
             var chromeOptions = new ChromeOptions { LeaveBrowserRunning = false };
 
-            if (this.Settings.ContainsKey(ChromeArgumentSetting))
+            if (browserFactoryConfiguration.Settings.ContainsKey(ChromeArgumentSetting))
             {
-                var cmdLineSetting = this.Settings[ChromeArgumentSetting];
+                var cmdLineSetting = browserFactoryConfiguration.Settings[ChromeArgumentSetting];
                 if (!string.IsNullOrWhiteSpace(cmdLineSetting))
                 {
                     foreach (var arg in cmdLineSetting.Split(';'))
@@ -61,6 +60,11 @@ namespace SpecBind.Selenium.Drivers
 
             var chromeDriverService = ChromeDriverService.CreateDefaultService();
             chromeDriverService.HideCommandPromptWindow = true;
+
+            foreach (var preference in browserFactoryConfiguration.UserProfilePreferences)
+            {
+                chromeOptions.AddUserProfilePreference(preference.Key, preference.Value);
+            }
 
             return new ChromeDriver(chromeDriverService, chromeOptions);
         }
@@ -87,10 +91,18 @@ namespace SpecBind.Selenium.Drivers
         /// <summary>
         /// Creates the driver options.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The driver options.</returns>
-        protected override DriverOptions CreateRemoteDriverOptions()
+        protected override DriverOptions CreateRemoteDriverOptions(BrowserFactoryConfiguration browserFactoryConfiguration)
         {
-            return new ChromeOptions();
+            ChromeOptions chromeOptions = new ChromeOptions();
+
+            foreach (var preference in browserFactoryConfiguration.UserProfilePreferences)
+            {
+                chromeOptions.AddUserProfilePreference(preference.Key, preference.Value);
+            }
+
+            return chromeOptions;
         }
     }
 }

@@ -17,24 +17,16 @@ namespace SpecBind.Selenium.Drivers
         private const string IgnoreProtectedModeSettings = "IgnoreProtectedModeSettings";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SeleniumInternetExplorerDriver"/> class.
-        /// </summary>
-        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        public SeleniumInternetExplorerDriver(BrowserFactoryConfigurationElement browserFactoryConfiguration)
-            : base(browserFactoryConfiguration)
-        {
-        }
-
-        /// <summary>
         /// Creates the web driver from the specified browser factory configuration.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The configured web driver.</returns>
-        protected override IWebDriver CreateLocalDriver()
+        protected override IWebDriver CreateLocalDriver(BrowserFactoryConfiguration browserFactoryConfiguration)
         {
             bool ignoreProtectedModeSettings = false;
-            if (this.Settings.ContainsKey(IgnoreProtectedModeSettings))
+            if (browserFactoryConfiguration.Settings.ContainsKey(IgnoreProtectedModeSettings))
             {
-                string ignoreProtectedModeSettingsValue = this.Settings[IgnoreProtectedModeSettings];
+                string ignoreProtectedModeSettingsValue = browserFactoryConfiguration.Settings[IgnoreProtectedModeSettings];
                 if (!string.IsNullOrWhiteSpace(ignoreProtectedModeSettingsValue))
                 {
                     if (!bool.TryParse(ignoreProtectedModeSettingsValue, out ignoreProtectedModeSettings))
@@ -47,7 +39,7 @@ namespace SpecBind.Selenium.Drivers
 
             var explorerOptions = new InternetExplorerOptions
             {
-                EnsureCleanSession = this.EnsureCleanSession,
+                EnsureCleanSession = browserFactoryConfiguration.EnsureCleanSession,
                 IntroduceInstabilityByIgnoringProtectedModeSettings = ignoreProtectedModeSettings
             };
 
@@ -75,8 +67,9 @@ namespace SpecBind.Selenium.Drivers
         /// <summary>
         /// Creates the driver options.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The driver options.</returns>
-        protected override DriverOptions CreateRemoteDriverOptions()
+        protected override DriverOptions CreateRemoteDriverOptions(BrowserFactoryConfiguration browserFactoryConfiguration)
         {
             return new InternetExplorerOptions();
         }

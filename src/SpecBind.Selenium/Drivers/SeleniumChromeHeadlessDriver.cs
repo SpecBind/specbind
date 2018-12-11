@@ -14,9 +14,7 @@ namespace SpecBind.Selenium.Drivers
         /// <summary>
         /// Initializes a new instance of the <see cref="SeleniumChromeHeadlessDriver" /> class.
         /// </summary>
-        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        public SeleniumChromeHeadlessDriver(BrowserFactoryConfigurationElement browserFactoryConfiguration)
-            : base(browserFactoryConfiguration)
+        public SeleniumChromeHeadlessDriver()
         {
             this.AdditionalArguments.Add("--headless");
         }

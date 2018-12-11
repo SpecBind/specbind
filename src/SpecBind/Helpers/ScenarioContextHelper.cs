@@ -10,8 +10,8 @@ namespace SpecBind.Helpers
 	using System.IO;
 	using System.Linq;
 	using System.Text;
+	using Pages;
 	using TechTalk.SpecFlow;
-	using TechTalk.SpecFlow.Tracing;
 
 	/// <summary>
 	/// A helper class to abstract the scenario context.
@@ -19,6 +19,11 @@ namespace SpecBind.Helpers
 	[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 	public class ScenarioContextHelper : IScenarioContextHelper
 	{
+        /// <summary>
+        /// The scenario context key for holding the current page.
+        /// </summary>
+        public const string CurrentPageKey = "CurrentPage";
+
         private readonly ScenarioContext scenarioContext;
 
         private readonly FeatureContext featureContext;
@@ -133,6 +138,24 @@ namespace SpecBind.Helpers
         }
 
 	    /// <summary>
+        /// Gets the current page.
+        /// </summary>
+        /// <returns>The current page.</returns>
+        public IPage GetCurrentPage()
+        {
+            return this.GetValue<IPage>(CurrentPageKey);
+        }
+
+        /// <summary>
+        /// Sets the current page.
+        /// </summary>
+        /// <param name="page">The page.</param>
+        public void SetCurrentPage(IPage page)
+        {
+            this.SetValue(page, CurrentPageKey);
+        }
+
+        /// <summary>
 		/// Determines whether the current scenario's feature contains the specified tag.
 		/// </summary>
 		/// <param name="tag">The tag.</param>

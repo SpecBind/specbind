@@ -7,6 +7,7 @@ namespace SpecBind.ActionPipeline
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
     using BoDi;
 
@@ -96,9 +97,19 @@ namespace SpecBind.ActionPipeline
             var excludedAssemblies = configSection.Application.ExcludedAssemblies.Cast<AssemblyElement>().Select(a => a.Name);
             // Get all items from the current assemblies
             var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic && !a.GlobalAssemblyCache && !excludedAssemblies.Contains(a.FullName));
-            foreach (var asmType in assemblies.SelectMany(a => a.GetExportedTypes()).Where(t => !t.IsAbstract && !t.IsInterface))
+            foreach (Assembly assembly in assemblies)
             {
-                this.RegisterType(asmType);
+                try
+                {
+                    foreach (var asmType in assembly.GetExportedTypes().Where(t => !t.IsAbstract && !t.IsInterface))
+                    {
+                        this.RegisterType(asmType);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Failed to load assembly '{assembly.FullName}'.", ex);
+                }
             }
 	    }
 

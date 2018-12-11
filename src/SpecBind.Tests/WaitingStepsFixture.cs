@@ -50,7 +50,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -75,7 +75,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -100,7 +100,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -125,7 +125,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -150,7 +150,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -175,7 +175,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -200,7 +200,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -225,7 +225,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -250,7 +250,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -275,7 +275,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -300,7 +300,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -325,7 +325,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -350,7 +350,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -375,7 +375,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -400,7 +400,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -425,7 +425,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -450,7 +450,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -475,7 +475,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -500,7 +500,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -525,7 +525,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -550,7 +550,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -572,7 +572,7 @@ namespace SpecBind.Tests
             testPage.Setup(t => t.WaitForPageToBeActive());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -594,7 +594,7 @@ namespace SpecBind.Tests
             browser.Setup(s => s.CanGetUrl()).Returns(true);
 			browser.Setup(s => s.Url).Returns("http://www.specbind.org");
 			browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
-			WebDriverSupport.Browser = browser.Object;
+            WebDriverSupport.SetCurrentBrowser(browser.Object);
 
 			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
@@ -619,7 +619,7 @@ namespace SpecBind.Tests
 			browser.SetupSequence(s => s.ExecuteScript(It.IsAny<string>()))
 				.Returns("1")
 				.Returns("0");
-			WebDriverSupport.Browser = browser.Object;
+            WebDriverSupport.SetCurrentBrowser(browser.Object);
 
 			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
@@ -642,7 +642,7 @@ namespace SpecBind.Tests
             browser.Setup(s => s.CanGetUrl()).Returns(true);
 			browser.Setup(s => s.Url).Returns("http://www.specbind.org");
 			browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
-			WebDriverSupport.Browser = browser.Object;
+            WebDriverSupport.SetCurrentBrowser(browser.Object);
 
 			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
@@ -667,7 +667,7 @@ namespace SpecBind.Tests
 			browser.SetupSequence(s => s.ExecuteScript(It.IsAny<string>()))
 				.Returns("1")
 				.Returns("0");
-			WebDriverSupport.Browser = browser.Object;
+            WebDriverSupport.SetCurrentBrowser(browser.Object);
 
 			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
 			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
@@ -690,7 +690,7 @@ namespace SpecBind.Tests
             browser.Setup(s => s.CanGetUrl()).Returns(true);
             browser.Setup(s => s.Url).Returns("http://www.specbind.org");
             browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
-            WebDriverSupport.Browser = browser.Object;
+            WebDriverSupport.SetCurrentBrowser(browser.Object);
 
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
@@ -711,7 +711,7 @@ namespace SpecBind.Tests
             browser.Setup(s => s.IsClosed).Returns(false);
             browser.Setup(s => s.IsDisposed).Returns(false);
             browser.Setup(s => s.CanGetUrl()).Returns(false);
-            WebDriverSupport.Browser = browser.Object;
+            WebDriverSupport.SetCurrentBrowser(browser.Object);
 
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
@@ -734,7 +734,7 @@ namespace SpecBind.Tests
             browser.Setup(s => s.CanGetUrl()).Returns(true);
             browser.Setup(s => s.Url).Returns("http://www.specbind.org");
             browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
-            WebDriverSupport.Browser = browser.Object;
+            WebDriverSupport.SetCurrentBrowser(browser.Object);
 
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
@@ -755,7 +755,7 @@ namespace SpecBind.Tests
             browser.Setup(s => s.IsClosed).Returns(false);
             browser.Setup(s => s.IsDisposed).Returns(false);
             browser.Setup(s => s.CanGetUrl()).Returns(false);
-            WebDriverSupport.Browser = browser.Object;
+            WebDriverSupport.SetCurrentBrowser(browser.Object);
 
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);

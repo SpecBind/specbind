@@ -6,10 +6,9 @@ namespace SpecBind.Selenium
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.IO;
 
     using OpenQA.Selenium;
+    using OpenQA.Selenium.Support.UI;
 
     using SpecBind.Actions;
     using SpecBind.BrowserSupport;
@@ -17,19 +16,12 @@ namespace SpecBind.Selenium
     using SpecBind.Pages;
 
     using Cookie = System.Net.Cookie;
-    using OpenQA.Selenium.Support.UI;
 
     /// <summary>
     /// A web browser level wrapper for selenium
     /// </summary>
-    public class SeleniumBrowser : BrowserBase
+    public class SeleniumBrowser : SeleniumBase
     {
-        private readonly Lazy<IWebDriver> driver;
-
-        private readonly SeleniumPageBuilder pageBuilder;
-
-        private readonly Dictionary<Type, Func<IWebDriver, IBrowser, Action<object>, object>> pageCache;
-
         private bool switchedContext;
 
         /// <summary>
@@ -38,46 +30,8 @@ namespace SpecBind.Selenium
         /// <param name="driver">The browser driver as a lazy object.</param>
         /// <param name="logger">The logger.</param>
         public SeleniumBrowser(Lazy<IWebDriver> driver, ILogger logger)
-            : base(logger)
+            : base(driver, logger)
         {
-            // TODO: create timeouts structure, pass it through this constructor, so we know what the default timeouts are.
-            this.driver = driver;
-
-            this.pageBuilder = new SeleniumPageBuilder();
-            this.pageCache = new Dictionary<Type, Func<IWebDriver, IBrowser, Action<object>, object>>();
-        }
-
-        /// <summary>
-        /// Gets the type of the base page.
-        /// </summary>
-        /// <value>The type of the base page.</value>
-        public override Type BasePageType => null;
-
-        /// <summary>
-        /// Gets the url of the current page.
-        /// </summary>
-        /// <value>
-        /// The url of the base page.
-        /// </value>
-        public override string Url => this.driver.Value.Url;
-
-        /// <summary>
-        /// Gets the current driver to enable the user to do custom steps if necessary
-        /// </summary>
-        public IWebDriver Driver => this.driver.Value;
-
-        /// <summary>
-        /// Gets a value indicating whether or not the browser is created.
-        /// </summary>
-        public override bool IsCreated => this.driver.IsValueCreated;
-
-        /// <summary>
-        /// Finalizes an instance of the <see cref="SeleniumBrowser" /> class.
-        /// </summary>
-        [ExcludeFromCodeCoverage]
-        ~SeleniumBrowser()
-        {
-            this.Dispose(false);
         }
 
         /// <summary>
@@ -97,7 +51,7 @@ namespace SpecBind.Selenium
             string domain,
             bool secure)
         {
-            var localDriver = this.driver.Value;
+            var localDriver = this.Driver;
             var cookieContainer = localDriver.Manage().Cookies;
 
             var currentCookie = cookieContainer.GetCookieNamed(name);
@@ -116,22 +70,22 @@ namespace SpecBind.Selenium
         /// <returns>The cookie (if exists)</returns>
         public override Cookie GetCookie(string name)
         {
-            var localDriver = this.driver.Value;
+            var localDriver = this.Driver;
             var cookieContainer = localDriver.Manage().Cookies;
             var seleniumCookie = cookieContainer.GetCookieNamed(name);
 
             if (seleniumCookie != null)
             {
                 var cookie = new Cookie()
-                             {
-                                 Name = seleniumCookie.Name,
-                                 Domain = seleniumCookie.Domain,
-                                 HttpOnly = seleniumCookie.IsHttpOnly,
-                                 Expires = seleniumCookie.Expiry.GetValueOrDefault(),
-                                 Path = seleniumCookie.Path,
-                                 Value = seleniumCookie.Value,
-                                 Secure = seleniumCookie.Secure
-                             };
+                {
+                    Name = seleniumCookie.Name,
+                    Domain = seleniumCookie.Domain,
+                    HttpOnly = seleniumCookie.IsHttpOnly,
+                    Expires = seleniumCookie.Expiry.GetValueOrDefault(),
+                    Path = seleniumCookie.Path,
+                    Value = seleniumCookie.Value,
+                    Secure = seleniumCookie.Secure
+                };
 
                 return cookie;
             }
@@ -146,7 +100,7 @@ namespace SpecBind.Selenium
         /// </summary>
         public override void ClearCookies()
         {
-            var localDriver = this.driver.Value;
+            var localDriver = this.Driver;
             localDriver.Manage().Cookies.DeleteAllCookies();
         }
 
@@ -155,7 +109,7 @@ namespace SpecBind.Selenium
         /// </summary>
         public override void ClearUrl()
         {
-            this.driver.Value.Url = "about:blank";
+            this.Driver.Url = "about:blank";
         }
 
         /// <summary>
@@ -164,18 +118,12 @@ namespace SpecBind.Selenium
         /// <returns><c>true</c> if the URL can be retrieved; otherwise, <c>false</c>.</returns>
         public override bool CanGetUrl()
         {
-            return !this.IsAlertDialogDisplayed();
-        }
-
-        /// <summary>
-        /// Closes this instance.
-        /// </summary>
-        public override void Close()
-        {
-            if (this.driver.IsValueCreated)
+            if (!this.IsCreated)
             {
-                this.driver.Value.Close();
+                return false;
             }
+
+            return !this.IsAlertDialogDisplayed();
         }
 
         /// <summary>
@@ -185,7 +133,7 @@ namespace SpecBind.Selenium
         /// <param name="text">The text to enter.</param>
         public override void DismissAlert(AlertBoxAction action, string text)
         {
-            var alert = this.driver.Value.SwitchTo().Alert();
+            var alert = this.Driver.SwitchTo().Alert();
 
             if (text != null)
             {
@@ -216,7 +164,7 @@ namespace SpecBind.Selenium
         /// <returns>The result of the script if needed.</returns>
         public override object ExecuteScript(string script, params object[] args)
         {
-            var javascriptExecutor = this.driver.Value as IJavaScriptExecutor;
+            var javascriptExecutor = this.Driver as IJavaScriptExecutor;
 
             if (javascriptExecutor == null)
             {
@@ -242,63 +190,7 @@ namespace SpecBind.Selenium
         /// <param name="url">The URL specified as a well formed Uri.</param>
         public override void GoTo(Uri url)
         {
-            this.driver.Value.Navigate().GoToUrl(url);
-        }
-
-        /// <summary>
-        /// Takes the screenshot from the native browser.
-        /// </summary>
-        /// <param name="imageFolder">The image folder.</param>
-        /// <param name="fileNameBase">The file name base.</param>
-        /// <returns>The complete file path if created; otherwise <c>null</c>.</returns>
-        public override string TakeScreenshot(string imageFolder, string fileNameBase)
-        {
-            var localDriver = this.driver.Value;
-            var takesScreenshot = localDriver as ITakesScreenshot;
-
-            if (takesScreenshot == null)
-            {
-                return null;
-            }
-
-            try
-            {
-                var fullPath = Path.Combine(imageFolder, $"{fileNameBase}.jpg");
-
-                var screenshot = takesScreenshot.GetScreenshot();
-                screenshot.SaveAsFile(fullPath, ScreenshotImageFormat.Jpeg);
-
-                return fullPath;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Save the html from the native browser.
-        /// </summary>
-        /// <param name="destinationFolder">The destination folder.</param>
-        /// <param name="fileNameBase">The file name base.</param>
-        /// <returns>The complete file path if created; otherwise <c>null</c>.</returns>
-        public override string SaveHtml(string destinationFolder, string fileNameBase)
-        {
-            var localDriver = this.driver.Value;
-            try
-            {
-                var fullPath = Path.Combine(destinationFolder, $"{fileNameBase}.html");
-                using (var writer = File.CreateText(fullPath))
-                {
-                    writer.Write(localDriver.PageSource);
-                }
-
-                return fullPath;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            this.Driver.Navigate().GoToUrl(url);
         }
 
         /// <summary>
@@ -308,7 +200,7 @@ namespace SpecBind.Selenium
         /// <returns>A collection of URIs to validate.</returns>
         protected override IList<string> GetNativePageLocation(IPage page)
         {
-            var currentLocation = this.driver.Value.Url;
+            var currentLocation = this.Driver.Url;
             return new List<string> { currentLocation };
         }
 
@@ -320,7 +212,7 @@ namespace SpecBind.Selenium
         /// <returns>The created page object.</returns>
         protected override IPage CreateNativePage(Type pageType, bool verifyPageValidity)
         {
-            var webDriver = this.driver.Value;
+            var webDriver = this.Driver;
 
             // Check to see if a frames reference exists, and switch if needed
             PageNavigationAttribute navigationAttribute;
@@ -336,81 +228,7 @@ namespace SpecBind.Selenium
                 this.switchedContext = false;
             }
 
-            Func<IWebDriver, IBrowser, Action<object>, object> pageBuildMethod;
-            if (!this.pageCache.TryGetValue(pageType, out pageBuildMethod))
-            {
-                pageBuildMethod = this.pageBuilder.CreatePage(pageType);
-                this.pageCache.Add(pageType, pageBuildMethod);
-            }
-
-            var nativePage = pageBuildMethod(webDriver, this, null);
-
-            return new SeleniumPage(nativePage, webDriver)
-                   {
-                       ExecuteWithElementLocateTimeout = this.ExecuteWithElementLocateTimeout,
-                       EvaluateWithElementLocateTimeout =
-                           this.EvaluateWithElementLocateTimeout
-                   };
-        }
-
-        /// <summary>
-        /// Releases windows and driver specific resources. This method is already protected by the base instance.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected override void DisposeWindow(bool disposing)
-        {
-            if (this.IsDisposed)
-            {
-                return;
-            }
-
-            if (this.driver.IsValueCreated)
-            {
-                var localDriver = this.driver.Value;
-                localDriver.Quit();
-                localDriver.Dispose();
-            }
-        }
-
-        /// <summary>
-        /// Evaluates the with element locate timeout.
-        /// </summary>
-        /// <param name="timeout">The timeout.</param>
-        /// <param name="work">The work.</param>
-        /// <returns><c>true</c> if the element is located; otherwise <c>false</c>.</returns>
-        private bool EvaluateWithElementLocateTimeout(TimeSpan timeout, Func<bool> work)
-        {
-            var timeoutManager = this.driver.Value.Manage().Timeouts();
-
-            try
-            {
-                timeoutManager.ImplicitWait = timeout;
-                return work();
-            }
-            finally
-            {
-                timeoutManager.ImplicitWait = ActionBase.DefaultTimeout;
-            }
-        }
-
-        /// <summary>
-        /// Executes the with element locate timeout.
-        /// </summary>
-        /// <param name="timeout">The timeout.</param>
-        /// <param name="work">The work.</param>
-        private void ExecuteWithElementLocateTimeout(TimeSpan timeout, Action work)
-        {
-            var timeoutManager = this.driver.Value.Manage().Timeouts();
-
-            try
-            {
-                timeoutManager.ImplicitWait = timeout;
-                work();
-            }
-            finally
-            {
-                timeoutManager.ImplicitWait = ActionBase.DefaultTimeout;
-            }
+            return this.CreateNativePage(pageType);
         }
 
         /// <summary>
@@ -419,8 +237,13 @@ namespace SpecBind.Selenium
         /// <returns><c>true</c> if the alert dialog is displayed; otherwise, <c>false</c>.</returns>
         private bool IsAlertDialogDisplayed()
         {
-            IAlert alert = ExpectedConditions.AlertIsPresent().Invoke(this.driver.Value);
-            return (alert != null);
+            if (!this.IsCreated)
+            {
+                return false;
+            }
+
+            IAlert alert = ExpectedConditions.AlertIsPresent().Invoke(this.Driver);
+            return alert != null;
         }
     }
 }

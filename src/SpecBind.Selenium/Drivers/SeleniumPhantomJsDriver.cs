@@ -18,19 +18,10 @@ namespace SpecBind.Selenium.Drivers
         private const string PhantomjsExe = "phantomjs.exe";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SeleniumPhantomJSDriver"/> class.
-        /// </summary>
-        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        public SeleniumPhantomJSDriver(BrowserFactoryConfigurationElement browserFactoryConfiguration)
-            : base(browserFactoryConfiguration)
-        {
-        }
-
-        /// <summary>
         /// Creates the web driver from the specified browser factory configuration.
         /// </summary>
         /// <returns>The configured web driver.</returns>
-        protected override IWebDriver CreateLocalDriver()
+        protected override IWebDriver CreateLocalDriver(BrowserFactoryConfiguration browserFactoryConfiguration)
         {
             var phantomJsDriverService = PhantomJSDriverService.CreateDefaultService();
             phantomJsDriverService.HideCommandPromptWindow = true;
@@ -57,7 +48,7 @@ namespace SpecBind.Selenium.Drivers
         /// Creates the driver options.
         /// </summary>
         /// <returns>The driver options.</returns>
-        protected override DriverOptions CreateRemoteDriverOptions()
+        protected override DriverOptions CreateRemoteDriverOptions(BrowserFactoryConfiguration browserFactoryConfiguration)
         {
             return new PhantomJSOptions();
         }

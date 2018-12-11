@@ -35,7 +35,7 @@ namespace SpecBind.Tests
                     .Returns(ActionResult.Successful("The Field Value"));
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(page.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(page.Object);
 
             var steps = new TokenSteps(scenarioContext.Object, pipelineService.Object);
 

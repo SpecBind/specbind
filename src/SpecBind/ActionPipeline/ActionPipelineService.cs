@@ -25,6 +25,8 @@ namespace SpecBind.ActionPipeline
 	{
 		private readonly IActionRepository actionRepository;
 
+        private bool actionRepositoryInitialized;
+
         /// <summary>
 		/// Initializes a new instance of the <see cref="ActionPipelineService"/> class.
 		/// </summary>
@@ -32,6 +34,7 @@ namespace SpecBind.ActionPipeline
 		public ActionPipelineService(IActionRepository actionRepository)
 		{
 			this.actionRepository = actionRepository;
+            this.actionRepositoryInitialized = false;
 		}
 
         /// <summary>
@@ -57,6 +60,13 @@ namespace SpecBind.ActionPipeline
         /// <returns>The result of the action</returns>
 	    public ActionResult PerformAction(IPage page, IAction action, ActionContext context)
 		{
+            if (!this.actionRepositoryInitialized)
+            {
+                this.actionRepository.Initialize();
+
+                this.actionRepositoryInitialized = true;
+            }
+
 			var locater = this.CreateElementLocater(page);
 			action.ElementLocator = locater;
 

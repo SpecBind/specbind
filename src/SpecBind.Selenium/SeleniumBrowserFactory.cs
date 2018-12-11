@@ -6,6 +6,7 @@ namespace SpecBind.Selenium
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Threading;
     using Drivers;
     using OpenQA.Selenium;
@@ -34,7 +35,7 @@ namespace SpecBind.Selenium
         /// Initializes a new instance of the <see cref="SeleniumBrowserFactory"/> class.
         /// </summary>
         public SeleniumBrowserFactory()
-            : base(ValidateWebDriver())
+            : base(LoadConfiguration())
         {
         }
 
@@ -42,7 +43,23 @@ namespace SpecBind.Selenium
         /// Gets the selenium driver.
         /// </summary>
         /// <value>The selenium driver.</value>
-        public ISeleniumDriver SeleniumDriver { get; private set; }
+        public Lazy<ISeleniumDriver> SeleniumDriver { get; private set; }
+
+        /// <summary>
+        /// Resets the driver.
+        /// </summary>
+        /// <param name="browser">The browser.</param>
+        public override void ResetDriver(IBrowser browser)
+        {
+            var launchAction = new Func<IWebDriver>(() =>
+            {
+                return this.CreateWebDriver(this.SeleniumDriver.Value, this.Configuration);
+            });
+
+            var lazyBrowser = new Lazy<IWebDriver>(launchAction, LazyThreadSafetyMode.None);
+
+            (browser as SeleniumBrowser).UpdateDriver(lazyBrowser);
+        }
 
         /// <summary>
         /// Creates the web driver.
@@ -51,9 +68,9 @@ namespace SpecBind.Selenium
         /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The created web driver.</returns>
         /// <exception cref="System.InvalidOperationException">Thrown if the browser is not supported.</exception>
-        internal IWebDriver CreateWebDriver(ISeleniumDriver seleniumDriver, BrowserFactoryConfigurationElement browserFactoryConfiguration)
+        internal IWebDriver CreateWebDriver(ISeleniumDriver seleniumDriver, BrowserFactoryConfiguration browserFactoryConfiguration)
         {
-            IWebDriver driver = seleniumDriver.Create();
+            IWebDriver driver = seleniumDriver.Create(browserFactoryConfiguration);
 
             // Set Driver Settings
             var managementSettings = driver.Manage();
@@ -69,88 +86,69 @@ namespace SpecBind.Selenium
             WaitForPageAction.DefaultTimeout = browserFactoryConfiguration.PageLoadTimeout;
             ActionBase.RetryValidationUntilTimeout = applicationConfiguration.RetryValidationUntilTimeout;
 
-            // Maximize window
-            managementSettings.Window.Maximize();
+            if (seleniumDriver.MaximizeWindow)
+            {
+                // Maximize window
+                managementSettings.Window.Maximize();
+            }
 
             return driver;
         }
 
         /// <summary>
-        /// Gets the selenium driver.
+        /// Creates the selenium driver.
         /// </summary>
-        /// <param name="browserType">Type of the browser.</param>
-        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The selenium driver.</returns>
-        internal ISeleniumDriver GetSeleniumDriver(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration)
+        internal ISeleniumDriver CreateSeleniumDriver()
         {
-            if (this.SeleniumDriver != null)
-            {
-                return this.SeleniumDriver;
-            }
-
-            switch (browserType)
+            switch (this.Configuration.BrowserType)
             {
                 case BrowserType.IE:
-                    this.SeleniumDriver = new SeleniumInternetExplorerDriver(browserFactoryConfiguration);
-                    break;
+                    return new SeleniumInternetExplorerDriver();
                 case BrowserType.FireFox:
-                    this.SeleniumDriver = new SeleniumFirefoxDriver(browserFactoryConfiguration);
-                    break;
+                    return new SeleniumFirefoxDriver();
                 case BrowserType.Chrome:
-                    this.SeleniumDriver = new SeleniumChromeDriver(browserFactoryConfiguration);
-                    break;
+                    return new SeleniumChromeDriver();
                 case BrowserType.ChromeHeadless:
-                    this.SeleniumDriver = new SeleniumChromeDriver(browserFactoryConfiguration);
-                    break;
-                case BrowserType.PhantomJS:
-                    this.SeleniumDriver = new SeleniumPhantomJSDriver(browserFactoryConfiguration);
-                    break;
+                    return new SeleniumChromeDriver();
                 case BrowserType.Safari:
-                    this.SeleniumDriver = new SeleniumSafariDriver(browserFactoryConfiguration);
-                    break;
-                case BrowserType.Opera:
-                    this.SeleniumDriver = new SeleniumOperaDriver(browserFactoryConfiguration);
-                    break;
+                    return new SeleniumSafariDriver();
                 case BrowserType.Edge:
-                    this.SeleniumDriver = new SeleniumEdgeDriver(browserFactoryConfiguration);
-                    break;
+                    return new SeleniumEdgeDriver();
                 default:
                     throw new InvalidOperationException(
-                        $"Browser type '{browserType}' is not supported in Selenium local mode. Did you mean to configure a remote driver?");
+                        $"Browser type '{this.Configuration.BrowserType}' is not supported in Selenium local mode. Did you mean to configure a remote driver?");
             }
-
-            return this.SeleniumDriver;
-        }
-
-        /// <summary>
-        /// Creates the browser.
-        /// </summary>
-        /// <param name="browserType">Type of the browser.</param>
-        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        /// <param name="logger">The logger.</param>
-        /// <returns>A browser object.</returns>
-        /// <exception cref="System.InvalidOperationException">Thrown if the browser type is not supported.</exception>
-        protected override IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration, ILogger logger)
-        {
-            this.SeleniumDriver = this.GetSeleniumDriver(browserType, browserFactoryConfiguration);
-
-            var launchAction = new Func<IWebDriver>(() => this.CreateWebDriver(this.SeleniumDriver, browserFactoryConfiguration));
-
-            var browser = new Lazy<IWebDriver>(launchAction, LazyThreadSafetyMode.None);
-
-            return new SeleniumBrowser(browser, logger);
         }
 
         /// <summary>
         /// Validates the driver setup.
         /// </summary>
-        /// <param name="browserType">Type of the browser.</param>
-        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        protected override void ValidateDriverSetup(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration)
+        /// <param name="logger">The logger.</param>
+        protected override void ValidateDriverSetup(ILogger logger)
         {
-            ISeleniumDriver seleniumDriver = this.GetSeleniumDriver(browserType, browserFactoryConfiguration);
+            ISeleniumDriver seleniumDriver = this.CreateSeleniumDriver();
 
-            seleniumDriver.Validate(SeleniumDriverPath);
+            seleniumDriver.Validate(this.Configuration, SeleniumDriverPath);
+        }
+
+        /// <summary>
+        /// Creates the browser.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        /// <returns>A browser object.</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown if the browser type is not supported.</exception>
+        protected override IBrowser CreateBrowser(ILogger logger)
+        {
+            this.SeleniumDriver = new Lazy<ISeleniumDriver>(() => this.CreateSeleniumDriver());
+            var launchAction = new Func<IWebDriver>(() =>
+            {
+                return this.CreateWebDriver(this.SeleniumDriver.Value, this.Configuration);
+            });
+
+            var browser = new Lazy<IWebDriver>(launchAction, LazyThreadSafetyMode.None);
+
+            return new SeleniumBrowser(browser, logger);
         }
 
         /// <summary>
@@ -179,16 +177,6 @@ namespace SpecBind.Selenium
             }
 
             return path;
-        }
-
-        /// <summary>
-        /// Determines whether or not to perform web driver validation
-        /// </summary>
-        /// <returns><c>true</c> if the web driver should be validated; otherwise <c>false</c></returns>
-        private static bool ValidateWebDriver()
-        {
-            var configSection = SettingHelper.GetConfigurationSection();
-            return configSection.BrowserFactory.ValidateWebDriver;
         }
     }
 }

@@ -253,11 +253,18 @@ namespace SpecBind.Selenium.Tests
             var locator = new Mock<ITargetLocator>(MockBehavior.Strict);
             locator.Setup(l => l.Alert()).Returns<IAlert>(null);
 
+            var url = new Uri("http://www.bing.com");
+
+            var navigation = new Mock<INavigation>(MockBehavior.Strict);
+            navigation.Setup(n => n.GoToUrl(url));
+
             var driver = this.CreateMockWebDriverExpectingInitialization();
+            driver.Setup(d => d.Navigate()).Returns(navigation.Object);
             driver.Setup(d => d.SwitchTo()).Returns(locator.Object);
 
             this.TestBrowserWith(driver, browser =>
             {
+                browser.GoTo(url);
                 Assert.IsTrue(browser.CanGetUrl());
             });
         }
@@ -273,11 +280,18 @@ namespace SpecBind.Selenium.Tests
             var locator = new Mock<ITargetLocator>(MockBehavior.Strict);
             locator.Setup(l => l.Alert()).Returns(alerter.Object);
 
+            var url = new Uri("http://www.bing.com");
+
+            var navigation = new Mock<INavigation>(MockBehavior.Strict);
+            navigation.Setup(n => n.GoToUrl(url));
+
             var driver = this.CreateMockWebDriverExpectingInitialization();
+            driver.Setup(d => d.Navigate()).Returns(navigation.Object);
             driver.Setup(d => d.SwitchTo()).Returns(locator.Object);
 
             this.TestBrowserWith(driver, browser =>
             {
+                browser.GoTo(url);
                 Assert.IsFalse(browser.CanGetUrl());
             });
         }

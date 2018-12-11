@@ -17,6 +17,11 @@ namespace SpecBind.ActionPipeline
 	public interface IActionRepository
 	{
         /// <summary>
+        /// Initializes this instance.
+        /// </summary>
+        void Initialize();
+
+        /// <summary>
         /// Creates the action.
         /// </summary>
         /// <typeparam name="TAction">The type of the action.</typeparam>

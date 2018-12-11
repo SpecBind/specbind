@@ -37,7 +37,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -64,7 +64,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -85,7 +85,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns((IPage)null);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns((IPage)null);
 
             var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -114,8 +114,8 @@ namespace SpecBind.Tests
                            .Returns(ActionResult.Successful(listItem.Object));
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(page.Object);
-            scenarioContext.Setup(s => s.SetValue(listItem.Object, PageStepBase.CurrentPageKey));
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(page.Object);
+            scenarioContext.Setup(s => s.SetCurrentPage(listItem.Object));
 
             var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -144,8 +144,8 @@ namespace SpecBind.Tests
                            .Returns(ActionResult.Successful(listItem.Object));
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(page.Object);
-            scenarioContext.Setup(s => s.SetValue(listItem.Object, PageStepBase.CurrentPageKey));
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(page.Object);
+            scenarioContext.Setup(s => s.SetCurrentPage(listItem.Object));
 
             var table = new Table("Field", "Rule", "Value");
             table.AddRow("item1", "equals", "foo");

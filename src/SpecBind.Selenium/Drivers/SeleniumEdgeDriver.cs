@@ -17,19 +17,11 @@ namespace SpecBind.Selenium.Drivers
     internal class SeleniumEdgeDriver : SeleniumDriverBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SeleniumEdgeDriver"/> class.
-        /// </summary>
-        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        public SeleniumEdgeDriver(BrowserFactoryConfigurationElement browserFactoryConfiguration)
-            : base(browserFactoryConfiguration)
-        {
-        }
-
-        /// <summary>
         /// Creates the web driver from the specified browser factory configuration.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The configured web driver.</returns>
-        protected override IWebDriver CreateLocalDriver()
+        protected override IWebDriver CreateLocalDriver(BrowserFactoryConfiguration browserFactoryConfiguration)
         {
             var edgeOptions = new EdgeOptions { PageLoadStrategy = EdgePageLoadStrategy.Normal };
             var edgeDriverService = EdgeDriverService.CreateDefaultService();
@@ -44,6 +36,7 @@ namespace SpecBind.Selenium.Drivers
         {
             var winVersion = GetWindowsBuildNumber();
 
+            // Download links: https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
             string downloadUrl;
             switch (winVersion)
             {
@@ -82,8 +75,9 @@ namespace SpecBind.Selenium.Drivers
         /// <summary>
         /// Creates the driver options.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The driver options.</returns>
-        protected override DriverOptions CreateRemoteDriverOptions()
+        protected override DriverOptions CreateRemoteDriverOptions(BrowserFactoryConfiguration browserFactoryConfiguration)
         {
             return new EdgeOptions();
         }
