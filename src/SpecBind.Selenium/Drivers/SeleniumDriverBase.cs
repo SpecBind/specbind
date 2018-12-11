@@ -12,7 +12,6 @@ namespace SpecBind.Selenium.Drivers
     using System.Linq;
     using System.Net;
     using Configuration;
-    using Extensions;
     using Helpers;
     using OpenQA.Selenium;
 
@@ -26,45 +25,36 @@ namespace SpecBind.Selenium.Drivers
         /// <summary>
         /// Initializes a new instance of the <see cref="SeleniumDriverBase" /> class.
         /// </summary>
-        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        public SeleniumDriverBase(BrowserFactoryConfigurationElement browserFactoryConfiguration)
+        public SeleniumDriverBase()
         {
-            this.EnsureCleanSession = browserFactoryConfiguration.EnsureCleanSession;
-            this.Settings = browserFactoryConfiguration.Settings
-                .ToKeyValuePairs()
-                .ToDictionary(x => x.Key, x => x.Value);
+            this.MaximizeWindow = true;
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the session cache and cookies should be cleared before starting.
+        /// Gets or sets a value indicating whether to maximize the window.
         /// </summary>
-        /// <value><c>true</c> if the session should be cleared; otherwise <c>false</c>.</value>
-        public bool EnsureCleanSession { get; set; }
-
-        /// <summary>
-        /// Gets or sets the settings.
-        /// </summary>
-        /// <value>The settings.</value>
-        public Dictionary<string, string> Settings { get; set; }
+        /// <value><c>true</c> if the window is maximized; otherwise, <c>false</c>.</value>
+        public bool MaximizeWindow { get; set; }
 
         /// <summary>
         /// Creates the remote driver.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The created remote web driver.</returns>
-        public IWebDriver Create()
+        public IWebDriver Create(BrowserFactoryConfiguration browserFactoryConfiguration)
         {
-            var remoteUri = this.GetRemoteDriverUri();
+            var remoteUri = this.GetRemoteDriverUri(browserFactoryConfiguration);
             if (remoteUri == null)
             {
-                return this.CreateLocalDriver();
+                return this.CreateLocalDriver(browserFactoryConfiguration);
             }
 
-            DriverOptions driverOptions = this.CreateRemoteDriverOptions();
+            DriverOptions driverOptions = this.CreateRemoteDriverOptions(browserFactoryConfiguration);
 
             // Add any additional settings that are not reserved
             var envRegex = new System.Text.RegularExpressions.Regex("\\$\\{(.+)\\}");
             var reservedSettings = new[] { RemoteUrlSetting };
-            foreach (var setting in this.Settings
+            foreach (var setting in browserFactoryConfiguration.Settings
                 .OfType<NameValueConfigurationElement>()
                 .Where(s => reservedSettings
                     .All(r => !string.Equals(r, s.Name, StringComparison.OrdinalIgnoreCase))))
@@ -86,11 +76,12 @@ namespace SpecBind.Selenium.Drivers
         /// <summary>
         /// Validates the specified browser factory configuration.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <param name="seleniumDriverPath">The selenium driver path.</param>
-        public void Validate(string seleniumDriverPath)
+        public void Validate(BrowserFactoryConfiguration browserFactoryConfiguration, string seleniumDriverPath)
         {
             // If we're using a remote driver, don't check paths
-            if (this.GetRemoteDriverUri() != null)
+            if (this.GetRemoteDriverUri(browserFactoryConfiguration) != null)
             {
                 return;
             }
@@ -98,7 +89,7 @@ namespace SpecBind.Selenium.Drivers
             IWebDriver driver = null;
             try
             {
-                driver = this.CreateLocalDriver();
+                driver = this.CreateLocalDriver(browserFactoryConfiguration);
                 driver.Quit();
             }
             catch (DriverServiceNotFoundException ex)
@@ -153,8 +144,9 @@ namespace SpecBind.Selenium.Drivers
         /// <summary>
         /// Creates the local web driver from the specified browser factory configuration.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The configured web driver.</returns>
-        protected abstract IWebDriver CreateLocalDriver();
+        protected abstract IWebDriver CreateLocalDriver(BrowserFactoryConfiguration browserFactoryConfiguration);
 
         /// <summary>
         /// Downloads the driver to the specified path.
@@ -165,22 +157,24 @@ namespace SpecBind.Selenium.Drivers
         /// <summary>
         /// Creates the driver options.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The driver options.</returns>
-        protected abstract DriverOptions CreateRemoteDriverOptions();
+        protected abstract DriverOptions CreateRemoteDriverOptions(BrowserFactoryConfiguration browserFactoryConfiguration);
 
         /// <summary>
         /// Gets the remote driver URI.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The URI if the setting is valid, otherwise <c>null</c>.</returns>
         /// <exception cref="System.Configuration.ConfigurationErrorsException">Thrown if the URI is not valid.</exception>
-        private Uri GetRemoteDriverUri()
+        private Uri GetRemoteDriverUri(BrowserFactoryConfiguration browserFactoryConfiguration)
         {
-            if (!this.Settings.ContainsKey(RemoteUrlSetting))
+            if (!browserFactoryConfiguration.Settings.ContainsKey(RemoteUrlSetting))
             {
                 return null;
             }
 
-            var remoteSetting = this.Settings[RemoteUrlSetting];
+            var remoteSetting = browserFactoryConfiguration.Settings[RemoteUrlSetting];
             if (string.IsNullOrWhiteSpace(remoteSetting))
             {
                 return null;

@@ -73,11 +73,11 @@
     <Compile Include="Drivers\SeleniumOperaDriver.cs" />
     <Compile Include="Drivers\SeleniumPhantomJSDriver.cs" />
     <Compile Include="Drivers\SeleniumSafariDriver.cs" />
-    <Compile Include="Extensions\NameValueConfigurationCollectionExtensions.cs" />
     <Compile Include="LocatorBuilder.cs" />
     <Compile Include="NativeAttributeBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteScreenshotWebDriver.cs" />
+    <Compile Include="SeleniumBase.cs" />
     <Compile Include="SeleniumBrowser.cs" />
     <Compile Include="SeleniumBrowserFactory.cs" />
     <Compile Include="SeleniumTableDriver.cs" />

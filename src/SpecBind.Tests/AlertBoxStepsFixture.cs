@@ -34,7 +34,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new AlertBoxSteps(pipelineService.Object, scenarioContext.Object);
 
@@ -59,7 +59,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new AlertBoxSteps(pipelineService.Object, scenarioContext.Object);
 

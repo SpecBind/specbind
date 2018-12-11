@@ -112,16 +112,16 @@ namespace SpecBind.Tests
 
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
             var table = new Table("Field", "Value");
             table.AddRow(new Dictionary<string, string>
-				             {
-					             { "Field", "My Field" },
-								 { "Value", "myvalue" }
-				             });
+                             {
+                                 { "Field", "My Field" },
+                                 { "Value", "myvalue" }
+                             });
 
             steps.WhenIEnterDataInFieldsStep(table);
 
@@ -148,22 +148,22 @@ namespace SpecBind.Tests
 
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
             var table = new Table("Field", "Value");
             table.AddRow(new Dictionary<string, string>
-				             {
-					             { "Field", "My Second Field" },
-								 { "Value", "something" }
-				             });
+                             {
+                                 { "Field", "My Second Field" },
+                                 { "Value", "something" }
+                             });
 
             table.AddRow(new Dictionary<string, string>
-				             {
-					             { "Field", "My Field" },
-								 { "Value", "myvalue" }
-				             });
+                             {
+                                 { "Field", "My Field" },
+                                 { "Value", "myvalue" }
+                             });
 
             try
             {
@@ -193,7 +193,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
@@ -218,7 +218,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Failure(new ElementExecuteException("Could Not Find Field: myfield")));
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
@@ -299,7 +299,7 @@ namespace SpecBind.Tests
 
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
@@ -333,7 +333,7 @@ namespace SpecBind.Tests
                             .Returns(ActionResult.Failure(new ElementExecuteException("Could Not Find Field: mysecondfield")));
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
@@ -500,17 +500,17 @@ namespace SpecBind.Tests
                            .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
             var table = new Table("Field", "Rule", "Value");
             table.AddRow(new Dictionary<string, string>
-				             {
-					             { "Field", "myfield" },
-								 { "Rule", "equals" },
-								 { "Value", "myvalue" }
-				             });
+                             {
+                                 { "Field", "myfield" },
+                                 { "Rule", "equals" },
+                                 { "Value", "myvalue" }
+                             });
 
             steps.ThenISeeStep(table);
 
@@ -535,24 +535,24 @@ namespace SpecBind.Tests
                            .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
             var table = new Table("Field", "Rule", "Value");
             table.AddRow(new Dictionary<string, string>
-				             {
-					             { "Field", "myfield" },
-								 { "Rule", "equals" },
-								 { "Value", "myvalue" }
-				             });
+                             {
+                                 { "Field", "myfield" },
+                                 { "Rule", "equals" },
+                                 { "Value", "myvalue" }
+                             });
 
             table.AddRow(new Dictionary<string, string>
-				             {
-					             { "Field", "myotherfield" },
-								 { "Rule", "equals" },
-								 { "Value", "somevalue" }
-				             });
+                             {
+                                 { "Field", "myotherfield" },
+                                 { "Rule", "equals" },
+                                 { "Value", "somevalue" }
+                             });
 
             steps.ThenISeeStep(table);
 
@@ -590,11 +590,11 @@ namespace SpecBind.Tests
 
             var table = new Table("Field", "Rule", "Value");
             table.AddRow(new Dictionary<string, string>
-				             {
-					             { "Field", "myfield" },
-								 { "Rule", "equals" },
-								 { "Value", "myvalue" }
-				             });
+                             {
+                                 { "Field", "myfield" },
+                                 { "Rule", "equals" },
+                                 { "Value", "myvalue" }
+                             });
 
             ExceptionHelper.SetupForException<InvalidOperationException>(
                 () => steps.ThenISeeListStep("myfield", "invalid", table),
@@ -639,7 +639,7 @@ namespace SpecBind.Tests
                             .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
@@ -664,7 +664,7 @@ namespace SpecBind.Tests
                             .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
@@ -689,7 +689,7 @@ namespace SpecBind.Tests
                             .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
@@ -715,7 +715,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
@@ -795,7 +795,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
@@ -827,7 +827,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
@@ -859,7 +859,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful());
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(testPage.Object);
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 

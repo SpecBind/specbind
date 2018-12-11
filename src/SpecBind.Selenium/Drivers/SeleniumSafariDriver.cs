@@ -16,19 +16,11 @@ namespace SpecBind.Selenium.Drivers
     internal class SeleniumSafariDriver : SeleniumDriverBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SeleniumSafariDriver"/> class.
-        /// </summary>
-        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        public SeleniumSafariDriver(BrowserFactoryConfigurationElement browserFactoryConfiguration)
-            : base(browserFactoryConfiguration)
-        {
-        }
-
-        /// <summary>
         /// Creates the web driver from the specified browser factory configuration.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The configured web driver.</returns>
-        protected override IWebDriver CreateLocalDriver()
+        protected override IWebDriver CreateLocalDriver(BrowserFactoryConfiguration browserFactoryConfiguration)
         {
             return new SafariDriver();
         }
@@ -45,8 +37,9 @@ namespace SpecBind.Selenium.Drivers
         /// <summary>
         /// Creates the driver options.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The driver options.</returns>
-        protected override DriverOptions CreateRemoteDriverOptions()
+        protected override DriverOptions CreateRemoteDriverOptions(BrowserFactoryConfiguration browserFactoryConfiguration)
         {
             return new SafariOptions();
         }

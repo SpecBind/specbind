@@ -86,7 +86,8 @@ namespace SpecBind
             if (results.Any(r => !r.Success))
             {
                 var errors = string.Join("; ", results.Where(r => r.Exception != null).Select(r => r.Exception.Message));
-                throw new ElementExecuteException("Errors occurred while entering data. Details: {0}", errors);
+                Exception firstException = results.FirstOrDefault(r => r.Exception != null)?.Exception;
+                throw new ElementExecuteException($"Errors occurred while entering data. Details: {errors}", firstException);
             }
         }
 

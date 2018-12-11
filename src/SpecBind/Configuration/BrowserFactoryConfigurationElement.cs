@@ -18,6 +18,7 @@ namespace SpecBind.Configuration
         private const string ProviderElementName = "provider";
         private const string BrowserTypeElementName = "browserType";
         private const string SettingsElementName = "settings";
+        private const string UserProfilePreferencesElementName = "userProfilePreferences";
         private const string ReuseBrowserElementName = "reuseBrowser";
         private const string ValidateWebDriverElementName = "validateWebDriver";
 		private const string WaitForPendingAjaxCallsViaElementName = "waitForPendingAjaxCallsVia";
@@ -141,6 +142,19 @@ namespace SpecBind.Configuration
             get
             {
                 return this[SettingsElementName] as NameValueConfigurationCollection ?? new NameValueConfigurationCollection();
+            }
+        }
+
+        /// <summary>
+        /// Gets the user profile preferences.
+        /// </summary>
+        /// <value>The user profile preferences.</value>
+        [ConfigurationProperty(UserProfilePreferencesElementName, IsRequired = false)]
+        public NameValueConfigurationCollection UserProfilePreferences
+        {
+            get
+            {
+                return this[UserProfilePreferencesElementName] as NameValueConfigurationCollection ?? new NameValueConfigurationCollection();
             }
         }
 

@@ -3,6 +3,7 @@
 // </copyright>
 namespace SpecBind.Tests.Support
 {
+    using System;
     using Moq;
 
     using SpecBind.Actions;
@@ -18,7 +19,7 @@ namespace SpecBind.Tests.Support
         /// Initializes a new instance of the <see cref="MockBrowserFactory"/> class.
         /// </summary>
         public MockBrowserFactory()
-            : base(false)
+            : base(new BrowserFactoryConfiguration())
         {
         }
 
@@ -29,13 +30,20 @@ namespace SpecBind.Tests.Support
         public Mock<IBrowser> BrowserMock { get; private set; }
 
         /// <summary>
+        /// Resets the driver.
+        /// </summary>
+        /// <param name="browser">The browser.</param>
+        public override void ResetDriver(IBrowser browser)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Creates the browser.
         /// </summary>
-        /// <param name="browserType">Type of the browser.</param>
-        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <param name="logger">The logger.</param>
         /// <returns>A browser object.</returns>
-        protected override IBrowser CreateBrowser(BrowserType browserType, BrowserFactoryConfigurationElement browserFactoryConfiguration, ILogger logger)
+        protected override IBrowser CreateBrowser(ILogger logger)
         {
             this.BrowserMock = new Mock<IBrowser>();
             return this.BrowserMock.Object;

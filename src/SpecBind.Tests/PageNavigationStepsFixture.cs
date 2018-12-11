@@ -39,7 +39,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful(testPage.Object));
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.SetValue(testPage.Object, PageStepBase.CurrentPageKey));
+            scenarioContext.Setup(s => s.SetCurrentPage(testPage.Object));
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
@@ -69,7 +69,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful(testPage.Object));
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.SetValue(It.IsAny<IPage>(), PageStepBase.CurrentPageKey));
+            scenarioContext.Setup(s => s.SetCurrentPage(It.IsAny<IPage>()));
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
             tokenManager.Setup(t => t.GetToken(It.IsAny<string>())).Returns<string>(s => s);
@@ -100,7 +100,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful(testPage.Object));
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.SetValue(testPage.Object, PageStepBase.CurrentPageKey));
+            scenarioContext.Setup(s => s.SetCurrentPage(testPage.Object));
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
@@ -133,8 +133,8 @@ namespace SpecBind.Tests
 
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.GetValue<IPage>(PageStepBase.CurrentPageKey)).Returns(page.Object);
-            scenarioContext.Setup(s => s.SetValue(listItem.Object, PageStepBase.CurrentPageKey));
+            scenarioContext.Setup(s => s.GetCurrentPage()).Returns(page.Object);
+            scenarioContext.Setup(s => s.SetCurrentPage(listItem.Object));
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
@@ -163,7 +163,7 @@ namespace SpecBind.Tests
                 .Returns(ActionResult.Successful(testPage.Object));
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.SetValue(testPage.Object, PageStepBase.CurrentPageKey));
+            scenarioContext.Setup(s => s.SetCurrentPage(testPage.Object));
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
@@ -194,7 +194,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.SetValue<IPage>(null, PageStepBase.CurrentPageKey));
+            scenarioContext.Setup(s => s.SetCurrentPage(null));
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
@@ -228,7 +228,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.SetValue(testPage.Object, PageStepBase.CurrentPageKey));
+            scenarioContext.Setup(s => s.SetCurrentPage(testPage.Object));
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
@@ -260,7 +260,7 @@ namespace SpecBind.Tests
             var pageMapper = new Mock<IPageMapper>(MockBehavior.Strict);
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            scenarioContext.Setup(s => s.SetValue(testPage.Object, PageStepBase.CurrentPageKey));
+            scenarioContext.Setup(s => s.SetCurrentPage(testPage.Object));
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 

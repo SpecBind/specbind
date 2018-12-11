@@ -105,10 +105,13 @@
     <Compile Include="Configuration\ApplicationConfigurationElement.cs" />
     <Compile Include="Configuration\AssemblyCollection.cs" />
     <Compile Include="Configuration\AssemblyElement.cs" />
+    <Compile Include="Configuration\BrowserFactoryConfiguration.cs" />
     <Compile Include="Configuration\BrowserFactoryConfigurationElement.cs" />
     <Compile Include="Configuration\ConfigurationSectionHandler.cs" />
     <Compile Include="ActionPipeline\ActionPipelineService.cs" />
     <Compile Include="DataSteps.cs" />
+    <Compile Include="Extensions\NameValueConfigurationCollectionExtensions.cs" />
+    <Compile Include="Helpers\AssemblyLoader.cs" />
     <Compile Include="Helpers\AttributeExtensions.cs" />
     <Compile Include="Helpers\FileUploadHelper.cs" />
     <Compile Include="Helpers\ISettingHelper.cs" />

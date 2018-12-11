@@ -25,7 +25,20 @@ namespace SpecBind.Helpers
 			StartRegex = new Regex(@"^the\s", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Converts a string to a class or property identifier.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>The string as a property name.</returns>
+        public static string ToIdentifier(this string input)
+        {
+            return input?
+                .Replace(" ", string.Empty)
+                .Replace(".", string.Empty)
+                .ToLowerInvariant();
+        }
+
+        /// <summary>
 		/// Converts the string to a lookup key by removing whitespace and making it lower case.
 		/// </summary>
 		/// <param name="source">The source string.</param>

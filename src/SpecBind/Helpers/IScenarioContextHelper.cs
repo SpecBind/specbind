@@ -4,6 +4,7 @@
 namespace SpecBind.Helpers
 {
     using System;
+    using Pages;
 
     /// <summary>
 	/// An interface that provides the target class with the scenario context.
@@ -37,6 +38,18 @@ namespace SpecBind.Helpers
 	    /// <param name="isError">Indicates whether the file is the result of an error.</param>
 	    /// <returns>A unique file name for the scenario.</returns>
 	    string GetStepFileName(bool isError);
+
+        /// <summary>
+        /// Gets the current page.
+        /// </summary>
+        /// <returns>The current page.</returns>
+        IPage GetCurrentPage();
+
+        /// <summary>
+        /// Sets the current page.
+        /// </summary>
+        /// <param name="page">The page.</param>
+        void SetCurrentPage(IPage page);
 
         /// <summary>
         /// Determines whether the current scenario's feature contains the specified tag.

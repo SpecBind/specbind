@@ -12,11 +12,6 @@ namespace SpecBind
     /// </summary>
     public abstract class PageStepBase
     {
-        /// <summary>
-        /// The scenario context key for holding the current page.
-        /// </summary>
-        public const string CurrentPageKey = "CurrentPage";
-
         private readonly IScenarioContextHelper scenarioContext;
 
         /// <summary>
@@ -34,7 +29,7 @@ namespace SpecBind
         /// <returns>The current page.</returns>
         protected IPage GetPageFromContext()
         {
-            var page = this.scenarioContext.GetValue<IPage>(CurrentPageKey);
+            var page = this.scenarioContext.GetCurrentPage();
             if (page == null)
             {
                 throw new PageNavigationException("No page has been set as being the current page.");
@@ -49,7 +44,7 @@ namespace SpecBind
         /// <param name="page">The page.</param>
         protected void UpdatePageContext(IPage page)
         {
-            this.scenarioContext.SetValue(page, CurrentPageKey);
+            this.scenarioContext.SetCurrentPage(page);
         }
     }
 }

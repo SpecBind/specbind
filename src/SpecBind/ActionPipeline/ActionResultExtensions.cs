@@ -4,6 +4,9 @@
 
 namespace SpecBind.ActionPipeline
 {
+    using System;
+    using System.Runtime.ExceptionServices;
+
     /// <summary>
     /// A set of extension methods for the <see cref="ActionResult"/> class.
     /// </summary>
@@ -43,7 +46,8 @@ namespace SpecBind.ActionPipeline
 
             if (!result.Success && result.Exception != null)
             {
-                throw result.Exception;
+                // preserve the stack trace
+                ExceptionDispatchInfo.Capture(result.Exception).Throw();
             }
 
             return result.Result;

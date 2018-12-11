@@ -4,7 +4,7 @@
 
 namespace SpecBind.Selenium.Drivers
 {
-    using System.Collections.Generic;
+    using Configuration;
     using OpenQA.Selenium;
 
     /// <summary>
@@ -12,29 +12,26 @@ namespace SpecBind.Selenium.Drivers
     /// </summary>
     public interface ISeleniumDriver
     {
-        /// <summary>
-        /// Gets or sets a value indicating whether the session cache and cookies should be cleared before starting.
-        /// </summary>
-        /// <value><c>true</c> if the session should be cleared; otherwise <c>false</c>.</value>
-        bool EnsureCleanSession { get; set; }
 
         /// <summary>
-        /// Gets or sets the settings.
+        /// Gets or sets a value indicating whether to maximize the window.
         /// </summary>
-        /// <value>The settings.</value>
-        Dictionary<string, string> Settings { get; set; }
+        /// <value><c>true</c> if the window is maximized; otherwise, <c>false</c>.</value>
+        bool MaximizeWindow { get; set; }
 
         /// <summary>
         /// Creates the web driver from the specified browser factory configuration.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <returns>The configured web driver.</returns>
-        IWebDriver Create();
+        IWebDriver Create(BrowserFactoryConfiguration browserFactoryConfiguration);
 
         /// <summary>
         /// Validates the driver setup.
         /// </summary>
+        /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
         /// <param name="seleniumDriverPath">The selenium driver path.</param>
-        void Validate(string seleniumDriverPath);
+        void Validate(BrowserFactoryConfiguration browserFactoryConfiguration, string seleniumDriverPath);
 
         /// <summary>
         /// Stops this instance.
