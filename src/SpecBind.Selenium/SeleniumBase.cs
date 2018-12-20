@@ -1,4 +1,4 @@
-﻿// <copyright file="SeleniumBase.cs" company="NovaStor Corporation">
+﻿// <copyright file="SeleniumBase.cs">
 //    Copyright © 2013 Dan Piessens.  All rights reserved.
 // </copyright>
 
