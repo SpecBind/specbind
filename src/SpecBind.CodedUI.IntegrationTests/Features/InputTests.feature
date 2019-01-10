@@ -104,3 +104,16 @@ Scenario: Test Clearing Text Area Input
 	  Then I see
 	       | Field       | Rule   | Value |
 	       | Description | Equals |       |
+
+Scenario: Enter special characters in input text field
+	Given I navigated to the Home page
+	And I chose Courses
+	And I was on the Courses page
+	And I chose Create New
+	And I was on the Create a Course page
+	And I entered data
+		| Field        | Value     |
+		| Course Title | {{SPACE}} |
+	Then I see
+		| Field        | Rule   | Value |
+		| Course Title | Equals |       |

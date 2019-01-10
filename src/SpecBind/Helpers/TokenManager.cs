@@ -62,15 +62,18 @@ namespace SpecBind.Helpers
 				return fieldValue;
 			}
 
-			var tokenName = GetTokenName(tokenData.Name);
-
-			if (string.IsNullOrWhiteSpace(tokenData.Value))
+			if (tokenData.Name != null)
 			{
-				// Try to get the value from the context if no value is provided
-				return this.context.GetValue<string>(tokenName);
-			}
+				var tokenName = GetTokenName(tokenData.Name);
 
-			this.context.SetValue(tokenData.Value, tokenName);
+				if (string.IsNullOrWhiteSpace(tokenData.Value))
+				{
+					// Try to get the value from the context if no value is provided
+					return this.context.GetValue<string>(tokenName);
+				}
+
+				this.context.SetValue(tokenData.Value, tokenName);
+			}
 
 			return tokenData.Value;
 		}
