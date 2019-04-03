@@ -4,7 +4,7 @@
 Background: 
 	Given I navigated to the Home page
 	  And I chose Departments
-	  And I was on the Department Search page
+	  And I waited for the Department Search page
 
 Scenario: Validate Div List "Start With" Validator
 	  Then I see results grid list starts with

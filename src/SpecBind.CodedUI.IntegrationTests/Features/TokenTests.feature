@@ -3,9 +3,9 @@
 Scenario: Passing a token into an input field and using for validation
 	Given I navigated to the Home page
 	  And I chose Courses
-	  And I was on the Courses page
+	  And I waited for the Courses page
 	  And I chose Create New
-	  And I was on the Create a Course page
+	  And I waited for the Create a Course page
 	 When I enter data
 	      | Field  | Value           |
 	      | Number | {MyToken:12345} |
@@ -16,9 +16,9 @@ Scenario: Passing a token into an input field and using for validation
 Scenario: Gathering a token via the property step and using it for validation
 	Given I navigated to the Home page
 	  And I chose Courses
-	  And I was on the Courses page
+	  And I waited for the Courses page
 	  And I chose Create New
-	  And I was on the Create a Course page
+	  And I waited for the Create a Course page
 	 When I enter data
 	      | Field  | Value |
 	      | Number | 12345 |

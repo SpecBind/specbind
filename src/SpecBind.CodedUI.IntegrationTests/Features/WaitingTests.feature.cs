@@ -81,7 +81,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 5
    testRunner.And("I chose About", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 6
-   testRunner.And("I was on the About page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+   testRunner.And("I waited for the About page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 7
   testRunner.When("I wait for the view to become active", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
@@ -106,3 +106,4 @@ this.ScenarioSetup(scenarioInfo);
 }
 #pragma warning restore
 #endregion
+
