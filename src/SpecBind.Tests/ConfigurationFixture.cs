@@ -63,6 +63,7 @@ namespace SpecBind.Tests
         /// Tests that the ExcludedAssemblies property is populated if it is in the config file.
         /// </summary>
         [TestMethod]
+        [DeploymentItem("WithExcludedAssemblyConfig.config")]
         public void TestLoadingExcludedAssemblies()
         {
             var fileMap = new ConfigurationFileMap("WithExcludedAssemblyConfig.config");

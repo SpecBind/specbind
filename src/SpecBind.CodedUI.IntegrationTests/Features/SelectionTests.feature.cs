@@ -99,7 +99,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 10
    testRunner.And("I chose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 11
-   testRunner.And("I was on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+   testRunner.And("I waited for the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 12
    testRunner.And("I was on list results grid item 1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 13
@@ -138,7 +138,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 22
    testRunner.And("I chose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 23
-   testRunner.And("I was on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+   testRunner.And("I waited for the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "Field",
@@ -180,3 +180,4 @@ this.ScenarioSetup(scenarioInfo);
 }
 #pragma warning restore
 #endregion
+

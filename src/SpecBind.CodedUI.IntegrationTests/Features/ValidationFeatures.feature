@@ -3,9 +3,9 @@
 Scenario: Validate Field Equality For a Text Field
 	 Given I navigated to the Home page
        And I chose Courses
-	   And I was on the Courses page
+	   And I waited for the Courses page
 	   And I chose Create New
-	   And I was on the Create a Course page
+	   And I waited for the Create a Course page
 	  When I enter data
 	       | Field        | Value       |
 	       | Course Title | Cool Course |
@@ -29,9 +29,9 @@ Scenario: Validate Field Virtual Property
 Scenario: Validate Field Existence and Enabled
 	 Given I navigated to the Home page
        And I chose Courses
-	   And I was on the Courses page
+	   And I waited for the Courses page
 	   And I chose Create New
-	   And I was on the Create a Course page
+	   And I waited for the Create a Course page
 	  Then I see
 		   | Field        | Rule           | Value |
 		   | Course Title | Exists         |       |

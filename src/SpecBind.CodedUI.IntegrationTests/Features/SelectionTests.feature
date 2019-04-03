@@ -8,7 +8,7 @@ Scenario: Select a Menu Hyperlink
 Scenario: Select an item in the list by index and click the link
 	Given I navigated to the Home page
 	  And I chose Students
-	  And I was on the Students Search page
+	  And I waited for the Students Search page
 	  And I was on list results grid item 1
 	 When I choose Details
 	 Then I am on the Student Detail page
@@ -20,7 +20,7 @@ Scenario: Select an item in the list by index and click the link
 Scenario: Select an item in the list by criteria and click the link
 	Given I navigated to the Home page
 	  And I chose Students
-	  And I was on the Students Search page
+	  And I waited for the Students Search page
 	  And I was on results grid list item matching criteria
 			| Field      | Rule   | Value     |
 			| Last Name  | equals | Alexander |

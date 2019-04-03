@@ -3,9 +3,9 @@
 Scenario: Test Successful Combo Box Input
 	 Given I navigated to the Home page
 	  And I chose Courses
-	  And I was on the Courses page
+	  And I waited for the Courses page
 	  And I chose Create New
-	  And I was on the Create a Course page
+	  And I waited for the Create a Course page
 	 When I enter data
 	      | Field      | Value   |
 	      | Department | English |
@@ -16,9 +16,9 @@ Scenario: Test Successful Combo Box Input
 Scenario: Test Successful Text Input
 	 Given I navigated to the Home page
 	  And I chose Courses
-	  And I was on the Courses page
+	  And I waited for the Courses page
 	  And I chose Create New
-	  And I was on the Create a Course page
+	  And I waited for the Create a Course page
 	 When I enter data
 	      | Field        | Value          |
 	      | Number       | 12345          |
@@ -29,9 +29,9 @@ Scenario: Test Successful Text Input
 Scenario: Test Combo Box Input For An Invalid Value Of Spanish
 	Given I navigated to the Home page
 	  And I chose Courses
-	  And I was on the Courses page
+	  And I waited for the Courses page
 	  And I chose Create New
-	  And I was on the Create a Course page
+	  And I waited for the Create a Course page
 	 When I enter invalid data
 	      | Field      | Value   |
 	      | Department | Spanish |
@@ -42,9 +42,9 @@ Scenario: Test Combo Box Input For An Invalid Value Of Spanish
 Scenario: Test Successful Check Box Input
 	 Given I navigated to the Home page
 	   And I chose Courses
-	   And I was on the Courses page
+	   And I waited for the Courses page
 	   And I chose Create New
-	   And I was on the Create a Course page
+	   And I waited for the Create a Course page
 	  When I enter data
 	       | Field   | Value |
 	       | Popular | true  |
@@ -55,9 +55,9 @@ Scenario: Test Successful Check Box Input
 Scenario: Test Text Area Input
 	 Given I navigated to the Home page
 	   And I chose Courses
-	   And I was on the Courses page
+	   And I waited for the Courses page
 	   And I chose Create New
-	   And I was on the Create a Course page
+	   And I waited for the Create a Course page
 	  When I enter data
 	       | Field   | Value |
 	       | Description | This is a really long description of what's needed.  |
@@ -68,7 +68,7 @@ Scenario: Test Text Area Input
 Scenario: Test Successful Password Input
 	 Given I navigated to the Home page
 	   And I chose Log On
-	   And I was on the Log On page
+	   And I waited for the Log On page
 	  When I enter data
 	       | Field    | Value    |
 	       | Password | I'm Cool |
@@ -76,9 +76,9 @@ Scenario: Test Successful Password Input
 Scenario: Test Clearing Text Input
 	 Given I navigated to the Home page
 	  And I chose Courses
-	  And I was on the Courses page
+	  And I waited for the Courses page
 	  And I chose Create New
-	  And I was on the Create a Course page
+	  And I waited for the Create a Course page
 	  And I entered data
 	      | Field        | Value     |
 	      | Course Title | My Course |
@@ -92,9 +92,9 @@ Scenario: Test Clearing Text Input
 Scenario: Test Clearing Text Area Input
 	 Given I navigated to the Home page
 	   And I chose Courses
-	   And I was on the Courses page
+	   And I waited for the Courses page
 	   And I chose Create New
-	   And I was on the Create a Course page
+	   And I waited for the Create a Course page
 	   And I entered data
 	       | Field       | Value                                               |
 	       | Description | This is a really long description of what's needed. |

@@ -3,7 +3,7 @@
 Scenario: Display and dismiss an alert box
 	Given I navigated to the Home page
 	  And I chose New Information
-	  And I was on the Information page
+	  And I waited for the Information page
 	 When I choose Alert Box
 	  And I see an alert box and select Ok
 	 Then I see
@@ -13,7 +13,7 @@ Scenario: Display and dismiss an alert box
 Scenario: Press OK on a Confirm Dialog
 	Given I navigated to the Home page
 	  And I chose New Information
-	  And I was on the Information page
+	  And I waited for the Information page
 	 When I choose Confirm Box
 	  And I see an alert box and select Ok
 	 Then I see
@@ -23,7 +23,7 @@ Scenario: Press OK on a Confirm Dialog
 Scenario: Press Cancel on a Confirm Dialog
 	Given I navigated to the Home page
 	  And I chose New Information
-	  And I was on the Information page
+	  And I waited for the Information page
 	 When I choose Confirm Box
 	  And I see an alert box and select Cancel
 	 Then I see
@@ -33,7 +33,7 @@ Scenario: Press Cancel on a Confirm Dialog
 Scenario: Enter data on a dialog prompt
 	Given I navigated to the Home page
 	  And I chose New Information
-	  And I was on the Information page
+	  And I waited for the Information page
 	 When I choose Prompt Example
 	  And I see an alert box, enter "I am HAL" and select Ok
 	 Then I see

@@ -81,7 +81,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 5
    testRunner.And("I chose New Information", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 6
-   testRunner.And("I was on the Information page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+   testRunner.And("I waited for the Information page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 7
   testRunner.When("I choose Alert Box", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 8
@@ -114,7 +114,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 15
    testRunner.And("I chose New Information", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 16
-   testRunner.And("I was on the Information page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+   testRunner.And("I waited for the Information page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 17
   testRunner.When("I choose Confirm Box", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 18
@@ -147,7 +147,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 25
    testRunner.And("I chose New Information", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 26
-   testRunner.And("I was on the Information page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+   testRunner.And("I waited for the Information page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 27
   testRunner.When("I choose Confirm Box", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 28
@@ -180,7 +180,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 35
    testRunner.And("I chose New Information", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 36
-   testRunner.And("I was on the Information page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+   testRunner.And("I waited for the Information page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 37
   testRunner.When("I choose Prompt Example", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 38
@@ -203,3 +203,4 @@ this.ScenarioSetup(scenarioInfo);
 }
 #pragma warning restore
 #endregion
+

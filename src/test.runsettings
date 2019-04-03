@@ -38,7 +38,7 @@
 		<MapInconclusiveToFailed>True</MapInconclusiveToFailed>
 		<CaptureTraceOutput>false</CaptureTraceOutput>
 		<DeleteDeploymentDirectoryAfterTestRunIsComplete>False</DeleteDeploymentDirectoryAfterTestRunIsComplete>
-		<DeploymentEnabled>False</DeploymentEnabled>
+		<DeploymentEnabled>True</DeploymentEnabled>
 	</MSTest>
 
 

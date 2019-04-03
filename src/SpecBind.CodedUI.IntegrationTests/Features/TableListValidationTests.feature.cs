@@ -81,7 +81,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 6
        testRunner.And("I chose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 7
-    testRunner.And("I was on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I waited for the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 8
    testRunner.When("I choose Search", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
@@ -116,7 +116,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 16
        testRunner.And("I chose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 17
-    testRunner.And("I was on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I waited for the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 18
    testRunner.When("I choose Search", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
@@ -151,7 +151,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 26
        testRunner.And("I chose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 27
-    testRunner.And("I was on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I waited for the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 28
    testRunner.When("I choose Search", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
@@ -186,7 +186,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 36
        testRunner.And("I chose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 37
-    testRunner.And("I was on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I waited for the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                         "Field",
@@ -230,7 +230,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 49
        testRunner.And("I chose Students", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 50
-    testRunner.And("I was on the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I waited for the Students Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 51
    testRunner.When("I choose Search", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
@@ -255,3 +255,4 @@ this.ScenarioSetup(scenarioInfo);
 }
 #pragma warning restore
 #endregion
+

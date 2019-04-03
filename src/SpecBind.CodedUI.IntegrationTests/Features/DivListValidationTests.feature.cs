@@ -76,7 +76,7 @@ namespace SpecBind.CodedUI.IntegrationTests.Features
 #line 6
    testRunner.And("I chose Departments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 7
-   testRunner.And("I was on the Department Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+   testRunner.And("I waited for the Department Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
         }
         
@@ -191,3 +191,4 @@ this.FeatureBackground();
 }
 #pragma warning restore
 #endregion
+

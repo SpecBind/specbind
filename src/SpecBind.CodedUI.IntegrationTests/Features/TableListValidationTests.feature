@@ -4,7 +4,7 @@
 Scenario: Validate Table List "Start With" Validator
 	 Given I navigated to the Home page
        And I chose Students
-	   And I was on the Students Search page
+	   And I waited for the Students Search page
 	  When I choose Search
 	  Then I see results grid list starts with
 		   | Field      | Rule   | Value     |
@@ -14,7 +14,7 @@ Scenario: Validate Table List "Start With" Validator
 Scenario: Validate Table List "Ends With" Validator
 	 Given I navigated to the Home page
        And I chose Students
-	   And I was on the Students Search page
+	   And I waited for the Students Search page
 	  When I choose Search
 	  Then I see results grid list ends with
 		   | Field      | Rule   | Value  |
@@ -24,7 +24,7 @@ Scenario: Validate Table List "Ends With" Validator
 Scenario: Validate Table List "Contains" Validator
 	 Given I navigated to the Home page
        And I chose Students
-	   And I was on the Students Search page
+	   And I waited for the Students Search page
 	  When I choose Search
 	  Then I see results grid list contains
 		   | Field      | Rule   | Value    |
@@ -34,7 +34,7 @@ Scenario: Validate Table List "Contains" Validator
 Scenario: Validate Table List "Equals" Validator
 	 Given I navigated to the Home page
        And I chose Students
-	   And I was on the Students Search page
+	   And I waited for the Students Search page
 	  When I enter data
 		   | Field        | Value  |
 		   | Find by name | Alonso |
@@ -47,7 +47,7 @@ Scenario: Validate Table List "Equals" Validator
 Scenario: Validate Table List "Does Not Contain" Validator
 	 Given I navigated to the Home page
        And I chose Students
-	   And I was on the Students Search page
+	   And I waited for the Students Search page
 	  When I choose Search
 	  Then I see results grid list does not contain
 		   | Field      | Rule   | Value  |

@@ -18,15 +18,6 @@ image: Visual Studio 2017
 #    environment configuration    #
 #---------------------------------#
 
-# this is how to allow failing jobs in the matrix
-# matrix:
-  # fast_finish: true     # set this flag to immediately finish build once one of the jobs fails.
-  # allow_failures:
-    # - platform: x86
-      # configuration: Debug
-    # - platform: x64
-      # configuration: Release
-
 # environment variables
 environment:
   package_dir: NuGet_Packages
@@ -49,21 +40,22 @@ platform: Any CPU
 # build Configuration, i.e. Debug, Release, etc.
 configuration: Release
 
-build:
-  project: src\SpecBind.sln       # path to Visual Studio solution or project
-  publish_wap: false              # package Web Application Projects (WAP) for Web Deploy
-  publish_wap_xcopy: false        # package Web Application Projects (WAP) for XCopy deployment
-  publish_azure: false            # package Azure Cloud Service projects and push to artifacts
-  publish_nuget: false             # package projects with .nuspec files and push to artifacts
+# wait for an RDP connection before starting the build for troubleshooting purposes
+#init:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
-  # MSBuild verbosity level quiet|minimal|normal|detailed
-  verbosity: normal
-  parallel: true
+build_script:
+- cmd: >-
+
+    msbuild.exe src\SpecBind.sln /p:Configuration=%CONFIGURATION% /verbosity:normal /maxcpucount
+
+    msbuild.exe examples\FullDemo\ContosoUniversity.sln /p:Configuration=%CONFIGURATION% /verbosity:normal /maxcpucount
 
 # scripts to run before build
 before_build:
   - ps: If (Test-Path "$env:package_dir") { Remove-Item "$env:package_dir" -Recurse -Force -ErrorAction SilentlyContinue }
   - nuget restore src\SpecBind.sln
+  - nuget restore examples\FullDemo\ContosoUniversity.sln
 
 # scripts to run after build
 after_build:
@@ -83,20 +75,27 @@ after_build:
 #    - src\SpecBind.Tests\bin\$(configuration)\SpecBind.Tests.dll
 #    - src\SpecBind.Selenium.Tests\bin\$(configuration)\SpecBind.Selenium.Tests.dll
 #    - src\SpecBind.CodedUI.Tests\bin\$(configuration)\SpecBind.CodedUI.Tests.dll
+#    - src\SpecBind.CodedUI.IntegrationTests\bin\$(configuration)\SpecBind.CodedUI.IntegrationTests.dll
 
 
-test_script: 
-   - .\src\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"vstest.console.exe" -targetargs:"/logger:Appveyor .\src\SpecBind.Tests\bin\%CONFIGURATION%\SpecBind.Tests.dll .\src\SpecBind.Selenium.Tests\bin\%CONFIGURATION%\SpecBind.Selenium.Tests.dll src\SpecBind.CodedUI.Tests\bin\%CONFIGURATION%\SpecBind.CodedUI.Tests.dll" -filter:"+[SpecBind]* +[SpecBind.Selenium]* +[SpecBind.CodedUI]* -[SpecBind]SpecBind.Properties.* -[SpecBind.Selenium]SpecBind.Selenium.Properties.* -[SpecBind.CodedUI]SpecBind.CodedUI.Properties.*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:.\SpecBind_coverage.xml -mergebyhash
-   - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
-   - pip install codecov
-   - codecov -f "SpecBind_coverage.xml"
+test_script:
+- cmd: >-
+    net start W3SVC
 
-# to run tests from different categories as separate jobs in parallel
-#test:
-#  categories:
-#    - A            # A category common for all jobs
-#    - [UI]         # 1st job
-#    - [DAL, BL]    # 2nd job
+    %windir%\system32\inetsrv\AppCmd.exe add app /site.name:"Default Web Site" /path:/ContosoUniversity /physicalPath:"%APPVEYOR_BUILD_FOLDER%\examples\FullDemo\ContosoUniversity"
+
+    icacls "%APPVEYOR_BUILD_FOLDER%\examples\FullDemo\ContosoUniversity\App_Data\School.sdf" /grant "IIS_IUSRS":M
+
+    .\src\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"vstest.console.exe" -targetargs:"/Settings:.\src\test.runsettings /logger:Appveyor .\src\SpecBind.Tests\bin\%CONFIGURATION%\SpecBind.Tests.dll .\src\SpecBind.Selenium.Tests\bin\%CONFIGURATION%\SpecBind.Selenium.Tests.dll src\SpecBind.CodedUI.Tests\bin\%CONFIGURATION%\SpecBind.CodedUI.Tests.dll src\SpecBind.CodedUI.IntegrationTests\bin\%CONFIGURATION%\SpecBind.CodedUI.IntegrationTests.dll" -filter:"+[SpecBind]* +[SpecBind.Selenium]* +[SpecBind.CodedUI]* -[SpecBind]SpecBind.Properties.* -[SpecBind.Selenium]SpecBind.Selenium.Properties.* -[SpecBind.CodedUI]SpecBind.CodedUI.Properties.*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:.\SpecBind_coverage.xml -mergebyhash -returntargetcode
+
+    IF %ERRORLEVEL% NEQ 0 EXIT %ERRORLEVEL%
+    
+    SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%
+
+    pip install codecov
+
+    codecov -f "SpecBind_coverage.xml"
+
 
 #---------------------------------#
 #      artifacts configuration    #
@@ -124,3 +123,7 @@ notifications:
   on_build_success: true
   on_build_failure: true
   on_build_status_changed: true
+
+# wait for an RDP connection after the build for troubleshooting purposes
+#on_failure:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
