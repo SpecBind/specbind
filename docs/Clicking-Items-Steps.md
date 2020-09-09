@@ -45,7 +45,7 @@ In this case \<text\> is what you want to put in the input box and should be sur
 
 ### Hovering Over an Element
 
-If an element is only visible when you hover over it, you can use the following steps to hover on an item to get that element to appear. It should be noted that this assumes the browser driver does not manipulate the screen further after the step completes. You should use an "[I see|Verifying-Steps]" step to validate the item that is now visible.
+If an element is only visible when you hover over it, you can use the following steps to hover on an item to get that element to appear. It should be noted that this assumes the browser driver does not manipulate the screen further after the step completes. You should use an "[I see](Verifying-Steps)" step to validate the item that is now visible.
 
 | Verb  | Action                           |
 |-------|----------------------------------|
