@@ -1,6 +1,6 @@
 ### Property Mapping - Coded UI
 
-Once you have created your [[page|Page Navigation Binding]], the next step is to define fields or other items on the page that need to be accessed. This is done by adding properties to the page class. The property name is used by SpecBind to match to the requested field name in the step. The system attempts to normalize language as shown in the following example (note these don't make linguistic sense just shown as an example):
+Once you have created your [page](Page-Navigation-Binding.md), the next step is to define fields or other items on the page that need to be accessed. This is done by adding properties to the page class. The property name is used by SpecBind to match to the requested field name in the step. The system attempts to normalize language as shown in the following example (note these don't make linguistic sense just shown as an example):
 
 Property Name: **RoomName**
 

@@ -7,7 +7,7 @@ The final key part of the process is verifying that what you expect to see on th
 | Given | I saw \<validation table\> |
 | Then| I see \<validation table\> |
 
-The *validation table* is a SpecFlow table that consists of three columns; *Field*, *Rule* and *Value*. Similar to data entry steps the *Field* column defines the field name to locate as a [[property|Page Model Properties]] and the *Value* column is the value to check. The *Rule* column determines the type of validation to perform on the field. The *Value* column is the expected value to check for. It also drives how the expected and actual values are compared. 
+The *validation table* is a SpecFlow table that consists of three columns; *Field*, *Rule* and *Value*. Similar to data entry steps the *Field* column defines the field name to locate as a [property](Page-Model-Properties.md) and the *Value* column is the value to check. The *Rule* column determines the type of validation to perform on the field. The *Value* column is the expected value to check for. It also drives how the expected and actual values are compared. 
 
 The system attempts to convert the expected value to one of the following data types in the order described below. This eases matching of a given value from some of the formatting hassles. For instance if your value is a date, and you write an expectation of "1/1/2013" and your actual value is "January 1, 2013" the rule processor will determine that these values indeed match.
 
@@ -59,7 +59,7 @@ Similar to validating fields, lists or grids of items need to be validated for c
 | Given | I saw \<field name\> list \<rule\> \<validation table\> |
 | Then| I see \<field name\> list \<rule\> \<validation table\> |
 
-In this case *field name* indicates the [[property|Page Model Properties]] that represents the table and *rule* is the evaluation applied on the list. Not that while the validation table is the same as in validating fields, The field names map to the column or field values in the list. In order for the list rule to be valid, all field evaluations must succeed.
+In this case *field name* indicates the [property](Page-Model-Properties.md) that represents the table and *rule* is the evaluation applied on the list. Not that while the validation table is the same as in validating fields, The field names map to the column or field values in the list. In order for the list rule to be valid, all field evaluations must succeed.
 
 | List Rule | Description |
 |-----------|-------------|
@@ -83,7 +83,7 @@ Sometimes it may be necessary to count the number of items in a list. The follow
 | Given | I saw \<field name\> list contains \<rule\> \<count\> items |
 | Then| I see \<field name\> list contains \<rule\> \<count\> items |
 
-In this case *field name* indicates the [[property|Page Model Properties]] that represents the table and *rule* is the evaluation applied on the list (see below). *count* is the row count value to compare to. The available evaluation rules are:
+In this case *field name* indicates the [property](Page-Model-Properties.md) that represents the table and *rule* is the evaluation applied on the list (see below). *count* is the row count value to compare to. The available evaluation rules are:
 
 | List Rule | Description |
 |-----------|-------------|

@@ -1,37 +1,28 @@
-## Welcome to GitHub Pages
+## What is SpecBind?
 
-You can use the [editor on GitHub](https://github.com/SpecBind/specbind/edit/master/docs/index.md) to maintain and preview the content for your website in Markdown files.
+SpecBind is an extension to SpecFlow that uses common language steps to allow a user to define interaction with an application. Unlike conventional SpecFlow where the user needs to define how each step definition interacts with the host system, SpecBind uses conventions and a thin page model to minimize coding efforts and maximize flexibility when defining the link between specifications and working sites.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Initial Setup
 
-### Markdown
+Getting SpecBind installed is a simple process:
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+1. Go to http://www.specflow.org and follow the instructions for installing the Visual Studio Extension
+2. Choose the driver type you want to use to interact with the host system:
+	* Coded UI
+	* Selenium
 
-```markdown
-Syntax highlighted code block
+3. Create a new test project in Visual Studio, Make it a Coded UI project if you are using that.
+4. Install the NuGet package for SpecBind
 
-# Header 1
-## Header 2
-### Header 3
+  * [Coded UI](https://www.nuget.org/packages/SpecBind.CodedUI)	``PM\> Install-Package SpecBind.CodedUI``
+  * [Selenium](https://www.nuget.org/packages/SpecBind.Selenium)``PM\> Install-Package SpecBind.Selenium``
 
-- Bulleted
-- List
+And you're done! 
 
-1. Numbered
-2. List
+## Step Overview
 
-**Bold** and _Italic_ and `Code` text
+One of the key features of SpecBind is it features a common set of steps that can be used to describe actions you take in validating a web application. These steps are outlined by their functionality in this guide or in the [[Step Reference]] section. One thing to note is how they work with the Gherkin language. For any **Given** steps the step is in the past tense. This is because it assumes the action is a prerequisite and has already occurred. The **When** and **Then** steps are in the present tense since they are what the test indicates should occur. In this guide, both commands will be outlined so that the syntax is know, but only the present tense will be used for examples. 
 
-[Link](url) and ![Image](src)
-```
+## Next Steps
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/SpecBind/specbind/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+Follow the [Getting Started](Getting-Started-With-SpecBind.md) section to begin creating tests, or [Documentation](Documentation.md) for in detailed information on SpecBind.

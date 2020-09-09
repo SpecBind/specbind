@@ -1,6 +1,6 @@
 ### Overview
 
-In SpecBind, the glue that links page steps with the underlying CodedUI framework is a page model that is represented in code. As discussed in other sections, pages are instantiated with [[navigation steps|Navigation Steps]] that are either an explicit navigation action or the result of a link click or page submission. 
+In SpecBind, the glue that links page steps with the underlying CodedUI framework is a page model that is represented in code. As discussed in other sections, pages are instantiated with [navigation steps](Navigation-Steps.md) that are either an explicit navigation action or the result of a link click or page submission. 
 
 The life cycle of this is as follows:
 
@@ -18,7 +18,7 @@ Most pages follow some simple construction rules that must be observered:
    * For Selenium there is no page base class requrement
 * Page class names must end in Page. So the "home" page class would be named *HomePage*
 * For CodedUI pages must have a single constructor that has a single parameter of type *Microsoft.VisualStudio.TestTools.UITesting.UITestControl*. This parameter should be passed to the base class constructor.
-* Pages should contain a *PageNavigation* attribute that defines the URL match for the page. More on this in the [[Linking Navigation|Page-Navigation-Binding#linking-navigation]] section.
+* Pages should contain a *PageNavigation* attribute that defines the URL match for the page. More on this in the [Linking Navigation](Page-Navigation-Binding.md) section.
 
 A sample page using CodedUI as a driver would look like:
 
@@ -135,13 +135,12 @@ namespace My.Application
 
 ### Linking Navigation
 
-Most navigation and matching is performed through the *PageNavigation* attribute. The first and default argument of this attribute is the sub-portion of the URL to match. This is formed by combining the base URL that you define in the [[configuration|Configuration]] section with this argument, then using it as a "starts with" comparison with the actual browser URL (for [[frames|Frames]] this is the frame URL). Since this is a starts with comparison, a sample URL of (http://mysite.com/products/1) would succeed with the *PageNavigation* attribute was set as "/products". This argument can also contain regular expressions so an argument of "/products/[0-9]+".
+Most navigation and matching is performed through the *PageNavigation* attribute. The first and default argument of this attribute is the sub-portion of the URL to match. This is formed by combining the base URL that you define in the [configuration](Configuration.md) section with this argument, then using it as a "starts with" comparison with the actual browser URL (for [frames](Frames.md) this is the frame URL). Since this is a starts with comparison, a sample URL of (http://mysite.com/products/1) would succeed with the *PageNavigation* attribute was set as "/products". This argument can also contain regular expressions so an argument of "/products/[0-9]+".
 
-SpecBind also uses this navigation argument to compose the URL to navigate to on a navigation step. Most of the time this matches the validation URL and no further work is needed. If you do need to specify regular expressions to match the URL, you may need to also pass arguments into the created URL on a navigation command. For this a second optional argument named *UrlTemplate* can be used. For this specify a standard .NET format string, that will be filled in by the table used in the [[navigation step|Navigation Steps]]. A sample attribute value for the URL (http://mysite.com/products/1) would be "/products/{Id}".
+SpecBind also uses this navigation argument to compose the URL to navigate to on a navigation step. Most of the time this matches the validation URL and no further work is needed. If you do need to specify regular expressions to match the URL, you may need to also pass arguments into the created URL on a navigation command. For this a second optional argument named *UrlTemplate* can be used. For this specify a standard .NET format string, that will be filled in by the table used in the [navigation step](Navigation-Steps.md). A sample attribute value for the URL (http://mysite.com/products/1) would be "/products/{Id}".
 
 ### Setting Cookies
 
-** New with SpecBind 1.5 **
 For some sites it may become necessary to manually inject a cookie into the browser before the navigation is performed. This may be to suppress a dialog, set a preference or disable an ad. To do this an attribute exists named *SetCookie* that requires the cookie name and value. **HttpOnly is not supported since the cookie is injected by the browser** It also supports the following options:
 
 |Name|Type|Description|

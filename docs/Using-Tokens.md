@@ -1,8 +1,8 @@
-At points in your scenario you may want to gather dynamic data that you use at a later date for [[navigation|Navigation Steps]], [[data entry|Entering Data Steps]] or additional [[verification|Verifying Steps]]. One common example of this is you create a new record and wish to validate that deep linking with that record's ID works. You don't know the ID at the time you write the scenario so you gather it during the scenario and use that token value later to make sure it matches the one you gathered.
+At points in your scenario you may want to gather dynamic data that you use at a later date for [navigation](Navigation-Steps.md), [data entry](Entering-Data-Steps.md) or additional [verification](Verifying-Steps.md). One common example of this is you create a new record and wish to validate that deep linking with that record's ID works. You don't know the ID at the time you write the scenario so you gather it during the scenario and use that token value later to make sure it matches the one you gathered.
 
 ### Gathering Data With Tokens ###
 
-Data gathering typically occurs during an [[input|Entering Data Steps]] step. Instead of specifying a value you specify a curly brace "\{" followed by the name of the token without spaces or special characters, followed by a closing curly brace "\}". The colon "\:" that follows is the value section of the token. You can put any static data you need here. This may also come from a scenario hook. An example of this in a SpecFlow table would be:
+Data gathering typically occurs during an [input](Entering-Data-Steps.md) step. Instead of specifying a value you specify a curly brace "\{" followed by the name of the token without spaces or special characters, followed by a closing curly brace "\}". The colon "\:" that follows is the value section of the token. You can put any static data you need here. This may also come from a scenario hook. An example of this in a SpecFlow table would be:
 
 ```Cucumber
 When I enter data
@@ -35,7 +35,7 @@ In some cases you may need to enter data that matches the format of a token `{{T
 
 ### Verifying Data With Tokens ###
 
-Similarly, when you need check this value during [[verification|Verifying Steps]], you can use a token to specify the value you wish to check. It is applied to the rule in the same way as a static value would be applied. The same token syntax applies to parameters in [[navigation|Navigation Steps]] steps.
+Similarly, when you need check this value during [verification](Verifying-Steps.md), you can use a token to specify the value you wish to check. It is applied to the rule in the same way as a static value would be applied. The same token syntax applies to parameters in [navigation](Navigation-Steps.md) steps.
 
 ```Cucumber
 When I see
@@ -53,7 +53,7 @@ At points in the process you may want to validate that a token has a given value
 |------|--------|
 | Given, When, Then | I ensure token \<token name\> matches rule \<rule\> with value \<check value\> |
 
-The *token name* variable is the name of the token. *rule* is the comparison you want to use against the *check value*. In most cases this is _equals_, but you can use any comparison step used in [[verification|Verifying Steps]].
+The *token name* variable is the name of the token. *rule* is the comparison you want to use against the *check value*. In most cases this is _equals_, but you can use any comparison step used in [verification](Verifying Steps.md).
 
 
 ### Getting or Setting Token Values In Code ###

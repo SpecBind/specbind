@@ -4,7 +4,7 @@ The first step in working with SpecBind and web applications is letting the appl
 ```xml
 <specBind>
     <application startUrl="http://something.com/MyApplication" />
-    <browserFactory provider="SpecBind.CodedUI.CodedUIBrowserFactory, SpecBind.CodedUI" browserType="IE" />
+    <browserFactory provider="SpecBind.CodedUI.CodedUIBrowserFactory, SpecBind.CodedUI" browserType="Chrome" />
 </specBind>
 ```
 
@@ -14,11 +14,11 @@ One of the key features of SpecBind is it features a common set of steps that ca
 
 See the following topics for more information about available steps and actions:
 
-* [[Navigation|Navigation Steps]]
-* [[Waiting For a Page To Load|Waiting Steps]]
-* [[Entering Data|Entering Data Steps]]
-* [[Clicking Items|Clicking Items Steps]]
-* [[Verifying Items|Verifying Steps]]
-* [[Saving and Reusing Data With Tokens|Using Tokens]]
+* [Navigation](Navigation-Steps.md)
+* [Waiting For a Page To Load](Waiting-Steps.md)
+* [Entering Data](Entering-Data-Steps.md)
+* [Clicking Items](Clicking-Items-Steps.md)
+* [Verifying Items](Verifying-Steps.md)
+* [Saving and Reusing Data With Tokens](Using-Tokens.md)
 
 
