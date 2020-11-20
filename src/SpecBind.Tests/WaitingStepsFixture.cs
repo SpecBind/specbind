@@ -4,17 +4,14 @@
 namespace SpecBind.Tests
 {
     using System;
-
+    using BoDi;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-
     using Moq;
-
     using SpecBind.ActionPipeline;
     using SpecBind.Actions;
+    using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
     using SpecBind.Pages;
-	using SpecBind.BrowserSupport;
-	using BoDi;
 
     /// <summary>
     /// A test fixture for the <see cref="WaitingSteps"/> step class.
@@ -582,100 +579,100 @@ namespace SpecBind.Tests
             scenarioContext.VerifyAll();
         }
 
-		/// <summary>
-		/// Tests the IWaitForAngularAjaxCallsToComplete with a successful result, when nothing is pending.
-		/// </summary>
-		[TestMethod]
-		public void TestIWaitForAngularAjaxCallsToCompleteStepWithNothingPending()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
-			browser.Setup(s => s.IsClosed).Returns(false);
-			browser.Setup(s => s.IsDisposed).Returns(false);
+        /// <summary>
+        /// Tests the IWaitForAngularAjaxCallsToComplete with a successful result, when nothing is pending.
+        /// </summary>
+        [TestMethod]
+        public void TestIWaitForAngularAjaxCallsToCompleteStepWithNothingPending()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(s => s.IsClosed).Returns(false);
+            browser.Setup(s => s.IsDisposed).Returns(false);
             browser.Setup(s => s.CanGetUrl()).Returns(true);
-			browser.Setup(s => s.Url).Returns("http://www.specbind.org");
-			browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
+            browser.Setup(s => s.Url).Returns("http://www.specbind.org");
+            browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
             WebDriverSupport.SetCurrentBrowser(browser.Object);
 
-			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
-			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-			var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-			steps.WaitForAngular();
+            steps.WaitForAngular();
 
-			browser.VerifyAll();
-		}
+            browser.VerifyAll();
+        }
 
-		/// <summary>
-		/// Tests the IWaitForAngularAjaxCallsToComplete with a successful result, when something is pending.
-		/// </summary>
-		[TestMethod]
-		public void TestIWaitForAngularAjaxCallsToCompleteStepWithSomethingPending()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
-			browser.Setup(s => s.IsClosed).Returns(false);
-			browser.Setup(s => s.IsDisposed).Returns(false);
+        /// <summary>
+        /// Tests the IWaitForAngularAjaxCallsToComplete with a successful result, when something is pending.
+        /// </summary>
+        [TestMethod]
+        public void TestIWaitForAngularAjaxCallsToCompleteStepWithSomethingPending()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(s => s.IsClosed).Returns(false);
+            browser.Setup(s => s.IsDisposed).Returns(false);
             browser.Setup(s => s.CanGetUrl()).Returns(true);
-			browser.Setup(s => s.Url).Returns("http://www.specbind.org");
-			browser.SetupSequence(s => s.ExecuteScript(It.IsAny<string>()))
-				.Returns("1")
-				.Returns("0");
+            browser.Setup(s => s.Url).Returns("http://www.specbind.org");
+            browser.SetupSequence(s => s.ExecuteScript(It.IsAny<string>()))
+                .Returns("1")
+                .Returns("0");
             WebDriverSupport.SetCurrentBrowser(browser.Object);
 
-			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
-			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-			var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-			steps.WaitForAngular();
+            steps.WaitForAngular();
 
-			browser.VerifyAll();
-		}
+            browser.VerifyAll();
+        }
 
-		/// <summary>
-		/// Tests the IWaitForjQueryAjaxCallsToComplete with a successful result, when nothing is pending.
-		/// </summary>
-		[TestMethod]
-		public void TestIWaitForjQueryAjaxCallsToCompleteStepWithNothingPending()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
-			browser.Setup(s => s.IsClosed).Returns(false);
-			browser.Setup(s => s.IsDisposed).Returns(false);
+        /// <summary>
+        /// Tests the IWaitForjQueryAjaxCallsToComplete with a successful result, when nothing is pending.
+        /// </summary>
+        [TestMethod]
+        public void TestIWaitForjQueryAjaxCallsToCompleteStepWithNothingPending()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(s => s.IsClosed).Returns(false);
+            browser.Setup(s => s.IsDisposed).Returns(false);
             browser.Setup(s => s.CanGetUrl()).Returns(true);
-			browser.Setup(s => s.Url).Returns("http://www.specbind.org");
-			browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
+            browser.Setup(s => s.Url).Returns("http://www.specbind.org");
+            browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
             WebDriverSupport.SetCurrentBrowser(browser.Object);
 
-			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
-			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-			var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-			steps.WaitForjQuery();
+            steps.WaitForjQuery();
 
-			browser.VerifyAll();
-		}
+            browser.VerifyAll();
+        }
 
-		/// <summary>
-		/// Tests the IWaitForjQueryAjaxCallsToComplete with a successful result, when something is pending.
-		/// </summary>
-		[TestMethod]
-		public void TestIWaitForjQueryAjaxCallsToCompleteStepWithSomethingPending()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
-			browser.Setup(s => s.IsClosed).Returns(false);
-			browser.Setup(s => s.IsDisposed).Returns(false);
+        /// <summary>
+        /// Tests the IWaitForjQueryAjaxCallsToComplete with a successful result, when something is pending.
+        /// </summary>
+        [TestMethod]
+        public void TestIWaitForjQueryAjaxCallsToCompleteStepWithSomethingPending()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(s => s.IsClosed).Returns(false);
+            browser.Setup(s => s.IsDisposed).Returns(false);
             browser.Setup(s => s.CanGetUrl()).Returns(true);
-			browser.Setup(s => s.Url).Returns("http://www.specbind.org");
-			browser.SetupSequence(s => s.ExecuteScript(It.IsAny<string>()))
-				.Returns("1")
-				.Returns("0");
+            browser.Setup(s => s.Url).Returns("http://www.specbind.org");
+            browser.SetupSequence(s => s.ExecuteScript(It.IsAny<string>()))
+                .Returns("1")
+                .Returns("0");
             WebDriverSupport.SetCurrentBrowser(browser.Object);
 
-			var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
-			var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-			var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
+            var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
 
-			steps.WaitForjQuery();
+            steps.WaitForjQuery();
 
-			browser.VerifyAll();
+            browser.VerifyAll();
         }
 
         /// <summary>

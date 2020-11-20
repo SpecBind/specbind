@@ -129,5 +129,5 @@ namespace SpecBind.Selenium
                        ? LocatorBuilder.GetElementLocators(attribute).FirstOrDefault()
                        : null;
         }
-     }
+    }
 }

@@ -9,7 +9,7 @@ namespace SpecBind.Tests.Validation
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using SpecBind.Validation;
-    
+
     /// <summary>
     /// A test fixture for the starts with string comparison.
     /// </summary>

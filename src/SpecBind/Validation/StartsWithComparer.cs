@@ -13,7 +13,7 @@ namespace SpecBind.Validation
     /// </summary>
     public class StartsWithComparer : ValidationComparerBase
     {
-          /// <summary>
+        /// <summary>
         /// Initializes a new instance of the <see cref="StartsWithComparer"/> class.
         /// </summary>
         public StartsWithComparer()

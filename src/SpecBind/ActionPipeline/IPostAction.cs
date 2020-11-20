@@ -4,11 +4,11 @@
 
 namespace SpecBind.ActionPipeline
 {
-	/// <summary>
-	/// An extension that can interact with an action after it occurs.
-	/// </summary>
-	public interface IPostAction
-	{
+    /// <summary>
+    /// An extension that can interact with an action after it occurs.
+    /// </summary>
+    public interface IPostAction
+    {
         /// <summary>
         /// Performs the post-execute action.
         /// </summary>
@@ -16,5 +16,5 @@ namespace SpecBind.ActionPipeline
         /// <param name="context">The action context.</param>
         /// <param name="result">The result.</param>
 	    void PerformPostAction(IAction action, ActionContext context, ActionResult result);
-	}
+    }
 }

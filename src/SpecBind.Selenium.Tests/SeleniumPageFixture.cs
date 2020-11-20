@@ -215,7 +215,7 @@ namespace SpecBind.Selenium.Tests
             var page = new SeleniumPage(nativePage, webDriver.Object);
 
             page.Highlight(item);
-            
+
             element.VerifyAll();
             webDriver.VerifyAll();
         }

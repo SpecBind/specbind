@@ -721,11 +721,11 @@ namespace SpecBind.Tests
 
             var table = new Table("Field", "Rule", "Value");
             table.AddRow(new Dictionary<string, string>
-				             {
-					             { "Field", "myfield" },
-								 { "Rule", "equals" },
-								 { "Value", "myvalue" }
-				             });
+                             {
+                                 { "Field", "myfield" },
+                                 { "Rule", "equals" },
+                                 { "Value", "myvalue" }
+                             });
 
             steps.ThenISeeListStep("myfield", rule, table);
 
@@ -741,7 +741,7 @@ namespace SpecBind.Tests
         {
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            
+
             var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
 
             steps.ThenISeeComboBoxContainsStep("myfield", "contains", null);

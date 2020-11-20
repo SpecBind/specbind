@@ -40,9 +40,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetElement("doesnotexist")).Throws(new ElementExecuteException("Cannot find item"));
 
             var buttonClickAction = new GetElementAsPageAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new ActionContext("doesnotexist");
 
@@ -127,9 +127,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetElement("myproperty")).Returns(propData.Object);
 
             var buttonClickAction = new GetElementAsPageAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new ActionContext("myproperty");
             var result = buttonClickAction.Execute(context);

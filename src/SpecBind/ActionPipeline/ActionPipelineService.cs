@@ -4,26 +4,26 @@
 
 namespace SpecBind.ActionPipeline
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
-	using SpecBind.Pages;
+    using SpecBind.Pages;
 
-	/// <summary>
-	/// A class that manages actions that should be taken during parts of the process
-	/// </summary>
-	/// <remarks>
-	/// The pipeline works as follows:
-	/// 1. Populate the element locater, this is an extension of this class and can this call actions.
-	/// 2. Perform any pre actions (current use is unknown but may be helpful)
-	/// 3. Perform the main action and acquire the result
-	/// 4. Perform any post actions (current use is unknown but may be helpful)
-	/// 5. Return result
-	/// </remarks>
-	internal class ActionPipelineService : IActionPipelineService
-	{
-		private readonly IActionRepository actionRepository;
+    /// <summary>
+    /// A class that manages actions that should be taken during parts of the process
+    /// </summary>
+    /// <remarks>
+    /// The pipeline works as follows:
+    /// 1. Populate the element locater, this is an extension of this class and can this call actions.
+    /// 2. Perform any pre actions (current use is unknown but may be helpful)
+    /// 3. Perform the main action and acquire the result
+    /// 4. Perform any post actions (current use is unknown but may be helpful)
+    /// 5. Return result
+    /// </remarks>
+    internal class ActionPipelineService : IActionPipelineService
+    {
+        private readonly IActionRepository actionRepository;
 
         private bool actionRepositoryInitialized;
 
@@ -32,10 +32,10 @@ namespace SpecBind.ActionPipeline
 		/// </summary>
 		/// <param name="actionRepository">The action repository.</param>
 		public ActionPipelineService(IActionRepository actionRepository)
-		{
-			this.actionRepository = actionRepository;
+        {
+            this.actionRepository = actionRepository;
             this.actionRepositoryInitialized = false;
-		}
+        }
 
         /// <summary>
         /// Performs the action.
@@ -59,7 +59,7 @@ namespace SpecBind.ActionPipeline
         /// <param name="context">The context.</param>
         /// <returns>The result of the action</returns>
 	    public ActionResult PerformAction(IPage page, IAction action, ActionContext context)
-		{
+        {
             if (!this.actionRepositoryInitialized)
             {
                 this.actionRepository.Initialize();
@@ -67,40 +67,40 @@ namespace SpecBind.ActionPipeline
                 this.actionRepositoryInitialized = true;
             }
 
-			var locater = this.CreateElementLocater(page);
-			action.ElementLocator = locater;
+            var locater = this.CreateElementLocater(page);
+            action.ElementLocator = locater;
 
-			var result = this.PerformPreAction(action, context);
+            var result = this.PerformPreAction(action, context);
 
-		    if (result != null)
-		    {
-		        return result;
-		    }
+            if (result != null)
+            {
+                return result;
+            }
 
-			try
-			{
-				result = action.Execute(context);
-			}
-			catch (Exception ex)
-			{
-				result = ActionResult.Failure(ex);
-			}
+            try
+            {
+                result = action.Execute(context);
+            }
+            catch (Exception ex)
+            {
+                result = ActionResult.Failure(ex);
+            }
 
             this.PerformPostAction(action, context, result);
 
-			return result;
-		}
+            return result;
+        }
 
-		/// <summary>
-		/// Creates the element locater.
-		/// </summary>
-		/// <param name="page">The page.</param>
-		/// <returns>The element locater interface.</returns>
-		private IElementLocator CreateElementLocater(IPage page)
-		{
-			var filterActions = this.actionRepository.GetLocatorActions();
-			return new ElementLocator(page, filterActions);
-		}
+        /// <summary>
+        /// Creates the element locater.
+        /// </summary>
+        /// <param name="page">The page.</param>
+        /// <returns>The element locater interface.</returns>
+        private IElementLocator CreateElementLocater(IPage page)
+        {
+            var filterActions = this.actionRepository.GetLocatorActions();
+            return new ElementLocator(page, filterActions);
+        }
 
         /// <summary>
         /// Performs any actions ahead of the actual action.
@@ -112,8 +112,8 @@ namespace SpecBind.ActionPipeline
         {
             var exceptions = new List<Exception>();
 
-			foreach (var preAction in this.actionRepository.GetPreActions())
-			{
+            foreach (var preAction in this.actionRepository.GetPreActions())
+            {
                 try
                 {
                     preAction.PerformPreAction(action, context);
@@ -122,7 +122,7 @@ namespace SpecBind.ActionPipeline
                 {
                     exceptions.Add(ex);
                 }
-			}
+            }
 
             switch (exceptions.Count)
             {
@@ -142,11 +142,11 @@ namespace SpecBind.ActionPipeline
         /// <param name="context">The action context.</param>
         /// <param name="result">The result.</param>
 	    private void PerformPostAction(IAction action, ActionContext context, ActionResult result)
-		{
-			foreach (var postAction in this.actionRepository.GetPostActions())
-			{
-				postAction.PerformPostAction(action, context, result);
-			}
-		}
+        {
+            foreach (var postAction in this.actionRepository.GetPostActions())
+            {
+                postAction.PerformPostAction(action, context, result);
+            }
+        }
     }
 }

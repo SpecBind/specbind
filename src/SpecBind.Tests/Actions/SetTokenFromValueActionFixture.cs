@@ -45,9 +45,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetElement("doesnotexist")).Throws(new ElementExecuteException("Cannot find item"));
 
             var getItemAction = new SetTokenFromValueAction(tokenManager.Object)
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new SetTokenFromValueAction.TokenFieldContext("doesnotexist", "mytoken");
             ExceptionHelper.SetupForException<ElementExecuteException>(
@@ -102,9 +102,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetElement("doesnotexist")).Returns(propData.Object);
 
             var getItemAction = new SetTokenFromValueAction(tokenManager.Object)
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new SetTokenFromValueAction.TokenFieldContext("doesnotexist", "mytoken");
             var result = getItemAction.Execute(context);

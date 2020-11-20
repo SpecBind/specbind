@@ -3,13 +3,13 @@
 // </copyright>
 namespace SpecBind.CodedUI
 {
-	using System;
+    using System;
 
-	/// <summary>
-	/// An attribute that provides frame mapping for the page structure.
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Class)]
-	public class FrameMapAttribute : Attribute
-	{
-	}
+    /// <summary>
+    /// An attribute that provides frame mapping for the page structure.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class FrameMapAttribute : Attribute
+    {
+    }
 }

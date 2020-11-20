@@ -60,10 +60,10 @@ namespace SpecBind.Pages
         public PageBuilderContext CreateChildContext(ExpressionData childContext)
         {
             return new PageBuilderContext(this.Browser, this.Document, childContext)
-                       {
-                           CurrentElement = null,
-                           RootLocator = this.RootLocator ?? this.ParentElement
-                       };
+            {
+                CurrentElement = null,
+                RootLocator = this.RootLocator ?? this.ParentElement
+            };
         }
     }
 }

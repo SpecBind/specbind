@@ -60,7 +60,7 @@ namespace SpecBind.Selenium
             var locators = attribute != null ? LocatorBuilder.GetElementLocators(attribute) : new List<By>();
 
             // Also try to parse the native attributes
-            var nativeItems = nativeAttributes != null ?  nativeAttributes.OfType<FindsByAttribute>().ToList() : null;
+            var nativeItems = nativeAttributes != null ? nativeAttributes.OfType<FindsByAttribute>().ToList() : null;
 
             if (nativeItems != null && nativeItems.Count > 0)
             {

@@ -118,10 +118,10 @@ namespace SpecBind.Pages
             var docVariable = Expression.Variable(frameType);
 
             var expressions = new List<Expression>
-				                  {
-					                  Expression.Assign(docVariable, Expression.Convert(Expression.Invoke(createExpression, parentArgument, Expression.Constant(null, typeof(IBrowser)), Expression.Constant(null, typeof(Action<TElement>))), frameType)),
-									  Expression.Convert(Expression.Property(docVariable, property), typeof(TOutput))
-				                  };
+                                  {
+                                      Expression.Assign(docVariable, Expression.Convert(Expression.Invoke(createExpression, parentArgument, Expression.Constant(null, typeof(IBrowser)), Expression.Constant(null, typeof(Action<TElement>))), frameType)),
+                                      Expression.Convert(Expression.Property(docVariable, property), typeof(TOutput))
+                                  };
 
             var methodCall = Expression.Block(new[] { docVariable }, expressions);
 
@@ -248,14 +248,14 @@ namespace SpecBind.Pages
             //Spin though properties and make an initializer for anything we can set that has an attribute
             var pageMethodInfo = new Action<TOutput, Action<TOutput>>(this.AssignPageAttributes).GetMethodInfo();
             var expressions = new List<Expression>
-				                  {
-					                  Expression.Assign(docVariable, Expression.New(constructor.Item1, constructor.Item2)),
-					                  Expression.Call(
+                                  {
+                                      Expression.Assign(docVariable, Expression.New(constructor.Item1, constructor.Item2)),
+                                      Expression.Call(
                                           Expression.Constant(this),
-						                  pageMethodInfo,
-						                  Expression.Convert(docVariable, typeof(TOutput)),
-						                  actionParameter)
-				                  };
+                                          pageMethodInfo,
+                                          Expression.Convert(docVariable, typeof(TOutput)),
+                                          actionParameter)
+                                  };
 
 
 
@@ -473,14 +473,14 @@ namespace SpecBind.Pages
 
             var itemVariable = buildElement.Expression;
             return new[]
-				       {
-					       (Expression)Expression.Assign(itemVariable, Expression.New(propConstructor.Item1, propConstructor.Item2)),
-						   Expression.Call(Expression.Constant(this),
+                       {
+                           (Expression)Expression.Assign(itemVariable, Expression.New(propConstructor.Item1, propConstructor.Item2)),
+                           Expression.Call(Expression.Constant(this),
                                            this.assignMethodInfo,
                                            Expression.Convert(itemVariable, typeof(TElement)),
                                            Expression.Constant(attribute, typeof(ElementLocatorAttribute)),
                                            Expression.Constant(nativeAttributes, typeof(object[])))
-				       };
+                       };
         }
     }
 }

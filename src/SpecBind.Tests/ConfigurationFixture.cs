@@ -25,23 +25,23 @@ namespace SpecBind.Tests
         public void TestReadWriteConfiguration()
         {
             var section = new ConfigurationSectionHandler
-                              {
-                                 Application = new ApplicationConfigurationElement
-                                      {
-                                          StartUrl = "http://myapp.com"
-                                      },
-                                 BrowserFactory = new BrowserFactoryConfigurationElement
-                                                      {
-                                                          BrowserType = "Chrome",
-                                                          CreateScreenshotOnExit = true,
-                                                          Provider = "MyProvider, MyProvider.Class",
-                                                          EnsureCleanSession = true,
-                                                          ElementLocateTimeout = TimeSpan.FromSeconds(10),
-                                                          PageLoadTimeout = TimeSpan.FromSeconds(15),
-                                                          ValidateWebDriver = true,
-                                                          ReuseBrowser = true
-                                                      }
-                              };
+            {
+                Application = new ApplicationConfigurationElement
+                {
+                    StartUrl = "http://myapp.com"
+                },
+                BrowserFactory = new BrowserFactoryConfigurationElement
+                {
+                    BrowserType = "Chrome",
+                    CreateScreenshotOnExit = true,
+                    Provider = "MyProvider, MyProvider.Class",
+                    EnsureCleanSession = true,
+                    ElementLocateTimeout = TimeSpan.FromSeconds(10),
+                    PageLoadTimeout = TimeSpan.FromSeconds(15),
+                    ValidateWebDriver = true,
+                    ReuseBrowser = true
+                }
+            };
 
             Assert.IsNotNull(section.Application);
             Assert.AreEqual("http://myapp.com", section.Application.StartUrl);

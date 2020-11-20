@@ -14,8 +14,8 @@ namespace SpecBind.Tests.Validation
 	/// A test fixture for the <see cref="ItemValidation"/> class.
 	/// </summary>
 	[TestClass]
-	public class ItemValidationFixture
-	{
+    public class ItemValidationFixture
+    {
         /// <summary>
         /// Tests the compare method for simple comparisons.
         /// </summary>
@@ -67,11 +67,11 @@ namespace SpecBind.Tests.Validation
         public void TestCompareWithValuesSetAndEqualReturnsTrue()
         {
             var item = new ItemValidation(" Field ", " equals ", " value ")
-                           {
-                               FieldName = "field",
-                               ComparisonValue = "value",
-                               Comparer = new EqualsComparer()
-                           };
+            {
+                FieldName = "field",
+                ComparisonValue = "value",
+                Comparer = new EqualsComparer()
+            };
 
             var propertyData = new Mock<IPropertyData>(MockBehavior.Strict);
 

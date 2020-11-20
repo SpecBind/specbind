@@ -3,14 +3,14 @@
 // </copyright>
 namespace SpecBind.Pages
 {
-	using System;
-	using System.Linq;
+    using System;
+    using System.Linq;
 
     /// <summary>
 	/// A set of extension methods to analyze types.
 	/// </summary>
 	public static class TypeExtensions
-	{
+    {
         /// <summary>
         /// Determines whether the specified check type is a supported property type.
         /// </summary>
@@ -22,16 +22,16 @@ namespace SpecBind.Pages
             return elementType.IsAssignableFrom(checkType) || IsElementListType(checkType) || IsTableElementType(checkType);
         }
 
-		/// <summary>
-		/// Checks to see if the given type is an element list.
-		/// </summary>
-		/// <param name="propertyType">Type of the property.</param>
-		/// <returns><c>true</c> if it is a list type; otherwise <c>false</c>.</returns>
-		public static bool IsElementListType(this Type propertyType)
-		{
-			return (propertyType.IsGenericType && typeof(IElementList<,>).IsAssignableFrom(propertyType.GetGenericTypeDefinition())) ||
+        /// <summary>
+        /// Checks to see if the given type is an element list.
+        /// </summary>
+        /// <param name="propertyType">Type of the property.</param>
+        /// <returns><c>true</c> if it is a list type; otherwise <c>false</c>.</returns>
+        public static bool IsElementListType(this Type propertyType)
+        {
+            return (propertyType.IsGenericType && typeof(IElementList<,>).IsAssignableFrom(propertyType.GetGenericTypeDefinition())) ||
                    propertyType.GetInterfaces().Any(i => i.IsGenericType && typeof(IElementList<,>).IsAssignableFrom(i.GetGenericTypeDefinition()));
-		}
+        }
 
         /// <summary>
         /// Checks to see if the given type is an table element.
@@ -42,5 +42,5 @@ namespace SpecBind.Pages
         {
             return propertyType.IsGenericType && typeof(TableElement<>).IsAssignableFrom(propertyType.GetGenericTypeDefinition());
         }
-	}
+    }
 }

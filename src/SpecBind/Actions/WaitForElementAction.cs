@@ -6,7 +6,7 @@ namespace SpecBind.Actions
     using System;
 
     using SpecBind.ActionPipeline;
-	using SpecBind.Helpers;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -54,20 +54,20 @@ namespace SpecBind.Actions
         /// <returns>The located element.</returns>
         protected IPropertyData GetElement(string propertyName, TimeSpan? timeout)
         {
-			IPropertyData element = null;
+            IPropertyData element = null;
 
             timeout = timeout.GetValueOrDefault(DefaultTimeout);
-			var waiter = new Waiter<IElementLocator>(timeout.Value);
-			try
-			{
-				waiter.WaitFor(this.ElementLocator, e => e.TryGetElement(propertyName, out element));
-				return element;
-			}
-			catch (TimeoutException)
-			{
-				// This will throw the appropriate exception if still not found
-				return this.ElementLocator.GetElement(propertyName);
-			}
+            var waiter = new Waiter<IElementLocator>(timeout.Value);
+            try
+            {
+                waiter.WaitFor(this.ElementLocator, e => e.TryGetElement(propertyName, out element));
+                return element;
+            }
+            catch (TimeoutException)
+            {
+                // This will throw the appropriate exception if still not found
+                return this.ElementLocator.GetElement(propertyName);
+            }
         }
 
         /// <summary>

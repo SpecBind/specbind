@@ -9,8 +9,8 @@ namespace SpecBind.Validation
 	/// An item validation class that holds the data for a field.
 	/// </summary>
 	public class ItemValidation
-	{
-		#region Constructors
+    {
+        #region Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ItemValidation" /> class.
@@ -27,7 +27,7 @@ namespace SpecBind.Validation
 
         #endregion
 
-		#region Public Properties
+        #region Public Properties
 
         /// <summary>
         /// Gets a value indicating whether the item should be checked first for existence.
@@ -55,13 +55,13 @@ namespace SpecBind.Validation
 		/// </value>
 		public string ComparisonValue { get; internal set; }
 
-		/// <summary>
-		/// Gets the name of the field.
-		/// </summary>
-		/// <value>
-		/// The name of the field.
-		/// </value>
-		public string FieldName { get; internal set; }
+        /// <summary>
+        /// Gets the name of the field.
+        /// </summary>
+        /// <value>
+        /// The name of the field.
+        /// </value>
+        public string FieldName { get; internal set; }
 
         /// <summary>
         /// Gets the comparison type as it was originally in the table.
@@ -95,18 +95,18 @@ namespace SpecBind.Validation
 
         #endregion
 
-		#region Public Methods
+        #region Public Methods
 
         /// <summary>
-		/// Compares the specified <see paramref="actualValue"/> to the property data <see cref="ComparisonValue"/>.
-		/// </summary>
-		/// <param name="propertyData">The property data.</param>
-		/// <param name="actualValue">The comparison value.</param>
-		/// <returns><c>true</c> if the values match; otherwise <c>false</c>.</returns>
-		public bool Compare(IPropertyData propertyData, string actualValue)
-		{
-		    return this.Comparer != null && this.Comparer.Compare(propertyData, this.ComparisonValue, actualValue);
-		}
+        /// Compares the specified <see paramref="actualValue"/> to the property data <see cref="ComparisonValue"/>.
+        /// </summary>
+        /// <param name="propertyData">The property data.</param>
+        /// <param name="actualValue">The comparison value.</param>
+        /// <returns><c>true</c> if the values match; otherwise <c>false</c>.</returns>
+        public bool Compare(IPropertyData propertyData, string actualValue)
+        {
+            return this.Comparer != null && this.Comparer.Compare(propertyData, this.ComparisonValue, actualValue);
+        }
 
         #endregion
 
@@ -115,8 +115,8 @@ namespace SpecBind.Validation
         /// </summary>
         /// <returns>A <see cref="string" /> that represents this instance.</returns>
         public override string ToString()
-		{
-			return string.Format("{0} {1} {2}", this.RawFieldName, this.RawComparisonType, this.RawComparisonValue ?? "<NULL>");
-		}
-	}
+        {
+            return string.Format("{0} {1} {2}", this.RawFieldName, this.RawComparisonType, this.RawComparisonValue ?? "<NULL>");
+        }
+    }
 }

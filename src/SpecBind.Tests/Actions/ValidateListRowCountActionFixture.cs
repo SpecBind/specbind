@@ -42,9 +42,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetProperty("doesnotexist")).Throws(new ElementExecuteException("Cannot find item"));
 
             var rowCountAction = new ValidateListRowCountAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new ValidateListRowCountAction.ValidateListRowCountContext("doesnotexist", NumericComparisonType.Equals, 1);
             ExceptionHelper.SetupForException<ElementExecuteException>(
@@ -65,9 +65,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetProperty("myproperty")).Returns(propData.Object);
 
             var rowCountAction = new ValidateListRowCountAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new ValidateListRowCountAction.ValidateListRowCountContext("myproperty", NumericComparisonType.Equals, 1);
             var result = rowCountAction.Execute(context);
@@ -95,9 +95,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetProperty("myproperty")).Returns(propData.Object);
 
             var rowCountAction = new ValidateListRowCountAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new ValidateListRowCountAction.ValidateListRowCountContext("myproperty", NumericComparisonType.Equals, 1);
             var result = rowCountAction.Execute(context);
@@ -124,9 +124,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetProperty("myproperty")).Returns(propData.Object);
 
             var rowCountAction = new ValidateListRowCountAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new ValidateListRowCountAction.ValidateListRowCountContext("myproperty", NumericComparisonType.Equals, 1);
             var result = rowCountAction.Execute(context);

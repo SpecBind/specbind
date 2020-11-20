@@ -45,9 +45,9 @@ namespace SpecBind.Tests.Actions
             locater.Setup(p => p.GetProperty("doesnotexist")).Throws(new ElementExecuteException("Cannot find item"));
 
             var buttonClickAction = new GetListItemByCriteriaAction
-                                        {
-                                            ElementLocator = locater.Object
-                                        };
+            {
+                ElementLocator = locater.Object
+            };
 
             var context = new GetListItemByCriteriaAction.ListItemByCriteriaContext("doesnotexist", new ValidationTable());
 

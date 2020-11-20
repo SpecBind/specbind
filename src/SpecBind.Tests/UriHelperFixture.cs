@@ -4,68 +4,64 @@
 
 namespace SpecBind.Tests
 {
-	using System;
+    using System;
+    using System.Collections.Generic;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Moq;
+    using SpecBind.BrowserSupport;
+    using SpecBind.Helpers;
+    using SpecBind.Pages;
+    using SpecBind.Tests.Support;
 
-	using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-	using Moq;
-
-	using SpecBind.BrowserSupport;
-	using SpecBind.Helpers;
-	using SpecBind.Pages;
-	using SpecBind.Tests.Support;
-
-	using System.Collections.Generic;
-
-	/// <summary>
-	///     A test fixture for URI helpers.
-	/// </summary>
-	[TestClass]
-	public class UriHelperFixture
-	{
-		/// <summary>
-		///     Tests the get page URI method.
-		/// </summary>
-		[TestMethod]
-		public void TestGetQualifiedPageUri()
-		{
+    /// <summary>
+    ///     A test fixture for URI helpers.
+    /// </summary>
+    [TestClass]
+    public class UriHelperFixture
+    {
+        /// <summary>
+        ///     Tests the get page URI method.
+        /// </summary>
+        [TestMethod]
+        public void TestGetQualifiedPageUri()
+        {
             UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			var url = UriHelper.GetQualifiedPageUri("subpath/1");
+            var url = UriHelper.GetQualifiedPageUri("subpath/1");
 
-			Assert.AreEqual(url, "http://localhost:2222/subpath/1");
-		}
+            Assert.AreEqual(url, "http://localhost:2222/subpath/1");
+        }
 
-		/// <summary>
-		///     Tests the get page URI method with a page type.
-		/// </summary>
-		[TestMethod]
-		public void TestGetQualifiedPageUriFromPageType()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
+        /// <summary>
+        ///     Tests the get page URI method with a page type.
+        /// </summary>
+        [TestMethod]
+        public void TestGetQualifiedPageUriFromPageType()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			var url = UriHelper.GetQualifiedPageUri(browser.Object, typeof(NavigationAttributePage));
+            var url = UriHelper.GetQualifiedPageUri(browser.Object, typeof(NavigationAttributePage));
 
-			Assert.AreEqual(url, new Uri("http://localhost:2222/root"));
+            Assert.AreEqual(url, new Uri("http://localhost:2222/root"));
 
-			browser.VerifyAll();
-		}
+            browser.VerifyAll();
+        }
 
         /// <summary>
 		///     Tests the get page URI method with a page type.
 		/// </summary>
 		[TestMethod]
-		public void TestGetQualifiedPageUriFromPageTypeWithAbslouteUriAttribute()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
+        public void TestGetQualifiedPageUriFromPageTypeWithAbslouteUriAttribute()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			var url = UriHelper.GetQualifiedPageUri(browser.Object, typeof(AbsoluteUriPage));
+            var url = UriHelper.GetQualifiedPageUri(browser.Object, typeof(AbsoluteUriPage));
 
             Assert.AreEqual(url, new Uri("http://www.atestsite.com/subpath"));
 
-			browser.VerifyAll();
-		}
+            browser.VerifyAll();
+        }
 
         /// <summary>
         ///     Tests the get page URI method with a page type and a longer hostname.
@@ -198,147 +194,147 @@ namespace SpecBind.Tests
 		///     Tests the get page URI method.
 		/// </summary>
 		[TestMethod]
-		public void TestGetPageUriFromTypeWithNavigationAttribute()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
+        public void TestGetPageUriFromTypeWithNavigationAttribute()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             UriHelper.BaseUri = new Uri("http://localhost:2222/");
             var url = UriHelper.GetPageUri(browser.Object, typeof(NavigationAttributePage));
 
             Assert.AreEqual("/root", url);
 
-			browser.VerifyAll();
-		}
+            browser.VerifyAll();
+        }
 
-		/// <summary>
-		///     Tests the get page URI method with a type that doesn't contain an attribute.
-		/// </summary>
-		[TestMethod]
-		[ExpectedException(typeof(PageNavigationException))]
-		public void TestGetPageUriFromTypeWithInvalidNavigationAttribute()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
-			browser.Setup(b => b.GetUriForPageType(typeof(InvalidPage))).Returns((string)null);
+        /// <summary>
+        ///     Tests the get page URI method with a type that doesn't contain an attribute.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(PageNavigationException))]
+        public void TestGetPageUriFromTypeWithInvalidNavigationAttribute()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(b => b.GetUriForPageType(typeof(InvalidPage))).Returns((string)null);
 
-			try
-			{
+            try
+            {
                 UriHelper.BaseUri = new Uri("http://localhost:2222/");
-				UriHelper.GetPageUri(browser.Object, typeof(InvalidPage));
-			}
-			catch (PageNavigationException ex)
-			{
-				StringAssert.Contains(ex.Message, "InvalidPage");
+                UriHelper.GetPageUri(browser.Object, typeof(InvalidPage));
+            }
+            catch (PageNavigationException ex)
+            {
+                StringAssert.Contains(ex.Message, "InvalidPage");
 
-				browser.VerifyAll();
-				throw;
-			}
-		}
+                browser.VerifyAll();
+                throw;
+            }
+        }
 
-		/// <summary>
-		///     Tests the get page URI method.
-		/// </summary>
-		[TestMethod]
-		public void TestFillPageUri()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
+        /// <summary>
+        ///     Tests the get page URI method.
+        /// </summary>
+        [TestMethod]
+        public void TestFillPageUri()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			var url = UriHelper.FillPageUri(
-				browser.Object, typeof(NavigationAttributePage), new Dictionary<string, string> { { "Id", "1" } });
+            var url = UriHelper.FillPageUri(
+                browser.Object, typeof(NavigationAttributePage), new Dictionary<string, string> { { "Id", "1" } });
 
             Assert.AreEqual("http://localhost:2222/root/1", url);
 
-			browser.VerifyAll();
-		}
+            browser.VerifyAll();
+        }
 
-		/// <summary>
-		///     Tests the get page URI method with a null dictionary.
-		/// </summary>
-		[TestMethod]
-		public void TestFillPageUriNullDictionary()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
+        /// <summary>
+        ///     Tests the get page URI method with a null dictionary.
+        /// </summary>
+        [TestMethod]
+        public void TestFillPageUriNullDictionary()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
             UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			var url = UriHelper.FillPageUri(
-				browser.Object, typeof(NavigationAttributePage), null);
+            var url = UriHelper.FillPageUri(
+                browser.Object, typeof(NavigationAttributePage), null);
 
             Assert.AreEqual("http://localhost:2222/root/{id}", url);
 
-			browser.VerifyAll();
-		}
+            browser.VerifyAll();
+        }
 
-		/// <summary>
-		///     Tests the get page URI method with a null dictionary.
-		/// </summary>
-		[TestMethod]
-		public void TestFillPageUriNoAttribute()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
-			browser.Setup(b => b.GetUriForPageType(typeof(InvalidPage))).Returns("/testpage");
+        /// <summary>
+        ///     Tests the get page URI method with a null dictionary.
+        /// </summary>
+        [TestMethod]
+        public void TestFillPageUriNoAttribute()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
+            browser.Setup(b => b.GetUriForPageType(typeof(InvalidPage))).Returns("/testpage");
 
             UriHelper.BaseUri = new Uri("http://localhost:2222/");
-			var url = UriHelper.FillPageUri(
-				browser.Object, typeof(InvalidPage), null);
+            var url = UriHelper.FillPageUri(
+                browser.Object, typeof(InvalidPage), null);
 
             Assert.AreEqual("http://localhost:2222/testpage", url);
 
-			browser.VerifyAll();
-		}
+            browser.VerifyAll();
+        }
 
-		/// <summary>
-		///     Tests the FillPageUri method when a template is specified and AbsoluteUri is true.
-		///     When these conditions are met, the base Uri should be ignored.
-		/// </summary>
-		[TestMethod]
-		public void TestFillPageUriWithTemplateAndAbsoluteUri()
-		{
-			var browser = new Mock<IBrowser>(MockBehavior.Strict);
+        /// <summary>
+        ///     Tests the FillPageUri method when a template is specified and AbsoluteUri is true.
+        ///     When these conditions are met, the base Uri should be ignored.
+        /// </summary>
+        [TestMethod]
+        public void TestFillPageUriWithTemplateAndAbsoluteUri()
+        {
+            var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-			// Setting base uri here should not matter as it will get ignored since AbsoluteUri = true for this test
-			UriHelper.BaseUri = new Uri("http://localhost:2222/");
+            // Setting base uri here should not matter as it will get ignored since AbsoluteUri = true for this test
+            UriHelper.BaseUri = new Uri("http://localhost:2222/");
 
-			var url = UriHelper.FillPageUri(
-				browser.Object, typeof(NavigationWithTemplateAndAbsoluteUri), new Dictionary<string, string> { { "param", "1" } });
+            var url = UriHelper.FillPageUri(
+                browser.Object, typeof(NavigationWithTemplateAndAbsoluteUri), new Dictionary<string, string> { { "param", "1" } });
 
-			Assert.AreEqual("http://root?q=1", url);
+            Assert.AreEqual("http://root?q=1", url);
 
-			browser.VerifyAll();
-		}
+            browser.VerifyAll();
+        }
 
 
         // ReSharper disable ClassNeverInstantiated.Local
 
-		/// <summary>
-		/// A test class for invalid configurations.
-		/// </summary>
-		private class InvalidPage : TestBase
-		{
-		}
+        /// <summary>
+        /// A test class for invalid configurations.
+        /// </summary>
+        private class InvalidPage : TestBase
+        {
+        }
 
-		/// <summary>
-		/// A test class for navigation page attribute configurations.
-		/// </summary>
-		[PageNavigation("/root", UrlTemplate = "/root/{id}")]
-		private class NavigationAttributePage : TestBase
-		{
-		}
+        /// <summary>
+        /// A test class for navigation page attribute configurations.
+        /// </summary>
+        [PageNavigation("/root", UrlTemplate = "/root/{id}")]
+        private class NavigationAttributePage : TestBase
+        {
+        }
 
         /// <summary>
         /// A test class for navigation with a URL template and fixed URL.
         /// </summary>
 		[PageNavigation("http://root", UrlTemplate = "http://root?q={param}", IsAbsoluteUrl = true)]
-		private class NavigationWithTemplateAndAbsoluteUri : TestBase
-		{
-		}
+        private class NavigationWithTemplateAndAbsoluteUri : TestBase
+        {
+        }
 
-	    /// <summary>
-	    /// A test class for navigation page with parameters
-	    /// </summary>
-	    [PageNavigation("/root?q=parameter")]
-	    private class NavigationWithParamtersPage : TestBase
-	    {
-	    }
+        /// <summary>
+        /// A test class for navigation page with parameters
+        /// </summary>
+        [PageNavigation("/root?q=parameter")]
+        private class NavigationWithParamtersPage : TestBase
+        {
+        }
 
         /// <summary>
         /// A test class for navigation page attribute with regex in it configurations.
@@ -365,5 +361,5 @@ namespace SpecBind.Tests
         }
 
         // ReSharper restore ClassNeverInstantiated.Local
-	}
+    }
 }

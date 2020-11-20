@@ -3,9 +3,9 @@
 // </copyright>
 namespace SpecBind.Actions
 {
-	using System;
-	using SpecBind.ActionPipeline;
-	using SpecBind.Helpers;
+    using System;
+    using SpecBind.ActionPipeline;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
     using SpecBind.Validation;
 
@@ -22,7 +22,7 @@ namespace SpecBind.Actions
         {
         }
 
-		/// <summary>
+        /// <summary>
         /// Executes the specified action based on the context.
         /// </summary>
         /// <param name="context">The context.</param>
@@ -48,17 +48,17 @@ namespace SpecBind.Actions
             }
 
 
-			string actualValue = null;
-			bool? successful = null;
+            string actualValue = null;
+            bool? successful = null;
 
-			this.DoValidate<IPropertyData>(propertyData, e =>
-				{
-					successful = e.ValidateItem(validation, out actualValue);
-					return successful.Value;
-				});
+            this.DoValidate<IPropertyData>(propertyData, e =>
+                {
+                    successful = e.ValidateItem(validation, out actualValue);
+                    return successful.Value;
+                });
 
-			itemResult.NoteValidationResult(validation, successful.Value, actualValue);
-			return successful.Value;
+            itemResult.NoteValidationResult(validation, successful.Value, actualValue);
+            return successful.Value;
         }
 
         /// <summary>

@@ -4,13 +4,13 @@
 
 namespace SpecBind.ActionPipeline
 {
-	using SpecBind.Pages;
+    using SpecBind.Pages;
 
-	/// <summary>
-	/// Represents the action pipeline that performs actions.
-	/// </summary>
-	public interface IActionPipelineService
-	{
+    /// <summary>
+    /// Represents the action pipeline that performs actions.
+    /// </summary>
+    public interface IActionPipelineService
+    {
         /// <summary>
         /// Performs the action.
         /// </summary>
@@ -29,5 +29,5 @@ namespace SpecBind.ActionPipeline
         /// <param name="context">The context.</param>
         /// <returns>The result of the action.</returns>
 	    ActionResult PerformAction(IPage page, IAction action, ActionContext context);
-	}
+    }
 }

@@ -3,10 +3,10 @@
 // </copyright>
 namespace SpecBind.Actions
 {
+    using System;
     using SpecBind.ActionPipeline;
-	using SpecBind.Helpers;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
-	using System;
 
     /// <summary>
     /// An action that validates a list of items for specific actions.
@@ -38,25 +38,25 @@ namespace SpecBind.Actions
                         propertyData.Name));
             }
 
-			Tuple<bool, int> validationResult = null;
+            Tuple<bool, int> validationResult = null;
 
-			this.DoValidate<IPropertyData>(propertyData, e =>
-				{
-					validationResult = e.ValidateListRowCount(actionContext.CompareType, actionContext.RowCount);
-					return validationResult.Item1;
-				});
+            this.DoValidate<IPropertyData>(propertyData, e =>
+                {
+                    validationResult = e.ValidateListRowCount(actionContext.CompareType, actionContext.RowCount);
+                    return validationResult.Item1;
+                });
 
-			if (validationResult.Item1)
-			{
-				return ActionResult.Successful();
-			}
+            if (validationResult.Item1)
+            {
+                return ActionResult.Successful();
+            }
 
-			return ActionResult.Failure(
-					new ElementExecuteException(
-						"List count validation of field '{0}' failed. Expected Items: {1}, Actual Items: {2}",
-						propertyData.Name,
-						actionContext.RowCount,
-						validationResult.Item2));
+            return ActionResult.Failure(
+                    new ElementExecuteException(
+                        "List count validation of field '{0}' failed. Expected Items: {1}, Actual Items: {2}",
+                        propertyData.Name,
+                        actionContext.RowCount,
+                        validationResult.Item2));
         }
 
         /// <summary>

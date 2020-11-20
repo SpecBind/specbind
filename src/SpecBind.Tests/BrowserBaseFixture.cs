@@ -3,23 +3,23 @@
 // </copyright>
 namespace SpecBind.Tests
 {
-	using System;
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 
-	using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-	using Moq;
-	using Moq.Protected;
+    using Moq;
+    using Moq.Protected;
 
-	using SpecBind.Actions;
-	using SpecBind.BrowserSupport;
-	using SpecBind.Helpers;
-	using SpecBind.Pages;
+    using SpecBind.Actions;
+    using SpecBind.BrowserSupport;
+    using SpecBind.Helpers;
+    using SpecBind.Pages;
 
-	/// <summary>
-	/// A test fixture for the <see cref="BrowserBase"/> class.
-	/// </summary>
-	[TestClass]
+    /// <summary>
+    /// A test fixture for the <see cref="BrowserBase"/> class.
+    /// </summary>
+    [TestClass]
     public class BrowserBaseFixture
     {
         /// <summary>
@@ -186,7 +186,7 @@ namespace SpecBind.Tests
         [TestMethod]
         public void TestCloseWhenDisposeIsTrue()
         {
-			bool disposingManagedResources = true;
+            bool disposingManagedResources = true;
 
             var logger = new Mock<ILogger>(MockBehavior.Loose);
             var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
@@ -208,9 +208,9 @@ namespace SpecBind.Tests
         [TestMethod]
         public void TestCloseWhenDisposeIsFalse()
         {
-			bool disposingManagedResources = true;
+            bool disposingManagedResources = true;
 
-			var logger = new Mock<ILogger>(MockBehavior.Loose);
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
             var browser = new Mock<BrowserBase>(MockBehavior.Strict, logger.Object);
             browser.Setup(b => b.Close());
             browser.Protected().Setup("DisposeWindow", disposingManagedResources);

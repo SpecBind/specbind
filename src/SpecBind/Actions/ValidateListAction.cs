@@ -8,7 +8,7 @@ namespace SpecBind.Actions
     using System.Linq;
 
     using SpecBind.ActionPipeline;
-	using SpecBind.Helpers;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
     using SpecBind.Validation;
 
@@ -42,13 +42,13 @@ namespace SpecBind.Actions
                             propertyData.Name));
             }
 
-			ValidationResult validationResult = null;
+            ValidationResult validationResult = null;
 
-			this.DoValidate<IPropertyData>(propertyData, e =>
-				{
-					validationResult = e.ValidateList(actionContext.CompareType, actionContext.ValidationTable.Validations.ToList());
-					return validationResult.IsValid;
-				});
+            this.DoValidate<IPropertyData>(propertyData, e =>
+                {
+                    validationResult = e.ValidateList(actionContext.CompareType, actionContext.ValidationTable.Validations.ToList());
+                    return validationResult.IsValid;
+                });
 
             if (validationResult.IsValid)
             {

@@ -3,10 +3,10 @@
 // </copyright>
 namespace SpecBind.Actions
 {
-    using SpecBind.ActionPipeline;
-    using SpecBind.Pages;
     using System.Collections.Generic;
     using System.Linq;
+    using SpecBind.ActionPipeline;
+    using SpecBind.Pages;
 
     /// <summary>
     /// An action that validates a combo box contains given items.

@@ -61,7 +61,8 @@ namespace SpecBind.Selenium.Drivers
                 case "10240":
                     downloadUrl = "https://download.microsoft.com/download/8/D/0/8D0D08CF-790D-4586-B726-C6469A9ED49C/MicrosoftWebDriver.msi";
                     break;
-                default: return;
+                default:
+                    return;
             }
 
             using (var webClient = new WebClient())

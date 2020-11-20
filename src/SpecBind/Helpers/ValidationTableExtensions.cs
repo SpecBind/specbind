@@ -47,13 +47,13 @@ namespace SpecBind.Helpers
             var validationTable = new ValidationTable();
 
             foreach (var tableRow in table.Rows)
-			{
-				var fieldName = tableRow[fieldHeader];
-				var comparisonValue = tableRow[valueHeader];
-				var ruleValue = tableRow[ruleHeader];
+            {
+                var fieldName = tableRow[fieldHeader];
+                var comparisonValue = tableRow[valueHeader];
+                var ruleValue = tableRow[ruleHeader];
 
                 validationTable.AddValidation(fieldName, ruleValue, comparisonValue);
-			}
+            }
 
             return validationTable;
         }

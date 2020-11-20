@@ -4,10 +4,10 @@
 
 namespace SpecBind.Selenium.Drivers
 {
+    using System.IO;
     using Configuration;
     using OpenQA.Selenium;
     using OpenQA.Selenium.PhantomJS;
-    using System.IO;
 
     /// <summary>
     /// Selenium PhantomJS Driver.
