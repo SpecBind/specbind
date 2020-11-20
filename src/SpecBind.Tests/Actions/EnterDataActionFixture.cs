@@ -49,8 +49,8 @@ namespace SpecBind.Tests.Actions
 
             var enterDataAction = new EnterDataAction(tokenManager.Object)
             {
-                                        ElementLocator = locator.Object
-                                    };
+                ElementLocator = locator.Object
+            };
 
             var context = new EnterDataAction.EnterDataContext("doesnotexist", "some value");
             ExceptionHelper.SetupForException<ElementExecuteException>(
@@ -74,8 +74,8 @@ namespace SpecBind.Tests.Actions
 
             var enterDataAction = new EnterDataAction(tokenManager.Object)
             {
-                                        ElementLocator = locator.Object
-                                    };
+                ElementLocator = locator.Object
+            };
 
             var context = new ActionContext("doesnotexist");
             ExceptionHelper.SetupForException<InvalidOperationException>(
@@ -109,8 +109,8 @@ namespace SpecBind.Tests.Actions
 
             var getItemAction = new EnterDataAction(tokenManager.Object)
             {
-                                        ElementLocator = locator.Object
-                                    };
+                ElementLocator = locator.Object
+            };
 
             var context = new EnterDataAction.EnterDataContext("myitem", "some data");
             var result = getItemAction.Execute(context);

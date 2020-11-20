@@ -294,41 +294,41 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestCallSendKeysInvokesWrappedValue()
         {
-			var expected = "correct value";
+            var expected = "correct value";
 
             var mockElement = new Mock<IWebElement>(MockBehavior.Strict);
-			mockElement.Setup(c => c.Clear());
-			mockElement.Setup(c => c.SendKeys(expected));
-			mockElement.Setup(c => c.GetAttribute("value")).Returns(expected);
+            mockElement.Setup(c => c.Clear());
+            mockElement.Setup(c => c.SendKeys(expected));
+            mockElement.Setup(c => c.GetAttribute("value")).Returns(expected);
 
             var element = CreateBasicWrappedElement(mockElement.Object);
 
-			element.SendKeys(expected);
+            element.SendKeys(expected);
 
             mockElement.VerifyAll();
         }
 
-		/// <summary>
-		/// Tests the send keys method invokes the wrapped element.
-		/// </summary>
-		[TestMethod]
-		[ExpectedException(typeof(WebDriverException))]
-		public void TestCallSendKeysInvokesWrappedValueWithRetryFails()
-		{
-			var expected = "correct value";
-			var unexpected = "incorrect value";
+        /// <summary>
+        /// Tests the send keys method invokes the wrapped element.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(WebDriverException))]
+        public void TestCallSendKeysInvokesWrappedValueWithRetryFails()
+        {
+            var expected = "correct value";
+            var unexpected = "incorrect value";
 
-			var mockElement = new Mock<IWebElement>(MockBehavior.Strict);
-			mockElement.Setup(c => c.Clear());
-			mockElement.Setup(c => c.SendKeys(expected));
-			mockElement.Setup(c => c.GetAttribute("value")).Returns(unexpected);
+            var mockElement = new Mock<IWebElement>(MockBehavior.Strict);
+            mockElement.Setup(c => c.Clear());
+            mockElement.Setup(c => c.SendKeys(expected));
+            mockElement.Setup(c => c.GetAttribute("value")).Returns(unexpected);
 
-			var element = CreateBasicWrappedElement(mockElement.Object);
+            var element = CreateBasicWrappedElement(mockElement.Object);
 
-			element.SendKeys(expected);
-		}
+            element.SendKeys(expected);
+        }
 
-		/// <summary>
+        /// <summary>
         /// Tests the submit method invokes the wrapped element.
         /// </summary>
         [TestMethod]

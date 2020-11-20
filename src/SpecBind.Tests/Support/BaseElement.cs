@@ -3,11 +3,11 @@
 // </copyright>
 namespace SpecBind.Tests.Support
 {
-	/// <summary>
-	/// A base class for a test element.
-	/// </summary>
-	public class BaseElement
-	{
+    /// <summary>
+    /// A base class for a test element.
+    /// </summary>
+    public class BaseElement
+    {
 
-	}
+    }
 }

@@ -45,9 +45,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetProperty("doesnotexist")).Throws(new ElementExecuteException("Cannot find item"));
 
             var buttonClickAction = new ValidateListAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new ValidateListAction.ValidateListContext("doesnotexist", ComparisonType.Equals, new ValidationTable());
             ExceptionHelper.SetupForException<ElementExecuteException>(
@@ -68,9 +68,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetProperty("myproperty")).Returns(propData.Object);
 
             var buttonClickAction = new ValidateListAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new ValidateListAction.ValidateListContext("myproperty", ComparisonType.Equals, new ValidationTable());
             var result = buttonClickAction.Execute(context);

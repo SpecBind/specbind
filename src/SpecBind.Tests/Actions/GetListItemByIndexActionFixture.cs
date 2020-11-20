@@ -40,9 +40,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetProperty("doesnotexist")).Throws(new ElementExecuteException("Cannot find item"));
 
             var buttonClickAction = new GetListItemByIndexAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new GetListItemByIndexAction.ListItemByIndexContext("doesnotexist", 1);
 
@@ -64,9 +64,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetProperty("myproperty")).Returns(propData.Object);
 
             var buttonClickAction = new GetListItemByIndexAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new GetListItemByIndexAction.ListItemByIndexContext("myproperty", 1);
             var result = buttonClickAction.Execute(context);
@@ -95,9 +95,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetProperty("myproperty")).Returns(propData.Object);
 
             var buttonClickAction = new GetListItemByIndexAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new GetListItemByIndexAction.ListItemByIndexContext("myproperty", 1);
             var result = buttonClickAction.Execute(context);
@@ -127,9 +127,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetProperty("myproperty")).Returns(propData.Object);
 
             var buttonClickAction = new GetListItemByIndexAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new GetListItemByIndexAction.ListItemByIndexContext("myproperty", 1);
             var result = buttonClickAction.Execute(context);

@@ -137,7 +137,7 @@ namespace SpecBind.Selenium
                     return selectElement.Options
                                 .Select(option => new ComboBoxItem { Value = option.GetAttribute("value"), Text = option.Text })
                                 .ToList();
-                    
+
             }
 
             return null;

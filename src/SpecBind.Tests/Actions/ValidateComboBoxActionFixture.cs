@@ -42,8 +42,8 @@ namespace SpecBind.Tests.Actions
 
             var comboBoxAction = new ValidateComboBoxAction
             {
-                                            ElementLocator = locator.Object
-                                        };
+                ElementLocator = locator.Object
+            };
 
             var context = new ValidateComboBoxAction.ValidateComboBoxContext("doesnotexist", ComboComparisonType.Contains, new List<ComboBoxItem>(), true, true);
             ExceptionHelper.SetupForException<ElementExecuteException>(
@@ -65,8 +65,8 @@ namespace SpecBind.Tests.Actions
 
             var comboBoxAction = new ValidateComboBoxAction
             {
-                                            ElementLocator = locator.Object
-                                        };
+                ElementLocator = locator.Object
+            };
 
             var context = new ValidateComboBoxAction.ValidateComboBoxContext("myproperty", ComboComparisonType.Contains, new List<ComboBoxItem>(), true, true);
             var result = comboBoxAction.Execute(context);
@@ -94,8 +94,8 @@ namespace SpecBind.Tests.Actions
 
             var comboBoxAction = new ValidateComboBoxAction
             {
-                                            ElementLocator = locator.Object
-                                        };
+                ElementLocator = locator.Object
+            };
 
             var expectedItems = new List<ComboBoxItem> { new ComboBoxItem { Text = "Item 1", Value = "1" } };
             var context = new ValidateComboBoxAction.ValidateComboBoxContext("myproperty", ComboComparisonType.Contains, expectedItems, true, true);

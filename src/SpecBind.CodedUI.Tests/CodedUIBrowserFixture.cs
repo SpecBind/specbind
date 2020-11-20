@@ -3,10 +3,9 @@
 // </copyright>
 namespace SpecBind.CodedUI.Tests
 {
+    using BrowserSupport;
     using Microsoft.VisualStudio.TestTools.UITesting;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-    using BrowserSupport;
 
     /// <summary>
     /// A test fixture for the CodedUIBrowser class

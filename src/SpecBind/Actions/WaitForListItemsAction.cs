@@ -7,7 +7,7 @@ namespace SpecBind.Actions
     using System;
 
     using SpecBind.ActionPipeline;
-	using SpecBind.Helpers;
+    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -62,7 +62,7 @@ namespace SpecBind.Actions
             }
             catch (TimeoutException)
             {
-				var exception = new ElementExecuteException("List '{0}' did not contain elements after {1}", propertyName, timeout);
+                var exception = new ElementExecuteException("List '{0}' did not contain elements after {1}", propertyName, timeout);
                 return ActionResult.Failure(exception);
             }
         }
@@ -75,20 +75,20 @@ namespace SpecBind.Actions
         /// <returns>The located property.</returns>
         protected IPropertyData GetProperty(string propertyName, TimeSpan? timeout = null)
         {
-			IPropertyData element = null;
+            IPropertyData element = null;
 
             timeout = timeout.GetValueOrDefault(DefaultTimeout);
-			var waiter = new Waiter<IElementLocator>(timeout.Value);
-			try
-                {
-				waiter.WaitFor(this.ElementLocator, e => e.TryGetProperty(propertyName, out element));
-				return element;
+            var waiter = new Waiter<IElementLocator>(timeout.Value);
+            try
+            {
+                waiter.WaitFor(this.ElementLocator, e => e.TryGetProperty(propertyName, out element));
+                return element;
             }
-			catch (TimeoutException)
-			{
-            // This will throw the appropriate exception if still not found
-            return this.ElementLocator.GetProperty(propertyName);
-        }
+            catch (TimeoutException)
+            {
+                // This will throw the appropriate exception if still not found
+                return this.ElementLocator.GetProperty(propertyName);
+            }
         }
 
         /// <summary>

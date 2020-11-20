@@ -40,9 +40,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetElement("doesnotexist")).Throws(new ElementExecuteException("Cannot find item"));
 
             var buttonClickAction = new ValidateElementExistsAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new ValidationCheckContext("doesnotexist", true);
 
@@ -63,9 +63,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetElement("myproperty")).Returns(propData.Object);
 
             var buttonClickAction = new ValidateElementExistsAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new ValidationCheckContext("myproperty", true);
             var result = buttonClickAction.Execute(context);
@@ -90,9 +90,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetElement("myproperty")).Returns(propData.Object);
 
             var buttonClickAction = new ValidateElementExistsAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new ValidationCheckContext("myproperty", true);
             var result = buttonClickAction.Execute(context);
@@ -118,9 +118,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetElement("myproperty")).Returns(propData.Object);
 
             var buttonClickAction = new ValidateElementExistsAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new ValidationCheckContext("myproperty", false);
             var result = buttonClickAction.Execute(context);
@@ -145,9 +145,9 @@ namespace SpecBind.Tests.Actions
             locator.Setup(p => p.GetElement("myproperty")).Returns(propData.Object);
 
             var buttonClickAction = new ValidateElementExistsAction
-                                        {
-                                            ElementLocator = locator.Object
-                                        };
+            {
+                ElementLocator = locator.Object
+            };
 
             var context = new ValidationCheckContext("myproperty", false);
             var result = buttonClickAction.Execute(context);

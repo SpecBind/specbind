@@ -37,8 +37,8 @@ namespace SpecBind.Tests.Validation
         {
             var item = new ExistsComparer();
 
-           Assert.IsFalse(item.RequiresFieldValue);
-           Assert.IsFalse(item.ShouldCheckElementExistence);
+            Assert.IsFalse(item.RequiresFieldValue);
+            Assert.IsFalse(item.ShouldCheckElementExistence);
         }
 
         /// <summary>

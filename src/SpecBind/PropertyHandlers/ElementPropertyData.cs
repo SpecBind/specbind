@@ -64,10 +64,10 @@ namespace SpecBind.PropertyHandlers
             return this.elementAction(this.ElementHandler, this.ElementHandler.ElementExistsCheck);
         }
 
-	    /// <summary>
-	    /// Clears the data for the element that this property represents.
-	    /// </summary>
-	    public override void ClearData()
+        /// <summary>
+        /// Clears the data for the element that this property represents.
+        /// </summary>
+        public override void ClearData()
         {
             this.ThrowIfElementDoesNotExist();
 
