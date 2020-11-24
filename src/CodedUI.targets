@@ -23,31 +23,31 @@
     <When Condition="'$(VisualStudioVersion)' == '15.0'">
       <ItemGroup>
         <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <HintPath>$(MSBuildThisFileDirectory)packages\CodedUIDependencies.1.0.0\lib\net46\Microsoft.VisualStudio.QualityTools.CodedUITestFramework.dll</HintPath>
+          <HintPath>$(UserProfile)\.nuget\packages\CodedUIDependencies\1.0.0\lib\net46\Microsoft.VisualStudio.QualityTools.CodedUITestFramework.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="Microsoft.VisualStudio.QualityTools.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <HintPath>$(MSBuildThisFileDirectory)packages\CodedUIDependencies.1.0.0\lib\net46\Microsoft.VisualStudio.QualityTools.Common.dll</HintPath>
+          <HintPath>$(UserProfile)\.nuget\packages\CodedUIDependencies\1.0.0\lib\net46\Microsoft.VisualStudio.QualityTools.Common.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="Microsoft.VisualStudio.QualityTools.ExecutionCommon, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <HintPath>$(MSBuildThisFileDirectory)packages\CodedUIDependencies.1.0.0\lib\net46\Microsoft.VisualStudio.QualityTools.ExecutionCommon.dll</HintPath>
+          <HintPath>$(UserProfile)\.nuget\packages\CodedUIDependencies\1.0.0\lib\net46\Microsoft.VisualStudio.QualityTools.ExecutionCommon.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <HintPath>$(MSBuildThisFileDirectory)packages\CodedUIDependencies.1.0.0\lib\net46\Microsoft.VisualStudio.TestTools.UITest.Common.dll</HintPath>
+          <HintPath>$(UserProfile)\.nuget\packages\CodedUIDependencies\1.0.0\lib\net46\Microsoft.VisualStudio.TestTools.UITest.Common.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <HintPath>$(MSBuildThisFileDirectory)packages\CodedUIDependencies.1.0.0\lib\net46\Microsoft.VisualStudio.TestTools.UITest.Extension.dll</HintPath>
+          <HintPath>$(UserProfile)\.nuget\packages\CodedUIDependencies\1.0.0\lib\net46\Microsoft.VisualStudio.TestTools.UITest.Extension.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="Microsoft.VisualStudio.TestTools.UITest.ExtensionUtilities, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <HintPath>$(MSBuildThisFileDirectory)packages\CodedUIDependencies.1.0.0\lib\net46\Microsoft.VisualStudio.TestTools.UITest.ExtensionUtilities.dll</HintPath>
+          <HintPath>$(UserProfile)\.nuget\packages\CodedUIDependencies\1.0.0\lib\net46\Microsoft.VisualStudio.TestTools.UITest.ExtensionUtilities.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <HintPath>$(MSBuildThisFileDirectory)packages\CodedUIDependencies.1.0.0\lib\net46\Microsoft.VisualStudio.TestTools.UITesting.dll</HintPath>
+          <HintPath>$(UserProfile)\.nuget\packages\CodedUIDependencies\1.0.0\lib\net46\Microsoft.VisualStudio.TestTools.UITesting.dll</HintPath>
           <Private>True</Private>
         </Reference>
       </ItemGroup>
@@ -56,7 +56,7 @@
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="'$(VisualStudioVersion)'=='16.0' and Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>$(MSBuildThisFileDirectory)packages\CodedUIDependencies.1.0.0\lib\net46\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
+      <HintPath>$(UserProfile)\.nuget\packages\CodedUIDependencies\1.0.0\lib\net46\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

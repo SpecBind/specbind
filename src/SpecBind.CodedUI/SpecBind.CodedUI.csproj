@@ -74,13 +74,17 @@
   <ItemGroup>
     <None Include="Deployment\App.config.uninstall.xdt" />
     <None Include="Deployment\App.config.install.xdt" />
-    <None Include="packages.config" />
     <None Include="SpecBind.CodedUI.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\stylecop.json">
       <Link>stylecop.json</Link>
     </AdditionalFiles>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CodedUIDependencies">
+      <Version>1.0.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\CodedUI.targets" />
