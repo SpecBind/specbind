@@ -5,7 +5,6 @@
 namespace SpecBind.Tests.Actions
 {
     using System;
-    using System.Diagnostics;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -27,7 +26,7 @@ namespace SpecBind.Tests.Actions
         [TestMethod]
         public void TestGetActionName()
         {
-            var buttonClickAction = new WaitForPageAction(null, null, null);
+            var buttonClickAction = new WaitForPageAction(null, null);
 
             Assert.AreEqual("WaitForPageAction", buttonClickAction.Name);
         }
@@ -44,8 +43,10 @@ namespace SpecBind.Tests.Actions
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             var logger = new Mock<ILogger>();
 
-            var action = new WaitForPageAction(pageMapper.Object, browser.Object, logger.Object);
-            var context = new WaitForPageAction.WaitForPageActionContext("MyPage", null);
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var action = new WaitForPageAction(pageMapper.Object, logger.Object);
+            var context = new WaitForPageAction.WaitForActionBaseContext("MyPage", null);
 
             var result = action.Execute(context);
 
@@ -74,8 +75,10 @@ namespace SpecBind.Tests.Actions
 
             var logger = new Mock<ILogger>();
 
-            var action = new WaitForPageAction(pageMapper.Object, browser.Object, logger.Object);
-            var context = new WaitForPageAction.WaitForPageActionContext("SamplePage", TimeSpan.FromSeconds(1));
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var action = new WaitForPageAction(pageMapper.Object, logger.Object);
+            var context = new WaitForPageAction.WaitForActionBaseContext("SamplePage", TimeSpan.FromSeconds(1));
 
             var result = action.Execute(context);
 
@@ -114,8 +117,10 @@ namespace SpecBind.Tests.Actions
             var logger = new Mock<ILogger>(MockBehavior.Strict);
             logger.Setup(l => l.Debug("Browser is not on page. Details: {0}", "Cannot find URL"));
 
-            var action = new WaitForPageAction(pageMapper.Object, browser.Object, logger.Object);
-            var context = new WaitForPageAction.WaitForPageActionContext("SamplePage", TimeSpan.FromSeconds(1));
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var action = new WaitForPageAction(pageMapper.Object, logger.Object);
+            var context = new WaitForPageAction.WaitForActionBaseContext("SamplePage", TimeSpan.FromSeconds(1));
 
             var result = action.Execute(context);
 
@@ -148,8 +153,10 @@ namespace SpecBind.Tests.Actions
 
             var logger = new Mock<ILogger>();
 
-            var action = new WaitForPageAction(pageMapper.Object, browser.Object, logger.Object);
-            var context = new WaitForPageAction.WaitForPageActionContext("SamplePage", TimeSpan.FromSeconds(1));
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var action = new WaitForPageAction(pageMapper.Object, logger.Object);
+            var context = new WaitForPageAction.WaitForActionBaseContext("SamplePage", TimeSpan.FromSeconds(1));
 
             var result = action.Execute(context);
 

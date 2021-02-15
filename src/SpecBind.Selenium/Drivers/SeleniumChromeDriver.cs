@@ -9,6 +9,7 @@ namespace SpecBind.Selenium.Drivers
     using OpenQA.Selenium;
     using OpenQA.Selenium.Chrome;
     using SpecBind.Configuration;
+    using TechTalk.SpecFlow;
 
     /// <summary>
     /// Selenium Chrome Driver.
@@ -36,8 +37,13 @@ namespace SpecBind.Selenium.Drivers
         /// Creates the web driver from the specified browser factory configuration.
         /// </summary>
         /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        /// <returns>The configured web driver.</returns>
-        protected override IWebDriver CreateLocalDriver(BrowserFactoryConfiguration browserFactoryConfiguration)
+        /// <param name="scenarioContext">The scenario context.</param>
+        /// <returns>
+        /// The configured web driver.
+        /// </returns>
+        protected override IWebDriverEx CreateLocalDriver(
+            BrowserFactoryConfiguration browserFactoryConfiguration,
+            ScenarioContext scenarioContext)
         {
             var chromeOptions = new ChromeOptions { LeaveBrowserRunning = false };
 
@@ -66,7 +72,7 @@ namespace SpecBind.Selenium.Drivers
                 chromeOptions.AddUserProfilePreference(preference.Key, preference.Value);
             }
 
-            return new ChromeDriver(chromeDriverService, chromeOptions);
+            return new ChromeDriverEx(chromeDriverService, chromeOptions);
         }
 
         /// <summary>

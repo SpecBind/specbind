@@ -1,4 +1,6 @@
-﻿Feature: Test Data Entry For Controls
+﻿@mstest:DeploymentItem:TechTalk.SpecFlow.MSTest.SpecFlowPlugin.dll
+@mstest:DeploymentItem:SpecBind.MsTest.Steps.dll
+Feature: Test Data Entry For Controls
 
 Scenario: Test Successful Combo Box Input
 	 Given I navigated to the Home page

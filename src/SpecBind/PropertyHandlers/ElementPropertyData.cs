@@ -47,6 +47,48 @@ namespace SpecBind.PropertyHandlers
         }
 
         /// <summary>
+        /// Moves the mouse over the element that this property represents.
+        /// </summary>
+        public override void MouseOverElement()
+        {
+            this.ThrowIfElementDoesNotExist();
+            var success = this.elementAction(this.ElementHandler, this.ElementHandler.MouseOverElement);
+
+            if (!success)
+            {
+                throw new ElementExecuteException("Mouse Over Action for property '{0}' failed!", this.Name);
+            }
+        }
+
+        /// <summary>
+        /// Double-clicks the element that this property represents.
+        /// </summary>
+        public override void DoubleClickElement()
+        {
+            this.ThrowIfElementDoesNotExist();
+            var success = this.elementAction(this.ElementHandler, x => this.ElementHandler.DoubleClickElement(x));
+
+            if (!success)
+            {
+                throw new ElementExecuteException("Double-click action for property '{0}' failed!", this.Name);
+            }
+        }
+
+        /// <summary>
+        /// Right-clicks the element that this property represents.
+        /// </summary>
+        public override void RightClickElement()
+        {
+            this.ThrowIfElementDoesNotExist();
+            var success = this.elementAction(this.ElementHandler, x => this.ElementHandler.RightClickElement(x));
+
+            if (!success)
+            {
+                throw new ElementExecuteException("Right-click action for property '{0}' failed!", this.Name);
+            }
+        }
+
+        /// <summary>
         /// Checks to see if the element is enabled.
         /// </summary>
         /// <returns><c>true</c> if the element is enabled.</returns>
@@ -91,6 +133,20 @@ namespace SpecBind.PropertyHandlers
         }
 
         /// <summary>
+        /// Clears the cache for the element that this property represents.
+        /// </summary>
+        public override void ClearCache()
+        {
+            this.elementAction(
+                this.ElementHandler,
+                e =>
+                {
+                    this.ElementHandler.ClearCache(e);
+                    return true;
+                });
+        }
+
+        /// <summary>
         /// Checks to see if the element does not exist.
         /// Unlike ElementExistsCheck() this, doesn't let the web driver wait first for the element to exist.
         /// </summary>
@@ -122,7 +178,15 @@ namespace SpecBind.PropertyHandlers
                 this.ElementHandler,
                 e =>
                     {
-                        fillMethod(e, data);
+                        try
+                        {
+                            fillMethod(e, data);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception($"Failed to fill data '{data}' for property '{this.Name}' on page '{this.ElementHandler.PageType.Name}'.", ex);
+                        }
+
                         return true;
                     });
         }
@@ -171,6 +235,31 @@ namespace SpecBind.PropertyHandlers
         /// The item as a page.
         /// </returns>
         public override IPage GetItemAsPage()
+        {
+            var item = default(TElement);
+            var findItem = new Func<TElement, bool>(
+                prop =>
+                    {
+                        if (prop == null)
+                        {
+                            throw new Exception("No element locators defined.");
+                        }
+
+                        item = prop;
+                        return true;
+                    });
+
+            this.elementAction(this.ElementHandler, findItem);
+
+            return this.ElementHandler.GetPageFromElement(item);
+        }
+
+        /// <summary>
+        /// Gets the item as context in page.
+        /// </summary>
+        /// <param name="parent">The parent.</param>
+        /// <returns>The item as context in page.</returns>
+        public override IPage GetItemAsContextInPage(IPage parent)
         {
             var item = default(TElement);
             var findItem = new Func<TElement, bool>(
@@ -246,7 +335,7 @@ namespace SpecBind.PropertyHandlers
         /// <exception cref="ElementExecuteException">Thrown if the element does not exist.</exception>
         private void ThrowIfElementDoesNotExist()
         {
-            if (!this.CheckElementExists())
+            if (!this.WaitForElementCondition(WaitConditions.Exists, timeout: null))
             {
                 throw new ElementExecuteException(
                     "Element mapped to property '{0}' does not exist on page {1}.",

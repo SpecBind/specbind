@@ -50,29 +50,17 @@ namespace SpecBind.Selenium
         /// <param name="nativeAttributes">The native attributes.</param>
         protected override void AssignElementAttributes(IWebElement control, ElementLocatorAttribute attribute, object[] nativeAttributes)
         {
-            var proxy = control as WebElement;
-            if (proxy == null)
-            {
-                return;
-            }
+            this.AssignAttributes(control, attribute, nativeAttributes);
+        }
 
-            // Convert any locator property to "find by" classes
-            var locators = attribute != null ? LocatorBuilder.GetElementLocators(attribute) : new List<By>();
-
-            // Also try to parse the native attributes
-            var nativeItems = nativeAttributes != null ? nativeAttributes.OfType<FindsByAttribute>().ToList() : null;
-
-            if (nativeItems != null && nativeItems.Count > 0)
-            {
-                var localLocators = locators;
-                locators.AddRange(nativeItems.Where(a => a.Using != null)
-                                             .OrderBy(n => n.Priority)
-                                             .Select(NativeAttributeBuilder.GetLocator)
-                                             .Where(l => l != null && !localLocators.Any(c => Equals(c, l))));
-            }
-
-            locators = locators.Count > 1 ? new List<By> { new ByChained(locators.ToArray()) } : locators;
-            proxy.UpdateLocators(locators);
+        /// <summary>
+        /// Assigns the page element attributes.
+        /// </summary>
+        /// <param name="control">The control.</param>
+        /// <param name="locatorAttribute">The locator attribute.</param>
+        protected override void AssignPageElementAttributes(object control, ElementLocatorAttribute locatorAttribute)
+        {
+            this.AssignAttributes(control, locatorAttribute, null);
         }
 
         /// <summary>
@@ -144,6 +132,33 @@ namespace SpecBind.Selenium
         protected override Type GetElementCollectionType()
         {
             return typeof(SeleniumListElementWrapper<,>);
+        }
+
+        private void AssignAttributes(object control, ElementLocatorAttribute attribute, object[] nativeAttributes)
+        {
+            var proxy = control as WebElement;
+            if (proxy == null)
+            {
+                return;
+            }
+
+            // Convert any locator property to "find by" classes
+            var locators = attribute != null ? LocatorBuilder.GetElementLocators(attribute) : new List<By>();
+
+            // Also try to parse the native attributes
+            var nativeItems = nativeAttributes != null ? nativeAttributes.OfType<FindsByAttribute>().ToList() : null;
+
+            if (nativeItems != null && nativeItems.Count > 0)
+            {
+                var localLocators = locators;
+                locators.AddRange(nativeItems.Where(a => a.Using != null)
+                                             .OrderBy(n => n.Priority)
+                                             .Select(NativeAttributeBuilder.GetLocator)
+                                             .Where(l => l != null && !localLocators.Any(c => Equals(c, l))));
+            }
+
+            locators = locators.Count > 1 ? new List<By> { new ByChained(locators.ToArray()) } : locators;
+            proxy.UpdateLocators(locators);
         }
     }
 }

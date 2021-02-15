@@ -19,6 +19,8 @@ namespace SpecBind.Tests
     [TestClass]
     public class AlertBoxStepsFixture
     {
+        private readonly Mock<ILogger> logger = new Mock<ILogger>();
+
         /// <summary>
         /// Tests that the see alert and select button calls pipeline action correctly.
         /// </summary>
@@ -36,7 +38,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new AlertBoxSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new AlertBoxSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.SeeAlertAndSelectButton("Ok");
 
@@ -61,7 +63,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new AlertBoxSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new AlertBoxSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.SeeAlertEnterTextAndSelectButton("Hello!", "Ok");
 

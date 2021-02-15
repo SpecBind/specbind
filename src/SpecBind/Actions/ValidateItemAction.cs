@@ -3,10 +3,7 @@
 // </copyright>
 namespace SpecBind.Actions
 {
-    using System;
     using SpecBind.ActionPipeline;
-    using SpecBind.Helpers;
-    using SpecBind.Pages;
     using SpecBind.Validation;
 
     /// <summary>
@@ -30,35 +27,6 @@ namespace SpecBind.Actions
         protected override ActionResult Execute(ValidateItemContext context)
         {
             return ValidateTableHelpers.PerformValidation(context.ValidationTable.Validations, this.ValidateProperty);
-        }
-
-        /// <summary>
-        /// Validates the property.
-        /// </summary>
-        /// <param name="validation">The validation.</param>
-        /// <param name="itemResult">The item result.</param>
-        /// <returns><c>true</c> if the validation is successful, <c>false</c> otherwise.</returns>
-        private bool ValidateProperty(ItemValidation validation, ValidationItemResult itemResult)
-        {
-            IPropertyData propertyData;
-            if (!this.ElementLocator.TryGetProperty(validation.FieldName, out propertyData))
-            {
-                itemResult.NoteMissingProperty(validation);
-                return false;
-            }
-
-
-            string actualValue = null;
-            bool? successful = null;
-
-            this.DoValidate<IPropertyData>(propertyData, e =>
-                {
-                    successful = e.ValidateItem(validation, out actualValue);
-                    return successful.Value;
-                });
-
-            itemResult.NoteValidationResult(validation, successful.Value, actualValue);
-            return successful.Value;
         }
 
         /// <summary>

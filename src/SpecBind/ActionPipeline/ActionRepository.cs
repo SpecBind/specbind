@@ -96,7 +96,11 @@ namespace SpecBind.ActionPipeline
             var configSection = SettingHelper.GetConfigurationSection();
             var excludedAssemblies = configSection.Application.ExcludedAssemblies.Cast<AssemblyElement>().Select(a => a.Name);
             // Get all items from the current assemblies
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic && !a.GlobalAssemblyCache && !excludedAssemblies.Contains(a.FullName));
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a =>
+                !a.IsDynamic
+                && !a.GlobalAssemblyCache
+                && !excludedAssemblies.Contains(a.FullName)
+                && !excludedAssemblies.Contains(a.GetName().Name));
             foreach (Assembly assembly in assemblies)
             {
                 try

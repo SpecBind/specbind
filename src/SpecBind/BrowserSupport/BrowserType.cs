@@ -53,6 +53,11 @@ namespace SpecBind.BrowserSupport
         /// Chrome Browser without a UI attached
         /// </summary>
         // ReSharper disable once InconsistentNaming
-        ChromeHeadless = 11
+        ChromeHeadless = 11,
+
+        /// <summary>
+        /// Windows application
+        /// </summary>
+        WinApp = 12
     }
 }

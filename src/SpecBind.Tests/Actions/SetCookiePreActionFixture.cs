@@ -54,7 +54,9 @@ namespace SpecBind.Tests.Actions
             var logger = new Mock<ILogger>();
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            var navigationAction = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var navigationAction = new PageNavigationAction(logger.Object, pageMapper.Object);
 
             var cookiePreAction = new SetCookiePreAction(browser.Object, logger.Object, pageMapper.Object);
             var context = new ActionContext("doesnotexist");
@@ -78,7 +80,9 @@ namespace SpecBind.Tests.Actions
 
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            var navigationAction = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var navigationAction = new PageNavigationAction(logger.Object, pageMapper.Object);
 
             var cookiePreAction = new SetCookiePreAction(browser.Object, logger.Object, pageMapper.Object);
             var context = new ActionContext("NoAttributePage");
@@ -103,7 +107,9 @@ namespace SpecBind.Tests.Actions
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.AddCookie("TestCookie", "TestValue", "/mydomain", null, "www.mydomain.com", true));
 
-            var navigationAction = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var navigationAction = new PageNavigationAction(logger.Object, pageMapper.Object);
 
             var cookiePreAction = new SetCookiePreAction(browser.Object, logger.Object, pageMapper.Object);
             var context = new ActionContext("AttributePage");
@@ -128,7 +134,9 @@ namespace SpecBind.Tests.Actions
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.AddCookie("TestCookie", "TestValue", "/", DateTime.MinValue, null, false));
 
-            var navigationAction = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var navigationAction = new PageNavigationAction(logger.Object, pageMapper.Object);
 
             var cookiePreAction = new SetCookiePreAction(browser.Object, logger.Object, pageMapper.Object);
             var context = new ActionContext("MinDateAttributePage");
@@ -153,7 +161,9 @@ namespace SpecBind.Tests.Actions
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.AddCookie("TestCookie", "TestValue", "/", DateTime.MaxValue, null, false));
 
-            var navigationAction = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var navigationAction = new PageNavigationAction(logger.Object, pageMapper.Object);
 
             var cookiePreAction = new SetCookiePreAction(browser.Object, logger.Object, pageMapper.Object);
             var context = new ActionContext("MaxDateAttributePage");
@@ -178,7 +188,9 @@ namespace SpecBind.Tests.Actions
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.AddCookie("TestCookie", "TestValue", "/", new DateTime(2015, 12, 21, 0, 0, 0, 0), null, false));
 
-            var navigationAction = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var navigationAction = new PageNavigationAction(logger.Object, pageMapper.Object);
 
             var cookiePreAction = new SetCookiePreAction(browser.Object, logger.Object, pageMapper.Object);
             var context = new ActionContext("FixedDateAttributePage");
@@ -203,7 +215,9 @@ namespace SpecBind.Tests.Actions
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.AddCookie("TestCookie", "TestValue", "/", It.Is<DateTime?>(d => d.Value > DateTime.Now), null, false));
 
-            var navigationAction = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var navigationAction = new PageNavigationAction(logger.Object, pageMapper.Object);
 
             var cookiePreAction = new SetCookiePreAction(browser.Object, logger.Object, pageMapper.Object);
             var context = new ActionContext("SlidingDateAttributePage");
@@ -229,7 +243,9 @@ namespace SpecBind.Tests.Actions
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.AddCookie("TestCookie", "TestValue", "/", null, null, false));
 
-            var navigationAction = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var navigationAction = new PageNavigationAction(logger.Object, pageMapper.Object);
 
             var cookiePreAction = new SetCookiePreAction(browser.Object, logger.Object, pageMapper.Object);
             var context = new ActionContext("InvalidDateAttributePage");

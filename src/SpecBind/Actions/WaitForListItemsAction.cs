@@ -34,9 +34,14 @@ namespace SpecBind.Actions
         /// <returns>The result of the action.</returns>
         protected override ActionResult Execute(WaitForListItemsContext actionContext)
         {
+            var timeout = actionContext.Timeout.GetValueOrDefault(DefaultTimeout);
+
             // Get the element
             var propertyName = actionContext.PropertyName;
-            var element = this.GetProperty(propertyName);
+
+            var waitStartTime = DateTime.Now;
+            var element = this.GetProperty(propertyName, timeout);
+            var remainingTimeout = timeout - (DateTime.Now - waitStartTime);
 
             // Make sure the element is a list
             if (!element.IsList)
@@ -50,9 +55,8 @@ namespace SpecBind.Actions
             }
 
             // Setup timeout items
-            var timeout = actionContext.Timeout.GetValueOrDefault(DefaultTimeout);
             var waitInterval = TimeSpan.FromMilliseconds(200);
-            var waiter = new Waiter(timeout, waitInterval);
+            var waiter = new Waiter(remainingTimeout, waitInterval);
 
             try
             {
@@ -98,17 +102,14 @@ namespace SpecBind.Actions
         /// <returns><c>true</c> if the element contains at least one list item; otherwise <c>false</c>.</returns>
         private bool CheckForPage(IPropertyData listElement)
         {
-            while (true)
+            var item = listElement.GetItemAtIndex(0);
+            if (item != null)
             {
-                var item = listElement.GetItemAtIndex(0);
-                if (item != null)
-                {
-                    return true;
-                }
-
-                this.logger.Debug("List did not contain any elements, waiting...");
-                return false;
+                return true;
             }
+
+            this.logger.Debug("List did not contain any elements, waiting...");
+            return false;
         }
 
         /// <summary>
@@ -117,7 +118,7 @@ namespace SpecBind.Actions
         public class WaitForListItemsContext : ActionContext
         {
             /// <summary>
-            /// Initializes a new instance of the <see cref="ActionContext" /> class.
+            /// Initializes a new instance of the <see cref="WaitForListItemsContext" /> class.
             /// </summary>
             /// <param name="propertyName">Name of the property.</param>
             /// <param name="timeout">The timeout.</param>

@@ -21,6 +21,8 @@ namespace SpecBind.Tests
     [TestClass]
     public class SelectionStepsFixture
     {
+        private readonly Mock<ILogger> logger = new Mock<ILogger>();
+
         /// <summary>
         /// Tests the WhenIChooseALinkStep method with a successful result.
         /// </summary>
@@ -39,7 +41,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WhenIChooseALinkStep("my link");
 
@@ -66,7 +68,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WhenIHoverOverAnElementStep("my link");
 
@@ -87,7 +89,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns((IPage)null);
 
-            var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             ExceptionHelper.SetupForException<PageNavigationException>(
                 () => steps.WhenIChooseALinkStep("my link"),
@@ -117,7 +119,7 @@ namespace SpecBind.Tests
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(page.Object);
             scenarioContext.Setup(s => s.SetCurrentPage(listItem.Object));
 
-            var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.GivenEnsureOnListItemStep("my property", 2);
 
@@ -150,7 +152,7 @@ namespace SpecBind.Tests
             var table = new Table("Field", "Rule", "Value");
             table.AddRow("item1", "equals", "foo");
 
-            var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new SelectionSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
             steps.GoToListItemWithCriteriaStep("my property", table);
 
             listItem.VerifyAll();

@@ -69,7 +69,7 @@ namespace SpecBind.Helpers
                 if (string.IsNullOrWhiteSpace(tokenData.Value))
                 {
                     // Try to get the value from the context if no value is provided
-                    return this.context.GetValue<string>(tokenName);
+                    return this.context.GetValue<string>(tokenName, fieldValue);
                 }
 
                 this.context.SetValue(tokenData.Value, tokenName);

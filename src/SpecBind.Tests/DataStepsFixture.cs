@@ -24,6 +24,8 @@ namespace SpecBind.Tests
     [TestClass]
     public class DataStepsFixture
     {
+        private readonly Mock<ILogger> logger = new Mock<ILogger>();
+
         /// <summary>
         /// Tests the WhenIEnterDataInFieldsStep method with a null table.
         /// </summary>
@@ -34,7 +36,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             ExceptionHelper.SetupForException<ElementExecuteException>(
                 () => steps.WhenIEnterDataInFieldsStep(null),
@@ -57,7 +59,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Value");
 
@@ -82,7 +84,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Field");
 
@@ -114,7 +116,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Field", "Value");
             table.AddRow(new Dictionary<string, string>
@@ -150,7 +152,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Field", "Value");
             table.AddRow(new Dictionary<string, string>
@@ -195,7 +197,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             steps.WhenIEnterDataInFieldStep("myvalue", "My Field");
 
@@ -220,7 +222,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             try
             {
@@ -246,7 +248,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             ExceptionHelper.SetupForException<ElementExecuteException>(
                 () => steps.WhenIClearDataInFieldsStep(null),
@@ -269,7 +271,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Notes");
 
@@ -301,7 +303,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Field");
             table.AddRow(new Dictionary<string, string>
@@ -335,7 +337,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Field");
             table.AddRow(new Dictionary<string, string>
@@ -372,7 +374,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             ExceptionHelper.SetupForException<ElementExecuteException>(
                 () => steps.ThenISeeStep(null),
@@ -395,7 +397,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Value");
 
@@ -420,7 +422,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Field");
 
@@ -445,7 +447,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Field", "Value");
 
@@ -470,7 +472,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Field", "Rule", "Value");
 
@@ -502,7 +504,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Field", "Rule", "Value");
             table.AddRow(new Dictionary<string, string>
@@ -537,7 +539,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Field", "Rule", "Value");
             table.AddRow(new Dictionary<string, string>
@@ -586,7 +588,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Field", "Rule", "Value");
             table.AddRow(new Dictionary<string, string>
@@ -614,7 +616,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Field", "Rule", "Value");
 
@@ -641,7 +643,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             steps.ThenISeeAListRowCountStep("myfield", "exactly", 1);
 
@@ -666,7 +668,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             steps.ThenISeeAListRowCountStep("myfield", "at most", 1);
 
@@ -691,7 +693,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             steps.ThenISeeAListRowCountStep("myfield", "at least", 1);
 
@@ -717,7 +719,9 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            Mock<ILogger> logger = new Mock<ILogger>();
+
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, logger.Object);
 
             var table = new Table("Field", "Rule", "Value");
             table.AddRow(new Dictionary<string, string>
@@ -742,7 +746,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             steps.ThenISeeComboBoxContainsStep("myfield", "contains", null);
 
@@ -760,7 +764,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Item");
             table.AddRow(new Dictionary<string, string>
@@ -797,7 +801,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Text");
             table.AddRow(new Dictionary<string, string>
@@ -829,7 +833,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Value");
             table.AddRow(new Dictionary<string, string>
@@ -861,7 +865,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new DataSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object);
 
             var table = new Table("Text");
             table.AddRow(new Dictionary<string, string>

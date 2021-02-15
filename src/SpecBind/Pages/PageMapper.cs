@@ -8,6 +8,7 @@ namespace SpecBind.Pages
     using System.Collections.Generic;
     using System.Linq;
 
+    using SpecBind.Configuration;
     using SpecBind.Helpers;
 
     /// <summary>
@@ -62,10 +63,13 @@ namespace SpecBind.Pages
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public void Initialize(Type pageBaseType)
         {
+            var configSection = SettingHelper.GetConfigurationSection();
+            var excludedAssemblies = configSection.Application.ExcludedAssemblies.Cast<AssemblyElement>().Select(a => a.Name);
+
             // There are several blank catches to avoid loading bad asssemblies.
             try
             {
-                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic && !a.GlobalAssemblyCache))
+                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic && !a.GlobalAssemblyCache && !excludedAssemblies.Contains(a.FullName)))
                 {
                     try
                     {
@@ -101,6 +105,22 @@ namespace SpecBind.Pages
                 if (!this.pageTypeCache.ContainsKey(initialName))
                 {
                     this.pageTypeCache.Add(initialName, pageType);
+                }
+                else
+                {
+                    // resolve conflicts
+                    bool existingPageTypeHasKnownAttributes = this.pageTypeCache[initialName].TryGetAttribute(out PageNavigationAttribute pageNavigationAttribute)
+                        || this.pageTypeCache[initialName].TryGetAttribute(out PageAliasAttribute pageAliasAttribute)
+                        || this.pageTypeCache[initialName].TryGetAttribute(out ElementLocatorAttribute elementLocatorAliasAttribute);
+
+                    if (!existingPageTypeHasKnownAttributes)
+                    {
+                        // remove old page type
+                        this.pageTypeCache.Remove(initialName);
+
+                        // add the new page type
+                        this.pageTypeCache.Add(initialName, pageType);
+                    }
                 }
 
                 foreach (var aliasAttribute in pageType.GetCustomAttributes(typeof(PageAliasAttribute), true).OfType<PageAliasAttribute>())

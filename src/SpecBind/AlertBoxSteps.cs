@@ -31,8 +31,12 @@ namespace SpecBind
         /// </summary>
         /// <param name="actionPipelineService">The action pipeline service.</param>
         /// <param name="scenarioContext">The scenario context.</param>
-        public AlertBoxSteps(IActionPipelineService actionPipelineService, IScenarioContextHelper scenarioContext)
-            : base(scenarioContext)
+        /// <param name="logger">The logger.</param>
+        public AlertBoxSteps(
+            IActionPipelineService actionPipelineService,
+            IScenarioContextHelper scenarioContext,
+            ILogger logger)
+            : base(scenarioContext, logger)
         {
             this.actionPipelineService = actionPipelineService;
         }

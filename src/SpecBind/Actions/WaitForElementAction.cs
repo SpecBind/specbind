@@ -35,15 +35,25 @@ namespace SpecBind.Actions
             var property = this.GetElement(context.PropertyName, timeout);
             var remainingTimeout = timeout - (DateTime.Now - waitStartTime);
 
-            var result = property.WaitForElementCondition(context.Condition, remainingTimeout);
+            Exception innerException = null;
+
+            bool result = false;
+
+            try
+            {
+                result = property.WaitForElementCondition(context.Condition, remainingTimeout);
+            }
+            catch (Exception ex)
+            {
+                innerException = ex;
+            }
 
             return result
-                       ? ActionResult.Successful()
-                       : ActionResult.Failure(
-                           new ElementExecuteException(
-                             "Could not perform action '{0}' before timeout: {1}",
-                             context.Condition,
-                             timeout));
+                ? ActionResult.Successful()
+                : ActionResult.Failure(
+                    new ElementExecuteException(
+                        $"Could not perform action '{context.Condition}' before timeout: {timeout}",
+                        innerException));
         }
 
         /// <summary>

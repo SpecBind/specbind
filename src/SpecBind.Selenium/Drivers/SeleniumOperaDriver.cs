@@ -8,6 +8,7 @@ namespace SpecBind.Selenium.Drivers
     using Configuration;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Opera;
+    using TechTalk.SpecFlow;
 
     /// <summary>
     /// Selenium Opera Driver.
@@ -19,8 +20,13 @@ namespace SpecBind.Selenium.Drivers
         /// Creates the web driver from the specified browser factory configuration.
         /// </summary>
         /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        /// <returns>The configured web driver.</returns>
-        protected override IWebDriver CreateLocalDriver(BrowserFactoryConfiguration browserFactoryConfiguration)
+        /// <param name="scenarioContext">The scenario context.</param>
+        /// <returns>
+        /// The configured web driver.
+        /// </returns>
+        protected override IWebDriverEx CreateLocalDriver(
+            BrowserFactoryConfiguration browserFactoryConfiguration,
+            ScenarioContext scenarioContext)
         {
             throw new NotImplementedException();
         }

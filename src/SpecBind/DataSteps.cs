@@ -19,13 +19,13 @@ namespace SpecBind
     /// Step bindings related to entering or validating data.
     /// </summary>
     [Binding]
-    public class DataSteps : PageStepBase
+    public sealed class DataSteps : PageStepBase
     {
         // Step regex values - in constants because they are shared.
         private const string EnterDataInFieldsStepRegex = @"I enter data";
         private const string EnterDataInFieldStepRegex = @"I enter ""(.+)"" into (.+)";
         private const string ObserveDataStepRegex = @"I see";
-        private const string ObserveComboBoxStepRegex = @"I see combo box (.+)";
+        private const string ObserveComboBoxStepRegex = @"I see combo box (.+) (contains|contains exactly|does not contain)";
         private const string ObserveListDataStepRegex = @"I see (.+) list ([A-Za-z ]+)";
         private const string ObserveListRowCountRegex = @"I see (.+) list contains (exactly|at least|at most) ([0-9]+) items?";
         private const string ClearDataInFieldsStepRegex = @"I clear data";
@@ -34,6 +34,7 @@ namespace SpecBind
         private const string GivenEnterDataInFieldsStepRegex = @"I entered data";
         private const string GivenEnterDataInFieldStepRegex = @"I enter ""(.+)"" into (.+)";
         private const string GivenObserveDataStepRegex = @"I saw";
+        private const string GivenObserveComboBoxStepRegex = @"I saw combo box (.+) (contains|contains exactly|does not contain)";
         private const string GivenObserveListDataStepRegex = @"I saw (.+) list ([A-Za-z ]+)";
         private const string GivenObserveListRowCountRegex = @"I saw (.+) list contains (exactly|at least|at most) ([0-9]+) items?";
         private const string GivenClearDataInFieldsSetpRegex = @"I cleared data";
@@ -45,8 +46,12 @@ namespace SpecBind
         /// </summary>
         /// <param name="scenarioContext">The scenario context.</param>
         /// <param name="actionPipelineService">The action pipeline service.</param>
-        public DataSteps(IScenarioContextHelper scenarioContext, IActionPipelineService actionPipelineService)
-            : base(scenarioContext)
+        /// <param name="logger">The logger.</param>
+        public DataSteps(
+            IScenarioContextHelper scenarioContext,
+            IActionPipelineService actionPipelineService,
+            ILogger logger)
+            : base(scenarioContext, logger)
         {
             this.actionPipelineService = actionPipelineService;
         }
@@ -144,10 +149,55 @@ namespace SpecBind
         }
 
         /// <summary>
+        /// Given I entered "text".
+        /// Given I typed "text".
+        /// </summary>
+        /// <param name="text">The text.</param>
+        [Given(@"I entered ""(.*)""")]
+        [Given(@"I typed ""(.*)""")]
+        public void GivenIEntered(string text)
+        {
+            var page = this.GetPageFromContext();
+            var context = new KeyboardAction.KeyboardActionContext(text, KeyboardAction.KeyboardSendType.Default);
+
+            this.actionPipelineService.PerformAction<KeyboardAction>(page, context)
+                .CheckResult();
+        }
+
+        /// <summary>
+        /// Given I pressed "text".
+        /// </summary>
+        /// <param name="text">The text.</param>
+        [Given(@"I pressed ""(.*)""")]
+        public void GivenIPressed(string text)
+        {
+            var page = this.GetPageFromContext();
+            var context = new KeyboardAction.KeyboardActionContext(text, KeyboardAction.KeyboardSendType.Press);
+
+            this.actionPipelineService.PerformAction<KeyboardAction>(page, context)
+                .CheckResult();
+        }
+
+        /// <summary>
+        /// Given I released "text".
+        /// </summary>
+        /// <param name="text">The text.</param>
+        [Given(@"I released ""(.*)""")]
+        public void GivenIReleased(string text)
+        {
+            var page = this.GetPageFromContext();
+            var context = new KeyboardAction.KeyboardActionContext(text, KeyboardAction.KeyboardSendType.Release);
+
+            this.actionPipelineService.PerformAction<KeyboardAction>(page, context)
+                .CheckResult();
+        }
+
+        /// <summary>
         /// A Then step
         /// </summary>
         /// <param name="data">The field data.</param>
         [Given(GivenObserveDataStepRegex)]
+        [When(ObserveDataStepRegex)]
         [Then(ObserveDataStepRegex)]
         public void ThenISeeStep(Table data)
         {
@@ -244,6 +294,7 @@ namespace SpecBind
         /// <param name="fieldName">The name of the field.</param>
         /// <param name="comparisonType">The comparison type for evaluation.</param>
         /// <param name="table">Table of items for comparison.</param>
+        [Given(GivenObserveComboBoxStepRegex)]
         [When(ObserveComboBoxStepRegex)]
         [Then(ObserveComboBoxStepRegex)]
         public void ThenISeeComboBoxContainsStep(string fieldName, string comparisonType, Table table)

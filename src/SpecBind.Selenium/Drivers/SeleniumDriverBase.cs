@@ -5,7 +5,6 @@
 namespace SpecBind.Selenium.Drivers
 {
     using System;
-    using System.Collections.Generic;
     using System.Configuration;
     using System.IO;
     using System.IO.Compression;
@@ -14,11 +13,12 @@ namespace SpecBind.Selenium.Drivers
     using Configuration;
     using Helpers;
     using OpenQA.Selenium;
+    using TechTalk.SpecFlow;
 
     /// <summary>
     /// The base class for Selenium Drivers.
     /// </summary>
-    internal abstract class SeleniumDriverBase : ISeleniumDriver
+    public abstract class SeleniumDriverBase : ISeleniumDriver
     {
         private const string RemoteUrlSetting = "RemoteUrl";
 
@@ -27,8 +27,15 @@ namespace SpecBind.Selenium.Drivers
         /// </summary>
         public SeleniumDriverBase()
         {
+            this.SupportsPageLoadTimeout = true;
             this.MaximizeWindow = true;
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the driver supports page load timeouts.
+        /// </summary>
+        /// <value><c>true</c> if the driver supports page load timeouts; otherwise, <c>false</c>.</value>
+        public bool SupportsPageLoadTimeout { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to maximize the window.
@@ -40,13 +47,18 @@ namespace SpecBind.Selenium.Drivers
         /// Creates the remote driver.
         /// </summary>
         /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        /// <returns>The created remote web driver.</returns>
-        public IWebDriver Create(BrowserFactoryConfiguration browserFactoryConfiguration)
+        /// <param name="scenarioContext">The scenario context.</param>
+        /// <returns>
+        /// The created remote web driver.
+        /// </returns>
+        public IWebDriverEx Create(
+            BrowserFactoryConfiguration browserFactoryConfiguration,
+            ScenarioContext scenarioContext = null)
         {
             var remoteUri = this.GetRemoteDriverUri(browserFactoryConfiguration);
             if (remoteUri == null)
             {
-                return this.CreateLocalDriver(browserFactoryConfiguration);
+                return this.CreateLocalDriver(browserFactoryConfiguration, scenarioContext);
             }
 
             DriverOptions driverOptions = this.CreateRemoteDriverOptions(browserFactoryConfiguration);
@@ -77,8 +89,12 @@ namespace SpecBind.Selenium.Drivers
         /// Validates the specified browser factory configuration.
         /// </summary>
         /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
+        /// <param name="scenarioContext">The scenario context.</param>
         /// <param name="seleniumDriverPath">The selenium driver path.</param>
-        public void Validate(BrowserFactoryConfiguration browserFactoryConfiguration, string seleniumDriverPath)
+        public void Validate(
+            BrowserFactoryConfiguration browserFactoryConfiguration,
+            ScenarioContext scenarioContext,
+            string seleniumDriverPath)
         {
             // If we're using a remote driver, don't check paths
             if (this.GetRemoteDriverUri(browserFactoryConfiguration) != null)
@@ -86,10 +102,9 @@ namespace SpecBind.Selenium.Drivers
                 return;
             }
 
-            IWebDriver driver = null;
             try
             {
-                driver = this.CreateLocalDriver(browserFactoryConfiguration);
+                IWebDriver driver = this.CreateLocalDriver(browserFactoryConfiguration, scenarioContext);
                 driver.Quit();
             }
             catch (DriverServiceNotFoundException ex)
@@ -114,7 +129,8 @@ namespace SpecBind.Selenium.Drivers
         /// <summary>
         /// Stops this instance.
         /// </summary>
-        public virtual void Stop()
+        /// <param name="scenarioContext">The scenario context.</param>
+        public virtual void Stop(ScenarioContext scenarioContext)
         {
         }
 
@@ -145,8 +161,13 @@ namespace SpecBind.Selenium.Drivers
         /// Creates the local web driver from the specified browser factory configuration.
         /// </summary>
         /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        /// <returns>The configured web driver.</returns>
-        protected abstract IWebDriver CreateLocalDriver(BrowserFactoryConfiguration browserFactoryConfiguration);
+        /// <param name="scenarioContext">The scenario context.</param>
+        /// <returns>
+        /// The configured web driver.
+        /// </returns>
+        protected abstract IWebDriverEx CreateLocalDriver(
+            BrowserFactoryConfiguration browserFactoryConfiguration,
+            ScenarioContext scenarioContext);
 
         /// <summary>
         /// Downloads the driver to the specified path.

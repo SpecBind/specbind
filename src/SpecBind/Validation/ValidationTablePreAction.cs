@@ -70,6 +70,16 @@ namespace SpecBind.Validation
         }
 
         /// <summary>
+        /// Processes the text.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The processes text value.</returns>
+        private static string ProcessText(string value)
+        {
+            return value.ToLookupKey();
+        }
+
+        /// <summary>
         /// Gets the rule lookups.
         /// </summary>
         /// <returns>A dictionary of lookups.</returns>
@@ -87,16 +97,6 @@ namespace SpecBind.Validation
             }
 
             return lookups;
-        }
-
-        /// <summary>
-        /// Processes the text.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>The processes text value.</returns>
-        private static string ProcessText(string value)
-        {
-            return value.ToLookupKey();
         }
     }
 }

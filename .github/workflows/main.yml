@@ -1,0 +1,146 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  VERSION: 2.1.1.${{ github.run_number }}
+  CONFIGURATION: Release
+  PACKAGE_DIR: NuGet_Packages
+  DevEnvDir: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\
+      
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-2019
+       
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Dump environment variables
+        run: env
+
+      # https://github.com/marketplace/actions/file-regex-replace
+      - name: Update AsesmblyInfo version
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          # regex to apply (regex)
+          regex: '\d+\.\d+\.\d+\.\d+'
+          # flags of the regex
+          flags: g
+          # replacement string
+          replacement: '${{ env.VERSION }}'
+          # Files to be replaced (regex)
+          include: 'AssemblyInfo.cs'
+          # Files not to be replaced (regex)
+          exclude: '.^'
+          # String file encoding
+          encoding: 'utf8'
+          # Path to the folder to be replaced
+          path: 'src'
+        
+      - name: Setup NuGet.exe for use with actions
+        uses: NuGet/setup-nuget@v1.0.5
+    
+      - name: NuGet restore SpecBind.sln
+        run: nuget restore src\SpecBind.sln
+        
+      - name: NuGet restore ContosoUniversity.sln
+        run: nuget restore examples\FullDemo\ContosoUniversity.sln
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Build SpecBind.sln
+        run: msbuild.exe src\SpecBind.sln /p:Configuration=${{env.CONFIGURATION}} /verbosity:normal /maxcpucount
+      
+      - name: Build ContosoUniversity.sln
+        run: msbuild.exe examples\FullDemo\ContosoUniversity.sln /p:Configuration=${{env.CONFIGURATION}} /verbosity:normal /maxcpucount
+        
+      - name: Add IIS Web Application for ContosoUniversity
+        run: |
+          & $env:WINDIR\system32\inetsrv\AppCmd.exe add app /site.name:"Default Web Site" /path:/ContosoUniversity /physicalPath:"${{ github.workspace }}\examples\FullDemo\ContosoUniversity"
+        
+      - name: Grant modify permissions to ContosoUniversity database
+        run: |
+          & icacls "${{ github.workspace }}\examples\FullDemo\ContosoUniversity\App_Data\School.sdf" /grant IIS_IUSRS:M
+        
+      - name: Grant full permissions to Temp folder
+        run: |
+          & icacls "C:\Windows\Temp" /grant "IIS_IUSRS:(OI)(CI)F" /T
+        
+      - name: Setup VSTest.console.exe
+        uses: darenm/Setup-VSTest@v1
+
+      - name: Run tests with code coverage
+        run: |
+          & $env:UserProfile\.nuget\packages\OpenCover\4.6.519\tools\OpenCover.Console.exe -register:user -target:"vstest.console.exe" -targetargs:"/Settings:.\src\test.runsettings /Logger:trx;LogFileName=${{ github.workspace }}\src\TestResults\TestResults.trx .\src\SpecBind.Tests\bin\${{env.CONFIGURATION}}\net472\SpecBind.Tests.dll .\src\SpecBind.Selenium.Tests\bin\${{env.CONFIGURATION}}\net472\SpecBind.Selenium.Tests.dll .\src\SpecBind.CodedUI.Tests\bin\${{env.CONFIGURATION}}\net472\SpecBind.CodedUI.Tests.dll .\src\SpecBind.CodedUI.IntegrationTests\bin\${{env.CONFIGURATION}}\SpecBind.CodedUI.IntegrationTests.dll" -filter:"+[SpecBind]* +[SpecBind.Selenium]* +[SpecBind.CodedUI]* -[SpecBind]SpecBind.Properties.* -[SpecBind.Selenium]SpecBind.Selenium.Properties.* -[SpecBind.CodedUI]SpecBind.CodedUI.Properties.*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:.\SpecBind_coverage.xml -mergebyhash -returntargetcode
+
+      - name: Find files to upload
+        if: always()
+        run: |
+          Get-ChildItem "${{ github.workspace }}\src\TestResults" -Recurse -Include "*.trx", "*.coverage", "*.jpg", "*.html" | select-object FullName
+        
+      - name: Upload TestResults
+        uses: actions/upload-artifact@v2.2.2
+        if: always()
+        with:
+          name: SpecBind TestResults ${{ env.VERSION }}
+          if-no-files-found: error
+          path: |
+            src/TestResults/TestResults.trx
+            src/TestResults/**/*.coverage
+            src/TestResults/**/*.html
+            src/TestResults/**/*.jpg
+
+      - name: Publish Unit Test Results
+        uses: dorny/test-reporter@v1.0.0
+        if: always()
+        with:
+          # Name of the check run
+          name: Tests
+          # Coma separated list of paths to test reports
+          path: src/TestResults/TestResults.trx
+          # Format of test report. Supported options:
+          reporter: dotnet-trx
+          # Limits which test suites are listed:
+          list-suites: 'failed'
+          # Limits which test cases are listed:
+          list-tests: 'failed'
+          # Limits number of created annotations with error message and stack trace captured during test execution.
+          max-annotations: 50
+  
+      - name: Install CodeCov
+        run: pip install codecov
+        
+      - name: Run tests with code coverage
+        run: codecov -f "SpecBind_coverage.xml"
+          
+      - name: NuGet pack SpecBind
+        run: nuget pack src\SpecBind\SpecBind.nuspec -OutputDirectory ${{env.PACKAGE_DIR}} -BasePath src\SpecBind -Verbosity Detailed -Version ${{env.VERSION}} -Symbols -Properties Configuration=${{env.CONFIGURATION}}
+        
+      - name: NuGet pack SpecBind.CodedUI
+        run: nuget pack src\SpecBind.CodedUI\SpecBind.CodedUI.nuspec -OutputDirectory ${{env.PACKAGE_DIR}} -BasePath src\SpecBind.CodedUI -Verbosity Detailed -Version ${{env.VERSION}} -Symbols -Properties Configuration=${{env.CONFIGURATION}}
+        
+      - name: NuGet pack SpecBind.Selenium
+        run: nuget pack src\SpecBind.Selenium\SpecBind.Selenium.nuspec -OutputDirectory ${{env.PACKAGE_DIR}} -BasePath src\SpecBind.Selenium -Verbosity Detailed -Version ${{env.VERSION}} -Symbols -Properties Configuration=${{env.CONFIGURATION}}
+          
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          name: SpecBind NuGet Packages ${{ env.VERSION }}
+          path: ${{ env.PACKAGE_DIR }}\*.nupkg

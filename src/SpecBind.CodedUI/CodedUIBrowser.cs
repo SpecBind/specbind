@@ -7,11 +7,11 @@ namespace SpecBind.CodedUI
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Drawing;
     using System.Drawing.Imaging;
     using System.IO;
     using System.Linq;
     using System.Net;
-
     using Microsoft.VisualStudio.TestTools.UITest.Extension;
     using Microsoft.VisualStudio.TestTools.UITesting;
     using Microsoft.VisualStudio.TestTools.UITesting.HtmlControls;
@@ -20,6 +20,7 @@ namespace SpecBind.CodedUI
     using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
     using SpecBind.Pages;
+    using ModifierKeys = System.Windows.Input.ModifierKeys;
 
     /// <summary>
     /// An IBrowser implementation for Coded UI.
@@ -44,6 +45,14 @@ namespace SpecBind.CodedUI
             this.frameCache = new Lazy<Dictionary<string, Func<UITestControl, HtmlFrame>>>(GetFrameCache);
             this.window = browserWindow;
             this.pageCache = new Dictionary<Type, Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument>>();
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="CodedUIBrowser" /> class.
+        /// </summary>
+        ~CodedUIBrowser()
+        {
+            this.Dispose(false);
         }
 
         /// <summary>
@@ -75,17 +84,23 @@ namespace SpecBind.CodedUI
         }
 
         /// <summary>
+        /// Gets the title of the current page.
+        /// </summary>
+        /// <value>
+        /// The title of the base page.
+        /// </value>
+        public override string Title
+        {
+            get
+            {
+                return this.window.Value.Title;
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether or not the browser is created.
         /// </summary>
         public override bool IsCreated => this.window.IsValueCreated;
-
-        /// <summary>
-        /// Finalizes an instance of the <see cref="CodedUIBrowser" /> class.
-        /// </summary>
-        ~CodedUIBrowser()
-        {
-            this.Dispose(false);
-        }
 
         /// <summary>
         /// Adds the cookie to the browser.
@@ -174,6 +189,20 @@ namespace SpecBind.CodedUI
         public override void GoTo(Uri url)
         {
             this.window.Value.NavigateToUrl(url);
+        }
+
+        /// <summary>
+        /// Goes back to the previous page using the browser's back button.
+        /// </summary>
+        public override void GoBack()
+        {
+            this.window.Value.Back();
+        }
+
+        /// <inheritdoc/>
+        public override void Refresh()
+        {
+            this.window.Value.Refresh();
         }
 
         /// <summary>
@@ -285,6 +314,78 @@ namespace SpecBind.CodedUI
         }
 
         /// <summary>
+        /// Sends the keys.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        public override void SendKeys(string text)
+        {
+            Keyboard.SendKeys(text);
+        }
+
+        /// <summary>
+        /// Presses the keys.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        public override void PressKeys(string text)
+        {
+            ModifierKeys modifierKeys = ModifierKeys.None;
+
+            if (text.Contains("{ALT}"))
+            {
+                modifierKeys |= ModifierKeys.Alt;
+            }
+
+            Keyboard.PressModifierKeys(modifierKeys);
+        }
+
+        /// <summary>
+        /// Releases the keys.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        public override void ReleaseKeys(string text)
+        {
+            ModifierKeys modifierKeys = ModifierKeys.None;
+
+            if (text.Contains("{ALT}"))
+            {
+                modifierKeys |= ModifierKeys.Alt;
+            }
+
+            Keyboard.ReleaseModifierKeys(modifierKeys);
+        }
+
+        /// <summary>
+        /// Maximizes the current browser window.
+        /// </summary>
+        public override void Maximize()
+        {
+            this.window.Value.Maximized = true;
+        }
+
+        /// <summary>
+        /// Gets the window rectangle.
+        /// </summary>
+        /// <returns>The window rectangle.</returns>
+        public override Rectangle GetWindowRectangle()
+        {
+            BrowserWindow window = this.window.Value;
+
+            return window.BoundingRectangle;
+        }
+
+        /// <summary>
+        /// Switches to the window with the specified page.
+        /// </summary>
+        /// <param name="pageType">Type of the page.</param>
+        /// <returns>
+        /// The page object.
+        /// </returns>
+        public override IPage SwitchToWindow(Type pageType)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Releases windows and driver specific resources. This method is already protected by the base instance.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
@@ -340,61 +441,6 @@ namespace SpecBind.CodedUI
             }
 
             return new CodedUIPage<HtmlDocument>(nativePage);
-        }
-
-        /// <summary>
-        /// Creates the native page.
-        /// </summary>
-        /// <param name="pageType">Type of the page.</param>
-        /// <returns>The internal document.</returns>
-        private HtmlDocument CreateNativePage(Type pageType)
-        {
-            Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument> function;
-            if (!this.pageCache.TryGetValue(pageType, out function))
-            {
-                function = PageBuilder<UITestControl, HtmlDocument>.CreateElement(pageType);
-                this.pageCache.Add(pageType, function);
-            }
-
-            UITestControl parentElement = this.window.Value;
-
-            // Check to see if a frames reference exists
-            var isFrameDocument = false;
-            PageNavigationAttribute navigationAttribute;
-            if (pageType.TryGetAttribute(out navigationAttribute)
-                && !string.IsNullOrWhiteSpace(navigationAttribute.FrameName))
-            {
-                Func<UITestControl, HtmlFrame> frameFunction;
-                if (!this.frameCache.Value.TryGetValue(navigationAttribute.FrameName, out frameFunction))
-                {
-                    throw new PageNavigationException(
-                        "Cannot locate frame with ID '{0}' for page '{1}'",
-                        navigationAttribute.FrameName,
-                        pageType.Name);
-                }
-
-                parentElement = frameFunction(parentElement);
-                isFrameDocument = true;
-
-                if (parentElement == null)
-                {
-                    throw new PageNavigationException(
-                        "Cannot load frame with ID '{0}' for page '{1}'. The property that matched the frame did not return a parent document.",
-                        navigationAttribute.FrameName,
-                        pageType.Name);
-                }
-            }
-
-            var documentElement = function(parentElement, this, null);
-
-            if (isFrameDocument)
-            {
-                // Set properties that are relevant to the frame.
-                documentElement.SearchProperties[HtmlDocument.PropertyNames.FrameDocument] = "True";
-                documentElement.SearchProperties[HtmlDocument.PropertyNames.RedirectingPage] = "False";
-            }
-
-            return documentElement;
         }
 
         /// <summary>
@@ -465,6 +511,61 @@ namespace SpecBind.CodedUI
             }
 
             return frameTypes;
+        }
+
+        /// <summary>
+        /// Creates the native page.
+        /// </summary>
+        /// <param name="pageType">Type of the page.</param>
+        /// <returns>The internal document.</returns>
+        private HtmlDocument CreateNativePage(Type pageType)
+        {
+            Func<UITestControl, IBrowser, Action<HtmlControl>, HtmlDocument> function;
+            if (!this.pageCache.TryGetValue(pageType, out function))
+            {
+                function = PageBuilder<UITestControl, HtmlDocument>.CreateElement(pageType);
+                this.pageCache.Add(pageType, function);
+            }
+
+            UITestControl parentElement = this.window.Value;
+
+            // Check to see if a frames reference exists
+            var isFrameDocument = false;
+            PageNavigationAttribute navigationAttribute;
+            if (pageType.TryGetAttribute(out navigationAttribute)
+                && !string.IsNullOrWhiteSpace(navigationAttribute.FrameName))
+            {
+                Func<UITestControl, HtmlFrame> frameFunction;
+                if (!this.frameCache.Value.TryGetValue(navigationAttribute.FrameName, out frameFunction))
+                {
+                    throw new PageNavigationException(
+                        "Cannot locate frame with ID '{0}' for page '{1}'",
+                        navigationAttribute.FrameName,
+                        pageType.Name);
+                }
+
+                parentElement = frameFunction(parentElement);
+                isFrameDocument = true;
+
+                if (parentElement == null)
+                {
+                    throw new PageNavigationException(
+                        "Cannot load frame with ID '{0}' for page '{1}'. The property that matched the frame did not return a parent document.",
+                        navigationAttribute.FrameName,
+                        pageType.Name);
+                }
+            }
+
+            var documentElement = function(parentElement, this, null);
+
+            if (isFrameDocument)
+            {
+                // Set properties that are relevant to the frame.
+                documentElement.SearchProperties[HtmlDocument.PropertyNames.FrameDocument] = "True";
+                documentElement.SearchProperties[HtmlDocument.PropertyNames.RedirectingPage] = "False";
+            }
+
+            return documentElement;
         }
     }
 }

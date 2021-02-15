@@ -18,11 +18,14 @@ namespace SpecBind.BrowserSupport
         /// </summary>
         /// <typeparam name="TPage">The type of the page.</typeparam>
         /// <param name="browser">The browser.</param>
+        /// <returns>The page.</returns>
         /// <exception cref="PageNavigationException">Thrown if the page is not the current page.</exception>
-        public static void EnsureOnPage<TPage>(this IBrowser browser) where TPage : class, new()
+        public static IPage EnsureOnPage<TPage>(this IBrowser browser)
+            where TPage : class
         {
             IPage page;
             EnsureOnPage(browser, typeof(TPage), out page);
+            return page;
         }
 
         /// <summary>

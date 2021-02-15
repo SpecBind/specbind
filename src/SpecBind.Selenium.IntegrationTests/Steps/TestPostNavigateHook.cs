@@ -1,6 +1,7 @@
-﻿// <copyright file="TestPostNavigateHook.cs">
-//    Copyright © 2013 Dan Piessens.  All rights reserved.
+﻿// <copyright file="TestPostNavigateHook.cs" company="">
+//     Copyright © 2013 Dan Piessens.  All rights reserved.
 // </copyright>
+
 namespace SpecBind.Selenium.IntegrationTests.Steps
 {
     using System.Collections.Generic;
@@ -17,10 +18,12 @@ namespace SpecBind.Selenium.IntegrationTests.Steps
         private readonly ITokenManager tokenManager;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestPostNavigateHook"/> class.
+        /// Initializes a new instance of the <see cref="TestPostNavigateHook" /> class.
         /// </summary>
         /// <param name="tokenManager">The token manager.</param>
-        public TestPostNavigateHook(ITokenManager tokenManager)
+        /// <param name="pageHistoryService">The page history service.</param>
+        public TestPostNavigateHook(ITokenManager tokenManager, PageHistoryService pageHistoryService)
+            : base(pageHistoryService)
         {
             this.tokenManager = tokenManager;
         }

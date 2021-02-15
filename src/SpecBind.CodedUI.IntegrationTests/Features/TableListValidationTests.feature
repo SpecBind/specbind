@@ -1,4 +1,6 @@
-﻿Feature: Table List Validation Features
+﻿@mstest:DeploymentItem:TechTalk.SpecFlow.MSTest.SpecFlowPlugin.dll
+@mstest:DeploymentItem:SpecBind.MsTest.Steps.dll
+Feature: Table List Validation Features
 	Contains tests for table list validation features.
 
 Scenario: Validate Table List "Start With" Validator

@@ -1,89 +1,16 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BB4BC498-4C1B-40B3-965E-4650125A2DF0}</ProjectGuid>
+    <TargetFramework>net472</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpecBind.Selenium</RootNamespace>
-    <AssemblyName>SpecBind.Selenium</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\SpecBind.Selenium.XML</DocumentationFile>
-    <CodeAnalysisRuleSet>..\SpecBind.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\SpecBind.Selenium.XML</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
     <CodeAnalysisRuleSet>..\SpecBind.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Drivers\ISeleniumDriver.cs" />
-    <Compile Include="Drivers\SeleniumChromeDriver.cs" />
-    <Compile Include="Drivers\SeleniumChromeHeadlessDriver.cs" />
-    <Compile Include="Drivers\SeleniumDriverBase.cs" />
-    <Compile Include="Drivers\SeleniumEdgeDriver.cs" />
-    <Compile Include="Drivers\SeleniumFirefoxDriver.cs" />
-    <Compile Include="Drivers\SeleniumInternetExplorerDriver.cs" />
-    <Compile Include="Drivers\SeleniumOperaDriver.cs" />
-    <Compile Include="Drivers\SeleniumPhantomJSDriver.cs" />
-    <Compile Include="Drivers\SeleniumSafariDriver.cs" />
-    <Compile Include="LocatorBuilder.cs" />
-    <Compile Include="NativeAttributeBuilder.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemoteScreenshotWebDriver.cs" />
-    <Compile Include="SeleniumBase.cs" />
-    <Compile Include="SeleniumBrowser.cs" />
-    <Compile Include="SeleniumBrowserFactory.cs" />
-    <Compile Include="SeleniumTableDriver.cs" />
-    <Compile Include="WebElement.cs" />
-    <Compile Include="SeleniumListElementWrapper.cs" />
-    <Compile Include="SeleniumPage.cs" />
-    <Compile Include="SeleniumPageBuilder.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SpecBind\SpecBind.csproj">
-      <Project>{e27bd8d5-242f-496e-be3a-1c73a27e5275}</Project>
-      <Name>SpecBind</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Deployment\App.config.uninstall.xdt" />
-    <None Include="Deployment\App.config.install.xdt" />
-    <None Include="SpecBind.Selenium.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\stylecop.json">
@@ -91,25 +18,25 @@
     </AdditionalFiles>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
-      <Version>1.0.7</Version>
+    <ProjectReference Include="..\SpecBind\SpecBind.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AlphaFS">
+      <Version>2.2.6</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Net.Compilers">
-      <Version>2.1.0</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    <PackageReference Include="Appium.WebDriver">
+      <Version>4.0.0.6-beta</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Edge.SeleniumTools" Version="3.141.2" />
+    <PackageReference Include="SpecFlow">
+      <Version>3.5.14</Version>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers">
+      <Version>1.0.0</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Selenium.Support">
-      <Version>3.5.1</Version>
-    </PackageReference>
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

@@ -13,5 +13,11 @@ namespace SpecBind.Pages
         /// </summary>
         /// <param name="value">The value to set.</param>
         void SetValue(string value);
+
+        /// <summary>
+        /// Gets the text.
+        /// </summary>
+        /// <returns>The text.</returns>
+        string GetText();
     }
 }

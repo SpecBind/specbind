@@ -21,6 +21,14 @@ namespace SpecBind.Pages
         public string Attribute { get; set; }
 
         /// <summary>
+        /// Gets or sets the script.
+        /// </summary>
+        /// <value>
+        /// The script.
+        /// </value>
+        public string Script { get; set; }
+
+        /// <summary>
         /// Gets or sets the element name to find.
         /// </summary>
         /// <value>

@@ -8,6 +8,7 @@ namespace SpecBind.Selenium.Drivers
     using Configuration;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Safari;
+    using TechTalk.SpecFlow;
 
     /// <summary>
     /// Selenium Safari Driver.
@@ -19,10 +20,16 @@ namespace SpecBind.Selenium.Drivers
         /// Creates the web driver from the specified browser factory configuration.
         /// </summary>
         /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        /// <returns>The configured web driver.</returns>
-        protected override IWebDriver CreateLocalDriver(BrowserFactoryConfiguration browserFactoryConfiguration)
+        /// <param name="scenarioContext">The scenario context.</param>
+        /// <returns>
+        /// The configured web driver.
+        /// </returns>
+        protected override IWebDriverEx CreateLocalDriver(
+            BrowserFactoryConfiguration browserFactoryConfiguration,
+            ScenarioContext scenarioContext)
         {
-            return new SafariDriver();
+            SafariDriverService safariDriverService = SafariDriverService.CreateDefaultService();
+            return new SafariDriverEx(safariDriverService);
         }
 
         /// <summary>

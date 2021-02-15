@@ -13,7 +13,7 @@ namespace SpecBind.Tests
     public static class ExceptionHelper
     {
         /// <summary>
-        /// Calls the <see cref="testAction"/> method and runs any optionally post validation.
+        /// Calls the testAction method and runs any optionally post validation.
         /// </summary>
         /// <typeparam name="TException">The type of the exception.</typeparam>
         /// <param name="testAction">The test action.</param>
@@ -27,10 +27,7 @@ namespace SpecBind.Tests
             }
             catch (TException ex)
             {
-                if (validationCheck != null)
-                {
-                    validationCheck(ex);
-                }
+                validationCheck?.Invoke(ex);
 
                 throw;
             }

@@ -24,6 +24,7 @@ namespace SpecBind.Configuration
             this.PageLoadTimeout = TimeSpan.FromSeconds(30);
             this.Settings = new Dictionary<string, string>();
             this.UserProfilePreferences = new Dictionary<string, string>();
+            this.PageLoadStrategy = "Default";
         }
 
         /// <summary>
@@ -91,5 +92,21 @@ namespace SpecBind.Configuration
         /// to use to check for pending AJAX requests before proceeding with each step.
         /// </summary>
         public string WaitForPendingAjaxCallsVia { get; set; }
+
+        /// <summary>
+        /// Gets or sets the page load strategy.
+        /// </summary>
+        /// <value>
+        /// The page load strategy.
+        /// </value>
+        public string PageLoadStrategy { get; set; }
+
+        /// <summary>
+        /// Gets or sets the log file path.
+        /// </summary>
+        /// <value>
+        /// The log file path.
+        /// </value>
+        public string LogFilePath { get; set; }
     }
 }

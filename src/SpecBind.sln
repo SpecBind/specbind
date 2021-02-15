@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{355684DD-22AC-4D3A-B93B-6B92D123A044}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,34 +12,48 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodedUI", "CodedUI", "{0C04
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Selenium", "Selenium", "{ECD281AC-2075-4F3A-B24A-D8B96E8CE56E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind", "SpecBind\SpecBind.csproj", "{E27BD8D5-242F-496E-BE3A-1C73A27E5275}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpecBind", "SpecBind\SpecBind.csproj", "{E27BD8D5-242F-496E-BE3A-1C73A27E5275}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.Tests", "SpecBind.Tests\SpecBind.Tests.csproj", "{AE1176AA-1766-471B-BF06-84B66EFEB3CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpecBind.Tests", "SpecBind.Tests\SpecBind.Tests.csproj", "{AE1176AA-1766-471B-BF06-84B66EFEB3CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.CodedUI", "SpecBind.CodedUI\SpecBind.CodedUI.csproj", "{15643F21-75D0-451F-97CF-5121A11B0705}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpecBind.CodedUI", "SpecBind.CodedUI\SpecBind.CodedUI.csproj", "{15643F21-75D0-451F-97CF-5121A11B0705}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.Plugin", "SpecBind.Plugin\SpecBind.Plugin.csproj", "{0BCFC808-1647-448E-A9DC-99B3D9D336B5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.CodedUI.Tests", "SpecBind.CodedUI.Tests\SpecBind.CodedUI.Tests.csproj", "{0EDE594B-518E-420E-9779-E11971767220}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpecBind.CodedUI.Tests", "SpecBind.CodedUI.Tests\SpecBind.CodedUI.Tests.csproj", "{0EDE594B-518E-420E-9779-E11971767220}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.CodedUI.IntegrationTests", "SpecBind.CodedUI.IntegrationTests\SpecBind.CodedUI.IntegrationTests.csproj", "{5A11FA8E-F9F9-4FC3-A935-B405FAAE3FF3}"
-	ProjectSection(ProjectDependencies) = postProject
-		{0BCFC808-1647-448E-A9DC-99B3D9D336B5} = {0BCFC808-1647-448E-A9DC-99B3D9D336B5}
-	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.Selenium", "SpecBind.Selenium\SpecBind.Selenium.csproj", "{BB4BC498-4C1B-40B3-965E-4650125A2DF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpecBind.Selenium", "SpecBind.Selenium\SpecBind.Selenium.csproj", "{BB4BC498-4C1B-40B3-965E-4650125A2DF0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.Selenium.Tests", "SpecBind.Selenium.Tests\SpecBind.Selenium.Tests.csproj", "{E6461298-97BB-44B9-9D7E-15C51D8C5ED8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpecBind.Selenium.Tests", "SpecBind.Selenium.Tests\SpecBind.Selenium.Tests.csproj", "{E6461298-97BB-44B9-9D7E-15C51D8C5ED8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecBind.Selenium.IntegrationTests", "SpecBind.Selenium.IntegrationTests\SpecBind.Selenium.IntegrationTests.csproj", "{112812A6-F176-47AA-BD8C-6A7DFDBC3172}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpecBind.Selenium.IntegrationTests", "SpecBind.Selenium.IntegrationTests\SpecBind.Selenium.IntegrationTests.csproj", "{112812A6-F176-47AA-BD8C-6A7DFDBC3172}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FE3A1D8C-DC30-443E-873A-99F9207267FB}"
 	ProjectSection(SolutionItems) = preProject
 		..\.editorconfig = ..\.editorconfig
+		..\.gitignore = ..\.gitignore
 		..\appveyor.yml = ..\appveyor.yml
+		CodedUI.targets = CodedUI.targets
 		SpecBind.Plugin\Constants.cs = SpecBind.Plugin\Constants.cs
+		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
+		..\License.md = ..\License.md
+		..\.github\workflows\main.yml = ..\.github\workflows\main.yml
+		..\README.md = ..\README.md
+		Settings.StyleCop = Settings.StyleCop
+		SpecBind.ruleset = SpecBind.ruleset
+		SpecBind.sln.DotSettings = SpecBind.sln.DotSettings
+		stylecop.json = stylecop.json
 		test.runsettings = test.runsettings
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{C53C4C06-791E-4BCF-BFC9-3613EFB50EBD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{C07C3079-E549-4932-83A3-DBFD42514DBA}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\main.yml = ..\.github\workflows\main.yml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpecBind.MsTest.Steps", "SpecBind.MsTest.Steps\SpecBind.MsTest.Steps.csproj", "{D8A37D9B-0982-4F61-A486-4F5F9D8543DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,10 +73,6 @@ Global
 		{15643F21-75D0-451F-97CF-5121A11B0705}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15643F21-75D0-451F-97CF-5121A11B0705}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15643F21-75D0-451F-97CF-5121A11B0705}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0BCFC808-1647-448E-A9DC-99B3D9D336B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0BCFC808-1647-448E-A9DC-99B3D9D336B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0BCFC808-1647-448E-A9DC-99B3D9D336B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0BCFC808-1647-448E-A9DC-99B3D9D336B5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0EDE594B-518E-420E-9779-E11971767220}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0EDE594B-518E-420E-9779-E11971767220}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EDE594B-518E-420E-9779-E11971767220}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -83,6 +93,10 @@ Global
 		{112812A6-F176-47AA-BD8C-6A7DFDBC3172}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{112812A6-F176-47AA-BD8C-6A7DFDBC3172}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{112812A6-F176-47AA-BD8C-6A7DFDBC3172}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8A37D9B-0982-4F61-A486-4F5F9D8543DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8A37D9B-0982-4F61-A486-4F5F9D8543DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8A37D9B-0982-4F61-A486-4F5F9D8543DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8A37D9B-0982-4F61-A486-4F5F9D8543DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,5 +108,10 @@ Global
 		{BB4BC498-4C1B-40B3-965E-4650125A2DF0} = {ECD281AC-2075-4F3A-B24A-D8B96E8CE56E}
 		{E6461298-97BB-44B9-9D7E-15C51D8C5ED8} = {ECD281AC-2075-4F3A-B24A-D8B96E8CE56E}
 		{112812A6-F176-47AA-BD8C-6A7DFDBC3172} = {ECD281AC-2075-4F3A-B24A-D8B96E8CE56E}
+		{C53C4C06-791E-4BCF-BFC9-3613EFB50EBD} = {FE3A1D8C-DC30-443E-873A-99F9207267FB}
+		{C07C3079-E549-4932-83A3-DBFD42514DBA} = {C53C4C06-791E-4BCF-BFC9-3613EFB50EBD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {83F32340-8ABB-49F4-A8FD-8728E2AC74C1}
 	EndGlobalSection
 EndGlobal

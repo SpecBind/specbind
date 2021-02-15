@@ -141,12 +141,16 @@ namespace SpecBind.Validation
             T typedExpected;
             if (parseDelegate(expected, out typedExpected))
             {
-                T parseActual;
-                var typedActual = parseDelegate(actual, out parseActual) ? parseActual : default(T);
+                T parsedActual;
+                if (!parseDelegate(actual, out parsedActual))
+                {
+                    comparisonResult = false;
+                    return false;
+                }
 
                 try
                 {
-                    comparisonResult = comparisonFunc(typedExpected, typedActual);
+                    comparisonResult = comparisonFunc(typedExpected, parsedActual);
                     return true;
                 }
                 catch (NotSupportedException)

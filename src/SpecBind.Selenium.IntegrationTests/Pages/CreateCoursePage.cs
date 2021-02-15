@@ -1,5 +1,5 @@
-﻿// <copyright file="CreateCoursePage.cs">
-//    Copyright © 2013 Dan Piessens  All rights reserved.
+﻿// <copyright file="CreateCoursePage.cs" company="">
+//     Copyright © 2013 Dan Piessens.  All rights reserved.
 // </copyright>
 
 namespace SpecBind.Selenium.IntegrationTests.Pages

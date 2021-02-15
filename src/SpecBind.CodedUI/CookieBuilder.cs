@@ -82,6 +82,7 @@ namespace SpecBind.CodedUI
         /// Gets the value of a cookie via javascript's document
         /// </summary>
         /// <param name="name">The name of the cookie to retrieve</param>
+        /// <returns>The value.</returns>
         public static string GetCookieValue(string name)
         {
             var builder = new StringBuilder();

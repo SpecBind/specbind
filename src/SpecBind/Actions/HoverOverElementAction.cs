@@ -55,17 +55,10 @@ namespace SpecBind.Actions
 
             try
             {
-                propertyData.ClickElement();
+                propertyData.MouseOverElement();
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("Element is not clickable at point"))
-                {
-                    // Starting with Selenium WebDriver 2.48, we get this is if a popup opens on hover.
-                    // Since we're just hovering and don't actually want to click the element, swallow this exception.
-                    return ActionResult.Successful();
-                }
-
                 return ActionResult.Failure(ex);
             }
 

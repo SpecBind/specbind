@@ -16,7 +16,7 @@ namespace SpecBind.CodedUI.IntegrationTests.Pages
     public class AboutPage : HtmlDocument
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="HtmlDocument" /> class by using the provided parent control.
+        /// Initializes a new instance of the <see cref="AboutPage" /> class by using the provided parent control.
         /// </summary>
         /// <param name="parent">The <see cref="UITestControl" /> that contains this control.</param>
         public AboutPage(UITestControl parent)

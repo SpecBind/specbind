@@ -1,6 +1,6 @@
 [![Join the chat at https://gitter.im/dpiessens/specbind](https://badges.gitter.im/dpiessens/specbind.svg)](https://gitter.im/dpiessens/specbind?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/qhajavc6p5ut2480)](https://ci.appveyor.com/project/dpiessens/specbind)
+[![Build status](https://github.com/SpecBind/specbind/actions/workflows/main.yml/badge.svg)](https://github.com/SpecBind/specbind/actions/workflows/main.yml)
 
 [![Code Coverage](https://codecov.io/github/dpiessens/specbind/coverage.svg?branch=master)](https://codecov.io/github/dpiessens/specbind?branch=master)
 

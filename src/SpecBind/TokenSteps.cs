@@ -3,11 +3,12 @@
 // </copyright>
 namespace SpecBind
 {
+    using System.Collections.Generic;
     using SpecBind.ActionPipeline;
     using SpecBind.Actions;
     using SpecBind.Helpers;
-
     using TechTalk.SpecFlow;
+    using TechTalk.SpecFlow.Assist;
 
     /// <summary>
     /// Steps that relate to the manipulation of tokens.
@@ -20,16 +21,48 @@ namespace SpecBind
         private const string ValidateTokenValueRegex = @"I ensure token (.+) matches rule (.+) with value (.+)";
 
         private readonly IActionPipelineService actionPipelineService;
+        private readonly ITokenManager tokenManager;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TokenSteps"/> class.
+        /// Initializes a new instance of the <see cref="TokenSteps" /> class.
         /// </summary>
         /// <param name="scenarioContext">The scenario context.</param>
         /// <param name="actionPipelineService">The action pipeline service.</param>
-        public TokenSteps(IScenarioContextHelper scenarioContext, IActionPipelineService actionPipelineService)
-            : base(scenarioContext)
+        /// <param name="logger">The logger.</param>
+        /// <param name="tokenManager">The token manager.</param>
+        public TokenSteps(
+            IScenarioContextHelper scenarioContext,
+            IActionPipelineService actionPipelineService,
+            ILogger logger,
+            ITokenManager tokenManager)
+            : base(scenarioContext, logger)
         {
             this.actionPipelineService = actionPipelineService;
+            this.tokenManager = tokenManager;
+        }
+
+        /// <summary>
+        /// Transforms the specified table to an enumerable collection of tokens.
+        /// </summary>
+        /// <param name="table">The table.</param>
+        /// <returns>An enumerable collection of tokens.</returns>
+        [StepArgumentTransformation]
+        public IEnumerable<Token> Transform(Table table)
+        {
+            return table.CreateSet<Token>();
+        }
+
+        /// <summary>
+        /// Given I set the following tokens.
+        /// </summary>
+        /// <param name="tokens">The tokens.</param>
+        [Given("I set the following tokens")]
+        public void SetTheFollowingTokens(IEnumerable<Token> tokens)
+        {
+            foreach (Token token in tokens)
+            {
+                this.tokenManager.SetToken(token.Name, token.Value);
+            }
         }
 
         /// <summary>
@@ -67,6 +100,28 @@ namespace SpecBind
             this.actionPipelineService
                 .PerformAction<ValidateTokenAction>(null, context)
                 .CheckResult();
+        }
+
+        /// <summary>
+        /// Token
+        /// </summary>
+        public class Token
+        {
+            /// <summary>
+            /// Gets or sets the name.
+            /// </summary>
+            /// <value>
+            /// The name.
+            /// </value>
+            public string Name { get; set; }
+
+            /// <summary>
+            /// Gets or sets the value.
+            /// </summary>
+            /// <value>
+            /// The value.
+            /// </value>
+            public string Value { get; set; }
         }
     }
 }

@@ -16,20 +16,17 @@ namespace SpecBind.Actions
     /// </summary>
     public class PageNavigationAction : ContextActionBase<PageNavigationAction.PageNavigationActionContext>
     {
-        private readonly IBrowser browser;
         private readonly ILogger logger;
         private readonly IPageMapper pageMapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PageNavigationAction" /> class.
         /// </summary>
-        /// <param name="browser">The browser.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="pageMapper">The page mapper.</param>
-        public PageNavigationAction(IBrowser browser, ILogger logger, IPageMapper pageMapper)
+        public PageNavigationAction(ILogger logger, IPageMapper pageMapper)
             : base(typeof(PageNavigationAction).Name)
         {
-            this.browser = browser;
             this.logger = logger;
             this.pageMapper = pageMapper;
         }
@@ -47,7 +44,12 @@ namespace SpecBind.Actions
             /// <summary>
             /// The ensure on page
             /// </summary>
-            EnsureOnPage = 1
+            EnsureOnPage = 1,
+
+            /// <summary>
+            /// Navigates back to the previous page using the browser's back button
+            /// </summary>
+            NavigateBack = 2
         }
 
         /// <summary>
@@ -57,6 +59,18 @@ namespace SpecBind.Actions
         /// <returns>The result of the action.</returns>
         protected override ActionResult Execute(PageNavigationActionContext context)
         {
+            IBrowser browser = WebDriverSupport.CurrentBrowser;
+
+            switch (context.PageAction)
+            {
+                case PageAction.NavigateBack:
+
+                    this.logger.Debug("Navigating back.");
+                    browser.GoBack();
+
+                    return ActionResult.Successful(null);
+            }
+
             var propertyName = context.PropertyName;
             var type = this.pageMapper.GetTypeFromName(propertyName);
 
@@ -78,12 +92,12 @@ namespace SpecBind.Actions
                         this.logger.Debug("Page Arguments: {0}", string.Join(", ", args.Select(a => string.Format("{0}={1}", a.Key, a.Value))));
                     }
 
-                    page = this.browser.GoToPage(type, args);
+                    page = browser.GoToPage(type, args);
                     break;
 
                 case PageAction.EnsureOnPage:
                     this.logger.Debug("Ensuring browser is on page: {0} ({1})", propertyName, type.FullName);
-                    this.browser.EnsureOnPage(type, out page);
+                    browser.EnsureOnPage(type, out page);
                     break;
             }
 
@@ -96,7 +110,17 @@ namespace SpecBind.Actions
         public class PageNavigationActionContext : ActionContext
         {
             /// <summary>
-            /// Initializes a new instance of the <see cref="ActionContext" /> class.
+            /// Initializes a new instance of the <see cref="PageNavigationActionContext"/> class.
+            /// </summary>
+            /// <param name="pageAction">The page action.</param>
+            /// <param name="pageArguments">The page arguments.</param>
+            public PageNavigationActionContext(PageAction pageAction, IDictionary<string, string> pageArguments = null)
+                : this(null, pageAction, pageArguments)
+            {
+            }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="PageNavigationActionContext" /> class.
             /// </summary>
             /// <param name="propertyName">Name of the property.</param>
             /// <param name="pageAction">The page action.</param>

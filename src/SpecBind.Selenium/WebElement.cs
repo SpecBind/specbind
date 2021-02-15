@@ -13,6 +13,7 @@ namespace SpecBind.Selenium
     using OpenQA.Selenium;
     using OpenQA.Selenium.Interactions.Internal;
     using OpenQA.Selenium.Internal;
+    using SpecBind.Pages;
 
     /// <summary>
     /// Represents a proxy class for an element to be used with the PageFactory.
@@ -37,10 +38,10 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
-        /// Gets a value indicating whether to cache the element lookup.
+        /// Gets or sets a value indicating whether to cache the element lookup.
         /// </summary>
         /// <value><c>true</c> if cache; otherwise, <c>false</c>.</value>
-        public bool Cache { get; internal set; }
+        public bool Cache { get; set; }
 
         /// <summary>
         /// Gets the coordinates identifying the location of this element using
@@ -62,11 +63,24 @@ namespace SpecBind.Selenium
         /// <remarks>The <see cref="P:OpenQA.Selenium.IWebElement.Displayed" /> property avoids the problem
         /// of having to parse an element's "style" attribute to determine
         /// visibility of an element.</remarks>
-        public bool Displayed
+        public virtual bool Displayed
         {
             get
             {
-                return this.WrappedElement.Displayed;
+                try
+                {
+                    return this.WrappedElement.Displayed;
+                }
+                catch (InvalidOperationException)
+                {
+                    // An element command failed because the referenced element is no longer attached to the DOM.
+                    return false;
+                }
+                catch (WebDriverException)
+                {
+                    // Currently selected window has been closed
+                    return false;
+                }
             }
         }
 
@@ -76,7 +90,7 @@ namespace SpecBind.Selenium
         /// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
         /// <remarks>The <see cref="P:OpenQA.Selenium.IWebElement.Enabled" /> property will generally
         /// return <see langword="true" /> for everything except explicitly disabled input elements.</remarks>
-        public bool Enabled
+        public virtual bool Enabled
         {
             get
             {
@@ -201,8 +215,27 @@ namespace SpecBind.Selenium
                     catch (NoSuchElementException)
                     {
                         message = message == null
-                                      ? string.Format("Could not find element by: {0}", @by)
-                                      : string.Format("{0}, or: {1}", message, @by);
+                            ? string.Format("Could not find element by: {0}", @by)
+                            : string.Format("{0}, or: {1}", message, @by);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // An element could not be located on the page using the given search parameters.
+                        message = message == null
+                            ? string.Format("Could not find element by: {0}", @by)
+                            : string.Format("{0}, or: {1}", message, @by);
+                    }
+                    catch (ElementExecuteException)
+                    {
+                        message = message == null
+                            ? string.Format("Could not find element by: {0}", @by)
+                            : string.Format("{0}, or: {1}", message, @by);
+                    }
+                    catch (WebDriverException)
+                    {
+                        message = message == null
+                            ? string.Format("Could not find element by: {0}", @by)
+                            : string.Format("{0}, or: {1}", message, @by);
                     }
                 }
 
@@ -216,7 +249,7 @@ namespace SpecBind.Selenium
         /// <remarks>If this element is a text entry element, the <see cref="M:OpenQA.Selenium.IWebElement.Clear" />
         /// method will clear the value. It has no effect on other elements. Text entry elements
         /// are defined as elements with INPUT or TEXTAREA tags.</remarks>
-        public void Clear()
+        public virtual void Clear()
         {
             this.WrappedElement.Clear();
         }
@@ -224,7 +257,7 @@ namespace SpecBind.Selenium
         /// <summary>
         /// Clicks this element.
         /// </summary>
-        public void Click()
+        public virtual void Click()
         {
             this.WrappedElement.Click();
         }
@@ -303,29 +336,119 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Gets the value of a JavaScript property of this element.
+        /// </summary>
+        /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
+        /// <returns>
+        /// The JavaScript property's current value. Returns a <see langword="null" /> if the
+        /// value is not set or the property does not exist.
+        /// </returns>
+        public string GetProperty(string propertyName)
+        {
+            return this.WrappedElement.GetProperty(propertyName);
+        }
+
+        /// <summary>
         /// Simulates typing text into the element.
         /// </summary>
         /// <param name="text">The text to type into the element.</param>
-        /// <seealso cref="T:OpenQA.Selenium.Keys" />
-        /// <remarks>The text to be typed may include special characters like arrow keys,
+        /// <exception cref="WebDriverException">SendKeys('{text}') put text '{actual}' into element {this.TagName}</exception>
+        /// <remarks>
+        /// The text to be typed may include special characters like arrow keys,
         /// backspaces, function keys, and so on. Valid special keys are defined in
-        /// <see cref="T:OpenQA.Selenium.Keys" />.</remarks>
+        /// <see cref="T:OpenQA.Selenium.Keys" />.
+        /// </remarks>
+        /// <seealso cref="T:OpenQA.Selenium.Keys" />
         public virtual void SendKeys(string text)
         {
+            this.SendKeys(text, true);
+        }
+
+        /// <summary>
+        /// Simulates typing text into the element.
+        /// </summary>
+        /// <param name="text">The text to type into the element.</param>
+        /// <param name="verifyInput">if set to <c>true</c> verifies text input.</param>
+        /// <exception cref="WebDriverException">SendKeys('{text}') put text '{actual}' into element {this.TagName}</exception>
+        /// <remarks>
+        /// The text to be typed may include special characters like arrow keys,
+        /// backspaces, function keys, and so on. Valid special keys are defined in
+        /// <see cref="T:OpenQA.Selenium.Keys" />.
+        /// </remarks>
+        /// <seealso cref="T:OpenQA.Selenium.Keys" />
+        public void SendKeys(string text, bool verifyInput)
+        {
+            string replacedText = text
+                .Replace("{BACKSPACE}", Keys.Backspace)
+                .Replace("{BS}", Keys.Backspace)
+                .Replace("{BREAK}", Keys.Pause)
+                .Replace("{CLEAR}", Keys.Clear)
+                .Replace("{DELETE}", Keys.Delete)
+                .Replace("{DEL}", Keys.Delete)
+                .Replace("{DOWN}", Keys.Down)
+                .Replace("{END}", Keys.End)
+                .Replace("{ENTER}", Keys.Enter)
+                .Replace("{ESCAPE}", Keys.Escape)
+                .Replace("{ESC}", Keys.Escape)
+                .Replace("{HELP}", Keys.Help)
+                .Replace("{HOME}", Keys.Home)
+                .Replace("{INSERT}", Keys.Insert)
+                .Replace("{LEFT}", Keys.Left)
+                .Replace("{PGDN}", Keys.PageDown)
+                .Replace("{PGUP}", Keys.PageUp)
+                .Replace("{RETURN}", Keys.Return)
+                .Replace("{RIGHT}", Keys.Right)
+                .Replace("{SPACE}", " ")
+                .Replace("{TAB}", Keys.Tab)
+                .Replace("{UP}", Keys.Up)
+                .Replace("{F1}", Keys.F1)
+                .Replace("{F2}", Keys.F2)
+                .Replace("{F3}", Keys.F3)
+                .Replace("{F4}", Keys.F4)
+                .Replace("{F5}", Keys.F5)
+                .Replace("{F6}", Keys.F6)
+                .Replace("{F7}", Keys.F7)
+                .Replace("{F8}", Keys.F8)
+                .Replace("{F9}", Keys.F9)
+                .Replace("{F10}", Keys.F10)
+                .Replace("{F11}", Keys.F11)
+                .Replace("{F12}", Keys.F12)
+                .Replace("{NEWLINE}", Environment.NewLine);
+
             // HACK: The Selenium IE driver (or something even deeper) will intermittently shift digits.
             // E.g. "3" will end up as "#", "4" as "$".
             // Also, in rare cases, when read back, the full text sent is not in the element.
             // These problems have been known for at least 3 years, but have never been fixed.
             // To deal with these issues, read the value back and retry a few times if it doesn't match.
-
             string actual = null;
             for (int tries = 0; tries < 3; tries++)
             {
-                this.WrappedElement.Clear();
-                this.WrappedElement.SendKeys(text);
+                this.Clear();
+                this.WrappedElement.SendKeys(replacedText);
 
-                actual = this.WrappedElement.GetAttribute("value");
-                if (string.Equals(text, actual, StringComparison.InvariantCultureIgnoreCase))
+                if (!verifyInput)
+                {
+                    return;
+                }
+
+                if ((this.TagName == "ControlType.Edit")
+                    && bool.Parse(this.WrappedElement.GetAttribute("IsPassword")))
+                {
+                    // we can't get the value in the password field so just assume it was set correctly
+                    return;
+                }
+                else if ((this.TagName == "ControlType.Edit")
+                    || (this.TagName == "ControlType.ComboBox")
+                    || (this.TagName == "ControlType.Document"))
+                {
+                    actual = this.Text;
+                }
+                else
+                {
+                    actual = this.WrappedElement.GetAttribute("value");
+                }
+
+                if (string.Equals(replacedText, actual, StringComparison.InvariantCultureIgnoreCase))
                 {
                     return;
                 }
@@ -333,7 +456,7 @@ namespace SpecBind.Selenium
                 System.Threading.Thread.Sleep(500);
             }
 
-            throw new WebDriverException(string.Format("SendKeys('{0}') put text '{1}' into element", text, actual));
+            throw new WebDriverException($"SendKeys('{text}') put text '{actual}' into element {this.TagName}");
         }
 
         /// <summary>
@@ -371,6 +494,14 @@ namespace SpecBind.Selenium
             {
                 this.bys.AddRange(locators);
             }
+        }
+
+        /// <summary>
+        /// Clears the cache.
+        /// </summary>
+        internal void ClearCache()
+        {
+            this.cachedElement = null;
         }
     }
 }

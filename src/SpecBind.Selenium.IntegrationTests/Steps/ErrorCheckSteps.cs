@@ -1,17 +1,15 @@
-﻿// <copyright file="ErrorCheckSteps.cs">
-//    Copyright © 2013 Dan Piessens  All rights reserved.
+﻿// <copyright file="ErrorCheckSteps.cs" company="">
+//     Copyright © 2013 Dan Piessens.  All rights reserved.
 // </copyright>
-
-using TechTalk.SpecFlow;
 
 namespace SpecBind.Selenium.IntegrationTests.Steps
 {
+    using Actions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-
     using SpecBind.ActionPipeline;
     using SpecBind.Helpers;
     using SpecBind.Pages;
-
+    using TechTalk.SpecFlow;
     using Steps = TechTalk.SpecFlow.Steps;
 
     /// <summary>
@@ -27,9 +25,10 @@ namespace SpecBind.Selenium.IntegrationTests.Steps
         /// </summary>
         /// <param name="scenarioContext">The scenario context.</param>
         /// <param name="actionPipelineService">The action pipeline service.</param>
-        public ErrorCheckSteps(IScenarioContextHelper scenarioContext, IActionPipelineService actionPipelineService)
+        /// <param name="logger">The logger.</param>
+        public ErrorCheckSteps(IScenarioContextHelper scenarioContext, IActionPipelineService actionPipelineService, ILogger logger)
         {
-            this.dataSteps = new DataSteps(scenarioContext, actionPipelineService);
+            this.dataSteps = new DataSteps(scenarioContext, actionPipelineService, logger);
         }
 
         /// <summary>

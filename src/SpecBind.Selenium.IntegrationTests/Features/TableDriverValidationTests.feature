@@ -1,4 +1,5 @@
-﻿Feature: Integration tests of the table driver for Selenium
+﻿@mstest:DeploymentItem:TechTalk.SpecFlow.MSTest.SpecFlowPlugin.dll
+Feature: Integration tests of the table driver for Selenium
 	
 Scenario: Validate Table "Start With" Validator
 	 Given I navigated to the Home page

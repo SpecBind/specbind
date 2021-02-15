@@ -1,5 +1,5 @@
-﻿// <copyright file="StudentCoursesPage.cs">
-//   Copyright © 2013 Dan Piessens.  All rights reserved.
+﻿// <copyright file="StudentCoursesPage.cs" company="">
+//     Copyright © 2013 Dan Piessens.  All rights reserved.
 // </copyright>
 
 namespace SpecBind.Selenium.IntegrationTests.Pages
@@ -20,21 +20,22 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
         /// <value>
         /// The student courses.
         /// </value>
-		[ElementLocator(Id = "studentList")]
+        [ElementLocator(Id = "studentList")]
         public IElementList<IWebElement, StudentCourseItem> StudentCourses { get; set; }
 
         /// <summary>
         /// A class that represents a student's course
         /// </summary>
         /// <seealso cref="SpecBind.Selenium.WebElement" />
-		[ElementLocator(Name = "studentCourseItem")]
+        [ElementLocator(Name = "studentCourseItem")]
         public class StudentCourseItem : WebElement
         {
             /// <summary>
             /// Initializes a new instance of the <see cref="StudentCourseItem"/> class.
             /// </summary>
             /// <param name="parent">The parent.</param>
-            public StudentCourseItem(ISearchContext parent) : base(parent)
+            public StudentCourseItem(ISearchContext parent)
+                : base(parent)
             {
             }
 
@@ -44,7 +45,7 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
             /// <value>
             /// The full name of the student.
             /// </value>
-			[ElementLocator(Name = "studentFullName")]
+            [ElementLocator(Name = "studentFullName")]
             public IWebElement StudentFullName { get; set; }
 
             /// <summary>
@@ -53,7 +54,7 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
             /// <value>
             /// The courses.
             /// </value>
-			[ElementLocator(Name = "courseList")]
+            [ElementLocator(Name = "courseList")]
             public IElementList<IWebElement, CourseItem> Courses { get; set; }
         }
 
@@ -61,14 +62,15 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
         /// Represents an item in the course.
         /// </summary>
         /// <seealso cref="SpecBind.Selenium.WebElement" />
-		[ElementLocator(Name = "courseItem")]
+        [ElementLocator(Name = "courseItem")]
         public class CourseItem : WebElement
         {
             /// <summary>
             /// Initializes a new instance of the <see cref="CourseItem"/> class.
             /// </summary>
             /// <param name="parent">The parent.</param>
-            public CourseItem(ISearchContext parent) : base(parent)
+            public CourseItem(ISearchContext parent)
+                : base(parent)
             {
             }
 
@@ -78,7 +80,7 @@ namespace SpecBind.Selenium.IntegrationTests.Pages
             /// <value>
             /// The course title.
             /// </value>
-			[ElementLocator(Name = "courseTitle")]
+            [ElementLocator(Name = "courseTitle")]
             public IWebElement CourseTitle { get; set; }
         }
     }

@@ -1,4 +1,5 @@
-﻿Feature: Clicking items on the screen
+﻿@mstest:DeploymentItem:TechTalk.SpecFlow.MSTest.SpecFlowPlugin.dll
+Feature: Clicking items on the screen
 
 Scenario: Select a Menu Hyperlink
 	Given I navigated to the Home page

@@ -1,4 +1,5 @@
-﻿Feature: Validation Features
+﻿@mstest:DeploymentItem:TechTalk.SpecFlow.MSTest.SpecFlowPlugin.dll
+Feature: Validation Features
 
 Scenario: Validate Field Equality For a Text Field
 	 Given I navigated to the Home page

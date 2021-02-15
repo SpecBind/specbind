@@ -13,8 +13,6 @@ namespace SpecBind.Pages
     {
         private string tagName;
 
-        #region Constructors and Destructors
-
         /// <summary>
         /// Finds a component based on its attributes.
         /// </summary>
@@ -22,10 +20,6 @@ namespace SpecBind.Pages
         {
             this.Index = -1;
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         /// Gets or sets the alt text to find.
@@ -65,7 +59,7 @@ namespace SpecBind.Pages
         /// <value>
         /// The name.
         /// </value>
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         /// Gets tag name property trimmed and lower case.
@@ -89,7 +83,7 @@ namespace SpecBind.Pages
             set
             {
                 this.tagName = value;
-                this.NormalizedTagName = value != null ? value.Trim().ToLowerInvariant() : null;
+                this.NormalizedTagName = value?.Trim().ToLowerInvariant();
             }
         }
 
@@ -141,8 +135,12 @@ namespace SpecBind.Pages
         /// Gets or sets the XPATH expression to use. Only supported in Selenium
         /// </summary>
         /// <value>The XPATH expression.</value>
-        public string XPath { get; set; }
+        public virtual string XPath { get; set; }
 
-        #endregion
+        /// <summary>
+        /// Gets or sets the accessibility identifier. Only supported in Appium.
+        /// </summary>
+        /// <value>The accessibility identifier.</value>
+        public string AccessibilityId { get; set; }
     }
 }

@@ -21,14 +21,8 @@ namespace SpecBind.Pages
         where TPageBase : class
         where TElement : class
     {
-        #region Fields
-
         private readonly Dictionary<string, PropertyDataBase<TElement>> properties;
         private readonly TPageBase page;
-
-        #endregion
-
-        #region Constructors and Destructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PageBase{TPageBase, TElement}" /> class.
@@ -43,10 +37,6 @@ namespace SpecBind.Pages
             this.GetProperties();
         }
 
-        #endregion
-
-        #region Public Properties
-
         /// <summary>
         /// Gets the type of the page.
         /// </summary>
@@ -54,10 +44,6 @@ namespace SpecBind.Pages
         /// The type of the page.
         /// </value>
         public virtual Type PageType { get; private set; }
-
-        #endregion
-
-        #region Public Methods and Operators
 
         /// <summary>
         /// Gets the native page object.
@@ -154,10 +140,6 @@ namespace SpecBind.Pages
             nativePage.WaitForActive();
         }
 
-        #endregion
-
-        #region Methods
-
         /// <summary>
         /// Elements the enabled check.
         /// </summary>
@@ -192,6 +174,9 @@ namespace SpecBind.Pages
         /// <returns>The attribute value.</returns>
         public abstract string GetElementAttributeValue(TElement element, string attributeName);
 
+        /// <inheritdoc/>
+        public abstract void SetElementAttributeValue(TElement element, string attributeName, string value);
+
         /// <summary>
         /// Gets the element options for multi-select or list options.
         /// </summary>
@@ -223,6 +208,27 @@ namespace SpecBind.Pages
         public abstract bool ClickElement(TElement element);
 
         /// <summary>
+        /// Moves the mouse over the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns><c>true</c> if the mouse moved over the element, <c>false</c> otherwise.</returns>
+        public abstract bool MouseOverElement(TElement element);
+
+        /// <summary>
+        /// Double-clicks the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns><c>true</c> if the element is double-clicked, <c>false</c> otherwise.</returns>
+        public abstract bool DoubleClickElement(TElement element);
+
+        /// <summary>
+        /// Right-clicks the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns><c>true</c> if the element is right-clicked, <c>false</c> otherwise.</returns>
+        public abstract bool RightClickElement(TElement element);
+
+        /// <summary>
         /// Gets the clears method.
         /// </summary>
         /// <param name="propertyType">Type of the property.</param>
@@ -247,6 +253,12 @@ namespace SpecBind.Pages
 	    public virtual void Highlight(TElement element)
         {
         }
+
+        /// <summary>
+        /// Clears the cache.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        public abstract void ClearCache(TElement element);
 
         /// <summary>
         /// Waits for element condition to be met.
@@ -402,6 +414,12 @@ namespace SpecBind.Pages
             {
                 PropertyDataBase<TElement> propertyData;
 
+                if (this.properties.ContainsKey(propertyInfo.Name))
+                {
+                    // do not overwrite new/overridden property from inherited base property
+                    continue;
+                }
+
                 if (typeof(TElement).IsAssignableFrom(propertyInfo.PropertyType))
                 {
                     var elementHandler = AddElementProperty(pageType, propertyInfo);
@@ -409,11 +427,16 @@ namespace SpecBind.Pages
 
                     // Check for any alias attributes and attempt to build additional properties
                     this.CheckForVirtualProperties(propertyInfo, elementHandler);
+                    this.AddAliasProperties<ElementPropertyData<TElement>>(propertyInfo, elementHandler);
                     propertyData = elementPropertyData;
                 }
                 else if (propertyInfo.PropertyType.IsElementListType())
                 {
                     var expressions = AddProperty(pageType, propertyInfo);
+
+                    // Check for any alias attributes and attempt to build additional properties
+                    this.AddAliasProperties<ListPropertyData<TElement>>(propertyInfo, expressions.Item1);
+
                     propertyData = new ListPropertyData<TElement>(this, propertyInfo.Name, propertyInfo.PropertyType, expressions.Item1);
                 }
                 else
@@ -436,19 +459,31 @@ namespace SpecBind.Pages
         /// </summary>
         /// <param name="propertyInfo">The property information.</param>
         /// <param name="elementHandler">The element handler.</param>
-        private void CheckForVirtualProperties(MemberInfo propertyInfo, Func<IPage, Func<TElement, bool>, bool> elementHandler)
+        private void CheckForVirtualProperties(PropertyInfo propertyInfo, Func<IPage, Func<TElement, bool>, bool> elementHandler)
         {
             foreach (var customAttribute in propertyInfo.GetCustomAttributes<VirtualPropertyAttribute>())
             {
                 var propertyName = customAttribute.Name.Trim();
                 if (!this.properties.ContainsKey(propertyName))
                 {
-                    var softProperty = new VirtualPropertyData<TElement>(this, propertyName, elementHandler, customAttribute.Attribute);
+                    var softProperty = new VirtualPropertyData<TElement>(this, propertyName, elementHandler, customAttribute.Attribute, customAttribute.Script);
                     this.properties.Add(propertyName, softProperty);
                 }
             }
         }
 
-        #endregion
+        private void AddAliasProperties<T>(PropertyInfo propertyInfo, Func<IPage, Func<object, bool>, bool> elementHandler)
+            where T : PropertyDataBase<TElement>
+        {
+            foreach (var customAttribute in propertyInfo.GetCustomAttributes<AliasPropertyAttribute>())
+            {
+                var propertyName = customAttribute.Name.Trim();
+                if (!this.properties.ContainsKey(propertyName))
+                {
+                    var softProperty = (T)Activator.CreateInstance(typeof(T), new object[] { this, propertyName, propertyInfo.PropertyType, elementHandler });
+                    this.properties.Add(propertyName, softProperty);
+                }
+            }
+        }
     }
 }

@@ -35,6 +35,10 @@ namespace SpecBind.Helpers
             return input?
                 .Replace(" ", string.Empty)
                 .Replace(".", string.Empty)
+                .Replace("(", string.Empty)
+                .Replace(")", string.Empty)
+                .Replace(":", string.Empty)
+                .Replace("\"", string.Empty)
                 .ToLowerInvariant();
         }
 

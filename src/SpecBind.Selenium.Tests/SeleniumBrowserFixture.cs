@@ -17,6 +17,7 @@ namespace SpecBind.Selenium.Tests
     using SpecBind.Actions;
     using SpecBind.BrowserSupport;
     using SpecBind.Pages;
+    using SpecBind.Selenium.Drivers;
     using SpecBind.Selenium.Tests.Resources;
 
     /// <summary>
@@ -302,7 +303,7 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestDismissAlertAcceptsWhenOkIsChoosen()
         {
-            TestAlertScenario(AlertBoxAction.Ok, true);
+            this.TestAlertScenario(AlertBoxAction.Ok, true);
         }
 
         /// <summary>
@@ -311,7 +312,7 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestDismissAlertAcceptsWhenYesIsChoosen()
         {
-            TestAlertScenario(AlertBoxAction.Yes, true);
+            this.TestAlertScenario(AlertBoxAction.Yes, true);
         }
 
         /// <summary>
@@ -320,7 +321,7 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestDismissAlertAcceptsWhenRetryIsChoosen()
         {
-            TestAlertScenario(AlertBoxAction.Retry, true);
+            this.TestAlertScenario(AlertBoxAction.Retry, true);
         }
 
         /// <summary>
@@ -329,7 +330,7 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestDismissAlertAcceptsWhenCancelIsChoosen()
         {
-            TestAlertScenario(AlertBoxAction.Cancel, false);
+            this.TestAlertScenario(AlertBoxAction.Cancel, false);
         }
 
         /// <summary>
@@ -338,7 +339,7 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestDismissAlertAcceptsWhenCloseIsChoosen()
         {
-            TestAlertScenario(AlertBoxAction.Close, false);
+            this.TestAlertScenario(AlertBoxAction.Close, false);
         }
 
         /// <summary>
@@ -347,7 +348,7 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestDismissAlertAcceptsWhenIgnoreIsChoosen()
         {
-            TestAlertScenario(AlertBoxAction.Ignore, false);
+            this.TestAlertScenario(AlertBoxAction.Ignore, false);
         }
 
         /// <summary>
@@ -356,7 +357,7 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestDismissAlertAcceptsWhenNoIsChoosen()
         {
-            TestAlertScenario(AlertBoxAction.No, false);
+            this.TestAlertScenario(AlertBoxAction.No, false);
         }
 
         /// <summary>
@@ -390,7 +391,7 @@ namespace SpecBind.Selenium.Tests
         [TestMethod]
         public void TestClosesDoesNothingWhenDriverIsNotInitialized()
         {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            var driver = new Mock<IWebDriverEx>(MockBehavior.Strict);
 
             this.TestBrowserWith(driver, browser =>
             {
@@ -604,11 +605,14 @@ namespace SpecBind.Selenium.Tests
             });
         }
 
+        /// <summary>
+        /// Asserts that a call to IsCreated returns false before the browser is created.
+        /// </summary>
         [TestMethod]
         public void IsCreated_BeforeBrowserIsCreated_ReturnsFalse()
         {
             // Arrange
-            SeleniumBrowserFactory browserFactory = new SeleniumBrowserFactory();
+            SeleniumBrowserFactory browserFactory = new SeleniumBrowserFactory(null);
 
             // Act
             IBrowser browser = browserFactory.GetBrowser();
@@ -617,11 +621,15 @@ namespace SpecBind.Selenium.Tests
             Assert.IsFalse(browser.IsCreated);
         }
 
+        /// <summary>
+        /// Asserts that a call to IsCreated returns true after the browser is created.
+        /// </summary>
         [TestMethod]
+        [DeploymentItem("IEDriverServer.exe")]
         public void IsCreated_AfterBrowserIsCreated_ReturnsTrue()
         {
             // Arrange
-            SeleniumBrowserFactory browserFactory = new SeleniumBrowserFactory();
+            SeleniumBrowserFactory browserFactory = new SeleniumBrowserFactory(null);
 
             // Act
             IBrowser browser = browserFactory.GetBrowser();
@@ -633,19 +641,19 @@ namespace SpecBind.Selenium.Tests
             Assert.IsTrue(browser.IsCreated);
         }
 
-        private void InitializeDriverAndTestBrowserWith(Mock<IWebDriver> driver, Action<SeleniumBrowser> test)
+        private void InitializeDriverAndTestBrowserWith(Mock<IWebDriverEx> driver, Action<SeleniumBrowser> test)
         {
             this.TestBrowserWith(driver, true, test);
         }
 
-        private void TestBrowserWith(Mock<IWebDriver> driver, Action<SeleniumBrowser> test)
+        private void TestBrowserWith(Mock<IWebDriverEx> driver, Action<SeleniumBrowser> test)
         {
             this.TestBrowserWith(driver, false, test);
         }
 
-        private void TestBrowserWith(Mock<IWebDriver> driver, bool initializeDriver, Action<SeleniumBrowser> test)
+        private void TestBrowserWith(Mock<IWebDriverEx> driver, bool initializeDriver, Action<SeleniumBrowser> test)
         {
-            var lazyDriver = new Lazy<IWebDriver>(() => driver.Object);
+            var lazyDriver = new Lazy<IWebDriverEx>(() => driver.Object);
             if (initializeDriver)
             {
                 Assert.IsNotNull(lazyDriver.Value);
@@ -661,9 +669,9 @@ namespace SpecBind.Selenium.Tests
             driver.VerifyAll();
         }
 
-        private Mock<IWebDriver> CreateMockWebDriverExpectingInitialization()
+        private Mock<IWebDriverEx> CreateMockWebDriverExpectingInitialization()
         {
-            var driver = new Mock<IWebDriver>(MockBehavior.Strict);
+            var driver = new Mock<IWebDriverEx>(MockBehavior.Strict);
 
             // NOTE: the SeleniumBrowser quits and disposes its driver as part of its destructor,
             // So every driver we create that will get initialized has to have this set up,
@@ -674,9 +682,9 @@ namespace SpecBind.Selenium.Tests
             return driver;
         }
 
-        private Mock<IWebDriver> CreateMockWebDriverNotExpectingInitialization()
+        private Mock<IWebDriverEx> CreateMockWebDriverNotExpectingInitialization()
         {
-            return new Mock<IWebDriver>(MockBehavior.Strict);
+            return new Mock<IWebDriverEx>(MockBehavior.Strict);
         }
 
         /// <summary>

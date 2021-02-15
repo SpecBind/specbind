@@ -6,7 +6,7 @@ namespace SpecBind.ActionPipeline
 {
     using System;
     using System.Collections.Generic;
-
+    using Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -17,15 +17,18 @@ namespace SpecBind.ActionPipeline
     {
         private readonly List<ILocatorAction> filterActions;
         private readonly IPage page;
+        private readonly PageHistoryService pageHistoryService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementLocator" /> class.
         /// </summary>
         /// <param name="page">The page.</param>
+        /// <param name="pageHistoryService">The page history service.</param>
         /// <param name="filterActions">The filter actions.</param>
-        public ElementLocator(IPage page, IEnumerable<ILocatorAction> filterActions)
+        public ElementLocator(IPage page, PageHistoryService pageHistoryService, IEnumerable<ILocatorAction> filterActions)
         {
             this.page = page;
+            this.pageHistoryService = pageHistoryService;
             this.filterActions = new List<ILocatorAction>(filterActions);
         }
 
@@ -75,7 +78,22 @@ namespace SpecBind.ActionPipeline
                 locatorAction.OnLocate(propertyName);
             }
 
-            var result = this.page.TryGetElement(propertyName, out propertyData);
+            IPage page;
+
+            if (this.pageHistoryService == null)
+            {
+                page = this.page;
+            }
+            else
+            {
+                page = this.pageHistoryService.FindPageContainingProperty(propertyName);
+                if (page == null)
+                {
+                    throw new PageHistoryException(propertyName, this.pageHistoryService.PageHistory);
+                }
+            }
+
+            var result = page.TryGetElement(propertyName, out propertyData);
 
             foreach (var locatorAction in this.filterActions)
             {

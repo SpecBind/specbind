@@ -14,6 +14,7 @@ namespace SpecBind.Configuration
         private const string ExcludedAssembliesElement = @"excludedAssemblies";
         private const string RetryValidationUntilTimeoutElement = @"retryValidationUntilTimeout";
         private const string WaitForStillElementBeforeClickingElement = @"waitForStillElementBeforeClicking";
+        private const string FocusWindowBeforeClickingElement = @"focusWindowBeforeClicking";
 
         /// <summary>
         /// Gets or sets the application's start URL setting.
@@ -84,6 +85,26 @@ namespace SpecBind.Configuration
         public AssemblyCollection ExcludedAssemblies
         {
             get { return (AssemblyCollection)this[ExcludedAssembliesElement]; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not to focus the browser window before clicking on an element.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the browser window is focused before clicking on an element; otherwise, <c>false</c>.
+        /// </value>
+        [ConfigurationProperty(FocusWindowBeforeClickingElement, DefaultValue = false, IsRequired = false)]
+        public bool FocusWindowBeforeClicking
+        {
+            get
+            {
+                return (bool)this[FocusWindowBeforeClickingElement];
+            }
+
+            set
+            {
+                this[FocusWindowBeforeClickingElement] = value;
+            }
         }
     }
 }

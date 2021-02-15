@@ -4,14 +4,16 @@
 namespace SpecBind.Tests
 {
     using System;
-    using BoDi;
+
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     using Moq;
+
     using SpecBind.ActionPipeline;
     using SpecBind.Actions;
-    using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
     using SpecBind.Pages;
+    using SpecBind.BrowserSupport;
 
     /// <summary>
     /// A test fixture for the <see cref="WaitingSteps"/> step class.
@@ -20,6 +22,7 @@ namespace SpecBind.Tests
     public class WaitingStepsFixture
     {
         private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(10);
+        private readonly Mock<ILogger> logger = new Mock<ILogger>();
 
         /// <summary>
         /// Tests the default wait property for a 30 second timeout.
@@ -49,7 +52,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitToSeeElementWithTimeout(10, "My Field");
 
@@ -74,7 +77,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitToSeeElementWithTimeout(0, "My Field");
 
@@ -99,7 +102,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitToSeeElement("My Field");
 
@@ -124,7 +127,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitToNotSeeElementWithTimeout(10, "My Field");
 
@@ -149,7 +152,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitToNotSeeElement("My Field");
 
@@ -174,7 +177,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitToStillSeeElementWithTimeout(10, "My Field");
 
@@ -199,7 +202,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitToStillSeeElement("My Field");
 
@@ -224,7 +227,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitToStillNotSeeElementWithTimeout(10, "My Field");
 
@@ -249,7 +252,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitToStillNotSeeElement("My Field");
 
@@ -274,7 +277,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForElementEnabledWithTimeout(10, "My Field");
 
@@ -299,7 +302,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForElementEnabled("My Field");
 
@@ -324,7 +327,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForElementStillEnabledWithTimeout(10, "My Field");
 
@@ -349,7 +352,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForElementStillEnabled("My Field");
 
@@ -374,7 +377,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForElementNotEnabledWithTimeout(10, "My Field");
 
@@ -399,7 +402,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForElementNotEnabled("My Field");
 
@@ -424,7 +427,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForElementStillNotEnabledWithTimeout(10, "My Field");
 
@@ -449,7 +452,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForElementStillNotEnabled("My Field");
 
@@ -474,7 +477,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForElementNotMovingWithTimeout(10, "My Field");
 
@@ -499,7 +502,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForElementNotMoving("My Field");
 
@@ -524,7 +527,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForListElementToContainItems("My Field");
 
@@ -549,7 +552,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForListElementToContainItemsWithTimeout(3, "My Field");
 
@@ -571,7 +574,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(testPage.Object);
 
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForTheViewToBeActive();
 
@@ -591,11 +594,11 @@ namespace SpecBind.Tests
             browser.Setup(s => s.CanGetUrl()).Returns(true);
             browser.Setup(s => s.Url).Returns("http://www.specbind.org");
             browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
-            WebDriverSupport.SetCurrentBrowser(browser.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
 
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForAngular();
 
@@ -616,11 +619,11 @@ namespace SpecBind.Tests
             browser.SetupSequence(s => s.ExecuteScript(It.IsAny<string>()))
                 .Returns("1")
                 .Returns("0");
-            WebDriverSupport.SetCurrentBrowser(browser.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
 
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForAngular();
 
@@ -639,11 +642,11 @@ namespace SpecBind.Tests
             browser.Setup(s => s.CanGetUrl()).Returns(true);
             browser.Setup(s => s.Url).Returns("http://www.specbind.org");
             browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
-            WebDriverSupport.SetCurrentBrowser(browser.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
 
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForjQuery();
 
@@ -664,11 +667,11 @@ namespace SpecBind.Tests
             browser.SetupSequence(s => s.ExecuteScript(It.IsAny<string>()))
                 .Returns("1")
                 .Returns("0");
-            WebDriverSupport.SetCurrentBrowser(browser.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
 
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForjQuery();
 
@@ -687,11 +690,11 @@ namespace SpecBind.Tests
             browser.Setup(s => s.CanGetUrl()).Returns(true);
             browser.Setup(s => s.Url).Returns("http://www.specbind.org");
             browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
-            WebDriverSupport.SetCurrentBrowser(browser.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
 
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForAngular();
 
@@ -708,11 +711,11 @@ namespace SpecBind.Tests
             browser.Setup(s => s.IsClosed).Returns(false);
             browser.Setup(s => s.IsDisposed).Returns(false);
             browser.Setup(s => s.CanGetUrl()).Returns(false);
-            WebDriverSupport.SetCurrentBrowser(browser.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
 
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForAngular();
 
@@ -731,11 +734,11 @@ namespace SpecBind.Tests
             browser.Setup(s => s.CanGetUrl()).Returns(true);
             browser.Setup(s => s.Url).Returns("http://www.specbind.org");
             browser.Setup(s => s.ExecuteScript(It.IsAny<string>())).Returns("0");
-            WebDriverSupport.SetCurrentBrowser(browser.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
 
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForjQuery();
 
@@ -752,11 +755,11 @@ namespace SpecBind.Tests
             browser.Setup(s => s.IsClosed).Returns(false);
             browser.Setup(s => s.IsDisposed).Returns(false);
             browser.Setup(s => s.CanGetUrl()).Returns(false);
-            WebDriverSupport.SetCurrentBrowser(browser.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
 
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object);
+            var steps = new WaitingSteps(pipelineService.Object, scenarioContext.Object, this.logger.Object);
 
             steps.WaitForjQuery();
 

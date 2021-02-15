@@ -544,7 +544,7 @@ namespace SpecBind.Selenium.Tests
         /// An inner list item.
         /// </summary>
         [ElementLocator(TagName = "LI")]
-        public class ListItem : WebElement, IDataControl
+        public class ListItem : WebElement
         {
             /// <summary>
             /// Initializes a new instance of the <see cref="WebElement" /> class.
@@ -563,16 +563,6 @@ namespace SpecBind.Selenium.Tests
             /// </value>
             [ElementLocator(Id = "itemTitle")]
             public IWebElement MyTitle { get; set; }
-
-            /// <summary>
-            /// Sets the value in the control.
-            /// </summary>
-            /// <param name="value">The value to set.</param>
-            /// <exception cref="System.NotImplementedException">Not Implemented</exception>
-            public void SetValue(string value)
-            {
-                throw new System.NotImplementedException();
-            }
         }
 
         #endregion

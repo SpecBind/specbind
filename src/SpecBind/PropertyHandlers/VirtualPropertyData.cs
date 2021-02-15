@@ -4,7 +4,7 @@
 namespace SpecBind.PropertyHandlers
 {
     using System;
-
+    using SpecBind.BrowserSupport;
     using SpecBind.Pages;
     using SpecBind.Validation;
 
@@ -15,6 +15,7 @@ namespace SpecBind.PropertyHandlers
     internal class VirtualPropertyData<TElement> : PropertyDataBase<TElement>
     {
         private readonly string attributeName;
+        private readonly string script;
         private readonly Func<IPage, Func<TElement, bool>, bool> handler;
 
         /// <summary>
@@ -24,10 +25,12 @@ namespace SpecBind.PropertyHandlers
         /// <param name="name">The name.</param>
         /// <param name="handler">The element handler.</param>
         /// <param name="attributeName">Name of the attribute.</param>
-        public VirtualPropertyData(IPageElementHandler<TElement> elementHandler, string name, Func<IPage, Func<TElement, bool>, bool> handler, string attributeName)
+        /// <param name="script">The script.</param>
+        public VirtualPropertyData(IPageElementHandler<TElement> elementHandler, string name, Func<IPage, Func<TElement, bool>, bool> handler, string attributeName, string script)
             : base(elementHandler, name, typeof(string))
         {
             this.attributeName = attributeName;
+            this.script = script;
             this.handler = handler;
         }
 
@@ -39,14 +42,43 @@ namespace SpecBind.PropertyHandlers
         {
             string propertyValue = null;
 
-            this.handler(this.ElementHandler,
+            this.handler(
+                this.ElementHandler,
                 e =>
                     {
-                        propertyValue = this.ElementHandler.GetElementAttributeValue(e, this.attributeName);
+                        if (!string.IsNullOrEmpty(this.attributeName))
+                        {
+                            propertyValue = this.ElementHandler.GetElementAttributeValue(e, this.attributeName);
+                        }
+                        else
+                        {
+                            propertyValue = WebDriverSupport.CurrentBrowser.ExecuteScript(this.script).ToString();
+                        }
+
                         return true;
                     });
 
             return propertyValue;
+        }
+
+        /// <inheritdoc/>
+        public override void FillData(string data)
+        {
+            this.handler(
+                this.ElementHandler,
+                e =>
+                {
+                    if (!string.IsNullOrEmpty(this.attributeName))
+                    {
+                        this.ElementHandler.SetElementAttributeValue(e, this.attributeName, data);
+                    }
+                    else
+                    {
+                        WebDriverSupport.CurrentBrowser.ExecuteScript(this.script, data).ToString();
+                    }
+
+                    return true;
+                });
         }
 
         /// <summary>

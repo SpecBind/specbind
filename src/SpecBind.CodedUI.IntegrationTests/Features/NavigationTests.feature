@@ -1,4 +1,6 @@
-﻿Feature: Regression tests to ensure navigation functions correctly
+﻿@mstest:DeploymentItem:TechTalk.SpecFlow.MSTest.SpecFlowPlugin.dll
+@mstest:DeploymentItem:SpecBind.MsTest.Steps.dll
+Feature: Regression tests to ensure navigation functions correctly
 	
 Scenario: Navigate to an initial screen
 	Given I navigated to the Home page

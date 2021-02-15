@@ -1,5 +1,5 @@
-﻿// <copyright file="AssemblyInfo.cs">
-//   Copyright © 2013 Dan Piessens  All rights reserved.
+﻿// <copyright file="AssemblyInfo.cs" company="">
+//     Copyright © 2013 Dan Piessens.  All rights reserved.
 // </copyright>
 
 using System.Reflection;

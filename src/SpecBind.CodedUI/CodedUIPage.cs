@@ -4,11 +4,11 @@
 namespace SpecBind.CodedUI
 {
     using System;
-    using System.CodeDom;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Linq;
     using System.Threading;
+    using System.Windows.Forms;
     using System.Windows.Input;
 
     using Microsoft.VisualStudio.TestTools.UITest.Extension;
@@ -60,6 +60,14 @@ namespace SpecBind.CodedUI
         }
 
         /// <summary>
+        /// Clears the cache.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        public override void ClearCache(HtmlControl element)
+        {
+        }
+
+        /// <summary>
         /// Waits for element.
         /// </summary>
         /// <param name="element">The element.</param>
@@ -68,7 +76,8 @@ namespace SpecBind.CodedUI
         /// <returns><c>true</c> if the condition is met, <c>false</c> otherwise.</returns>
 	    public override bool WaitForElement(HtmlControl element, WaitConditions waitCondition, TimeSpan? timeout)
         {
-            var milliseconds = (int)timeout.GetValueOrDefault(TimeSpan.FromSeconds(10)).TotalMilliseconds;
+            TimeSpan defaultSearchTimeout = TimeSpan.FromMilliseconds(Playback.PlaybackSettings.SearchTimeout);
+            var milliseconds = (int)timeout.GetValueOrDefault(defaultSearchTimeout).TotalMilliseconds;
             switch (waitCondition)
             {
                 case WaitConditions.Exists:
@@ -203,7 +212,7 @@ namespace SpecBind.CodedUI
         /// Clicks the element.
         /// </summary>
         /// <param name="element">The element.</param>
-        /// <returns><c>true</c> unless there is an error.</returns>
+        /// <returns><c>true</c> if the element is clicked, <c>false</c> otherwise.</returns>
         public override bool ClickElement(HtmlControl element)
         {
             this.WaitForElement(element, WaitConditions.NotMoving, timeout: null);
@@ -215,6 +224,60 @@ namespace SpecBind.CodedUI
             }
 
             Mouse.Click(element);
+            return true;
+        }
+
+        /// <summary>
+        /// Moves the mouse over the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>
+        ///   <c>true</c> if the mouse moved over the element, <c>false</c> otherwise.
+        /// </returns>
+        public override bool MouseOverElement(HtmlControl element)
+        {
+            this.WaitForElement(element, WaitConditions.NotMoving, timeout: null);
+
+            Mouse.Hover(element);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Double-clicks the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns><c>true</c> if the element is double-clicked, <c>false</c> otherwise.</returns>
+        public override bool DoubleClickElement(HtmlControl element)
+        {
+            this.WaitForElement(element, WaitConditions.NotMoving, timeout: null);
+
+            Point point;
+            if (element.TryGetClickablePoint(out point))
+            {
+                element.EnsureClickable();
+            }
+
+            Mouse.DoubleClick(element);
+            return true;
+        }
+
+        /// <summary>
+        /// Right-clicks the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns><c>true</c> if the element is right-clicked, <c>false</c> otherwise.</returns>
+        public override bool RightClickElement(HtmlControl element)
+        {
+            this.WaitForElement(element, WaitConditions.NotMoving, timeout: null);
+
+            Point point;
+            if (element.TryGetClickablePoint(out point))
+            {
+                element.EnsureClickable();
+            }
+
+            Mouse.Click(element, MouseButtons.Right);
             return true;
         }
 
@@ -344,6 +407,9 @@ namespace SpecBind.CodedUI
 
             return null;
         }
+
+        /// <inheritdoc/>
+        public override void SetElementAttributeValue(HtmlControl element, string attributeName, string value) => throw new NotImplementedException();
 
         /// <summary>
         /// Determines if an element is currently moving (e.g. due to animation).
