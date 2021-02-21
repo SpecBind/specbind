@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 env:
-  VERSION: 2.1.1.${{ github.run_number }}
+  VERSION: 3.0.0.${{ github.run_number }}
   CONFIGURATION: Release
   PACKAGE_DIR: NuGet_Packages
   DevEnvDir: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\
