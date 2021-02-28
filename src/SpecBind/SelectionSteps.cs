@@ -58,7 +58,7 @@ namespace SpecBind
         [When(ChooseAnExplicitLinkStepRegex)]
         public void WhenIChooseAnExplicitLinkStep(string linkName)
         {
-            this.ChooseALinkStep(linkName.ToIdentifier());
+            this.ClickAction<ButtonClickAction>(linkName.ToIdentifier());
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace SpecBind
         [When(WhenDoubleClickStepRegex)]
         public void DoubleClickStep(string elementName)
         {
-            this.DoubleClick(elementName.ToIdentifier());
+            this.ClickAction<ButtonDoubleClickAction>(elementName.ToIdentifier());
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace SpecBind
         [When(RightClickedStepRegex)]
         public void RightClickStep(string elementName)
         {
-            this.RightClick(elementName.ToIdentifier());
+            this.ClickAction<ButtonRightClickAction>(elementName.ToIdentifier());
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace SpecBind
         [When(ChooseALinkStepRegex)]
         public void WhenIChooseALinkStep(string linkName)
         {
-            this.ChooseALinkStep(linkName.ToLookupKey());
+            this.ClickAction<ButtonClickAction>(linkName.ToLookupKey());
         }
 
         /// <summary>
@@ -152,36 +152,15 @@ namespace SpecBind
             this.UpdatePageContext(item);
         }
 
-        private void ChooseALinkStep(string propertyName)
+        private void ClickAction<T>(string propertyName)
+            where T : ActionBase
         {
             var page = this.GetPageFromContext();
 
             var context = new ActionContext(propertyName.ToLookupKey());
 
             this.actionPipelineService
-                    .PerformAction<ButtonClickAction>(page, context)
-                    .CheckResult();
-        }
-
-        private void DoubleClick(string propertyName)
-        {
-            var page = this.GetPageFromContext();
-
-            var context = new ActionContext(propertyName);
-
-            this.actionPipelineService
-                    .PerformAction<ButtonDoubleClickAction>(page, context)
-                    .CheckResult();
-        }
-
-        private void RightClick(string propertyName)
-        {
-            var page = this.GetPageFromContext();
-
-            var context = new ActionContext(propertyName);
-
-            this.actionPipelineService
-                    .PerformAction<ButtonRightClickAction>(page, context)
+                    .PerformAction<T>(page, context)
                     .CheckResult();
         }
     }
