@@ -6,17 +6,22 @@ namespace SpecBind.Selenium
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.InteropServices;
     using System.Threading;
 
     using OpenQA.Selenium;
+    using OpenQA.Selenium.Interactions;
     using OpenQA.Selenium.Support.Extensions;
     using OpenQA.Selenium.Support.UI;
 
     using SpecBind.Actions;
     using SpecBind.Helpers;
     using SpecBind.Pages;
+    using SpecBind.Selenium.Drivers;
 
     /// <summary>
     /// An implementation of <see cref="IPage"/> for the Selenium driver.
@@ -24,16 +29,23 @@ namespace SpecBind.Selenium
     public class SeleniumPage : PageBase<object, IWebElement>
     {
         private readonly IWebDriver webDriver;
+        private readonly bool focusWindowBeforeClicking;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SeleniumPage"/> class.
+        /// Initializes a new instance of the <see cref="SeleniumPage" /> class.
         /// </summary>
         /// <param name="nativePage">The native page.</param>
-        /// <param name="webDriver"></param>
+        /// <param name="webDriver">The web driver.</param>
         public SeleniumPage(object nativePage, IWebDriver webDriver)
             : base(nativePage.GetType(), nativePage)
         {
             this.webDriver = webDriver;
+
+            var configSection = SettingHelper.GetConfigurationSection();
+            if (configSection != null)
+            {
+                this.focusWindowBeforeClicking = configSection.Application.FocusWindowBeforeClicking;
+            }
         }
 
         /// <summary>
@@ -85,7 +97,7 @@ namespace SpecBind.Selenium
             }
 
             return this.EvaluateWithElementLocateTimeout(
-                new TimeSpan(),
+                default,
                 () => CheckElementState(e => !e.Displayed, element, stateIfNotFound: true));
         }
 
@@ -98,6 +110,12 @@ namespace SpecBind.Selenium
         public override string GetElementAttributeValue(IWebElement element, string attributeName)
         {
             return element.GetAttribute(attributeName);
+        }
+
+        /// <inheritdoc/>
+        public override void SetElementAttributeValue(IWebElement element, string attributeName, string value)
+        {
+            this.webDriver.ExecuteJavaScript("arguments[0].setAttribute(arguments[1], arguments[2])", element, attributeName, value);
         }
 
         /// <summary>
@@ -129,15 +147,20 @@ namespace SpecBind.Selenium
         /// <returns>The element's options if supported, otherwise <c>null</c>.</returns>
         public override IList<ComboBoxItem> GetElementOptions(IWebElement element)
         {
+            if (element is IComboBoxDataControl)
+            {
+                IComboBoxDataControl dataControlElement = element as IComboBoxDataControl;
+                return dataControlElement.GetElementOptions();
+            }
+
             var tagName = element.TagName.ToLowerInvariant().Trim();
             switch (tagName)
             {
                 case "select":
                     var selectElement = new SelectElement(element);
                     return selectElement.Options
-                                .Select(option => new ComboBoxItem { Value = option.GetAttribute("value"), Text = option.Text })
-                                .ToList();
-
+                        .Select(option => new ComboBoxItem { Value = option.GetAttribute("value"), Text = option.GetAttribute("text") })
+                        .ToList();
             }
 
             return null;
@@ -150,6 +173,12 @@ namespace SpecBind.Selenium
         /// <returns>The text of the element.</returns>
         public override string GetElementText(IWebElement element)
         {
+            if (element is IDataControl)
+            {
+                IDataControl dataControlElement = element as IDataControl;
+                return dataControlElement.GetText();
+            }
+
             var tagName = element.TagName.ToLowerInvariant().Trim();
             switch (tagName)
             {
@@ -159,7 +188,8 @@ namespace SpecBind.Selenium
                 case "input":
                 case "textarea":
                     // Special case for a checkbox control
-                    if (string.Equals("checkbox", element.GetAttribute("type"), StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals("checkbox", element.GetAttribute("type"), StringComparison.OrdinalIgnoreCase)
+                        || string.Equals("radio", element.GetAttribute("type"), StringComparison.OrdinalIgnoreCase))
                     {
                         return element.Selected.ToString();
                     }
@@ -177,6 +207,15 @@ namespace SpecBind.Selenium
             this.SetAttribute(element, "style", "border: 5px solid red;");
             Thread.Sleep(TimeSpan.FromSeconds(1.5));
             this.SetAttribute(element, "style", orig);
+        }
+
+        /// <summary>
+        /// Clears the cache.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        public override void ClearCache(IWebElement element)
+        {
+            (element as WebElement).ClearCache();
         }
 
         /// <summary>
@@ -200,6 +239,79 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Moves the mouse over the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns><c>true</c> if the mouse moved over the element, <c>false</c> otherwise.</returns>
+        public override bool MouseOverElement(IWebElement element)
+        {
+            if (!this.WaitForElement(element, WaitConditions.NotMoving, timeout: null))
+            {
+                return false;
+            }
+
+            if (!this.WaitForElement(element, WaitConditions.BecomesEnabled, timeout: null))
+            {
+                return false;
+            }
+
+            Actions action = new Actions(this.webDriver);
+            action.MoveToElement(element).Perform();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Double-clicks the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns><c>true</c> if the element is double-clicked, <c>false</c> otherwise.</returns>
+        public override bool DoubleClickElement(IWebElement element)
+        {
+            return this.ClickElement(element, times: 2);
+        }
+
+        /// <summary>
+        /// Right-clicks the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns><c>true</c> if the element is right-clicked, <c>false</c> otherwise.</returns>
+        public override bool RightClickElement(IWebElement element)
+        {
+            if (!this.WaitForElement(element, WaitConditions.NotMoving, timeout: null))
+            {
+                return false;
+            }
+
+            if (!this.WaitForElement(element, WaitConditions.BecomesEnabled, timeout: null))
+            {
+                return false;
+            }
+
+            if (this.focusWindowBeforeClicking)
+            {
+                string currentWindowHandle = this.webDriver.CurrentWindowHandle;
+                int currentWindowHandleParsed;
+                if (int.TryParse(currentWindowHandle, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out currentWindowHandleParsed))
+                {
+                    int currentWindowHandleInt = Convert.ToInt32(currentWindowHandle, 16);
+                    if (!NativeMethods.SetForegroundWindow(new IntPtr(currentWindowHandleInt)))
+                    {
+                        throw new Win32Exception(Marshal.GetLastWin32Error(), $"Failed to set window with handle {currentWindowHandle} as the foreground window.");
+                    }
+                }
+            }
+
+            WindowsDriverEx driver = this.webDriver as WindowsDriverEx;
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            driver.Mouse.ContextClick((element as WebElement).Coordinates);
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            return true;
+        }
+
+        /// <summary>
         /// Waits for the element to meet a certain condition.
         /// </summary>
         /// <param name="element">The element.</param>
@@ -211,87 +323,84 @@ namespace SpecBind.Selenium
             var waiter = new DefaultWait<IWebElement>(element);
             waiter.Timeout = timeout.GetValueOrDefault(waiter.Timeout);
 
-            try
+            switch (waitCondition)
             {
-                switch (waitCondition)
-                {
-                    case WaitConditions.BecomesNonExistent: // AKA NotExists
-                        this.ExecuteWithElementLocateTimeout(
-                            new TimeSpan(),
-                            () =>
+                case WaitConditions.BecomesNonExistent: // AKA NotExists
+                    this.ExecuteWithElementLocateTimeout(
+                        default,
+                        () =>
+                        {
+                            try
                             {
-                                try
-                                {
-                                    waiter.Until(e => !e.Displayed);
-                                }
-                                catch (NoSuchElementException)
-                                {
-                                }
-                                catch (NotFoundException)
-                                {
-                                }
-                                catch (ElementNotVisibleException)
-                                {
-                                }
-                                catch (StaleElementReferenceException)
-                                {
-                                }
-                            });
-                        break;
-                    case WaitConditions.RemainsNonExistent:
-                        return this.EvaluateWithElementLocateTimeout(
-                            waiter.Timeout,
-                            () =>
+                                waiter.Until(e => !e.Displayed);
+                            }
+                            catch (NoSuchElementException)
                             {
-                                try
-                                {
-                                    return this.DoesFullTimeoutElapse(waiter, e => e.Displayed);
-                                }
-                                catch (NoSuchElementException)
-                                {
-                                    return true;
-                                }
-                                catch (NotFoundException)
-                                {
-                                    return true;
-                                }
-                                catch (ElementNotVisibleException)
-                                {
-                                    return true;
-                                }
-                                catch (StaleElementReferenceException)
-                                {
-                                    return true;
-                                }
-                            });
-                    case WaitConditions.BecomesEnabled: // AKA Enabled
-                        waiter.IgnoreExceptionTypes(typeof(ElementNotVisibleException), typeof(NotFoundException));
-                        waiter.Until(e => e.Enabled);
-                        break;
-                    case WaitConditions.BecomesDisabled: // AKA NotEnabled
-                        waiter.IgnoreExceptionTypes(typeof(ElementNotVisibleException), typeof(NotFoundException));
-                        waiter.Until(e => !e.Enabled);
-                        break;
-                    case WaitConditions.BecomesExistent: // AKA Exists
-                        waiter.IgnoreExceptionTypes(typeof(ElementNotVisibleException), typeof(NotFoundException));
-                        waiter.Until(e => e.Displayed);
-                        break;
-                    case WaitConditions.NotMoving:
-                        waiter.IgnoreExceptionTypes(typeof(ElementNotVisibleException), typeof(NotFoundException));
-                        waiter.Until(e => e.Displayed);
-                        waiter.Until(e => !this.Moving(e));
-                        break;
-                    case WaitConditions.RemainsEnabled:
-                        return this.DoesFullTimeoutElapse(waiter, e => !e.Enabled);
-                    case WaitConditions.RemainsDisabled:
-                        return this.DoesFullTimeoutElapse(waiter, e => e.Enabled);
-                    case WaitConditions.RemainsExistent:
-                        return this.DoesFullTimeoutElapse(waiter, e => !e.Displayed);
-                }
-            }
-            catch (WebDriverTimeoutException)
-            {
-                return false;
+                            }
+                            catch (NotFoundException)
+                            {
+                            }
+                            catch (ElementNotVisibleException)
+                            {
+                            }
+                            catch (StaleElementReferenceException)
+                            {
+                            }
+                            catch (WebDriverException)
+                            {
+                                // An element command failed because the referenced element is no longer attached to the DOM.
+                            }
+                        });
+                    break;
+                case WaitConditions.RemainsNonExistent:
+                    return this.EvaluateWithElementLocateTimeout(
+                        waiter.Timeout,
+                        () =>
+                        {
+                            try
+                            {
+                                return this.DoesFullTimeoutElapse(waiter, e => e.Displayed);
+                            }
+                            catch (NoSuchElementException)
+                            {
+                                return true;
+                            }
+                            catch (NotFoundException)
+                            {
+                                return true;
+                            }
+                            catch (ElementNotVisibleException)
+                            {
+                                return true;
+                            }
+                            catch (StaleElementReferenceException)
+                            {
+                                return true;
+                            }
+                        });
+                case WaitConditions.BecomesEnabled: // AKA Enabled
+                    waiter.IgnoreExceptionTypes(typeof(ElementNotVisibleException), typeof(NotFoundException));
+                    waiter.Until(e => e.Enabled);
+                    break;
+                case WaitConditions.BecomesDisabled: // AKA NotEnabled
+                    waiter.IgnoreExceptionTypes(typeof(ElementNotVisibleException), typeof(NotFoundException));
+                    waiter.Until(e => !e.Enabled);
+                    break;
+                case WaitConditions.BecomesExistent: // AKA Exists
+                    waiter.IgnoreExceptionTypes(typeof(ElementNotVisibleException), typeof(NotFoundException) /*, typeof(StaleElementReferenceException)*/);
+                    waiter.Until(e => e.Displayed);
+                    break;
+                case WaitConditions.NotMoving:
+                    waiter.IgnoreExceptionTypes(typeof(ElementNotVisibleException), typeof(NotFoundException));
+                    waiter.Until(e => e.Displayed);
+                    waiter.Until(e => !this.Moving(e));
+                    break;
+                case WaitConditions.RemainsEnabled:
+                    return this.DoesFullTimeoutElapse(waiter, e => !e.Enabled);
+                case WaitConditions.RemainsDisabled:
+                    return this.DoesFullTimeoutElapse(waiter, e => e.Enabled);
+                case WaitConditions.RemainsExistent:
+                    return this.DoesFullTimeoutElapse(waiter, e => !e.Displayed);
             }
 
             return true;
@@ -320,9 +429,30 @@ namespace SpecBind.Selenium
                 return false;
             }
 
+            if (times == 2)
+            {
+                new Actions(this.webDriver).DoubleClick(element).Perform();
+
+                return true;
+            }
+
             // TODO: consider waiting between clicks, so that it's not interpreted as a double-click
             for (var i = 0; i < times; i++)
             {
+                if (this.focusWindowBeforeClicking)
+                {
+                    string currentWindowHandle = this.webDriver.CurrentWindowHandle;
+                    int currentWindowHandleParsed;
+                    if (int.TryParse(currentWindowHandle, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out currentWindowHandleParsed))
+                    {
+                        int currentWindowHandleInt = Convert.ToInt32(currentWindowHandle, 16);
+                        if (!NativeMethods.SetForegroundWindow(new IntPtr(currentWindowHandleInt)))
+                        {
+                            throw new Win32Exception(Marshal.GetLastWin32Error(), $"Failed to set window with handle {currentWindowHandle} as the foreground window.");
+                        }
+                    }
+                }
+
                 element.Click();
             }
 
@@ -392,6 +522,20 @@ namespace SpecBind.Selenium
             {
                 return stateIfNotFound;
             }
+            catch (InvalidOperationException)
+            {
+                // An element could not be located on the page using the given search parameters.
+                return stateIfNotFound;
+            }
+        }
+
+        /// <summary>
+        /// Clears the page.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        private static void ClearPage(IWebElement element)
+        {
+            element.Clear();
         }
 
         /// <summary>
@@ -401,11 +545,17 @@ namespace SpecBind.Selenium
         /// <param name="data">The data.</param>
         private void FillPage(IWebElement element, string data)
         {
+            string text = data
+                .Replace("{SPACE}", " ")
+                .Replace("{RIGHT}", Keys.Right)
+                .Replace("{NEWLINE}", Environment.NewLine);
+
             // Respect the data control interface first.
             // ReSharper disable once SuspiciousTypeConversion.Global
-            if (element is IDataControl dataControlElement)
+            if (element is IDataControl)
             {
-                dataControlElement.SetValue(data);
+                IDataControl dataControlElement = element as IDataControl;
+                dataControlElement.SetValue(text);
                 return;
             }
 
@@ -419,12 +569,16 @@ namespace SpecBind.Selenium
                         selectElement.DeselectAll();
                     }
 
-                    selectElement.SelectByText(data);
+                    selectElement.SelectByText(text);
                     break;
                 case "input":
+                case "controltype.checkbox":
+                case "controltype.radiobutton":
                     // Special case for a checkbox control
                     var inputType = element.GetAttribute("type");
-                    if (string.Equals("checkbox", inputType, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals("checkbox", inputType, StringComparison.OrdinalIgnoreCase)
+                        || (tagName == "controltype.checkbox")
+                        || (tagName == "controltype.radiobutton"))
                     {
                         if (bool.TryParse(data, out bool checkValue) && element.Selected != checkValue)
                         {
@@ -443,24 +597,15 @@ namespace SpecBind.Selenium
 
                     if (string.Equals("file", inputType, StringComparison.OrdinalIgnoreCase))
                     {
-                        FileUploadHelper.UploadFile(data, element.SendKeys);
+                        FileUploadHelper.UploadFile(text, element.SendKeys);
                         return;
                     }
 
                     goto default;
                 default:
-                    element.SendKeys(data);
+                    element.SendKeys(text);
                     break;
             }
-        }
-
-        /// <summary>
-        /// Clears the page.
-        /// </summary>
-        /// <param name="element">The element.</param>
-        private static void ClearPage(IWebElement element)
-        {
-            element.Clear();
         }
 
         /// <summary>

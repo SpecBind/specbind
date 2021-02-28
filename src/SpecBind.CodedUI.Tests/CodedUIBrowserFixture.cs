@@ -10,9 +10,36 @@ namespace SpecBind.CodedUI.Tests
     /// <summary>
     /// A test fixture for the CodedUIBrowser class
     /// </summary>
-    [CodedUITest]
+    [TestClass]
     public class CodedUIBrowserFixture
     {
+        /// <summary>
+        /// Runs before executing each test.
+        /// </summary>
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            if (!Playback.IsInitialized)
+            {
+                Playback.Initialize();
+            }
+        }
+
+        /// <summary>
+        /// Runs after executing each test.
+        /// </summary>
+        [TestCleanup]
+        public void After()
+        {
+            if (Playback.IsInitialized)
+            {
+                Playback.Cleanup();
+            }
+        }
+
+        /// <summary>
+        /// Asserts that the IsCreated propery value is false before the browser is created.
+        /// </summary>
         [TestMethod]
         public void IsCreated_BeforeBrowserIsCreated_ReturnsFalse()
         {
@@ -26,6 +53,9 @@ namespace SpecBind.CodedUI.Tests
             Assert.IsFalse(browser.IsCreated);
         }
 
+        /// <summary>
+        /// Asserts that the IsCreated property value is true after the browser is created.
+        /// </summary>
         [TestMethod]
         public void IsCreated_AfterBrowserIsCreated_ReturnsTrue()
         {

@@ -43,12 +43,12 @@ namespace SpecBind.Tests.ActionPipeline
             postAction.Setup(p => p.PerformPostAction(action.Object, context, actionResult));
 
             var repository = new Mock<IActionRepository>(MockBehavior.Strict);
+            repository.Setup(r => r.Initialize());
             repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction.Object });
             repository.Setup(r => r.GetPostActions()).Returns(new[] { postAction.Object });
             repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
-            repository.Setup(r => r.Initialize());
 
-            var service = new ActionPipelineService(repository.Object);
+            var service = new ActionPipelineService(repository.Object, null);
 
             var result = service.PerformAction(page.Object, action.Object, context);
 
@@ -85,12 +85,12 @@ namespace SpecBind.Tests.ActionPipeline
             postAction.Setup(p => p.PerformPostAction(action.Object, context, It.Is<ActionResult>(r => !r.Success)));
 
             var repository = new Mock<IActionRepository>(MockBehavior.Strict);
+            repository.Setup(r => r.Initialize());
             repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction.Object });
             repository.Setup(r => r.GetPostActions()).Returns(new[] { postAction.Object });
             repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
-            repository.Setup(r => r.Initialize());
 
-            var service = new ActionPipelineService(repository.Object);
+            var service = new ActionPipelineService(repository.Object, null);
 
             var result = service.PerformAction(page.Object, action.Object, context);
 
@@ -127,11 +127,11 @@ namespace SpecBind.Tests.ActionPipeline
 
 
             var repository = new Mock<IActionRepository>(MockBehavior.Strict);
+            repository.Setup(r => r.Initialize());
             repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction1.Object, preAction2.Object });
             repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
-            repository.Setup(r => r.Initialize());
 
-            var service = new ActionPipelineService(repository.Object);
+            var service = new ActionPipelineService(repository.Object, null);
 
             var result = service.PerformAction(page.Object, action.Object, context);
 
@@ -169,11 +169,11 @@ namespace SpecBind.Tests.ActionPipeline
 
 
             var repository = new Mock<IActionRepository>(MockBehavior.Strict);
+            repository.Setup(r => r.Initialize());
             repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction1.Object, preAction2.Object });
             repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
-            repository.Setup(r => r.Initialize());
 
-            var service = new ActionPipelineService(repository.Object);
+            var service = new ActionPipelineService(repository.Object, null);
 
             var result = service.PerformAction(page.Object, action.Object, context);
 
@@ -210,13 +210,13 @@ namespace SpecBind.Tests.ActionPipeline
             postAction.Setup(p => p.PerformPostAction(It.IsAny<MockAction>(), context, It.IsAny<ActionResult>()));
 
             var repository = new Mock<IActionRepository>(MockBehavior.Strict);
+            repository.Setup(r => r.Initialize());
             repository.Setup(r => r.GetPreActions()).Returns(new[] { preAction.Object });
             repository.Setup(r => r.GetPostActions()).Returns(new[] { postAction.Object });
             repository.Setup(r => r.GetLocatorActions()).Returns(new List<ILocatorAction>());
-            repository.Setup(r => r.Initialize());
             repository.Setup(r => r.CreateAction<MockAction>()).Returns(new MockAction());
 
-            var service = new ActionPipelineService(repository.Object);
+            var service = new ActionPipelineService(repository.Object, null);
 
             var result = service.PerformAction<MockAction>(page.Object, context);
 

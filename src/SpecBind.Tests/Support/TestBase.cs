@@ -66,7 +66,7 @@ namespace SpecBind.Tests.Support
         /// <param name="element">The element.</param>
         /// <param name="attributeName">Name of the attribute.</param>
         /// <returns>The attribute value.</returns>
-	    public override string GetElementAttributeValue(BaseElement element, string attributeName)
+        public override string GetElementAttributeValue(BaseElement element, string attributeName)
         {
             return string.Empty;
         }
@@ -102,13 +102,45 @@ namespace SpecBind.Tests.Support
         }
 
         /// <summary>
+        /// Moves the mouse over the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>
+        ///   <c>true</c> if the mouse moved over the element, <c>false</c> otherwise.
+        /// </returns>
+        public override bool MouseOverElement(BaseElement element)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Double-clicks the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>Success of the call.</returns>
+        public override bool DoubleClickElement(BaseElement element)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Right-clicks the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>Success of the call.</returns>
+        public override bool RightClickElement(BaseElement element)
+        {
+            return true;
+        }
+
+        /// <summary>
         /// Gets the clear field method.
         /// </summary>
         /// <param name="propertyType">Type of the property.</param>
         /// <returns>
         /// The function used to clear the data.
         /// </returns>
-		public override Action<BaseElement> GetClearMethod(Type propertyType)
+        public override Action<BaseElement> GetClearMethod(Type propertyType)
         {
             return null;
         }
@@ -130,14 +162,23 @@ namespace SpecBind.Tests.Support
         /// <param name="waitCondition">The wait condition.</param>
         /// <param name="timeout">The timeout.</param>
         /// <returns><c>true</c> if the condition is met, <c>false</c> otherwise.</returns>
-	    public override bool WaitForElement(BaseElement element, WaitConditions waitCondition, TimeSpan? timeout)
+        public override bool WaitForElement(BaseElement element, WaitConditions waitCondition, TimeSpan? timeout)
         {
-            return false;
+            return true;
         }
 
+        /// <inheritdoc/>
         public override IList<ComboBoxItem> GetElementOptions(BaseElement element)
         {
             return null;
         }
+
+        /// <inheritdoc/>
+        public override void ClearCache(BaseElement element)
+        {
+        }
+
+        /// <inheritdoc/>
+        public override void SetElementAttributeValue(BaseElement element, string attributeName, string value) => throw new NotImplementedException();
     }
 }

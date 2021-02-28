@@ -5,9 +5,8 @@ namespace SpecBind.Pages
 {
     using System;
     using System.Collections.Generic;
-
-    using SpecBind.Actions;
-    using SpecBind.Validation;
+    using Actions;
+    using Validation;
 
     /// <summary>
 	/// The property data interface for interaction.
@@ -61,6 +60,21 @@ namespace SpecBind.Pages
         void ClickElement();
 
         /// <summary>
+        /// Moves the mouse over the element that this property represents.
+        /// </summary>
+        void MouseOverElement();
+
+        /// <summary>
+        /// Double-clicks the element that this property represents.
+        /// </summary>
+        void DoubleClickElement();
+
+        /// <summary>
+        /// Right-clicks the element that this property represents.
+        /// </summary>
+        void RightClickElement();
+
+        /// <summary>
         /// Checks to see if the element is enabled.
         /// </summary>
         /// <returns><c>true</c> if the element is enabled.</returns>
@@ -80,10 +94,15 @@ namespace SpecBind.Pages
         bool CheckElementNotExists();
 
         /// <summary>
-		/// Fills the data on the element.
-		/// </summary>
-		/// <param name="data">The data.</param>
-		void FillData(string data);
+        /// Clears the cache.
+        /// </summary>
+        void ClearCache();
+
+        /// <summary>
+        /// Fills the data on the element.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        void FillData(string data);
 
         /// <summary>
         /// Gets the combo box items for the given element if supported.
@@ -109,6 +128,13 @@ namespace SpecBind.Pages
         /// </summary>
         /// <returns>The item as a page.</returns>
         IPage GetItemAsPage();
+
+        /// <summary>
+        /// Gets the item as context in page.
+        /// </summary>
+        /// <param name="parent">The parent.</param>
+        /// <returns>The item as context in page.</returns>
+        IPage GetItemAsContextInPage(IPage parent);
 
         /// <summary>
         /// Highlights this instance.

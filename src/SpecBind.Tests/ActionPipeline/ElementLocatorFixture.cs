@@ -34,7 +34,7 @@ namespace SpecBind.Tests.ActionPipeline
             locatorAction.Setup(p => p.OnLocate("MyElement"));
             locatorAction.Setup(p => p.OnLocateComplete("MyElement", resultPropertyData));
 
-            var locator = new ElementLocator(page.Object, new[] { locatorAction.Object });
+            var locator = new ElementLocator(page.Object, null, new[] { locatorAction.Object });
 
             var propertyData = locator.GetElement("MyElement");
 
@@ -63,7 +63,7 @@ namespace SpecBind.Tests.ActionPipeline
             locatorAction.Setup(p => p.OnLocate("MyElement"));
             locatorAction.Setup(p => p.OnLocateComplete("MyElement", null));
 
-            var locator = new ElementLocator(page.Object, new[] { locatorAction.Object });
+            var locator = new ElementLocator(page.Object, null, new[] { locatorAction.Object });
 
             try
             {
@@ -92,7 +92,7 @@ namespace SpecBind.Tests.ActionPipeline
             locatorAction.Setup(p => p.OnLocate("MyElement"));
             locatorAction.Setup(p => p.OnLocateComplete("MyElement", resultPropertyData));
 
-            var locator = new ElementLocator(page.Object, new[] { locatorAction.Object });
+            var locator = new ElementLocator(page.Object, null, new[] { locatorAction.Object });
 
             IPropertyData propertyData;
             var result = locator.TryGetElement("MyElement", out propertyData);
@@ -120,7 +120,7 @@ namespace SpecBind.Tests.ActionPipeline
             locatorAction.Setup(p => p.OnLocate("MyElement"));
             locatorAction.Setup(p => p.OnLocateComplete("MyElement", null));
 
-            var locator = new ElementLocator(page.Object, new[] { locatorAction.Object });
+            var locator = new ElementLocator(page.Object, null, new[] { locatorAction.Object });
 
             IPropertyData propertyData;
             var result = locator.TryGetElement("MyElement", out propertyData);
@@ -147,7 +147,7 @@ namespace SpecBind.Tests.ActionPipeline
             locatorAction.Setup(p => p.OnLocate("MyProperty"));
             locatorAction.Setup(p => p.OnLocateComplete("MyProperty", resultPropertyData));
 
-            var locator = new ElementLocator(page.Object, new[] { locatorAction.Object });
+            var locator = new ElementLocator(page.Object, null, new[] { locatorAction.Object });
 
             var propertyData = locator.GetProperty("MyProperty");
 
@@ -176,7 +176,7 @@ namespace SpecBind.Tests.ActionPipeline
             locatorAction.Setup(p => p.OnLocate("MyProperty"));
             locatorAction.Setup(p => p.OnLocateComplete("MyProperty", null));
 
-            var locator = new ElementLocator(page.Object, new[] { locatorAction.Object });
+            var locator = new ElementLocator(page.Object, null, new[] { locatorAction.Object });
 
             try
             {
@@ -205,7 +205,7 @@ namespace SpecBind.Tests.ActionPipeline
             locatorAction.Setup(p => p.OnLocate("MyProperty"));
             locatorAction.Setup(p => p.OnLocateComplete("MyProperty", resultPropertyData));
 
-            var locator = new ElementLocator(page.Object, new[] { locatorAction.Object });
+            var locator = new ElementLocator(page.Object, null, new[] { locatorAction.Object });
 
             IPropertyData propertyData;
             var result = locator.TryGetProperty("MyProperty", out propertyData);
@@ -233,7 +233,7 @@ namespace SpecBind.Tests.ActionPipeline
             locatorAction.Setup(p => p.OnLocate("MyProperty"));
             locatorAction.Setup(p => p.OnLocateComplete("MyProperty", null));
 
-            var locator = new ElementLocator(page.Object, new[] { locatorAction.Object });
+            var locator = new ElementLocator(page.Object, null, new[] { locatorAction.Object });
 
             IPropertyData propertyData;
             var result = locator.TryGetProperty("MyProperty", out propertyData);

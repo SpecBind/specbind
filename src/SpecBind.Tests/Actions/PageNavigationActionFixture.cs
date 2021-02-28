@@ -28,7 +28,7 @@ namespace SpecBind.Tests.Actions
         [TestMethod]
         public void TestGetActionName()
         {
-            var buttonClickAction = new PageNavigationAction(null, null, null);
+            var buttonClickAction = new PageNavigationAction(null, null);
 
             Assert.AreEqual("PageNavigationAction", buttonClickAction.Name);
         }
@@ -45,7 +45,9 @@ namespace SpecBind.Tests.Actions
             var logger = new Mock<ILogger>();
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            var navigationAction = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var navigationAction = new PageNavigationAction(logger.Object, pageMapper.Object);
 
             var context = new PageNavigationAction.PageNavigationActionContext("doesnotexist", PageNavigationAction.PageAction.EnsureOnPage);
 
@@ -74,8 +76,9 @@ namespace SpecBind.Tests.Actions
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.GoToPage(typeof(TestBase), null)).Returns(testPage.Object);
 
+            WebDriverSupport.CurrentBrowser = browser.Object;
 
-            var navigationAction = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
+            var navigationAction = new PageNavigationAction(logger.Object, pageMapper.Object);
 
             var context = new PageNavigationAction.PageNavigationActionContext("MyPage", PageNavigationAction.PageAction.NavigateToPage);
 
@@ -105,8 +108,9 @@ namespace SpecBind.Tests.Actions
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
             browser.Setup(b => b.GoToPage(typeof(TestBase), arguments)).Returns(testPage.Object);
 
+            WebDriverSupport.CurrentBrowser = browser.Object;
 
-            var navigationAction = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
+            var navigationAction = new PageNavigationAction(logger.Object, pageMapper.Object);
 
             var context = new PageNavigationAction.PageNavigationActionContext("MyPage", PageNavigationAction.PageAction.NavigateToPage, arguments);
 
@@ -135,7 +139,9 @@ namespace SpecBind.Tests.Actions
             browser.Setup(b => b.Page(typeof(TestBase))).Returns(testPage.Object);
             browser.Setup(b => b.EnsureOnPage(testPage.Object));
 
-            var navigationAction = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var navigationAction = new PageNavigationAction(logger.Object, pageMapper.Object);
 
             var context = new PageNavigationAction.PageNavigationActionContext("MyPage", PageNavigationAction.PageAction.EnsureOnPage);
 

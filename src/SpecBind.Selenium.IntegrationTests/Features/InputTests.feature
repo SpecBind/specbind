@@ -1,4 +1,5 @@
-﻿Feature: Test Data Entry For Controls
+﻿@mstest:DeploymentItem:TechTalk.SpecFlow.MSTest.SpecFlowPlugin.dll
+Feature: Test Data Entry For Controls
 
 Scenario: Test Successful Combo Box Input
 	 Given I navigated to the Home page
@@ -118,3 +119,12 @@ Scenario: Test Clearing Text Area Input
 	  Then I see
 	       | Field       | Rule   | Value |
 	       | Description | Equals |       |
+
+Scenario: Enter special characters in input text field
+	Given I navigated to the Create a Course page
+	And I entered data
+		| Field        | Value     |
+		| Course Title | {{SPACE}} |
+	Then I see
+		| Field        | Rule   | Value |
+		| Course Title | Equals |       |

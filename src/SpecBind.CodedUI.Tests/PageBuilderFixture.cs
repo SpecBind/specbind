@@ -18,9 +18,33 @@ namespace SpecBind.CodedUI.Tests
     /// <summary>
     /// A test fixture for the PageBuilder class.
     /// </summary>
-    [CodedUITest]
+    [TestClass]
     public class PageBuilderFixture
     {
+        /// <summary>
+        /// Runs before executing each test.
+        /// </summary>
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            if (!Playback.IsInitialized)
+            {
+                Playback.Initialize();
+            }
+        }
+
+        /// <summary>
+        /// Runs after executing each test.
+        /// </summary>
+        [TestCleanup]
+        public void After()
+        {
+            if (Playback.IsInitialized)
+            {
+                Playback.Cleanup();
+            }
+        }
+
         /// <summary>
         /// Tests the create page method.
         /// </summary>

@@ -4,9 +4,12 @@
 
 namespace SpecBind.Tests
 {
-    using System;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+    using System;
+
     using Moq;
+
     using SpecBind.Helpers;
 
     /// <summary>
@@ -56,7 +59,7 @@ namespace SpecBind.Tests
         public void TestGetTokenByKey()
         {
             var context = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            context.Setup(c => c.GetValue<string>("TOKEN:MYTOKEN")).Returns("Test Data");
+            context.Setup(c => c.GetValue<string>("TOKEN:MYTOKEN", It.IsAny<string>())).Returns("Test Data");
 
             var manager = new TokenManager(context.Object);
 
@@ -74,7 +77,7 @@ namespace SpecBind.Tests
         public void TestGetTokenIsTokenData()
         {
             var context = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            context.Setup(c => c.GetValue<string>("TOKEN:MYTOKEN")).Returns("Token Data");
+            context.Setup(c => c.GetValue<string>("TOKEN:MYTOKEN", It.IsAny<string>())).Returns("Token Data");
 
             var manager = new TokenManager(context.Object);
 
@@ -92,7 +95,7 @@ namespace SpecBind.Tests
         public void TestGetTokenIsMalformedTokenData()
         {
             var context = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            context.Setup(c => c.GetValue<string>("TOKEN:MYTOKEN")).Returns("Token Data");
+            context.Setup(c => c.GetValue<string>("TOKEN:MYTOKEN", It.IsAny<string>())).Returns("Token Data");
 
             var manager = new TokenManager(context.Object);
 
@@ -197,7 +200,7 @@ namespace SpecBind.Tests
         public void TestSetTokenIsEmptyTokenData()
         {
             var context = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
-            context.Setup(c => c.GetValue<string>("TOKEN:MYTOKEN")).Returns("My Data");
+            context.Setup(c => c.GetValue<string>("TOKEN:MYTOKEN", It.IsAny<string>())).Returns("My Data");
 
             var manager = new TokenManager(context.Object);
 

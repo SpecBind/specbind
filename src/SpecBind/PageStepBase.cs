@@ -4,7 +4,8 @@
 
 namespace SpecBind
 {
-    using SpecBind.Helpers;
+    using Actions;
+    using Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -13,14 +14,19 @@ namespace SpecBind
     public abstract class PageStepBase
     {
         private readonly IScenarioContextHelper scenarioContext;
+        private readonly ILogger logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PageStepBase"/> class.
+        /// Initializes a new instance of the <see cref="PageStepBase" /> class.
         /// </summary>
         /// <param name="scenarioContext">The scenario context.</param>
-        protected PageStepBase(IScenarioContextHelper scenarioContext)
+        /// <param name="logger">The logger.</param>
+        protected PageStepBase(
+            IScenarioContextHelper scenarioContext,
+            ILogger logger)
         {
             this.scenarioContext = scenarioContext;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -44,6 +50,11 @@ namespace SpecBind
         /// <param name="page">The page.</param>
         protected void UpdatePageContext(IPage page)
         {
+            if (page != null)
+            {
+                this.logger.Info($"Setting current page: {page.PageType}");
+            }
+
             this.scenarioContext.SetCurrentPage(page);
         }
     }

@@ -299,6 +299,7 @@ namespace SpecBind.Selenium.Tests
             var mockElement = new Mock<IWebElement>(MockBehavior.Strict);
             mockElement.Setup(c => c.Clear());
             mockElement.Setup(c => c.SendKeys(expected));
+            mockElement.Setup(c => c.TagName).Returns<string>(null);
             mockElement.Setup(c => c.GetAttribute("value")).Returns(expected);
 
             var element = CreateBasicWrappedElement(mockElement.Object);
@@ -321,6 +322,7 @@ namespace SpecBind.Selenium.Tests
             var mockElement = new Mock<IWebElement>(MockBehavior.Strict);
             mockElement.Setup(c => c.Clear());
             mockElement.Setup(c => c.SendKeys(expected));
+            mockElement.Setup(c => c.TagName).Returns<string>(null);
             mockElement.Setup(c => c.GetAttribute("value")).Returns(unexpected);
 
             var element = CreateBasicWrappedElement(mockElement.Object);

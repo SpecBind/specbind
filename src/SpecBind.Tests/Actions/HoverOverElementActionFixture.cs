@@ -4,12 +4,14 @@
 
 namespace SpecBind.Tests.Actions
 {
-    using System;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     using Moq;
+
     using SpecBind.ActionPipeline;
     using SpecBind.Actions;
     using SpecBind.Pages;
+    using System;
 
     /// <summary>
     /// A test fixture for hovering over an element
@@ -58,7 +60,7 @@ namespace SpecBind.Tests.Actions
             var propData = new Mock<IPropertyData>(MockBehavior.Strict);
             propData.Setup(p => p.WaitForElementCondition(WaitConditions.NotMoving, null)).Returns(true);
             propData.Setup(p => p.WaitForElementCondition(WaitConditions.BecomesEnabled, null)).Returns(true);
-            propData.Setup(p => p.ClickElement());
+            propData.Setup(p => p.MouseOverElement());
 
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);
             locator.Setup(p => p.GetElement("myproperty")).Returns(propData.Object);
@@ -71,35 +73,7 @@ namespace SpecBind.Tests.Actions
             var context = new ActionContext("myproperty");
             var result = hoverOverElementAction.Execute(context);
 
-            Assert.AreEqual(true, result.Success);
-
-            locator.VerifyAll();
-            propData.VerifyAll();
-        }
-
-        /// <summary>
-		///     Tests the fill field with an element that exists and can be clicked.
-		/// </summary>
-		[TestMethod]
-        public void TestClickItemWhenHoveringProducesSpecificErrorReturnsSuccess()
-        {
-            var propData = new Mock<IPropertyData>(MockBehavior.Strict);
-            propData.Setup(p => p.WaitForElementCondition(WaitConditions.NotMoving, null)).Returns(true);
-            propData.Setup(p => p.WaitForElementCondition(WaitConditions.BecomesEnabled, null)).Returns(true);
-            propData.Setup(p => p.ClickElement()).Throws(new ApplicationException("Element is not clickable at point"));
-
-            var locator = new Mock<IElementLocator>(MockBehavior.Strict);
-            locator.Setup(p => p.GetElement("myproperty")).Returns(propData.Object);
-
-            var hoverOverElementAction = new HoverOverElementAction
-            {
-                ElementLocator = locator.Object
-            };
-
-            var context = new ActionContext("myproperty");
-            var result = hoverOverElementAction.Execute(context);
-
-            Assert.AreEqual(true, result.Success);
+            Assert.AreEqual(true, result.Success, result.Exception?.ToString());
 
             locator.VerifyAll();
             propData.VerifyAll();
@@ -114,7 +88,7 @@ namespace SpecBind.Tests.Actions
             var propData = new Mock<IPropertyData>(MockBehavior.Strict);
             propData.Setup(p => p.WaitForElementCondition(WaitConditions.NotMoving, null)).Returns(true);
             propData.Setup(p => p.WaitForElementCondition(WaitConditions.BecomesEnabled, null)).Returns(true);
-            propData.Setup(p => p.ClickElement()).Throws(new ApplicationException("Some Other Error"));
+            propData.Setup(p => p.MouseOverElement()).Throws(new ApplicationException("Some Other Error"));
 
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);
             locator.Setup(p => p.GetElement("myproperty")).Returns(propData.Object);
@@ -141,7 +115,7 @@ namespace SpecBind.Tests.Actions
         public void TestClickItemWhenWaitIsEnabledReturnsSuccess()
         {
             var propData = new Mock<IPropertyData>(MockBehavior.Strict);
-            propData.Setup(p => p.ClickElement());
+            propData.Setup(p => p.MouseOverElement());
 
             var locator = new Mock<IElementLocator>(MockBehavior.Strict);
             locator.Setup(p => p.GetElement("myproperty")).Returns(propData.Object);
@@ -157,7 +131,7 @@ namespace SpecBind.Tests.Actions
             var context = new ActionContext("myproperty");
             var result = hoverOverElementAction.Execute(context);
 
-            Assert.AreEqual(true, result.Success);
+            Assert.AreEqual(true, result.Success, result.Exception?.ToString());
 
             locator.VerifyAll();
             propData.VerifyAll();

@@ -7,11 +7,14 @@ namespace SpecBind.Selenium
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Drawing;
     using System.IO;
     using OpenQA.Selenium;
+    using OpenQA.Selenium.Remote;
     using Pages;
     using SpecBind.Actions;
     using SpecBind.BrowserSupport;
+    using SpecBind.Selenium.Drivers;
 
     /// <summary>
     /// Base class for a Selenium application.
@@ -19,14 +22,14 @@ namespace SpecBind.Selenium
     /// <seealso cref="SpecBind.BrowserSupport.BrowserBase" />
     public abstract class SeleniumBase : BrowserBase
     {
-        private Lazy<IWebDriver> driver;
+        private Lazy<IWebDriverEx> driver;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SeleniumBase" /> class.
         /// </summary>
         /// <param name="driver">The browser driver as a lazy object.</param>
         /// <param name="logger">The logger.</param>
-        public SeleniumBase(Lazy<IWebDriver> driver, ILogger logger)
+        public SeleniumBase(Lazy<IWebDriverEx> driver, ILogger logger)
             : base(logger)
         {
             // TODO: create timeouts structure, pass it through this constructor, so we know what the default timeouts are.
@@ -59,6 +62,9 @@ namespace SpecBind.Selenium
         /// </value>
         public override string Url => this.driver.Value.Url;
 
+        /// <inheritdoc/>
+        public override string Title => this.driver.Value.Title;
+
         /// <summary>
         /// Gets a value indicating whether or not the browser is created.
         /// </summary>
@@ -68,7 +74,7 @@ namespace SpecBind.Selenium
         /// Gets the driver.
         /// </summary>
         /// <value>The driver.</value>
-        public IWebDriver Driver => this.driver.Value;
+        public IWebDriverEx Driver => this.driver.Value;
 
         /// <summary>
         /// Gets or sets the page builder.
@@ -111,10 +117,10 @@ namespace SpecBind.Selenium
 
             try
             {
-                var fullPath = Path.Combine(imageFolder, $"{fileNameBase}.jpg");
+                var fullPath = Path.Combine(imageFolder, $"{fileNameBase}.png");
 
                 var screenshot = takesScreenshot.GetScreenshot();
-                screenshot.SaveAsFile(fullPath, ScreenshotImageFormat.Jpeg);
+                screenshot.SaveAsFile(fullPath, ScreenshotImageFormat.Png);
 
                 return fullPath;
             }
@@ -150,10 +156,108 @@ namespace SpecBind.Selenium
         }
 
         /// <summary>
+        /// Sends the keys.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        public override void SendKeys(string text)
+        {
+            var localDriver = this.driver.Value;
+            var remoteWebDriver = localDriver as RemoteWebDriver;
+
+            string replacedText = text
+                .Replace("{BACKSPACE}", Keys.Backspace)
+                .Replace("{BS}", Keys.Backspace)
+                .Replace("{BREAK}", Keys.Pause)
+                .Replace("{CLEAR}", Keys.Clear)
+                .Replace("{DELETE}", Keys.Delete)
+                .Replace("{DEL}", Keys.Delete)
+                .Replace("{DOWN}", Keys.Down)
+                .Replace("{END}", Keys.End)
+                .Replace("{ENTER}", Keys.Enter)
+                .Replace("{ESCAPE}", Keys.Escape)
+                .Replace("{ESC}", Keys.Escape)
+                .Replace("{HELP}", Keys.Help)
+                .Replace("{HOME}", Keys.Home)
+                .Replace("{INSERT}", Keys.Insert)
+                .Replace("{LEFT}", Keys.Left)
+                .Replace("{PGDN}", Keys.PageDown)
+                .Replace("{PGUP}", Keys.PageUp)
+                .Replace("{RETURN}", Keys.Return)
+                .Replace("{RIGHT}", Keys.Right)
+                .Replace("{SPACE}", " ")
+                .Replace("{TAB}", Keys.Tab)
+                .Replace("{UP}", Keys.Up)
+                .Replace("{F1}", Keys.F1)
+                .Replace("{F2}", Keys.F2)
+                .Replace("{F3}", Keys.F3)
+                .Replace("{F4}", Keys.F4)
+                .Replace("{F5}", Keys.F5)
+                .Replace("{F6}", Keys.F6)
+                .Replace("{F7}", Keys.F7)
+                .Replace("{F8}", Keys.F8)
+                .Replace("{F9}", Keys.F9)
+                .Replace("{F10}", Keys.F10)
+                .Replace("{F11}", Keys.F11)
+                .Replace("{F12}", Keys.F12)
+                .Replace("{NEWLINE}", Environment.NewLine);
+
+            new OpenQA.Selenium.Interactions.Actions(remoteWebDriver).SendKeys(replacedText).Perform();
+        }
+
+        /// <summary>
+        /// Presses the keys.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        public override void PressKeys(string text)
+        {
+            var localDriver = this.driver.Value;
+            var remoteWebDriver = localDriver as RemoteWebDriver;
+
+            string replacedText = text
+                .Replace("{ALT}", Keys.Alt);
+
+            new OpenQA.Selenium.Interactions.Actions(remoteWebDriver).KeyDown(replacedText).Perform();
+        }
+
+        /// <summary>
+        /// Releases the keys.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        public override void ReleaseKeys(string text)
+        {
+            var localDriver = this.driver.Value;
+            var remoteWebDriver = localDriver as RemoteWebDriver;
+
+            string replacedText = text
+                .Replace("{ALT}", Keys.Alt);
+
+            new OpenQA.Selenium.Interactions.Actions(remoteWebDriver).KeyUp(replacedText).Perform();
+        }
+
+        /// <summary>
+        /// Maximizes the current browser window.
+        /// </summary>
+        public override void Maximize()
+        {
+            this.driver.Value.Manage().Window.Maximize();
+        }
+
+        /// <summary>
+        /// Gets the window rectangle.
+        /// </summary>
+        /// <returns>The window rectangle.</returns>
+        public override Rectangle GetWindowRectangle()
+        {
+            IWindow window = this.driver.Value.Manage().Window;
+
+            return new Rectangle(window.Position, window.Size);
+        }
+
+        /// <summary>
         /// Updates the driver.
         /// </summary>
         /// <param name="driver">The driver.</param>
-        internal void UpdateDriver(Lazy<IWebDriver> driver)
+        public void UpdateDriver(Lazy<IWebDriverEx> driver)
         {
             this.driver = driver;
         }

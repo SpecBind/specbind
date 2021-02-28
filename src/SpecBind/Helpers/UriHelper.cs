@@ -114,7 +114,7 @@ namespace SpecBind.Helpers
         {
             var uriStructure = GetPageUriInternal(browser, pageType);
 
-            if (string.IsNullOrWhiteSpace(uriStructure.UrlTemplate))
+            if (string.IsNullOrWhiteSpace(uriStructure.UrlTemplate) || pageArguments == null)
             {
                 return CreateCompleteUri(uriStructure, false);
             }
@@ -188,7 +188,7 @@ namespace SpecBind.Helpers
                 return new UriStructure(browserUri, false);
             }
 
-            throw new PageNavigationException("No PageNavigationAttribute exists on type: {0}", pageType.Name);
+            throw new PageNavigationException("No PageNavigationAttribute exists on type: {0}", pageType.FullName);
         }
 
         #region Private Class - UriStructure

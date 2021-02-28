@@ -5,13 +5,17 @@
 namespace SpecBind.Tests
 {
     using System;
-    using System.Collections.Generic;
+
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     using Moq;
+
     using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
     using SpecBind.Pages;
     using SpecBind.Tests.Support;
+
+    using System.Collections.Generic;
 
     /// <summary>
     ///     A test fixture for URI helpers.
@@ -259,7 +263,7 @@ namespace SpecBind.Tests
             var url = UriHelper.FillPageUri(
                 browser.Object, typeof(NavigationAttributePage), null);
 
-            Assert.AreEqual("http://localhost:2222/root/{id}", url);
+            Assert.AreEqual("http://localhost:2222/root", url);
 
             browser.VerifyAll();
         }

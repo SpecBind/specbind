@@ -4,8 +4,6 @@
 
 namespace SpecBind.Selenium.Drivers
 {
-    using SpecBind.Configuration;
-
     /// <summary>
     /// Selenium Chrome Headless Driver.
     /// </summary>

@@ -99,7 +99,7 @@ namespace SpecBind.Selenium
             private readonly Dictionary<int, string> cellLookup;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="WebElement" /> class.
+            /// Initializes a new instance of the <see cref="RowWrapper" /> class.
             /// </summary>
             /// <param name="searchContext">The driver used to search for elements.</param>
             /// <param name="cellLookup">The cell lookup.</param>

@@ -1,4 +1,6 @@
-﻿Feature: Test Alerts For Proper Response
+﻿@mstest:DeploymentItem:TechTalk.SpecFlow.MSTest.SpecFlowPlugin.dll
+@mstest:DeploymentItem:SpecBind.MsTest.Steps.dll
+Feature: Test Alerts For Proper Response
 
 Scenario: Display and dismiss an alert box
 	Given I navigated to the Home page

@@ -40,13 +40,21 @@ namespace SpecBind.Helpers
         }
 
         /// <summary>
-		/// Determines whether the current scenario contains the specified tag.
-		/// </summary>
-		/// <param name="tag">The tag.</param>
-		/// <returns>
-		///   <c>true</c> the current scenario contains the specified tag; otherwise, <c>false</c>.
-		/// </returns>
-		public bool ContainsTag(string tag)
+        /// Gets the test results directory.
+        /// </summary>
+        /// <value>
+        /// The test results directory.
+        /// </value>
+        public string TestResultsDirectory { get; private set; }
+
+        /// <summary>
+        /// Determines whether the current scenario contains the specified tag.
+        /// </summary>
+        /// <param name="tag">The tag.</param>
+        /// <returns>
+        ///   <c>true</c> the current scenario contains the specified tag; otherwise, <c>false</c>.
+        /// </returns>
+        public bool ContainsTag(string tag)
         {
             return this.scenarioContext != null && FindTag(this.scenarioContext.ScenarioInfo.Tags, tag);
         }
@@ -181,8 +189,11 @@ namespace SpecBind.Helpers
         /// </summary>
         /// <typeparam name="T">The type of the value.</typeparam>
         /// <param name="key">The key.</param>
-        /// <returns>The value if located.</returns>
-        public T GetValue<T>(string key)
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>
+        /// The value if located.
+        /// </returns>
+        public T GetValue<T>(string key, T defaultValue = default(T))
         {
             try
             {
@@ -190,10 +201,9 @@ namespace SpecBind.Helpers
             }
             catch (KeyNotFoundException)
             {
-                return default(T);
+                return defaultValue;
             }
         }
-
 
         /// <summary>
         /// Sets the value.
@@ -204,6 +214,23 @@ namespace SpecBind.Helpers
         public void SetValue<T>(T value, string key)
         {
             this.scenarioContext.Set(value, key);
+        }
+
+        /// <summary>
+        /// Sets the test results directory.
+        /// </summary>
+        /// <param name="testResultsDirectory">The test results directory.</param>
+        public void SetTestResultsDirectory(string testResultsDirectory)
+        {
+            if (!string.IsNullOrEmpty(testResultsDirectory))
+            {
+                if (!Directory.Exists(testResultsDirectory))
+                {
+                    Directory.CreateDirectory(testResultsDirectory);
+                }
+            }
+
+            this.TestResultsDirectory = testResultsDirectory;
         }
 
         /// <summary>

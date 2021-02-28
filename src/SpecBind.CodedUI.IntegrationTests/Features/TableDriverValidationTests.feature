@@ -1,4 +1,6 @@
-﻿Feature: Integration tests of the table driver for Coded UI
+﻿@mstest:DeploymentItem:TechTalk.SpecFlow.MSTest.SpecFlowPlugin.dll
+@mstest:DeploymentItem:SpecBind.MsTest.Steps.dll
+Feature: Integration tests of the table driver for Coded UI
 	
 Scenario: Validate Table "Start With" Validator
 	 Given I navigated to the Home page

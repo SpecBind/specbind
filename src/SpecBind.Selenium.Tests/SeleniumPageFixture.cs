@@ -4,6 +4,7 @@
 namespace SpecBind.Selenium.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Drawing;
     using System.Linq;
@@ -12,7 +13,8 @@ namespace SpecBind.Selenium.Tests
     using Moq;
 
     using OpenQA.Selenium;
-
+    using OpenQA.Selenium.Interactions;
+    using OpenQA.Selenium.Internal;
     using SpecBind.Actions;
     using SpecBind.Pages;
 
@@ -433,13 +435,16 @@ namespace SpecBind.Selenium.Tests
             var element = new Mock<IWebElement>(MockBehavior.Strict);
             this.SetupClick(element);
 
+            var webDriver = new Mock<IWebDriver>(MockBehavior.Strict);
+
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage, null);
+            var page = new SeleniumPage(nativePage, webDriver.Object);
 
             var result = page.ClickElement(element.Object);
 
             Assert.AreEqual(true, result);
             element.VerifyAll();
+            webDriver.VerifyAll();
         }
 
         /// <summary>
@@ -449,7 +454,7 @@ namespace SpecBind.Selenium.Tests
         public void TestGetElementOptionsForComboBox()
         {
             var optionElement = new Mock<IWebElement>(MockBehavior.Strict);
-            optionElement.SetupGet(e => e.Text).Returns("Option 1");
+            optionElement.Setup(e => e.GetAttribute("text")).Returns("Option 1");
             optionElement.Setup(e => e.GetAttribute("value")).Returns("0");
 
             var element = new Mock<IWebElement>(MockBehavior.Strict);
@@ -560,13 +565,16 @@ namespace SpecBind.Selenium.Tests
             element.SetupGet(e => e.Selected).Returns(false);
             this.SetupClick(element);
 
+            var webDriver = new Mock<IWebDriver>(MockBehavior.Strict);
+
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage, null);
+            var page = new SeleniumPage(nativePage, webDriver.Object);
 
             var fillMethod = page.GetPageFillMethod(null);
             fillMethod(element.Object, "true");
 
             element.VerifyAll();
+            webDriver.VerifyAll();
         }
 
         /// <summary>
@@ -578,16 +586,49 @@ namespace SpecBind.Selenium.Tests
             var element = new Mock<IWebElement>(MockBehavior.Strict);
             element.SetupGet(e => e.TagName).Returns("input");
             element.Setup(e => e.GetAttribute("type")).Returns("radio");
-            this.SetupClick(element);
+            element.SetupGet(e => e.Displayed).Returns(true);
+            element.SetupGet(e => e.Location).Returns(new Point(100, 100)); // Initial element position
+            element.SetupGet(e => e.Location).Returns(new Point(105, 105)); // Element has moved
+            element.SetupGet(e => e.Location).Returns(new Point(105, 105)); // Element has stopped moving
+            element.SetupGet(e => e.Enabled).Returns(true);
+
+            element.As<ILocatable>();
+
+            var webDriver = new Mock<IWebDriver>(MockBehavior.Strict);
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            var webDriverHasInputDevices = webDriver.As<IHasInputDevices>();
+            var keyboard = new Mock<IKeyboard>(MockBehavior.Strict);
+            var mouse = new Mock<IMouse>(MockBehavior.Strict);
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            webDriverHasInputDevices.Setup(x => x.Keyboard).Returns(keyboard.Object);
+            webDriverHasInputDevices.Setup(x => x.Mouse).Returns(mouse.Object);
+            var actionExector = webDriver.As<IActionExecutor>();
+            actionExector.Setup(x => x.IsActionExecutor).Returns(true);
+            actionExector.Setup(x => x.PerformActions(It.IsAny<IList<ActionSequence>>()));
 
             var nativePage = new NativePage();
-            var page = new SeleniumPage(nativePage, null);
+            var page = new SeleniumPage(nativePage, webDriver.Object);
 
             var fillMethod = page.GetPageFillMethod(null);
             fillMethod(element.Object, "true");
 
-            element.Verify(e => e.Click(), Times.Exactly(2));
+            webDriverHasInputDevices.Verify(x => x.Keyboard);
+            webDriverHasInputDevices.Verify(x => x.Mouse);
+            actionExector.Verify(x => x.IsActionExecutor);
+
+            // TODO: verify action sequence
+            var mouseInputDevice = new PointerInputDevice(PointerKind.Mouse, "default mouse");
+            var expectedActionSequence = new ActionSequence(mouseInputDevice);
+            expectedActionSequence.AddAction(mouseInputDevice.CreatePointerMove(element.Object, 0, 0, TimeSpan.FromMilliseconds(250)));
+            expectedActionSequence.AddAction(mouseInputDevice.CreatePointerDown(MouseButton.Left));
+            expectedActionSequence.AddAction(mouseInputDevice.CreatePointerUp(MouseButton.Left));
+            expectedActionSequence.AddAction(mouseInputDevice.CreatePointerDown(MouseButton.Left));
+            expectedActionSequence.AddAction(mouseInputDevice.CreatePointerUp(MouseButton.Left));
+            actionExector.Verify(a => a.PerformActions(It.IsAny<IList<ActionSequence>>()), Times.Exactly(1));
             element.VerifyAll();
+            webDriver.VerifyAll();
         }
 
         /// <summary>
@@ -678,9 +719,16 @@ namespace SpecBind.Selenium.Tests
             var nativePage = new NativePage();
             var page = new SeleniumPage(nativePage, null);
 
-            var result = page.WaitForElement(element.Object, WaitConditions.Exists, null);
+            try
+            {
+                page.WaitForElement(element.Object, WaitConditions.Exists, null);
 
-            Assert.IsFalse(result);
+                Assert.Fail("A TimeoutException is expected.");
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                Assert.AreEqual("Timed out after 0.5 seconds", ex.Message);
+            }
 
             element.VerifyAll();
         }

@@ -24,6 +24,8 @@ namespace SpecBind.Tests
     [TestClass]
     public class PageNavigationStepsFixture
     {
+        private readonly Mock<ILogger> logger = new Mock<ILogger>();
+
         /// <summary>
         /// Tests the GivenNavigateToPageStep with a successful result.
         /// </summary>
@@ -43,7 +45,7 @@ namespace SpecBind.Tests
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object, this.logger.Object);
 
             steps.GivenNavigateToPageStep("mypage");
 
@@ -74,7 +76,7 @@ namespace SpecBind.Tests
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
             tokenManager.Setup(t => t.GetToken(It.IsAny<string>())).Returns<string>(s => s);
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object, this.logger.Object);
 
             var table = new Table("Id", "Part");
             table.AddRow("1", "A");
@@ -104,7 +106,7 @@ namespace SpecBind.Tests
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object, this.logger.Object);
 
             steps.GivenEnsureOnPageStep("mypage");
 
@@ -126,6 +128,9 @@ namespace SpecBind.Tests
             pipelineService.Setup(p => p.PerformAction<GetElementAsPageAction>(
                 page.Object, It.Is<ActionContext>(a => a.PropertyName == "myproperty")))
                            .Returns(ActionResult.Successful(listItem.Object));
+            pipelineService.Setup(p => p.PerformAction<DialogNavigationAction>(
+                page.Object, It.Is<WaitForActionBase.WaitForActionBaseContext>(a => a.PropertyName == "myproperty")))
+                           .Returns(ActionResult.Successful(listItem.Object));
 
 
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
@@ -138,7 +143,7 @@ namespace SpecBind.Tests
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object, this.logger.Object);
 
             steps.GivenEnsureOnDialogStep("my property");
 
@@ -159,7 +164,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             pipelineService.Setup(p => p.PerformAction<WaitForPageAction>(
                 null,
-                It.Is<WaitForPageAction.WaitForPageActionContext>(c => c.PropertyName == "mypage" && c.Timeout == null)))
+                It.Is<WaitForPageAction.WaitForActionBaseContext>(c => c.PropertyName == "mypage" && c.Timeout == null)))
                 .Returns(ActionResult.Successful(testPage.Object));
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
@@ -167,7 +172,7 @@ namespace SpecBind.Tests
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object, this.logger.Object);
 
             steps.WaitForPageStep("mypage");
 
@@ -187,7 +192,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             pipelineService.Setup(p => p.PerformAction<WaitForPageAction>(
                 null,
-                It.Is<WaitForPageAction.WaitForPageActionContext>(c => c.PropertyName == "mypage" && c.Timeout == null)))
+                It.Is<WaitForPageAction.WaitForActionBaseContext>(c => c.PropertyName == "mypage" && c.Timeout == null)))
                 .Returns(ActionResult.Failure(new PageNavigationException("Navigation Failed")));
 
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
@@ -198,7 +203,7 @@ namespace SpecBind.Tests
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object, this.logger.Object);
 
             ExceptionHelper.SetupForException<PageNavigationException>(() => steps.WaitForPageStep("mypage"),
                 e =>
@@ -221,7 +226,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             pipelineService.Setup(p => p.PerformAction<WaitForPageAction>(
                 null,
-                It.Is<WaitForPageAction.WaitForPageActionContext>(c => c.PropertyName == "mypage" && c.Timeout == TimeSpan.FromSeconds(10))))
+                It.Is<WaitForPageAction.WaitForActionBaseContext>(c => c.PropertyName == "mypage" && c.Timeout == TimeSpan.FromSeconds(10))))
                 .Returns(ActionResult.Successful(testPage.Object));
 
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
@@ -232,7 +237,7 @@ namespace SpecBind.Tests
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object, this.logger.Object);
 
             steps.WaitForPageStepWithTimeout(10, "mypage");
 
@@ -253,7 +258,7 @@ namespace SpecBind.Tests
             var pipelineService = new Mock<IActionPipelineService>(MockBehavior.Strict);
             pipelineService.Setup(p => p.PerformAction<WaitForPageAction>(
                 null,
-                It.Is<WaitForPageAction.WaitForPageActionContext>(c => c.PropertyName == "mypage" && c.Timeout == null)))
+                It.Is<WaitForPageAction.WaitForActionBaseContext>(c => c.PropertyName == "mypage" && c.Timeout == null)))
                 .Returns(ActionResult.Successful(testPage.Object));
 
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
@@ -264,7 +269,7 @@ namespace SpecBind.Tests
 
             var tokenManager = new Mock<ITokenManager>(MockBehavior.Strict);
 
-            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object);
+            var steps = new PageNavigationSteps(scenarioContext.Object, pipelineService.Object, tokenManager.Object, this.logger.Object);
 
             steps.WaitForPageStepWithTimeout(0, "mypage");
 

@@ -1,4 +1,6 @@
-﻿Feature: Token Passing Tests
+﻿@mstest:DeploymentItem:TechTalk.SpecFlow.MSTest.SpecFlowPlugin.dll
+@mstest:DeploymentItem:SpecBind.MsTest.Steps.dll
+Feature: Token Passing Tests
 	
 Scenario: Passing a token into an input field and using for validation
 	Given I navigated to the Home page

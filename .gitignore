@@ -94,7 +94,6 @@ AppPackages/
 [Oo]bj
 sql
 TestResults
-[Tt]est[Rr]esult*
 *.Cache
 ClientBin
 [Ss]tyle[Cc]op.*
@@ -115,3 +114,4 @@ UpgradeLog*.XML
 src/SpecBind.sln.DotSettings
 examples/FullDemo/ContosoUniversity/App_Data/School.sdf
 /examples/FullDemo/ContosoUniversity/Properties/PublishProfiles/ContosoUniversity.pubxml
+*.feature.cs

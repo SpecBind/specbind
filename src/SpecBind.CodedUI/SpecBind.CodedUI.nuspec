@@ -14,15 +14,14 @@
     <tags>specbind codedui</tags>
     <language>en-US</language>
     <dependencies>
-      <group targetFramework=".NETFramework4.6">
+      <group targetFramework=".NETFramework4.7.2">
         <dependency id="SpecBind" version="$version$" />
-        <dependency id="SpecBindGeneratorPlugin.SpecFlow" version="$version$" />
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\SpecBind.CodedUI.dll" target="lib\net46" />
-    <file src="bin\Release\SpecBind.CodedUI.xml" target="lib\net46" />
+    <file src="bin\Release\net472\SpecBind.CodedUI.dll" target="lib\net472" />
+    <file src="bin\Release\net472\SpecBind.CodedUI.xml" target="lib\net472" />
     <file src="Deployment\App.config.install.xdt" target="content" />
     <file src="Deployment\App.config.uninstall.xdt" target="content" />
   </files>

@@ -30,7 +30,7 @@ namespace SpecBind.Tests.Actions
         {
             var action = new Mock<IAction>(MockBehavior.Strict);
             var context = new Mock<ActionContext>(MockBehavior.Strict, "testproperty");
-            var postAction = new Mock<NavigationPostAction>(MockBehavior.Strict);
+            var postAction = new Mock<NavigationPostAction>(MockBehavior.Strict, null);
 
             var result = ActionResult.Failure();
             postAction.Object.PerformPostAction(action.Object, context.Object, result);
@@ -50,7 +50,7 @@ namespace SpecBind.Tests.Actions
             action.SetupGet(a => a.Name).Returns("OtherAction");
 
             var context = new Mock<ActionContext>(MockBehavior.Strict, "testproperty");
-            var postAction = new Mock<NavigationPostAction>(MockBehavior.Strict);
+            var postAction = new Mock<NavigationPostAction>(MockBehavior.Strict, null);
 
             var result = ActionResult.Successful();
             postAction.Object.PerformPostAction(action.Object, context.Object, result);
@@ -71,10 +71,12 @@ namespace SpecBind.Tests.Actions
             var logger = new Mock<ILogger>();
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            var action = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var action = new PageNavigationAction(logger.Object, pageMapper.Object);
             var context = new PageNavigationAction.PageNavigationActionContext("testproperty", PageNavigationAction.PageAction.NavigateToPage);
 
-            var postAction = new Mock<NavigationPostAction>(MockBehavior.Strict);
+            var postAction = new Mock<NavigationPostAction>(MockBehavior.Strict, null);
             postAction.Protected().Setup("OnPageNavigate", page.Object, PageNavigationAction.PageAction.NavigateToPage, ItExpr.IsNull<Dictionary<string, string>>());
 
             var result = ActionResult.Successful(page.Object);
@@ -97,11 +99,13 @@ namespace SpecBind.Tests.Actions
             var logger = new Mock<ILogger>();
             var browser = new Mock<IBrowser>(MockBehavior.Strict);
 
-            var action = new PageNavigationAction(browser.Object, logger.Object, pageMapper.Object);
+            WebDriverSupport.CurrentBrowser = browser.Object;
+
+            var action = new PageNavigationAction(logger.Object, pageMapper.Object);
             var arguments = new Dictionary<string, string> { { "MyKey", "MyValue" } };
             var context = new PageNavigationAction.PageNavigationActionContext("testproperty", PageNavigationAction.PageAction.NavigateToPage, arguments);
 
-            var postAction = new Mock<NavigationPostAction>(MockBehavior.Strict);
+            var postAction = new Mock<NavigationPostAction>(MockBehavior.Strict, null);
             postAction.Protected().Setup("OnPageNavigate", page.Object, PageNavigationAction.PageAction.NavigateToPage, arguments);
 
             var result = ActionResult.Successful(page.Object);

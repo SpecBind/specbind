@@ -37,7 +37,14 @@ namespace SpecBind.Selenium
         {
             this.builderFunc = new Lazy<Func<ISearchContext, IBrowser, Action<object>, object>>(this.CreateBuilderFunction);
             this.locator = new Lazy<By>(this.GetElementLocator);
+            this.Cache = true;
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to cache the element lookup.
+        /// </summary>
+        /// <value><c>true</c> if cache; otherwise, <c>false</c>.</value>
+        public bool Cache { get; set; }
 
         /// <summary>
         /// Creates the element.
@@ -50,7 +57,7 @@ namespace SpecBind.Selenium
         {
             if (this.locator.Value != null)
             {
-                if (this.itemCollection == null)
+                if ((this.itemCollection == null) || (!this.Cache))
                 {
                     this.itemCollection = this.BuildItemCollection(parentElement);
                 }

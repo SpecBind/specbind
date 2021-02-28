@@ -55,6 +55,11 @@ namespace SpecBind.CodedUI
         /// <param name="nativeAttributes">The native attributes.</param>
         protected override void AssignElementAttributes(HtmlControl control, ElementLocatorAttribute attribute, object[] nativeAttributes)
         {
+            if (!string.IsNullOrEmpty(attribute.XPath))
+            {
+                throw new NotSupportedException($"Attribute '{nameof(ElementLocatorAttribute.XPath)}' is not supported in CodedUI.");
+            }
+
             SetProperty(control.SearchProperties, HtmlControl.PropertyNames.Id, attribute.Id);
             SetProperty(control.SearchProperties, UITestControl.PropertyNames.Name, attribute.Name);
             SetProperty(control.SearchProperties, HtmlControl.PropertyNames.TagName, attribute.TagName);

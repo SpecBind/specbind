@@ -20,6 +20,9 @@ namespace SpecBind.Tests
     [TestClass]
     public class TokenStepsFixture
     {
+        private readonly Mock<ILogger> logger = new Mock<ILogger>();
+        private readonly Mock<ITokenManager> tokenManager = new Mock<ITokenManager>();
+
         /// <summary>
         /// Tests the SetTokenFromFieldStep method pulls the value from the field and sets the value.
         /// </summary>
@@ -37,7 +40,7 @@ namespace SpecBind.Tests
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
             scenarioContext.Setup(s => s.GetCurrentPage()).Returns(page.Object);
 
-            var steps = new TokenSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new TokenSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object, this.tokenManager.Object);
 
             steps.SetTokenFromFieldStep("MyToken", "SomeField");
 
@@ -64,7 +67,7 @@ namespace SpecBind.Tests
 
             var scenarioContext = new Mock<IScenarioContextHelper>(MockBehavior.Strict);
 
-            var steps = new TokenSteps(scenarioContext.Object, pipelineService.Object);
+            var steps = new TokenSteps(scenarioContext.Object, pipelineService.Object, this.logger.Object, this.tokenManager.Object);
 
             steps.ValidateTokenValueStep("My Token", "Equals ", " test");
 

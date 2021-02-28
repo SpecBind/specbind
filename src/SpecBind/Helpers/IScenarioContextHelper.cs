@@ -12,6 +12,14 @@ namespace SpecBind.Helpers
 	public interface IScenarioContextHelper
     {
         /// <summary>
+        /// Gets the test results directory.
+        /// </summary>
+        /// <value>
+        /// The test results directory.
+        /// </value>
+        string TestResultsDirectory { get; }
+
+        /// <summary>
         /// Determines whether the current scenario contains the specified tag.
         /// </summary>
         /// <param name="tag">The tag.</param>
@@ -58,16 +66,27 @@ namespace SpecBind.Helpers
         /// <returns><c>true</c> the current feature contains the specified tag; otherwise, <c>false</c>.</returns>
         bool FeatureContainsTag(string tag);
 
-        /// <summary>Gets the value.</summary>
+        /// <summary>
+        /// Gets the value.
+        /// </summary>
         /// <typeparam name="T">The type of the value.</typeparam>
         /// <param name="key">The key.</param>
-        /// <returns>The value if located.</returns>
-        T GetValue<T>(string key);
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>
+        /// The value if located.
+        /// </returns>
+        T GetValue<T>(string key, T defaultValue = default);
 
         /// <summary>Sets the value.</summary>
         /// <typeparam name="T">The type of the value.</typeparam>
         /// <param name="value">The value.</param>
         /// <param name="key">The key.</param>
         void SetValue<T>(T value, string key);
+
+        /// <summary>
+        /// Sets the test results directory.
+        /// </summary>
+        /// <param name="testResultsDirectory">The test results directory.</param>
+        void SetTestResultsDirectory(string testResultsDirectory);
     }
 }

@@ -14,6 +14,7 @@ namespace SpecBind.Configuration
     {
         private const string ApplicationElementName = @"application";
         private const string BrowserFactoryElementName = @"browserFactory";
+        private const string PageHistoryServiceElementName = @"pageHistoryService";
 
         /// <summary>
         /// Gets or sets the application configuration element.
@@ -48,6 +49,24 @@ namespace SpecBind.Configuration
             set
             {
                 this[BrowserFactoryElementName] = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the page history service.
+        /// </summary>
+        /// <value>The page history service.</value>
+        [ConfigurationProperty(PageHistoryServiceElementName, DefaultValue = null, IsRequired = false)]
+        public PageHistoryServiceConfigurationElement PageHistoryService
+        {
+            get
+            {
+                return (PageHistoryServiceConfigurationElement)this[PageHistoryServiceElementName];
+            }
+
+            set
+            {
+                this[PageHistoryServiceElementName] = value;
             }
         }
 

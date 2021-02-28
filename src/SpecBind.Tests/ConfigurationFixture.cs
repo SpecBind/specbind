@@ -37,6 +37,7 @@ namespace SpecBind.Tests
                     Provider = "MyProvider, MyProvider.Class",
                     EnsureCleanSession = true,
                     ElementLocateTimeout = TimeSpan.FromSeconds(10),
+                    PageLoadStrategy = "Eager",
                     PageLoadTimeout = TimeSpan.FromSeconds(15),
                     ValidateWebDriver = true,
                     ReuseBrowser = true
@@ -50,6 +51,7 @@ namespace SpecBind.Tests
             Assert.AreEqual("MyProvider, MyProvider.Class", section.BrowserFactory.Provider);
             Assert.AreEqual("Chrome", section.BrowserFactory.BrowserType);
             Assert.AreEqual(TimeSpan.FromSeconds(10), section.BrowserFactory.ElementLocateTimeout);
+            Assert.AreEqual("Eager", section.BrowserFactory.PageLoadStrategy);
             Assert.AreEqual(TimeSpan.FromSeconds(15), section.BrowserFactory.PageLoadTimeout);
             Assert.AreEqual(true, section.BrowserFactory.EnsureCleanSession);
             Assert.AreEqual(true, section.BrowserFactory.CreateScreenshotOnExit);

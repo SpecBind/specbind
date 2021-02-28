@@ -36,7 +36,6 @@ namespace SpecBind.Tests.PropertyHandlers
             propertyData.TestForNotSupportedException(p => p.ClickElement(), "Clicking an element");
             propertyData.TestForNotSupportedException(p => p.CheckElementEnabled(), "Checking for an element being enabled");
             propertyData.TestForNotSupportedException(p => p.CheckElementExists(), "Checking for an element existing");
-            propertyData.TestForNotSupportedException(p => p.FillData(null));
             propertyData.TestForNotSupportedException(p => p.FindItemInList(null), "Finding an item in a list");
             propertyData.TestForNotSupportedException(p => p.GetItemAsPage(), "Getting a property as a page item");
             propertyData.TestForNotSupportedException(p => p.GetItemAtIndex(1), "Getting an item at a given index");
@@ -110,7 +109,8 @@ namespace SpecBind.Tests.PropertyHandlers
                         Assert.AreSame(p, mock.Object);
                         return f(element);
                     },
-                "href");
+                "href",
+                null);
         }
     }
 }

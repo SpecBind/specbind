@@ -9,6 +9,7 @@ namespace SpecBind.Selenium.Drivers
     using OpenQA.Selenium;
     using OpenQA.Selenium.Firefox;
     using SpecBind.Configuration;
+    using TechTalk.SpecFlow;
 
     /// <summary>
     /// Selenium Firefox Driver.
@@ -19,10 +20,16 @@ namespace SpecBind.Selenium.Drivers
         /// Creates the web driver from the specified browser factory configuration.
         /// </summary>
         /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        /// <returns>The configured web driver.</returns>
-        protected override IWebDriver CreateLocalDriver(BrowserFactoryConfiguration browserFactoryConfiguration)
+        /// <param name="scenarioContext">The scenario context.</param>
+        /// <returns>
+        /// The configured web driver.
+        /// </returns>
+        protected override IWebDriverEx CreateLocalDriver(
+            BrowserFactoryConfiguration browserFactoryConfiguration,
+            ScenarioContext scenarioContext)
         {
-            IWebDriver driver;
+            FirefoxDriverService firefoxDriverService = FirefoxDriverService.CreateDefaultService();
+            IWebDriverEx driver;
 
             if (browserFactoryConfiguration.Settings != null && browserFactoryConfiguration.Settings.Count > 0)
             {
@@ -51,11 +58,11 @@ namespace SpecBind.Selenium.Drivers
                     }
                 }
 
-                driver = new FirefoxDriver(options);
+                driver = new FirefoxDriverEx(firefoxDriverService, options);
             }
             else
             {
-                driver = new FirefoxDriver();
+                driver = new FirefoxDriverEx(firefoxDriverService);
             }
 
             if (browserFactoryConfiguration.EnsureCleanSession)

@@ -4,28 +4,87 @@
 
 namespace SpecBind.Selenium.Drivers
 {
+    using System;
     using System.IO;
     using System.Net;
     using Configuration;
+    using Microsoft.Edge.SeleniumTools;
     using Microsoft.Win32;
     using OpenQA.Selenium;
-    using OpenQA.Selenium.Edge;
+    using SpecBind.Helpers;
+    using TechTalk.SpecFlow;
 
     /// <summary>
     /// Selenium Edge Driver.
     /// </summary>
     internal class SeleniumEdgeDriver : SeleniumDriverBase
     {
+        private readonly string logFilePath;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SeleniumEdgeDriver" /> class.
+        /// </summary>
+        /// <param name="testResultsDirectory">The test results directory.</param>
+        public SeleniumEdgeDriver(string testResultsDirectory)
+        {
+            if (testResultsDirectory != null)
+            {
+                this.logFilePath = Path.Combine(testResultsDirectory, "selenium.log");
+            }
+        }
+
+        /// <summary>
+        /// Stops this instance.
+        /// </summary>
+        /// <param name="scenarioContext">The scenario context.</param>
+        public override void Stop(ScenarioContext scenarioContext)
+        {
+            base.Stop(scenarioContext);
+
+            TestResultFileNotifier testResultFileNotifier = scenarioContext.ScenarioContainer.Resolve<TestResultFileNotifier>();
+
+            if (!string.IsNullOrEmpty(this.logFilePath))
+            {
+                testResultFileNotifier.AddTestResultFile(this.logFilePath);
+            }
+        }
+
         /// <summary>
         /// Creates the web driver from the specified browser factory configuration.
         /// </summary>
         /// <param name="browserFactoryConfiguration">The browser factory configuration.</param>
-        /// <returns>The configured web driver.</returns>
-        protected override IWebDriver CreateLocalDriver(BrowserFactoryConfiguration browserFactoryConfiguration)
+        /// <param name="scenarioContext">The scenario context.</param>
+        /// <returns>
+        /// The configured web driver.
+        /// </returns>
+        protected override IWebDriverEx CreateLocalDriver(
+            BrowserFactoryConfiguration browserFactoryConfiguration,
+            ScenarioContext scenarioContext)
         {
-            var edgeOptions = new EdgeOptions { PageLoadStrategy = EdgePageLoadStrategy.Normal };
-            var edgeDriverService = EdgeDriverService.CreateDefaultService();
-            return new EdgeDriver(edgeDriverService, edgeOptions);
+            var edgeOptions = new EdgeOptions
+            {
+                PageLoadStrategy = (PageLoadStrategy)Enum.Parse(typeof(PageLoadStrategy), browserFactoryConfiguration.PageLoadStrategy, true),
+                UnhandledPromptBehavior = UnhandledPromptBehavior.DismissAndNotify,
+                UseChromium = true, // TODO: make optional
+            };
+            var edgeDriverService = EdgeDriverService.CreateChromiumService();
+
+            // explicitly set the host, otherwise the following exception is thrown:
+            // OpenQA.Selenium.WebDriverException: Cannot start the driver service on http://localhost:17556/
+            //
+            // To get more details about the error, running "C:\windows\SysWOW64\MicrosoftWebDriver.exe --verbose" in an elevated command prompt displays the following error:
+            // HttpAddUrlToUrlGroup failed with 1232
+            //
+            // The host can be specified on the command line as follows:
+            // MicrosoftWebDriver.exe --host=127.0.0.1
+            edgeDriverService.Host = "127.0.0.1"; // or localhost
+            edgeDriverService.UseVerboseLogging = true;
+
+            Environment.SetEnvironmentVariable("webdriver.edge.logfile", this.logFilePath);
+
+            Console.WriteLine($"EdgeDriverService LogFile: '{this.logFilePath}'.");
+
+            return new EdgeDriverEx(edgeDriverService, edgeOptions);
         }
 
         /// <summary>

@@ -52,7 +52,7 @@ namespace SpecBind.Tests.PropertyHandlers
             var element = new BaseElement();
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
             pageBase.SetupGet(p => p.PageType).Returns(typeof(TestBase));
-            pageBase.Setup(p => p.ElementExistsCheck(element)).Returns(false);
+            pageBase.Setup(p => p.WaitForElement(element, WaitConditions.Exists, null)).Returns(false);
 
             var propertyData = CreatePropertyData(pageBase, element);
 
@@ -69,7 +69,7 @@ namespace SpecBind.Tests.PropertyHandlers
         {
             var element = new BaseElement();
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
-            pageBase.Setup(p => p.ElementExistsCheck(element)).Returns(true);
+            pageBase.Setup(p => p.WaitForElement(element, WaitConditions.Exists, null)).Returns(true);
             pageBase.Setup(p => p.ClickElement(element)).Returns(true);
 
             var propertyData = CreatePropertyData(pageBase, element);
@@ -88,7 +88,7 @@ namespace SpecBind.Tests.PropertyHandlers
         {
             var element = new BaseElement();
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
-            pageBase.Setup(p => p.ElementExistsCheck(element)).Returns(true);
+            pageBase.Setup(p => p.WaitForElement(element, WaitConditions.Exists, null)).Returns(true);
             pageBase.Setup(p => p.ClickElement(element)).Returns(false);
 
             var propertyData = CreatePropertyData(pageBase, element);
@@ -146,7 +146,7 @@ namespace SpecBind.Tests.PropertyHandlers
             var element = new BaseElement();
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
             pageBase.SetupGet(p => p.PageType).Returns(typeof(TestBase));
-            pageBase.Setup(p => p.ElementExistsCheck(element)).Returns(false);
+            pageBase.Setup(p => p.WaitForElement(element, WaitConditions.Exists, null)).Returns(false);
 
             var propertyData = CreatePropertyData(pageBase, element);
 
@@ -167,7 +167,7 @@ namespace SpecBind.Tests.PropertyHandlers
             var element = new BaseElement();
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
             pageBase.SetupGet(p => p.PageType).Returns(typeof(TestBase));
-            pageBase.Setup(p => p.ElementExistsCheck(element)).Returns(true);
+            pageBase.Setup(p => p.WaitForElement(element, WaitConditions.Exists, null)).Returns(true);
             pageBase.Setup(p => p.GetPageFillMethod(typeof(BaseElement))).Returns((Action<BaseElement, string>)null);
 
             var propertyData = CreatePropertyData(pageBase, element);
@@ -188,7 +188,7 @@ namespace SpecBind.Tests.PropertyHandlers
             var fillMethod = new Action<BaseElement, string>((e, s) => Assert.AreEqual(s, "My Data"));
 
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
-            pageBase.Setup(p => p.ElementExistsCheck(element)).Returns(true);
+            pageBase.Setup(p => p.WaitForElement(element, WaitConditions.Exists, null)).Returns(true);
             pageBase.Setup(p => p.GetPageFillMethod(typeof(BaseElement))).Returns(fillMethod);
 
             var propertyData = CreatePropertyData(pageBase, element);
@@ -225,7 +225,7 @@ namespace SpecBind.Tests.PropertyHandlers
             var element = new BaseElement();
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
             pageBase.SetupGet(p => p.PageType).Returns(typeof(TestBase));
-            pageBase.Setup(p => p.ElementExistsCheck(element)).Returns(false);
+            pageBase.Setup(p => p.WaitForElement(element, WaitConditions.Exists, null)).Returns(false);
 
             var propertyData = CreatePropertyData(pageBase, element);
 
@@ -266,7 +266,7 @@ namespace SpecBind.Tests.PropertyHandlers
             var element = new BaseElement();
 
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
-            pageBase.Setup(p => p.ElementExistsCheck(element)).Returns(true);
+            pageBase.Setup(p => p.WaitForElement(element, WaitConditions.Exists, null)).Returns(true);
             pageBase.Setup(p => p.GetElementText(element)).Returns("My Data");
 
             var propertyData = CreatePropertyData(pageBase, element);
@@ -339,7 +339,7 @@ namespace SpecBind.Tests.PropertyHandlers
             var page = new Mock<IPage>(MockBehavior.Strict);
 
             var pageBase = new Mock<IPageElementHandler<BaseElement>>(MockBehavior.Strict);
-            pageBase.Setup(p => p.ElementExistsCheck(element)).Returns(true);
+            pageBase.Setup(p => p.WaitForElement(element, WaitConditions.Exists, null)).Returns(true);
             pageBase.Setup(p => p.GetElementText(element)).Returns("My Value");
 
             var propertyData = CreatePropertyData(pageBase, element);

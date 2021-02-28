@@ -82,11 +82,43 @@ namespace SpecBind.PropertyHandlers
         }
 
         /// <summary>
+        /// Clears the cache for the element that this property represents.
+        /// </summary>
+        public virtual void ClearCache()
+        {
+            throw this.CreateNotSupportedException("Clearing the cache of an element");
+        }
+
+        /// <summary>
         /// Clicks the element that this property represents.
         /// </summary>
         public virtual void ClickElement()
         {
             throw this.CreateNotSupportedException("Clicking an element");
+        }
+
+        /// <summary>
+        /// Moves the mouse over the element that this property represents.
+        /// </summary>
+        public virtual void MouseOverElement()
+        {
+            throw this.CreateNotSupportedException("Mouse over an element");
+        }
+
+        /// <summary>
+        /// Double-clicks the element that this property represents.
+        /// </summary>
+        public virtual void DoubleClickElement()
+        {
+            throw this.CreateNotSupportedException("Double-clicking an element");
+        }
+
+        /// <summary>
+        /// Right-clicks the element that this property represents.
+        /// </summary>
+        public virtual void RightClickElement()
+        {
+            throw this.CreateNotSupportedException("Right-clicking an element");
         }
 
         /// <summary>
@@ -164,6 +196,16 @@ namespace SpecBind.PropertyHandlers
         public virtual IPage GetItemAsPage()
         {
             throw this.CreateNotSupportedException("Getting a property as a page item");
+        }
+
+        /// <summary>
+        /// Gets the item as context in page.
+        /// </summary>
+        /// <param name="parent">The parent.</param>
+        /// <returns>The item as context in page.</returns>
+        public virtual IPage GetItemAsContextInPage(IPage parent)
+        {
+            throw this.CreateNotSupportedException("Getting a property as context in page");
         }
 
         /// <summary>
@@ -281,7 +323,7 @@ namespace SpecBind.PropertyHandlers
         /// <returns>The created exception.</returns>
         private Exception CreateNotSupportedException(string operationName)
         {
-            return new NotSupportedException(string.Format("{0} is not suppported by property type '{1}'", operationName, this.GetType().Name));
+            return new NotSupportedException(string.Format("{0} is not supported by property type '{1}'", operationName, this.GetType().Name));
         }
     }
 }

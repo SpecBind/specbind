@@ -10,6 +10,7 @@ namespace SpecBind.Selenium
     using System.Text;
 
     using OpenQA.Selenium;
+    using OpenQA.Selenium.Appium;
 
     using SpecBind.Pages;
 
@@ -32,6 +33,7 @@ namespace SpecBind.Selenium
             SetProperty(locators, attribute, a => By.LinkText(a.Text), a => a.Text != null);
             SetProperty(locators, attribute, a => By.CssSelector(a.CssSelector), a => a.CssSelector != null);
             SetProperty(locators, attribute, a => By.XPath(a.XPath), a => a.XPath != null);
+            SetProperty(locators, attribute, a => MobileBy.AccessibilityId(a.AccessibilityId), a => a.AccessibilityId != null);
 
             var xpathTag = new XPathTag(attribute.NormalizedTagName);
 
@@ -123,7 +125,7 @@ namespace SpecBind.Selenium
             }
 
             /// <summary>
-            /// Gets or sets the index.
+            /// Sets the index.
             /// </summary>
             /// <value>The index.</value>
             public int? Index { private get; set; }
@@ -172,7 +174,6 @@ namespace SpecBind.Selenium
                 {
                     builder.Append("(");
                 }
-
 
                 // append the base tag
                 builder.AppendFormat("//{0}[", this.TagName ?? "UNKNOWN");

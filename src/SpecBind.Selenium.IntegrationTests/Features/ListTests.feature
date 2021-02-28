@@ -1,4 +1,5 @@
-﻿Feature: Integration tests for the list features of SpecBind
+﻿@mstest:DeploymentItem:TechTalk.SpecFlow.MSTest.SpecFlowPlugin.dll
+Feature: Integration tests for the list features of SpecBind
 
 Scenario: Nested Lists By Index
 	Given I navigated to the Student Courses page

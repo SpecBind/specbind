@@ -39,7 +39,7 @@ namespace SpecBind.Pages
         /// <value>
         /// The URL.
         /// </value>
-        public string Url { get; private set; }
+        public virtual string Url { get; private set; }
 
         /// <summary>
         /// Gets or sets the fill template to use if a pattern is needed for the URI.

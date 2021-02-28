@@ -1,4 +1,6 @@
-﻿Feature: Validation Tests for an Ordered Div
+﻿@mstest:DeploymentItem:TechTalk.SpecFlow.MSTest.SpecFlowPlugin.dll
+@mstest:DeploymentItem:SpecBind.MsTest.Steps.dll
+Feature: Validation Tests for an Ordered Div
 	Contains tests for ordered div list validation features.
 
 Background: 

@@ -7,7 +7,7 @@ namespace SpecBind.ActionPipeline
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
+    using Helpers;
     using SpecBind.Pages;
 
     /// <summary>
@@ -24,17 +24,20 @@ namespace SpecBind.ActionPipeline
     internal class ActionPipelineService : IActionPipelineService
     {
         private readonly IActionRepository actionRepository;
+        private readonly PageHistoryService pageHistoryService;
 
         private bool actionRepositoryInitialized;
 
         /// <summary>
-		/// Initializes a new instance of the <see cref="ActionPipelineService"/> class.
-		/// </summary>
-		/// <param name="actionRepository">The action repository.</param>
-		public ActionPipelineService(IActionRepository actionRepository)
+        /// Initializes a new instance of the <see cref="ActionPipelineService" /> class.
+        /// </summary>
+        /// <param name="actionRepository">The action repository.</param>
+        /// <param name="pageHistoryService">The page history service.</param>
+        public ActionPipelineService(IActionRepository actionRepository, PageHistoryService pageHistoryService)
         {
             this.actionRepository = actionRepository;
             this.actionRepositoryInitialized = false;
+            this.pageHistoryService = pageHistoryService;
         }
 
         /// <summary>
@@ -99,7 +102,7 @@ namespace SpecBind.ActionPipeline
         private IElementLocator CreateElementLocater(IPage page)
         {
             var filterActions = this.actionRepository.GetLocatorActions();
-            return new ElementLocator(page, filterActions);
+            return new ElementLocator(page, this.pageHistoryService, filterActions);
         }
 
         /// <summary>

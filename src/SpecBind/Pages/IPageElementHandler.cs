@@ -40,12 +40,26 @@ namespace SpecBind.Pages
         bool ElementNotExistsCheck(TElement element);
 
         /// <summary>
+        /// Clears the cache.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        void ClearCache(TElement element);
+
+        /// <summary>
         /// Gets the element attribute value.
         /// </summary>
         /// <param name="element">The element.</param>
         /// <param name="attributeName">Name of the attribute.</param>
         /// <returns>The attribute's value.</returns>
         string GetElementAttributeValue(TElement element, string attributeName);
+
+        /// <summary>
+        /// Sets the element attribute value.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="attributeName">Name of the attribute.</param>
+        /// <param name="value">The value.</param>
+        void SetElementAttributeValue(TElement element, string attributeName, string value);
 
         /// <summary>
         /// Gets the element options for multi-select or list options.
@@ -72,10 +86,29 @@ namespace SpecBind.Pages
         /// Clicks the element.
         /// </summary>
         /// <param name="element">The element.</param>
-        /// <returns>
-        /// True if the click is successful.
-        /// </returns>
+        /// <returns><c>true</c> if the element is clicked, <c>false</c> otherwise.</returns>
         bool ClickElement(TElement element);
+
+        /// <summary>
+        /// Moves the mouse over the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns><c>true</c> if the mouse moved over the element, <c>false</c> otherwise.</returns>
+        bool MouseOverElement(TElement element);
+
+        /// <summary>
+        /// Double-clicks the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns><c>true</c> if the element is double-clicked, <c>false</c> otherwise.</returns>
+        bool DoubleClickElement(TElement element);
+
+        /// <summary>
+        /// Right-clicks the element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns><c>true</c> if the element is right-clicked, <c>false</c> otherwise.</returns>
+        bool RightClickElement(TElement element);
 
         /// <summary>
         /// Gets the clears method.

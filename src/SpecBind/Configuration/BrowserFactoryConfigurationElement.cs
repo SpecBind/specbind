@@ -22,7 +22,7 @@ namespace SpecBind.Configuration
         private const string ReuseBrowserElementName = "reuseBrowser";
         private const string ValidateWebDriverElementName = "validateWebDriver";
         private const string WaitForPendingAjaxCallsViaElementName = "waitForPendingAjaxCallsVia";
-
+        private const string PageLoadStrategyElementName = "pageLoadStrategy";
 
         /// <summary>
         /// Gets or sets the type of the browser to use for testing.
@@ -192,7 +192,6 @@ namespace SpecBind.Configuration
             }
         }
 
-
         /// <summary>
         /// Gets or sets a value indicating what mechanism, if any,
         /// to use to check for pending AJAX requests before proceeding with each step.
@@ -208,6 +207,26 @@ namespace SpecBind.Configuration
             set
             {
                 this[WaitForPendingAjaxCallsViaElementName] = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the page load strategy.
+        /// </summary>
+        /// <value>
+        /// The page load strategy.
+        /// </value>
+        [ConfigurationProperty(PageLoadStrategyElementName, DefaultValue = "Default", IsRequired = false)]
+        public string PageLoadStrategy
+        {
+            get
+            {
+                return (string)this[PageLoadStrategyElementName];
+            }
+
+            set
+            {
+                this[PageLoadStrategyElementName] = value;
             }
         }
     }

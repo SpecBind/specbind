@@ -5,7 +5,6 @@ namespace SpecBind.Actions
 {
     using System;
     using SpecBind.ActionPipeline;
-    using SpecBind.Helpers;
     using SpecBind.Pages;
 
     /// <summary>

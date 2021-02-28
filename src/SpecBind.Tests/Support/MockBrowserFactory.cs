@@ -42,8 +42,11 @@ namespace SpecBind.Tests.Support
         /// Creates the browser.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        /// <returns>A browser object.</returns>
-        protected override IBrowser CreateBrowser(ILogger logger)
+        /// <param name="testResultsDirectory">The test results directory.</param>
+        /// <returns>
+        /// A browser object.
+        /// </returns>
+        protected override IBrowser CreateBrowser(ILogger logger, string testResultsDirectory)
         {
             this.BrowserMock = new Mock<IBrowser>();
             return this.BrowserMock.Object;

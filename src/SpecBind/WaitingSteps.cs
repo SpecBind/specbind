@@ -4,12 +4,11 @@
 namespace SpecBind
 {
     using System;
-
+    using System.Threading;
     using SpecBind.ActionPipeline;
     using SpecBind.Actions;
     using SpecBind.BrowserSupport;
     using SpecBind.Helpers;
-
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -63,12 +62,16 @@ namespace SpecBind
         private readonly IActionPipelineService actionPipelineService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AlertBoxSteps"/> class.
+        /// Initializes a new instance of the <see cref="WaitingSteps" /> class.
         /// </summary>
         /// <param name="actionPipelineService">The action pipeline service.</param>
         /// <param name="scenarioContext">The scenario context.</param>
-        public WaitingSteps(IActionPipelineService actionPipelineService, IScenarioContextHelper scenarioContext)
-            : base(scenarioContext)
+        /// <param name="logger">The logger.</param>
+        public WaitingSteps(
+            IActionPipelineService actionPipelineService,
+            IScenarioContextHelper scenarioContext,
+            ILogger logger)
+            : base(scenarioContext, logger)
         {
             this.actionPipelineService = actionPipelineService;
         }
@@ -85,6 +88,22 @@ namespace SpecBind
             {
                 return TimeSpan.FromSeconds(30);
             }
+        }
+
+        /// <summary>
+        /// A step that waits for an element to match the specified criteria.
+        /// </summary>
+        /// <param name="criteriaTable">The criteria table.</param>
+        [Given("I waited to see")]
+        [When("I wait to see")]
+        [Then("I wait to see")]
+        public void WaitToSeeElement(Table criteriaTable)
+        {
+            var page = this.GetPageFromContext();
+            var validationTable = criteriaTable.ToValidationTable();
+
+            var context = new WaitForElementsAction.WaitForElementsContext(page, validationTable, null);
+            this.actionPipelineService.PerformAction<WaitForElementsAction>(page, context).CheckResult();
         }
 
         /// <summary>
@@ -362,7 +381,35 @@ namespace SpecBind
         [Then(WaitForjQueryRegex)]
         public void WaitForjQuery()
         {
-            WebDriverSupport.WaitForjQuery();
+            WebDriverSupport.WaitForjQuery(expectedJQueryDefined: true);
+        }
+
+        /// <summary>
+        /// Give I waited for x second(s).
+        /// </summary>
+        /// <param name="seconds">The seconds.</param>
+        [Given(@"I waited for (.*) seconds?")]
+        [When(@"I wait for (.*) seconds?")]
+        public void GivenIWaitedForSeconds(int seconds)
+        {
+            int totalMilliseconds = (int)TimeSpan.FromSeconds(seconds).TotalMilliseconds;
+
+            Thread.Sleep(totalMilliseconds);
+        }
+
+        /// <summary>
+        /// Given I kept refreshing the page for up to x second(s) until the title contains "title".
+        /// </summary>
+        /// <param name="seconds">The seconds.</param>
+        /// <param name="title">The title.</param>
+        [Given(@"I kept refreshing the page for up to (.*) seconds? until the title contains ""(.*)""")]
+        [When(@"I keep refreshing the page for up to (.*) seconds? until the title contains ""(.*)""")]
+        public void GivenIKeepRefreshingThePageForUpToSecondsUntilTheTitleContain(int seconds, string title)
+        {
+            var page = this.GetPageFromContext();
+
+            var context = new WaitForPageTitleAction.WaitForPageTitleContext(title, GetTimeSpan(seconds));
+            this.actionPipelineService.PerformAction<WaitForPageTitleAction>(page, context).CheckResult();
         }
 
         /// <summary>

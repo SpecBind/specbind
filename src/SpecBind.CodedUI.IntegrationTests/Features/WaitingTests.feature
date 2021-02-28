@@ -1,4 +1,6 @@
-﻿Feature: Waiting Feature Tests
+﻿@mstest:DeploymentItem:TechTalk.SpecFlow.MSTest.SpecFlowPlugin.dll
+@mstest:DeploymentItem:SpecBind.MsTest.Steps.dll
+Feature: Waiting Feature Tests
 
 Scenario: Wait for the screen to be enabled
 	Given I navigated to the Home page

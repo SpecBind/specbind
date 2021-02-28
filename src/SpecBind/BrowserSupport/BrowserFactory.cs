@@ -5,11 +5,12 @@ namespace SpecBind.BrowserSupport
 {
     using System;
     using System.Linq;
-
+    using System.Reflection;
     using SpecBind.Actions;
     using SpecBind.Configuration;
     using SpecBind.Extensions;
     using SpecBind.Helpers;
+    using TechTalk.SpecFlow;
 
     /// <summary>
     /// A factory class that helps create a browser instance.
@@ -39,12 +40,20 @@ namespace SpecBind.BrowserSupport
         private ILogger Logger { get; set; }
 
         /// <summary>
+        /// Gets or sets the test results directory.
+        /// </summary>
+        /// <value>
+        /// The test results directory.
+        /// </value>
+        private string TestResultsDirectory { get; set; }
+
+        /// <summary>
         /// Gets the browser for the test run.
         /// </summary>
         /// <returns>A new browser object.</returns>
         public IBrowser GetBrowser()
         {
-            return this.CreateBrowser(this.Logger);
+            return this.CreateBrowser(this.Logger, this.TestResultsDirectory);
         }
 
         /// <summary>
@@ -64,16 +73,21 @@ namespace SpecBind.BrowserSupport
         /// Gets the browser factory.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        /// <returns>A created browser factory.</returns>
-        /// <exception cref="System.InvalidOperationException">
-        /// The specBind config section must have a browser factor with a provider configured.
-        /// </exception>
-        internal static BrowserFactory GetBrowserFactory(ILogger logger)
+        /// <param name="scenarioContext">The scenario context.</param>
+        /// <param name="testResultsDirectory">The test results directory.</param>
+        /// <returns>
+        /// A created browser factory.
+        /// </returns>
+        /// <exception cref="System.InvalidOperationException">The specBind config section must have a browser factor with a provider configured.</exception>
+        internal static BrowserFactory GetBrowserFactory(
+            ILogger logger,
+            ScenarioContext scenarioContext,
+            string testResultsDirectory)
         {
             var configSection = SettingHelper.GetConfigurationSection();
             if (configSection == null || configSection.BrowserFactory == null || string.IsNullOrWhiteSpace(configSection.BrowserFactory.Provider))
             {
-                throw new InvalidOperationException("The specBind config section must have a browser factor with a provider configured.");
+                throw new InvalidOperationException("The specBind config section must have a browser factory with a provider configured.");
             }
 
             var type = Type.GetType(configSection.BrowserFactory.Provider, AssemblyLoader.OnAssemblyCheck, AssemblyLoader.OnGetType);
@@ -82,8 +96,22 @@ namespace SpecBind.BrowserSupport
                 throw new InvalidOperationException(string.Format("Could not load factory type: {0}. Make sure this is fully qualified and the assembly exists. Also ensure the base type is BrowserFactory", configSection.BrowserFactory.Provider));
             }
 
-            var factory = (BrowserFactory)Activator.CreateInstance(type);
+            BrowserFactory factory;
+
+            // find a public constructor which accepts a ScenarioContext as the only parameter
+            if (type.GetConstructors().Any(x => x.GetParameters().SingleOrDefault(y => y.ParameterType == typeof(ScenarioContext)) != null))
+            {
+                // found a public constructor that accepts a ScenarioContext as the only parameter
+                factory = (BrowserFactory)Activator.CreateInstance(type, new object[] { scenarioContext });
+            }
+            else
+            {
+                // default constructor
+                factory = (BrowserFactory)Activator.CreateInstance(type);
+            }
+
             factory.Logger = logger;
+            factory.TestResultsDirectory = testResultsDirectory;
 
             return factory;
         }
@@ -99,7 +127,7 @@ namespace SpecBind.BrowserSupport
                 return;
             }
 
-            this.ValidateDriverSetup(this.Logger);
+            this.ValidateDriverSetup(this.Logger, this.TestResultsDirectory);
         }
 
         /// <summary>
@@ -119,6 +147,7 @@ namespace SpecBind.BrowserSupport
                 configuration.CreateScreenshotOnExit = browserFactoryConfiguration.CreateScreenshotOnExit;
                 configuration.ElementLocateTimeout = browserFactoryConfiguration.ElementLocateTimeout;
                 configuration.EnsureCleanSession = browserFactoryConfiguration.EnsureCleanSession;
+                configuration.PageLoadStrategy = browserFactoryConfiguration.PageLoadStrategy;
                 configuration.PageLoadTimeout = browserFactoryConfiguration.PageLoadTimeout;
                 configuration.Provider = browserFactoryConfiguration.Provider;
                 configuration.ReuseBrowser = browserFactoryConfiguration.ReuseBrowser;
@@ -135,14 +164,18 @@ namespace SpecBind.BrowserSupport
         /// Creates the browser.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        /// <returns>A browser object.</returns>
-        protected abstract IBrowser CreateBrowser(ILogger logger);
+        /// <param name="testResultsDirectory">The test results directory.</param>
+        /// <returns>
+        /// A browser object.
+        /// </returns>
+        protected abstract IBrowser CreateBrowser(ILogger logger, string testResultsDirectory);
 
         /// <summary>
         /// Validates the driver setup.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        protected virtual void ValidateDriverSetup(ILogger logger)
+        /// <param name="testResultsDirectory">The test results directory.</param>
+        protected virtual void ValidateDriverSetup(ILogger logger, string testResultsDirectory)
         {
         }
 

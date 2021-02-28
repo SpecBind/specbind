@@ -4,8 +4,10 @@
 
 namespace SpecBind.Tests
 {
-    using System.Linq;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+    using System.Linq;
+
     using SpecBind.Pages;
     using SpecBind.Tests.Support;
 

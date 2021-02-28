@@ -1,4 +1,6 @@
-﻿Feature: Field Validation Features
+﻿@mstest:DeploymentItem:TechTalk.SpecFlow.MSTest.SpecFlowPlugin.dll
+@mstest:DeploymentItem:SpecBind.MsTest.Steps.dll
+Feature: Field Validation Features
 
 Scenario: Validate Field Equality For a Text Field
 	 Given I navigated to the Home page

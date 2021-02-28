@@ -132,6 +132,9 @@ namespace SpecBind.CodedUI.Tests
             Assert.AreEqual(@"document.cookie = ""TestCookie=Some%20Value; expires=Mon, 30 Mar 2015 00:00:00 GMT; domain=www.mydomain.com; path=/MyPath""", cookieString);
         }
 
+        /// <summary>
+        /// Asserts the cookie builder's GetCookieValue method return value.
+        /// </summary>
         [TestMethod]
         public void TestGetCookieValueCreatesAndCallsFunction()
         {

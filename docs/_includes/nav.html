@@ -1,0 +1,16 @@
+<ul class="nav-list">   
+  {% for node in site.data.nav %}
+      <li class="nav-list-item">
+        {% if node.url %}
+          <a href="{{ node.url }}">{{ node.title }}</a>
+        {% else %}
+          {{ node.title }}
+        {% endif %}
+        <ul>
+          {% for subnode in node.items %}
+            <li><a href="{{ subnode.url }}">{{ subnode.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </li>
+  {% endfor %}
+</ul>
