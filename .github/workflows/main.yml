@@ -124,11 +124,11 @@ jobs:
           # Limits number of created annotations with error message and stack trace captured during test execution.
           max-annotations: 50
   
-      - name: Install CodeCov
-        run: pip install codecov
-        
-      - name: Run tests with code coverage
-        run: codecov -f "SpecBind_coverage.xml"
+      - name: Generate Code Coverage Report
+        uses: codecov/codecov-action@v1.2.1
+        with:
+          # Path to coverage file to upload
+          file: SpecBind_coverage.xml
           
       - name: NuGet pack SpecBind
         run: nuget pack src\SpecBind\SpecBind.nuspec -OutputDirectory ${{env.PACKAGE_DIR}} -BasePath src\SpecBind -Verbosity Detailed -Version ${{env.VERSION}} -Symbols -Properties Configuration=${{env.CONFIGURATION}}
