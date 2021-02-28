@@ -89,7 +89,6 @@ namespace SpecBind
         /// <param name="linkName">Name of the link.</param>
         [Given(GivenChooseALinkStepRegex)]
         [When(ChooseALinkStepRegex)]
-        [Then(ChooseALinkStepRegex)]
         public void WhenIChooseALinkStep(string linkName)
         {
             this.ChooseALinkStep(linkName.ToLookupKey());
